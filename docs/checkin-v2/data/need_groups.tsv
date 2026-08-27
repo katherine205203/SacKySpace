@@ -1,0 +1,7 @@
+﻿need_group_id	group_code	group_name_vn	group_name_en	color_hex	active	sort_order
+NGRP_001	Physical_Foundation_Safety	Thể chất & nền an toàn	Physical Foundations & Safety	#0077B6	True	1
+NGRP_002	Clarity_Agency	Rõ ràng & tự chủ	Clarity & Agency	#7B2CBF	True	2
+NGRP_003	Authenticity_Dignity	Chân thật & phẩm giá	Authenticity & Dignity	#F97316	True	3
+NGRP_004	Connection_Belonging	Kết nối & thuộc về	Connection & Belonging	#FF3D71	True	4
+NGRP_005	Growth_Meaning	Phát triển & ý nghĩa	Growth & Meaning	#06D6A0	True	5
+NGRP_006	Aliveness_Wholeness	Sống động & trọn vẹn	Aliveness & Wholeness	#F72585	True	6
