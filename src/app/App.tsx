@@ -1,11 +1,17 @@
-import { HomePage } from '../features/home/HomePage'
+import { BrowserRouter } from 'react-router-dom'
+import { AuthGate } from '../components/AuthGate'
 import { AppShell } from '../layouts/AppShell'
+import { AppRoutes } from './AppRoutes'
 
 function App() {
   return (
-    <AppShell>
-      <HomePage />
-    </AppShell>
+    <BrowserRouter>
+      <AuthGate>
+        <AppShell>
+          <AppRoutes />
+        </AppShell>
+      </AuthGate>
+    </BrowserRouter>
   )
 }
 

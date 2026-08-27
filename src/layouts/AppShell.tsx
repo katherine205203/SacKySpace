@@ -1,22 +1,15 @@
 import type { ReactNode } from 'react'
-import { PlaceholderHeader } from '../components/PlaceholderHeader'
-import { PlaceholderSidebar } from '../components/PlaceholderSidebar'
-import type { NavigationItem } from '../types/navigation'
+import { AppHeader } from '../components/AppHeader'
+import { AppSidebar } from '../components/AppSidebar'
 
-type AppShellProps = {
-  children: ReactNode
-}
-
-const navigationItems: readonly NavigationItem[] = [
-  { label: 'Home', href: '#home' },
-]
+type AppShellProps = { children: ReactNode }
 
 export function AppShell({ children }: AppShellProps) {
   return (
     <div className="app-shell">
-      <PlaceholderSidebar items={navigationItems} />
+      <AppSidebar />
       <div className="app-main">
-        <PlaceholderHeader />
+        <AppHeader />
         <main className="app-content">{children}</main>
       </div>
     </div>
