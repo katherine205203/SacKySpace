@@ -1,7 +1,8 @@
 import { Link, useNavigate } from 'react-router-dom'
-import { CheckinPageIntro, CheckinTabs, ColorOrb } from '../components/CheckinComponents'
-import { ReferenceState, useReferenceData } from '../hooks/useReferenceData'
-import { useCheckinFlow } from '../CheckinFlowContext'
+import { CheckinWorkspaceHeader, ColorOrb } from '../components/CheckinComponents'
+import { useReferenceData } from '../hooks/useReferenceData'
+import { ReferenceState } from '../hooks/ReferenceState'
+import { useCheckinFlow } from '../useCheckinFlow'
 
 export function CheckinLandingScreen() {
   const navigate = useNavigate()
@@ -14,9 +15,8 @@ export function CheckinLandingScreen() {
   }
 
   return (
-    <div className="page-stack checkin-page">
-      <CheckinTabs active="create" />
-      <CheckinPageIntro eyebrow="Một khoảng dừng nhỏ" title="Hôm nay bạn đang thế nào?" copy="Không cần gọi tên mọi thứ thật hoàn hảo. Chỉ cần bắt đầu từ điều đang hiện diện." />
+    <div className="page-stack checkin-page checkin-landing">
+      <CheckinWorkspaceHeader active="create" eyebrow="Một khoảng dừng nhỏ" title="Hôm nay bạn đang thế nào?" copy="Không cần gọi tên mọi thứ thật hoàn hảo. Chỉ cần bắt đầu từ điều đang hiện diện." />
       {error && <ReferenceState error={error} />}
       <div className="checkin-choice-grid">
         <button className="choice-card choice-card--violet" type="button" onClick={() => begin('emotion')}>

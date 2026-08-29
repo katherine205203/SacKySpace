@@ -212,11 +212,13 @@ const mapRecord = (
   }
 }
 
-export const listCheckins = async (reference: ReferenceData): Promise<CheckinRecord[]> => {
-  const { data, error } = await supabase
+export const listCheckins = async (reference: ReferenceData, userId?: string): Promise<CheckinRecord[]> => {
+  let query = supabase
     .from('checkins')
     .select('id, user_id, checkin_type, primary_emotion_id, intensity, note, unknown_prompt_id, created_at, updated_at')
     .order('created_at', { ascending: false })
+  if (userId) query = query.eq('user_id', userId)
+  const { data, error } = await query
   if (error) throw error
   const rows = (data ?? []) as CheckinRow[]
   const relations = await loadRelations(rows.map((row) => row.id))

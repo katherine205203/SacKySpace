@@ -1,9 +1,10 @@
 import { useMemo, useState } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { ActionModal, CompletionModal, DecisionModal } from '../components/CheckinModals'
-import { CheckinPageIntro, CheckinTabs, EmotionCard, EmotionFilters, FlowFooter, IntensityPicker, NoteField, SummaryRail } from '../components/CheckinComponents'
-import { useCheckinFlow } from '../CheckinFlowContext'
-import { ReferenceState, useReferenceData } from '../hooks/useReferenceData'
+import { CheckinWorkspaceHeader, EmotionCard, EmotionFilters, IntensityPicker, NoteField, PickerControlShelf, SummaryRail } from '../components/CheckinComponents'
+import { useCheckinFlow } from '../useCheckinFlow'
+import { useReferenceData } from '../hooks/useReferenceData'
+import { ReferenceState } from '../hooks/ReferenceState'
 
 export function EmotionCoreScreen() {
   const navigate = useNavigate()
@@ -21,12 +22,12 @@ export function EmotionCoreScreen() {
     const normalized = query.trim().toLocaleLowerCase()
     return reference.emotions.filter((emotion) => {
       const familyMatch = family === 'all' || emotion.emotion_family_id === family
-      const queryMatch = !normalized || [emotion.emotion_name_vn, emotion.emotion_name_en, emotion.description_vn].some((value) => value.toLocaleLowerCase().includes(normalized))
+      const queryMatch = !normalized || [emotion.emotion_name_vn, emotion.emotion_name_en, emotion.description_vn, emotion.description_en].some((value) => value.toLocaleLowerCase().includes(normalized))
       return familyMatch && queryMatch
     })
   }, [family, query, reference])
 
-  if (!reference) return <div className="page-stack checkin-page"><CheckinTabs active="create" /><ReferenceState error={referenceError} /></div>
+  if (!reference) return <div className="page-stack checkin-page"><ReferenceState error={referenceError} /></div>
 
   const primary = reference.emotions.find((emotion) => emotion.emotion_id === draft.primaryEmotionId)
   const validate = () => {
@@ -39,8 +40,12 @@ export function EmotionCoreScreen() {
     const validation = validate()
     if (validation) { setFormError(validation); return false }
     try {
-      await saveDraft()
+      const saved = await saveDraft()
       setFormError(null)
+      if (returnToReview) {
+        navigate(`/checkin/${saved.id}/review`)
+        return true
+      }
       setModal(nextModal)
       return true
     } catch { return false }
@@ -56,13 +61,13 @@ export function EmotionCoreScreen() {
   }
 
   return (
-    <div className="page-stack checkin-page">
-      <CheckinTabs active="create" />
-      <CheckinPageIntro eyebrow="Check-in · 1/4" title="Chọn cảm xúc chính" copy="Chọn từ 1 cảm xúc đang hiện diện rõ nhất lúc này." />
+    <div className="page-stack checkin-page checkin-workspace">
+      <CheckinWorkspaceHeader active="create" eyebrow="Cảm xúc chính · 1/4" title="Chọn cảm xúc đang rõ nhất với bạn lúc này" copy="Chọn 1 cảm xúc đang hiện diện rõ nhất lúc này." />
       <div className="split-workspace">
         <main className="flow-main">
-          <div className="toolbar-row"><label className="search-field"><span aria-hidden="true">⌕</span><input value={query} onChange={(event) => setQuery(event.target.value)} placeholder="Tìm cảm xúc…" aria-label="Tìm cảm xúc" /></label></div>
-          <EmotionFilters families={reference.emotionFamilies} activeFamily={family} onFamilyChange={setFamily} />
+          <PickerControlShelf query={query} onQueryChange={setQuery} onClear={() => setQuery('')} label="Nhóm cảm xúc" resultCount={emotions.length}>
+            <EmotionFilters families={reference.emotionFamilies} activeFamily={family} onFamilyChange={setFamily} />
+          </PickerControlShelf>
           <div className="inventory-grid inventory-grid--emotions">{emotions.map((emotion) => <EmotionCard key={emotion.emotion_id} emotion={emotion} selected={emotion.emotion_id === draft.primaryEmotionId} onClick={() => { updateDraft({ primaryEmotionId: emotion.emotion_id, checkinType: 'emotion' }); setFormError(null) }} />)}</div>
           {!emotions.length && <p className="empty-state">Không tìm thấy cảm xúc phù hợp.</p>}
           <IntensityPicker value={draft.intensity} onChange={(intensity) => updateDraft({ intensity })} />
@@ -70,9 +75,9 @@ export function EmotionCoreScreen() {
           {(formError || error) && <p className="form-error" role="alert">{formError ?? error}</p>}
           {primary && <p className="selection-hint"><span style={{ background: primary.color_hex }} />Đang chọn: <strong>{primary.emotion_name_vn}</strong></p>}
         </main>
-        <SummaryRail draft={draft} reference={reference} />
+        <SummaryRail draft={draft} reference={reference} showPrimaryDetails />
       </div>
-      <FlowFooter onBack={() => navigate('/checkin')} onQuickSave={() => void persist('completion')} onContinue={() => void persist('decision')} isSaving={isSaving} continueLabel="Lưu & tiếp tục" />
+      <footer className="flow-footer"><button className="button button--secondary" type="button" onClick={() => navigate('/checkin')}>← Quay lại</button><button className="button button--primary" type="button" onClick={() => void persist('decision')} disabled={isSaving}>{isSaving ? 'Đang lưu…' : 'Lưu'}</button></footer>
       {modal === 'decision' && <DecisionModal draft={draft} reference={reference} onClose={() => setModal(null)} onFinish={goAfterSave} onDeepDive={openDeepDive} onAction={() => setModal('action')} />}
       {modal === 'completion' && <CompletionModal onClose={() => setModal(null)} onFinish={goAfterSave} onAction={() => setModal('action')} />}
       {modal === 'action' && <ActionModal reference={reference} onClose={() => setModal(null)} onSaved={(actions) => { const nextDraft = { ...draft, actions }; updateDraft({ actions }); void saveDraft(nextDraft).then(goAfterSave).catch(() => undefined) }} />}

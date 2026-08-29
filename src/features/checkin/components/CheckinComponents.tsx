@@ -1,12 +1,13 @@
-import type { CSSProperties, ReactNode } from 'react'
+import { useEffect, useId, useRef, type CSSProperties, type ReactNode } from 'react'
+import { NavLink } from 'react-router-dom'
 import type { CheckinDraft, Context, Emotion, EmotionFamily, Need, NeedGroup, ReferenceData } from '../types'
-import { buildColorOrbRegionsFromColors } from '../utils/colorOrb'
+import { buildOrbClouds } from '../utils/colorOrb'
 
 export function CheckinTabs({ active }: { active: 'create' | 'history' }) {
   return (
     <div className="checkin-tabs" role="tablist" aria-label="Check-in sections">
-      <a className={active === 'create' ? 'is-active' : undefined} href="/checkin" role="tab" aria-selected={active === 'create'}>Tạo check-in</a>
-      <a className={active === 'history' ? 'is-active' : undefined} href="/checkin/history" role="tab" aria-selected={active === 'history'}>Lịch sử</a>
+      <NavLink className={active === 'create' ? 'is-active' : undefined} to="/checkin" role="tab" aria-selected={active === 'create'}>Tạo check-in</NavLink>
+      <NavLink className={active === 'history' ? 'is-active' : undefined} to="/checkin/history" role="tab" aria-selected={active === 'history'}>Lịch sử</NavLink>
     </div>
   )
 }
@@ -21,18 +22,53 @@ export function CheckinPageIntro({ eyebrow, title, copy }: { eyebrow?: string; t
   )
 }
 
+export function CheckinWorkspaceHeader({ active, eyebrow, title, copy }: { active: 'create' | 'history'; eyebrow: string; title: string; copy: string }) {
+  return (
+    <header className="checkin-task-header">
+      <div className="checkin-task-header__copy"><p className="eyebrow">{eyebrow}</p><h2>{title}</h2><p>{copy}</p></div>
+      <CheckinTabs active={active} />
+    </header>
+  )
+}
+
 export function ColorOrb({ entries, size = 'medium', label }: { entries: readonly { color: string; intensity: number }[]; size?: 'small' | 'medium' | 'large'; label?: string }) {
-  const regions = buildColorOrbRegionsFromColors(entries)
+  const clouds = buildOrbClouds(entries)
+  const id = useId().replaceAll(':', '')
+  const clipId = `orb-clip-${id}`
+  const baseId = `orb-base-${id}`
+  const glowId = `orb-glow-${id}`
   return (
     <svg className={`color-orb color-orb--${size}`} viewBox="0 0 200 200" role={label ? 'img' : undefined} aria-label={label}>
       <defs>
-        <clipPath id={`orb-clip-${size}`}>
+        <clipPath id={clipId}>
           <circle cx="100" cy="100" r="96" />
         </clipPath>
+        <radialGradient id={baseId} cx="32%" cy="24%" r="88%">
+          <stop offset="0" stopColor="#F7F0FF" stopOpacity=".78" />
+          <stop offset=".64" stopColor="#EEE6F8" stopOpacity=".72" />
+          <stop offset="1" stopColor="#D9CFE9" stopOpacity=".9" />
+        </radialGradient>
+        <radialGradient id={glowId} cx="34%" cy="24%" r="76%">
+          <stop offset="0" stopColor="#FFFFFF" stopOpacity=".28" />
+          <stop offset=".48" stopColor="#FFFFFF" stopOpacity=".04" />
+          <stop offset="1" stopColor="#FFFFFF" stopOpacity="0" />
+        </radialGradient>
+        {clouds.map((cloud, index) => <radialGradient id={`orb-cloud-${id}-${index}`} key={index} cx="50%" cy="50%" r="50%">
+          <stop offset="0" stopColor={cloud.color} stopOpacity={cloud.opacity} />
+          <stop offset=".42" stopColor={cloud.color} stopOpacity={cloud.opacity * .58} />
+          <stop offset=".78" stopColor={cloud.color} stopOpacity={cloud.opacity * .16} />
+          <stop offset="1" stopColor={cloud.color} stopOpacity="0" />
+        </radialGradient>)}
+        {clouds.map((cloud, index) => <filter id={`orb-cloud-blur-${id}-${index}`} key={`blur-${index}`} x="-30%" y="-30%" width="160%" height="160%">
+          <feGaussianBlur stdDeviation={cloud.blur} />
+        </filter>)}
       </defs>
-      <circle className="color-orb__base" cx="100" cy="100" r="96" />
-      <g clipPath={`url(#orb-clip-${size})`}>
-        {regions.map((region) => <path key={`${region.color}-${region.start}`} d={region.path} fill={region.color} />)}
+      <circle className="color-orb__halo" cx="100" cy="100" r="99" />
+      <circle className="color-orb__base" cx="100" cy="100" r="96" fill={`url(#${baseId})`} />
+      <g clipPath={`url(#${clipId})`}>
+        {clouds.map((cloud, index) => <circle key={`${cloud.color}-${index}`} cx={cloud.x} cy={cloud.y} r={cloud.radius} fill={`url(#orb-cloud-${id}-${index})`} filter={`url(#orb-cloud-blur-${id}-${index})`} style={{ mixBlendMode: cloud.blendMode }} />)}
+        <circle className="color-orb__inner-glow" cx="100" cy="100" r="96" fill={`url(#${glowId})`} />
+        <ellipse className="color-orb__sheen" cx="67" cy="47" rx="44" ry="20" transform="rotate(-18 67 47)" />
       </g>
       <circle className="color-orb__outline" cx="100" cy="100" r="96" />
     </svg>
@@ -42,7 +78,7 @@ export function ColorOrb({ entries, size = 'medium', label }: { entries: readonl
 export function EmotionCard({ emotion, selected, disabled, onClick, multi = false }: { emotion: Emotion; selected: boolean; disabled?: boolean; onClick: () => void; multi?: boolean }) {
   const style = { '--semantic-color': emotion.color_hex } as CSSProperties
   return (
-    <button className={`inventory-card ${selected ? 'is-selected' : ''} ${disabled ? 'is-disabled' : ''}`} style={style} type="button" disabled={disabled} aria-pressed={selected} onClick={onClick}>
+    <button className={`inventory-card ${selected ? 'is-selected' : ''} ${disabled ? 'is-disabled' : ''}`} style={style} title={emotion.description_vn} type="button" disabled={disabled} aria-pressed={selected} onClick={onClick}>
       <span className="inventory-card__emoji" aria-hidden="true">{emotion.emoji}</span>
       <strong>{emotion.emotion_name_vn}</strong>
       <span>{emotion.emotion_name_en}</span>
@@ -51,50 +87,87 @@ export function EmotionCard({ emotion, selected, disabled, onClick, multi = fals
   )
 }
 
-export function NeedCard({ need, selected, disabled, onClick }: { need: Need; selected: boolean; disabled?: boolean; onClick: () => void }) {
+export function NeedCard({ need, selected, disabled, onClick, onInfo }: { need: Need; selected: boolean; disabled?: boolean; onClick: () => void; onInfo?: () => void }) {
   const style = { '--semantic-color': need.color_hex } as CSSProperties
   return (
-    <button className={`inventory-card inventory-card--descriptive ${selected ? 'is-selected' : ''} ${disabled ? 'is-disabled' : ''}`} style={style} type="button" disabled={disabled} aria-pressed={selected} onClick={onClick}>
-      <span className="inventory-card__emoji" aria-hidden="true">{need.emoji}</span>
-      <strong>{need.need_name_vn}</strong>
-      <span>{need.need_name_en}</span>
-      {selected && <span className="selection-check" aria-label="Đã chọn">✓</span>}
-    </button>
+    <div className="inventory-card-wrap"><button className={`inventory-card inventory-card--descriptive ${selected ? 'is-selected' : ''} ${disabled ? 'is-disabled' : ''}`} style={style} title={need.description_vn} type="button" disabled={disabled} aria-pressed={selected} onClick={onClick}>
+      <span className="inventory-card__emoji" aria-hidden="true">{need.emoji}</span><strong>{need.need_name_vn}</strong><span>{need.need_name_en}</span>{selected && <span className="selection-check" aria-label="Đã chọn">✓</span>}
+    </button>{onInfo && <button className="inventory-info" type="button" aria-label={`Xem mô tả: ${need.need_name_vn}`} onClick={(event) => { event.stopPropagation(); onInfo() }}>ⓘ</button>}</div>
   )
 }
 
-export function ContextCard({ context, selected, disabled, onClick }: { context: Context; selected: boolean; disabled?: boolean; onClick: () => void }) {
+export function ContextCard({ context, selected, disabled, onClick, onInfo }: { context: Context; selected: boolean; disabled?: boolean; onClick: () => void; onInfo?: () => void }) {
   const style = { '--semantic-color': context.color_hex } as CSSProperties
   return (
-    <button className={`inventory-card inventory-card--descriptive ${selected ? 'is-selected' : ''} ${disabled ? 'is-disabled' : ''}`} style={style} type="button" disabled={disabled} aria-pressed={selected} onClick={onClick}>
-      <span className="inventory-card__emoji" aria-hidden="true">{context.emoji}</span>
-      <strong>{context.context_name_vn}</strong>
-      <span>{context.context_group}</span>
-      {selected && <span className="selection-check" aria-label="Đã chọn">✓</span>}
-    </button>
+    <div className="inventory-card-wrap"><button className={`inventory-card inventory-card--descriptive ${selected ? 'is-selected' : ''} ${disabled ? 'is-disabled' : ''}`} style={style} title={context.description_vn} type="button" disabled={disabled} aria-pressed={selected} onClick={onClick}>
+      <span className="inventory-card__emoji" aria-hidden="true">{context.emoji}</span><strong>{context.context_name_vn}</strong><span>{context.context_group}</span>{selected && <span className="selection-check" aria-label="Đã chọn">✓</span>}
+    </button>{onInfo && <button className="inventory-info" type="button" aria-label={`Xem mô tả: ${context.context_name_vn}`} onClick={(event) => { event.stopPropagation(); onInfo() }}>ⓘ</button>}</div>
   )
 }
 
 export function EmotionFilters({ families, activeFamily, onFamilyChange }: { families: EmotionFamily[]; activeFamily: string; onFamilyChange: (id: string) => void }) {
   return (
-    <div className="filter-row" aria-label="Emotion family filters">
+    <>
       <button className={`filter-chip filter-chip--all ${activeFamily === 'all' ? 'is-active' : ''}`} type="button" onClick={() => onFamilyChange('all')}>Tất cả</button>
       {families.map((family) => <button key={family.emotion_family_id} className={`filter-chip ${activeFamily === family.emotion_family_id ? 'is-active' : ''}`} type="button" onClick={() => onFamilyChange(family.emotion_family_id)}><span className="filter-dot" style={{ background: family.color_hex }} />{family.family_name_vn}</button>)}
-    </div>
+    </>
   )
 }
 
 export function GroupFilters<T extends EmotionFamily | NeedGroup>({ groups, activeGroup, onGroupChange }: { groups: T[]; activeGroup: string; onGroupChange: (id: string) => void }) {
   return (
-    <div className="filter-row" aria-label="Group filters">
+    <>
       <button className={`filter-chip filter-chip--all ${activeGroup === 'all' ? 'is-active' : ''}`} type="button" onClick={() => onGroupChange('all')}>Tất cả</button>
       {groups.map((group) => {
         const id = 'emotion_family_id' in group ? group.emotion_family_id : group.need_group_id
         const name = 'emotion_family_id' in group ? group.family_name_vn : group.group_name_vn
         return <button key={id} className={`filter-chip ${activeGroup === id ? 'is-active' : ''}`} type="button" onClick={() => onGroupChange(id)}><span className="filter-dot" style={{ background: group.color_hex }} />{name}</button>
       })}
+    </>
+  )
+}
+
+export function PickerControlShelf({ query, onQueryChange, onClear, label, resultCount, resultLabel = 'cảm xúc', children, placeholder = 'Tìm theo tên, tên tiếng Anh hoặc mô tả...' }: { query: string; onQueryChange: (value: string) => void; onClear: () => void; label: string; resultCount: number; resultLabel?: string; children: ReactNode; placeholder?: string }) {
+  return (
+    <div className="discovery-toolbar">
+      <label className="search-field search-field--wide"><span className="search-icon" aria-hidden="true">⌕</span><input value={query} onChange={(event) => onQueryChange(event.target.value)} placeholder={placeholder} aria-label={placeholder} />{query && <button className="search-clear" type="button" aria-label="Xoá tìm kiếm" onClick={onClear}>×</button>}</label>
+      <div className="discovery-toolbar__header"><span className="discovery-label">{label}</span><span className="discovery-meta">{resultCount} {resultLabel}</span></div>
+      <div className="filter-row">{children}</div>
     </div>
   )
+}
+
+export type ReferenceDetail = {
+  emoji: string
+  typeLabel: string
+  nameVn: string
+  nameEn?: string
+  groupVn?: string
+  groupEn?: string
+  descriptionVn?: string
+  descriptionEn?: string
+  color?: string
+}
+
+export function ReferenceDetailModal({ detail, onClose }: { detail: ReferenceDetail; onClose: () => void }) {
+  const closeRef = useRef<HTMLButtonElement>(null)
+  useEffect(() => {
+    closeRef.current?.focus()
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') onClose()
+      if (event.key !== 'Tab') return
+      const dialog = closeRef.current?.closest('[role="dialog"]')
+      const focusable = dialog ? Array.from(dialog.querySelectorAll<HTMLElement>('button, a, input, textarea, select, [tabindex]:not([tabindex="-1"])')) : []
+      if (focusable.length < 2) return
+      const first = focusable[0]
+      const last = focusable[focusable.length - 1]
+      if (event.shiftKey && document.activeElement === first) { event.preventDefault(); last.focus() }
+      else if (!event.shiftKey && document.activeElement === last) { event.preventDefault(); first.focus() }
+    }
+    document.addEventListener('keydown', handleKeyDown)
+    return () => document.removeEventListener('keydown', handleKeyDown)
+  }, [onClose])
+  return <div className="modal-backdrop" role="presentation" onClick={onClose}><section className="reference-detail-modal" role="dialog" aria-modal="true" aria-labelledby="reference-detail-title" onClick={(event) => event.stopPropagation()}><button ref={closeRef} className="modal-close" type="button" aria-label="Đóng" onClick={onClose}>×</button><div className="reference-detail-modal__icon" style={{ background: detail.color ? `${detail.color}22` : undefined }}>{detail.emoji}</div><span className="eyebrow">{detail.typeLabel}</span><h2 id="reference-detail-title">{detail.nameVn}</h2>{detail.nameEn && <p className="reference-detail-modal__english">{detail.nameEn}</p>}{(detail.groupVn || detail.groupEn) && <div className="reference-detail-modal__group"><span className="section-label">Nhóm</span><strong>{detail.groupVn}{detail.groupEn ? ` · ${detail.groupEn}` : ''}</strong></div>}<div className="reference-detail-modal__description"><span className="section-label">Mô tả</span>{detail.descriptionVn && <p>{detail.descriptionVn}</p>}{detail.descriptionEn && <p className="reference-detail-modal__description--en">{detail.descriptionEn}</p>}</div></section></div>
 }
 
 export function NoteField({ value, onChange, maxLength = 1000 }: { value: string; onChange: (value: string) => void; maxLength?: number }) {
@@ -128,22 +201,23 @@ export function IntensityPicker({ value, onChange }: { value: number | null; onC
   )
 }
 
-export function SummaryRail({ draft, reference, title = 'Tóm tắt hiện tại' }: { draft: CheckinDraft; reference: ReferenceData; title?: string }) {
+export function SummaryRail({ draft, reference, title = 'Tóm tắt hiện tại', showPrimaryDetails = false }: { draft: CheckinDraft; reference: ReferenceData; title?: string; showPrimaryDetails?: boolean }) {
   const primary = reference.emotions.find((emotion) => emotion.emotion_id === draft.primaryEmotionId)
+  const family = primary ? reference.emotionFamilies.find((item) => item.emotion_family_id === primary.emotion_family_id) : null
   const secondary = reference.emotions.filter((emotion) => draft.secondaryEmotionIds.includes(emotion.emotion_id))
   const needs = reference.needs.filter((need) => draft.needIds.includes(need.need_id))
   const contexts = reference.contexts.filter((context) => draft.contextIds.includes(context.context_id))
   const entries = primary ? [{ color: primary.color_hex, intensity: draft.intensity ?? 1 }, ...secondary.map((emotion) => ({ color: emotion.color_hex, intensity: 1 }))] : []
   return (
     <aside className="summary-rail">
-      <h3>{title}</h3>
+      <div className="summary-rail__heading"><span className="section-label">{title}</span></div>
       <ColorOrb entries={entries} size="medium" label="Color Orb tóm tắt" />
-      {primary ? <div className="summary-primary"><span className="eyebrow">Cảm xúc chính</span><strong>{primary.emotion_name_vn}</strong><span>{primary.emotion_name_en}</span></div> : <div className="summary-empty">Chọn cảm xúc chính để bắt đầu.</div>}
-      {draft.intensity && <SummarySection label="Cường độ"><IntensityDots value={draft.intensity} /><span>{['', 'Thoáng qua', 'Nhẹ nhàng', 'Vừa phải', 'Hiện diện rõ', 'Rất mạnh'][draft.intensity]}</span></SummarySection>}
+      {primary ? <div className="summary-primary"><span className="section-label">Cảm xúc chính</span><strong>{primary.emotion_name_vn}</strong><span>{primary.emotion_name_en}</span>{showPrimaryDetails && family && <span className="summary-family"><i style={{ background: family.color_hex }} />{family.family_name_vn}</span>}{showPrimaryDetails && <><p className="summary-description">{primary.description_vn}</p><p className="summary-description summary-description--en">{primary.description_en}</p></>}</div> : <div className="summary-empty">Chọn cảm xúc chính để bắt đầu.</div>}
+      <SummarySection label="Cường độ">{draft.intensity ? <><IntensityDots value={draft.intensity} /><span>{['', 'Thoáng qua', 'Nhẹ nhàng', 'Vừa phải', 'Hiện diện rõ', 'Rất mạnh'][draft.intensity]}</span></> : <span className="muted-text">Chưa chọn</span>}</SummarySection>
       <SummarySection label={`Cảm xúc phụ (${secondary.length}/2)`}>{secondary.length ? <TagList items={secondary.map((item) => `${item.emoji} ${item.emotion_name_vn}`)} /> : <span className="muted-text">Chưa chọn</span>}</SummarySection>
       <SummarySection label={`Nhu cầu (${needs.length}/3)`}>{needs.length ? <TagList items={needs.map((item) => `${item.emoji} ${item.need_name_vn}`)} /> : <span className="muted-text">Chưa chọn</span>}</SummarySection>
       <SummarySection label={`Bối cảnh (${contexts.length}/2)`}>{contexts.length ? <TagList items={contexts.map((item) => `${item.emoji} ${item.context_name_vn}`)} /> : <span className="muted-text">Chưa chọn</span>}</SummarySection>
-      {draft.note && <SummarySection label="Ghi chú"><p>{draft.note}</p></SummarySection>}
+      <SummarySection label="Ghi chú">{draft.note ? <p>{draft.note}</p> : <span className="muted-text">Chưa chọn</span>}</SummarySection>
     </aside>
   )
 }

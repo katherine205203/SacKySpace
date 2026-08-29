@@ -14,6 +14,79 @@ type WeightedColor = {
   hue: number
 }
 
+export type OrbCloud = {
+  color: string
+  x: number
+  y: number
+  radius: number
+  opacity: number
+  blur: number
+  blendMode: 'normal' | 'screen'
+}
+
+const normalizeHex = (hex: string): string => /^#[0-9a-f]{6}$/i.test(hex) ? hex.toUpperCase() : '#D9D0EA'
+
+const hexToRgb = (hex: string): [number, number, number] => {
+  const value = normalizeHex(hex).slice(1)
+  return [
+    Number.parseInt(value.slice(0, 2), 16),
+    Number.parseInt(value.slice(2, 4), 16),
+    Number.parseInt(value.slice(4, 6), 16),
+  ]
+}
+
+const rgbToHex = (red: number, green: number, blue: number): string =>
+  `#${[red, green, blue].map((value) => Math.round(value).toString(16).padStart(2, '0')).join('').toUpperCase()}`
+
+const tint = (hex: string, amount: number): string => {
+  const [red, green, blue] = hexToRgb(hex)
+  return rgbToHex(red + (255 - red) * amount, green + (255 - green) * amount, blue + (255 - blue) * amount)
+}
+
+const shade = (hex: string, amount: number): string => {
+  const [red, green, blue] = hexToRgb(hex)
+  return rgbToHex(red * (1 - amount), green * (1 - amount), blue * (1 - amount))
+}
+
+/**
+ * Builds overlapping radial cloud layers for the canonical ColorOrb renderer.
+ * Intensity controls each color's total visual presence, while all tonal
+ * variants remain derived from the same source color.
+ */
+export const buildOrbClouds = (
+  entries: readonly { color: string; intensity: number }[],
+): OrbCloud[] => {
+  const weights = new Map<string, number>()
+  for (const entry of entries) {
+    const color = normalizeHex(entry.color)
+    weights.set(color, (weights.get(color) ?? 0) + Math.max(entry.intensity, .25))
+  }
+
+  const total = [...weights.values()].reduce((sum, weight) => sum + weight, 0)
+  if (!total) return []
+
+  return [...weights.entries()].flatMap(([source, weight], index) => {
+    const contribution = weight / total
+    const angle = (index / Math.max(weights.size, 1)) * Math.PI * 2 - Math.PI / 2
+    const centerX = 100 + Math.cos(angle) * 17
+    const centerY = 100 + Math.sin(angle) * 17
+    const auraRadius = 70 + contribution * 20
+    const coreRadius = 46 + contribution * 17
+    const amplitude = 13 + contribution * 18
+    const light = tint(source, .3)
+    const pale = tint(source, .62)
+    const deep = shade(source, .22)
+    return [
+      { color: source, x: centerX, y: centerY + 6, radius: auraRadius, opacity: .28 + contribution * .12, blur: 8.5, blendMode: 'normal' },
+      { color: source, x: centerX, y: centerY + 5, radius: coreRadius, opacity: .84 + contribution * .12, blur: .8, blendMode: 'normal' },
+      { color: light, x: centerX + amplitude, y: centerY - amplitude, radius: auraRadius * .72, opacity: .24 + contribution * .14, blur: 3.8, blendMode: 'normal' },
+      { color: pale, x: centerX - amplitude * .7, y: centerY - amplitude * .45, radius: auraRadius * .62, opacity: .12 + contribution * .1, blur: 5.5, blendMode: 'normal' },
+      { color: deep, x: centerX - amplitude, y: centerY + amplitude, radius: auraRadius * .68, opacity: .36 + contribution * .22, blur: 2.4, blendMode: 'normal' },
+      { color: '#FFFFFF', x: centerX + amplitude * .15, y: centerY - amplitude * 1.25, radius: auraRadius * .35, opacity: .07 + contribution * .04, blur: 3, blendMode: 'screen' },
+    ]
+  })
+}
+
 const hueFromHex = (hex: string): number => {
   const value = hex.replace('#', '')
   const red = Number.parseInt(value.slice(0, 2), 16) / 255
@@ -45,11 +118,10 @@ const organicPath = (start: number, end: number, index: number): string => {
 }
 
 export const buildColorOrbRegions = (records: readonly CheckinRecord[]): OrbRegion[] => {
-  return buildColorOrbRegionsFromColors(
-    records
-      .filter((record) => record.checkinType === 'emotion' && record.primaryEmotion)
-      .map((record) => ({ color: record.primaryEmotion!.color_hex, intensity: record.intensity ?? 1 })),
-  )
+  return buildColorOrbRegionsFromColors(records.flatMap((record) => {
+    if (record.checkinType !== 'emotion' || !record.primaryEmotion) return []
+    return [{ color: record.primaryEmotion.color_hex, intensity: record.intensity ?? 1 }, ...record.secondaryEmotions.map((emotion) => ({ color: emotion.color_hex, intensity: 1 }))]
+  }))
 }
 
 export const buildColorOrbRegionsFromColors = (
