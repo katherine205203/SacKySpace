@@ -1,20 +1,8 @@
-import { createContext, useContext, useMemo, useState, type ReactNode } from 'react'
+import { useMemo, useState, type ReactNode } from 'react'
 import { createCheckin, draftFromRecord, getCheckin, updateCheckin } from './services/checkinRepository'
 import { getReferenceData } from './services/referenceRepository'
-import { createEmptyDraft, type CheckinDraft, type CheckinType } from './types'
-
-type CheckinFlowContextValue = {
-  draft: CheckinDraft
-  isSaving: boolean
-  error: string | null
-  updateDraft: (patch: Partial<CheckinDraft>) => void
-  resetDraft: (type?: CheckinType) => void
-  saveDraft: (nextDraft?: CheckinDraft) => Promise<CheckinDraft>
-  loadExistingDraft: (id: string) => Promise<CheckinDraft>
-  clearError: () => void
-}
-
-const CheckinFlowContext = createContext<CheckinFlowContextValue | null>(null)
+import { createEmptyDraft, type CheckinDraft } from './types'
+import { checkinFlowContext, type CheckinFlowContextValue } from './useCheckinFlow'
 
 export function CheckinFlowProvider({ children }: { children: ReactNode }) {
   const [draft, setDraft] = useState<CheckinDraft>(createEmptyDraft())
@@ -62,11 +50,5 @@ export function CheckinFlowProvider({ children }: { children: ReactNode }) {
     clearError: () => setError(null),
   }), [draft, error, isSaving])
 
-  return <CheckinFlowContext.Provider value={value}>{children}</CheckinFlowContext.Provider>
-}
-
-export const useCheckinFlow = (): CheckinFlowContextValue => {
-  const context = useContext(CheckinFlowContext)
-  if (!context) throw new Error('useCheckinFlow must be used inside CheckinFlowProvider')
-  return context
+  return <checkinFlowContext.Provider value={value}>{children}</checkinFlowContext.Provider>
 }

@@ -27,9 +27,9 @@ export function SignInScreen() {
           <span className="brand-mark" aria-hidden="true">S</span>
           <span>SacKy</span>
         </div>
-        <p className="eyebrow">Owner workspace</p>
-        <h1 id="sign-in-title">Đăng nhập để tiếp tục</h1>
-        <p className="auth-card__copy">Check-in v2 đang được xây dựng riêng cho không gian của bạn.</p>
+        <p className="eyebrow">Sắc Ký</p>
+        <h1 id="sign-in-title">Đăng nhập vào Sắc Ký</h1>
+        <p className="auth-card__copy">Một khoảng nhỏ để lắng nghe mình.</p>
         <form className="auth-form" onSubmit={handleSubmit}>
           <label>
             Email
@@ -44,7 +44,7 @@ export function SignInScreen() {
             {isSubmitting ? 'Đang đăng nhập…' : 'Đăng nhập'}
           </button>
         </form>
-        <p className="auth-card__hint">Không có đăng ký công khai trong phiên bản này.</p>
+        <p className="auth-card__hint">Không có đăng ký công khai.</p>
       </section>
     </main>
   )

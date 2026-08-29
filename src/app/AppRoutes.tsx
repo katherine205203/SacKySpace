@@ -10,9 +10,9 @@ import { HomePage } from '../features/home/HomePage'
 
 const PlaceholderScreen = ({ title }: { title: string }) => (
   <section className="placeholder-screen">
-    <p className="eyebrow">Coming later</p>
+    <p className="eyebrow">Sắc Ký</p>
     <h2>{title}</h2>
-    <p>This area remains a placeholder while Check-in v2 is built.</p>
+    <p>Không gian này sẽ được mở rộng sau.</p>
   </section>
 )
 

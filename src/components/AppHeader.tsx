@@ -17,11 +17,9 @@ export function AppHeader() {
   return (
     <header className="app-header">
       <div>
-        <p className="eyebrow">SacKy v2</p>
         <h1 className="app-header__title">{title}</h1>
       </div>
       <div className="app-header__meta">
-        <span className="status-label">Web-first</span>
         <span className="avatar" aria-label="Owner">L</span>
       </div>
     </header>

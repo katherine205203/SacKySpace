@@ -45,11 +45,10 @@ const organicPath = (start: number, end: number, index: number): string => {
 }
 
 export const buildColorOrbRegions = (records: readonly CheckinRecord[]): OrbRegion[] => {
-  return buildColorOrbRegionsFromColors(
-    records
-      .filter((record) => record.checkinType === 'emotion' && record.primaryEmotion)
-      .map((record) => ({ color: record.primaryEmotion!.color_hex, intensity: record.intensity ?? 1 })),
-  )
+  return buildColorOrbRegionsFromColors(records.flatMap((record) => {
+    if (record.checkinType !== 'emotion' || !record.primaryEmotion) return []
+    return [{ color: record.primaryEmotion.color_hex, intensity: record.intensity ?? 1 }, ...record.secondaryEmotions.map((emotion) => ({ color: emotion.color_hex, intensity: 1 }))]
+  }))
 }
 
 export const buildColorOrbRegionsFromColors = (

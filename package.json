@@ -12,6 +12,7 @@
     "generate:checkin-seed": "node scripts/generate-checkin-seed.mjs"
   },
   "dependencies": {
+    "@fontsource/be-vietnam-pro": "^5.3.0",
     "@supabase/supabase-js": "^2.112.4",
     "react": "^19.2.8",
     "react-dom": "^19.2.8",
