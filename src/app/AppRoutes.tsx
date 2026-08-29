@@ -7,6 +7,7 @@ import { HistoryScreen } from '../features/checkin/screens/HistoryScreen'
 import { ReviewScreen } from '../features/checkin/screens/ReviewScreen'
 import { UnknownScreen } from '../features/checkin/screens/UnknownScreen'
 import { HomePage } from '../features/home/HomePage'
+import { ReminderPage } from '../features/reminder/ReminderPage'
 
 const PlaceholderScreen = ({ title }: { title: string }) => (
   <section className="placeholder-screen">
@@ -30,7 +31,7 @@ export function AppRoutes() {
         <Route path="/checkin/:id/review" element={<ReviewScreen />} />
         <Route path="/checkin/history" element={<HistoryScreen />} />
         <Route path="/diary" element={<PlaceholderScreen title="Diary" />} />
-        <Route path="/reminder" element={<PlaceholderScreen title="Reminder" />} />
+        <Route path="/reminder" element={<ReminderPage />} />
         <Route path="/future-letter" element={<PlaceholderScreen title="Future Letter" />} />
         <Route path="/gift-for-tmr" element={<PlaceholderScreen title="Gift for Tmr" />} />
         <Route path="/admin-studio" element={<PlaceholderScreen title="Admin Studio" />} />

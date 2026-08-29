@@ -1,6 +1,5 @@
 import type { ReactNode } from 'react'
 import { useLocation } from 'react-router-dom'
-import { AppHeader } from '../components/AppHeader'
 import { AppSidebar } from '../components/AppSidebar'
 
 type AppShellProps = { children: ReactNode }
@@ -12,7 +11,6 @@ export function AppShell({ children }: AppShellProps) {
     <div className="app-shell">
       <AppSidebar />
       <div className="app-main">
-        <AppHeader />
         <main className={`app-content ${isCheckin ? 'app-content--checkin' : ''}`}>{children}</main>
       </div>
     </div>
