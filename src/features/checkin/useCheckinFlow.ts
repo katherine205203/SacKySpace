@@ -8,6 +8,7 @@ export type CheckinFlowContextValue = {
   updateDraft: (patch: Partial<CheckinDraft>) => void
   resetDraft: (type?: CheckinType) => void
   saveDraft: (nextDraft?: CheckinDraft) => Promise<CheckinDraft>
+  completeCheckin: (nextDraft?: CheckinDraft) => Promise<CheckinDraft>
   loadExistingDraft: (id: string) => Promise<CheckinDraft>
   clearError: () => void
 }

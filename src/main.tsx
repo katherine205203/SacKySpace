@@ -6,6 +6,7 @@ import '@fontsource/be-vietnam-pro/600.css'
 import '@fontsource/be-vietnam-pro/700.css'
 import './services/supabase/client'
 import './styles/globals.css'
+import './features/checkin/checkin.css'
 import App from './app/App.tsx'
 
 createRoot(document.getElementById('root')!).render(

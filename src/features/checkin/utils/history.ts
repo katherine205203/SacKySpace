@@ -67,3 +67,48 @@ export const filterByDateRange = (
 
 export const sortByCreatedAtDesc = (records: readonly CheckinRecord[]): CheckinRecord[] =>
   [...records].sort((left, right) => right.createdAt.localeCompare(left.createdAt))
+
+export type HistoryMetrics = {
+  total: number
+  emotionCount: number
+  unknownCount: number
+  currentStreak: number
+  longestStreak: number
+  averageIntensity: number | null
+}
+
+export const getHistoryMetrics = (
+  records: readonly CheckinRecord[],
+  now = new Date(),
+  timeZone = 'Asia/Ho_Chi_Minh',
+): HistoryMetrics => {
+  const days = new Set(records.map((record) => getLocalDateKey(record.createdAt, timeZone)))
+  const today = getLocalDateKey(now.toISOString(), timeZone)
+  let currentStreak = 0
+  let cursor = today
+  while (days.has(cursor)) {
+    currentStreak += 1
+    cursor = addDays(cursor, -1)
+  }
+
+  const orderedDays = [...days].sort()
+  let longestStreak = 0
+  let streak = 0
+  let previous: string | null = null
+  for (const day of orderedDays) {
+    if (previous && day === addDays(previous, 1)) streak += 1
+    else streak = 1
+    longestStreak = Math.max(longestStreak, streak)
+    previous = day
+  }
+
+  const intensities = records.map((record) => record.intensity).filter((value): value is number => typeof value === 'number')
+  return {
+    total: records.length,
+    emotionCount: records.filter((record) => record.checkinType === 'emotion').length,
+    unknownCount: records.filter((record) => record.checkinType === 'unknown').length,
+    currentStreak,
+    longestStreak,
+    averageIntensity: intensities.length ? intensities.reduce((sum, value) => sum + value, 0) / intensities.length : null,
+  }
+}

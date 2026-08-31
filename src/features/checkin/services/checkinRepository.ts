@@ -14,12 +14,15 @@ type CheckinRow = {
 }
 
 type ActionRow = {
+  id: string
   source_checkin_id: string
   care_action_id: string | null
   title: string
   note: string | null
   planned_date: string | null
   due_time: string | null
+  status: 'pending' | 'completed'
+  completed_at: string | null
 }
 
 const currentUserId = async (): Promise<string> => {
@@ -77,7 +80,8 @@ const insertActions = async (draft: CheckinDraft, userId: string): Promise<void>
       note: action.note.trim() || null,
       planned_date: action.plannedDate || null,
       due_time: action.dueTime || null,
-      status: 'pending',
+      status: action.status ?? 'pending',
+      completed_at: action.completedAt ?? null,
     })),
   )
   if (error) throw error
@@ -151,7 +155,7 @@ const loadRelations = async (ids: string[]) => {
     supabase.from('checkin_secondary_emotions').select('checkin_id, emotion_id, position').in('checkin_id', ids).order('position'),
     supabase.from('checkin_needs').select('checkin_id, need_id, position').in('checkin_id', ids).order('position'),
     supabase.from('checkin_contexts').select('checkin_id, context_id, position').in('checkin_id', ids).order('position'),
-    supabase.from('reminders').select('source_checkin_id, care_action_id, title, note, planned_date, due_time').eq('origin', 'checkin').in('source_checkin_id', ids),
+    supabase.from('reminders').select('id, source_checkin_id, care_action_id, title, note, planned_date, due_time, status, completed_at').eq('origin', 'checkin').in('source_checkin_id', ids),
   ])
   for (const result of [secondaryResult, needsResult, contextsResult, actionsResult]) {
     if (result.error) throw result.error
@@ -201,11 +205,14 @@ const mapRecord = (
     actions: relations.actions
       .filter((item) => item.source_checkin_id === row.id)
       .map((action) => ({
+        id: action.id,
         careActionId: action.care_action_id,
         title: action.title,
         note: action.note ?? '',
         plannedDate: action.planned_date ?? '',
         dueTime: action.due_time ?? '',
+        status: action.status,
+        completedAt: action.completed_at,
       })),
     createdAt: row.created_at,
     updatedAt: row.updated_at,
@@ -241,6 +248,28 @@ export const getCheckin = async (
 
 export const deleteCheckin = async (id: string): Promise<void> => {
   const { error } = await supabase.from('checkins').delete().eq('id', id)
+  if (error) throw error
+}
+
+export const deleteLinkedActions = async (id: string): Promise<void> => {
+  const userId = await currentUserId()
+  const { error } = await supabase
+    .from('reminders')
+    .delete()
+    .eq('source_checkin_id', id)
+    .eq('origin', 'checkin')
+    .eq('user_id', userId)
+  if (error) throw error
+}
+
+export const detachLinkedActions = async (id: string): Promise<void> => {
+  const userId = await currentUserId()
+  const { error } = await supabase
+    .from('reminders')
+    .update({ source_checkin_id: null })
+    .eq('source_checkin_id', id)
+    .eq('origin', 'checkin')
+    .eq('user_id', userId)
   if (error) throw error
 }
 

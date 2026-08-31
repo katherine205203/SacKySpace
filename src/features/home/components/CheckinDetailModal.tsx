@@ -2,7 +2,10 @@ import { useEffect, useState, type ReactNode } from 'react'
 import { Link } from 'react-router-dom'
 import { HomeOrb } from './HomeOrb'
 import { formatCheckinDate, formatCheckinTime, formatReminderSchedule, getCheckinPresentation, isReminderCompleted } from '../services/homeAggregation'
-import { deleteReminder, setReminderCompleted, updateReminder, type ReminderEdit } from '../services/reminderRepository'
+import { deleteReminder, updateReminder, type ReminderEdit } from '../services/reminderRepository'
+import { DEFAULT_REFLECTION_OUTCOMES, listReflectionOutcomes, saveActionReflection, setActionStatus } from '../../actionspace/actionService'
+import { ReflectionModal } from '../../actionspace/ActionSpacePage'
+import type { ActionRecord, ActionReflectionOutcome } from '../../actionspace/types'
 import type { HomeReminder } from '../types'
 import type { CheckinRecord } from '../../checkin/types'
 import { IntensityDots, TagList } from '../../checkin/components/CheckinComponents'
@@ -18,18 +21,6 @@ type CheckinDetailModalProps = {
 
 type CheckinRecordWithReflection = CheckinRecord & { reflection?: string | null }
 
-type ReflectionChoice = 'better' | 'neutral' | 'worse' | 'other'
-type ReflectionDraft = { choice: ReflectionChoice; note: string }
-
-const reflectionOptions: { value: ReflectionChoice; label: string }[] = [
-  { value: 'better', label: 'Ổn hơn' },
-  { value: 'neutral', label: 'Không có gì đặc biệt' },
-  { value: 'worse', label: 'Tệ hơn' },
-  { value: 'other', label: 'Khác' },
-]
-
-const emptyReflection: ReflectionDraft = { choice: 'neutral', note: '' }
-
 export function CheckinDetailModal({ record, linkedActions, onClose, onEdit, onDelete, onActionChanged }: CheckinDetailModalProps) {
   const [isDeleting, setIsDeleting] = useState(false)
   const [deleteError, setDeleteError] = useState<string | null>(null)
@@ -38,15 +29,13 @@ export function CheckinDetailModal({ record, linkedActions, onClose, onEdit, onD
   const [actionBusyId, setActionBusyId] = useState<string | null>(null)
   const [actionError, setActionError] = useState<string | null>(null)
   const [editingAction, setEditingAction] = useState<(ReminderEdit & { id: string }) | null>(null)
-  const [reflectionValues, setReflectionValues] = useState<Record<string, ReflectionDraft>>({})
-  const [reflectionActionId, setReflectionActionId] = useState<string | null>(null)
-  const [reflectionDraft, setReflectionDraft] = useState<ReflectionDraft>(emptyReflection)
+  const [reflectionAction, setReflectionAction] = useState<{ action: ActionRecord; historyAvailable: boolean } | null>(null)
+  const [reflectionOutcomes, setReflectionOutcomes] = useState<ActionReflectionOutcome[]>(DEFAULT_REFLECTION_OUTCOMES)
   const presentation = getCheckinPresentation(record)
   const isUnknown = record.checkinType === 'unknown'
   const orbEntries = isUnknown ? [] : [{ color: presentation.color, intensity: record.intensity ?? 1 }]
   const reflection = (record as CheckinRecordWithReflection).reflection?.trim()
   const actions = linkedActions.filter((action) => !deletedActionIds.includes(action.id)).map((action) => ({ ...action, ...actionPatches[action.id] }))
-  const activeReflectionAction = reflectionActionId ? actions.find((action) => action.id === reflectionActionId) ?? null : null
 
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
@@ -60,6 +49,8 @@ export function CheckinDetailModal({ record, linkedActions, onClose, onEdit, onD
       document.removeEventListener('keydown', handleKeyDown)
     }
   }, [onClose])
+
+  useEffect(() => { void listReflectionOutcomes().then((outcomes) => { if (outcomes.length) setReflectionOutcomes(outcomes) }).catch(() => undefined) }, [])
 
   const handleDelete = () => {
     if (!window.confirm('Xoá check-in này?')) return
@@ -79,12 +70,12 @@ export function CheckinDetailModal({ record, linkedActions, onClose, onEdit, onD
     setActionBusyId(action.id)
     setActionError(null)
     try {
-      await setReminderCompleted(action.id, shouldComplete)
+      const result = await setActionStatus(action.id, shouldComplete ? 'completed' : 'pending')
       setActionPatches((current) => ({ ...current, [action.id]: { ...current[action.id], status: shouldComplete ? 'completed' : 'pending', completedAt: shouldComplete ? new Date().toISOString() : null } }))
       refreshHome()
       if (shouldComplete) {
-        setReflectionDraft(reflectionValues[action.id] ?? emptyReflection)
-        setReflectionActionId(action.id)
+        const reflectionRecord: ActionRecord = { id: action.id, userId: '', title: action.title, note: action.note, plannedDate: action.plannedDate, plannedEndDate: action.plannedEndDate ?? null, dueTime: action.dueTime, status: 'completed', completedAt: new Date().toISOString(), createdAt: new Date().toISOString(), updatedAt: new Date().toISOString(), origin: action.origin, sourceCheckinId: action.sourceCheckinId, careActionId: null }
+        setReflectionAction({ action: reflectionRecord, historyAvailable: result.historyAvailable })
       }
     } catch (reason: unknown) {
       setActionError(reason instanceof Error ? reason.message : 'Không thể cập nhật Action.')
@@ -122,12 +113,6 @@ export function CheckinDetailModal({ record, linkedActions, onClose, onEdit, onD
     } finally {
       setActionBusyId(null)
     }
-  }
-
-  const saveReflection = () => {
-    if (!activeReflectionAction) return
-    setReflectionValues((current) => ({ ...current, [activeReflectionAction.id]: reflectionDraft }))
-    setReflectionActionId(null)
   }
 
     return <div className="home-v2__modal-backdrop" role="presentation" onClick={onClose}>
@@ -182,7 +167,7 @@ export function CheckinDetailModal({ record, linkedActions, onClose, onEdit, onD
               <DetailSection label={`Việc cần làm liên kết (${actions.length})`}><div className="home-v2__detail-actions">{actions.length ? actions.map((action) => <div className="home-v2__detail-action" key={action.id}>
                 <button className="home-v2__detail-action-toggle" type="button" disabled={actionBusyId === action.id} aria-label={isReminderCompleted(action) ? `Hoàn tác: ${action.title}` : `Đánh dấu hoàn thành: ${action.title}`} aria-pressed={isReminderCompleted(action)} onClick={() => void handleToggleAction(action)}><span className={`home-v2__action-status ${isReminderCompleted(action) ? 'is-completed' : ''}`}>{isReminderCompleted(action) ? '✓' : ''}</span></button>
                 <div className="home-v2__detail-action-copy"><strong>{action.title}</strong><small>{formatReminderSchedule(action)} · {isReminderCompleted(action) ? 'Đã hoàn thành' : 'Đang chờ'}</small></div>
-                <div className="home-v2__detail-action-controls"><Link to="/reminder" aria-label={`Mở action: ${action.title}`}>Mở</Link><button type="button" disabled={actionBusyId === action.id} onClick={() => setEditingAction({ id: action.id, title: action.title, note: action.note ?? '', plannedDate: action.plannedDate ?? '', dueTime: action.dueTime ?? '' })}>Sửa</button><button type="button" disabled={actionBusyId === action.id} onClick={() => void handleDeleteAction(action)}>Xoá</button></div>
+                <div className="home-v2__detail-action-controls"><Link to="/action-space" aria-label={`Mở action: ${action.title}`}>Mở</Link><button type="button" disabled={actionBusyId === action.id} onClick={() => setEditingAction({ id: action.id, title: action.title, note: action.note ?? '', plannedDate: action.plannedDate ?? '', dueTime: action.dueTime ?? '' })}>Sửa</button><button type="button" disabled={actionBusyId === action.id} onClick={() => void handleDeleteAction(action)}>Xoá</button></div>
               </div>) : <p>Chưa có action cho khoảng dừng này.</p>}</div></DetailSection>
               {editingAction && <div className="home-v2__detail-action-editor">
                 <span className="home-v2__detail-label">Chỉnh sửa Action</span>
@@ -198,16 +183,7 @@ export function CheckinDetailModal({ record, linkedActions, onClose, onEdit, onD
           {deleteError && <p className="home-v2__modal-error" role="alert">{deleteError}</p>}
         </div>
         <footer className="home-v2__detail-footer"><div><button className="button button--secondary" type="button" onClick={onEdit} disabled={isDeleting}>Chỉnh sửa</button><button className="button button--danger" type="button" disabled={isDeleting} onClick={handleDelete}>{isDeleting ? 'Đang xoá…' : 'Xoá check-in'}</button></div><button className="button button--primary" type="button" onClick={onClose}>Đóng</button></footer>
-        {activeReflectionAction && <div className="home-v2__reflection-backdrop" role="presentation" onClick={() => setReflectionActionId(null)}>
-          <section className="home-v2__reflection-modal" role="dialog" aria-modal="true" aria-labelledby="home-reflection-title" onClick={(event) => event.stopPropagation()}>
-            <p className="home-v2__eyebrow">Phản chiếu</p>
-            <h3 id="home-reflection-title">Action này khiến bạn thấy thế nào?</h3>
-            <p>Ghi lại một tín hiệu nhỏ để lần sau hiểu mình hơn.</p>
-            <div className="home-v2__reflection-options" role="radiogroup" aria-label="Cảm nhận sau Action">{reflectionOptions.map((option) => <button key={option.value} className={reflectionDraft.choice === option.value ? 'is-selected' : undefined} type="button" role="radio" aria-checked={reflectionDraft.choice === option.value} onClick={() => setReflectionDraft((current) => ({ ...current, choice: option.value }))}>{option.label}</button>)}</div>
-            <textarea aria-label="Ghi chú phản chiếu" value={reflectionDraft.note} onChange={(event) => setReflectionDraft((current) => ({ ...current, note: event.target.value }))} placeholder="Một dòng cũng đủ (tuỳ chọn)" />
-            <div className="home-v2__reflection-footer"><button className="button button--secondary" type="button" onClick={() => setReflectionActionId(null)}>Để sau</button><button className="button button--primary" type="button" onClick={saveReflection}>Lưu phản chiếu</button></div>
-          </section>
-        </div>}
+        {reflectionAction && <ReflectionModal action={reflectionAction.action} outcomes={reflectionOutcomes} historyAvailable={reflectionAction.historyAvailable} onClose={() => setReflectionAction(null)} onSave={async (outcome, note) => { await saveActionReflection(reflectionAction.action.id, outcome, note); setReflectionAction(null); refreshHome() }} />}
       </section>
     </div>
 }

@@ -77,11 +77,14 @@ export type CareAction = {
 }
 
 export type ActionDraft = {
+  id?: string
   careActionId: string | null
   title: string
   note: string
   plannedDate: string
   dueTime: string
+  status?: 'pending' | 'completed'
+  completedAt?: string | null
 }
 
 export type ReferenceData = {

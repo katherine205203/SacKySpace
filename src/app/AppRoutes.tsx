@@ -7,7 +7,11 @@ import { HistoryScreen } from '../features/checkin/screens/HistoryScreen'
 import { ReviewScreen } from '../features/checkin/screens/ReviewScreen'
 import { UnknownScreen } from '../features/checkin/screens/UnknownScreen'
 import { HomePage } from '../features/home/HomePage'
-import { ReminderPage } from '../features/reminder/ReminderPage'
+import { ActionSpacePage } from '../features/actionspace/ActionSpacePage'
+import { DiaryPage } from '../features/diary/DiaryPage'
+import { FutureLetterPage } from '../features/futureletter/FutureLetterPage'
+import { GiftPage } from '../features/gift/GiftPage'
+import { AdminStudioPage } from '../features/admin/AdminStudioPage'
 
 const PlaceholderScreen = ({ title }: { title: string }) => (
   <section className="placeholder-screen">
@@ -25,16 +29,21 @@ export function AppRoutes() {
         <Route path="/checkin" element={<CheckinLandingScreen />} />
         <Route path="/checkin/emotion" element={<EmotionCoreScreen />} />
         <Route path="/checkin/unknown" element={<UnknownScreen />} />
+        <Route path="/checkin/secondary-emotions" element={<DeepDiveScreen step="secondary" />} />
+        <Route path="/checkin/needs" element={<DeepDiveScreen step="needs" />} />
+        <Route path="/checkin/contexts" element={<DeepDiveScreen step="contexts" />} />
+        <Route path="/checkin/review" element={<ReviewScreen />} />
         <Route path="/checkin/:id/secondary-emotions" element={<DeepDiveScreen step="secondary" />} />
         <Route path="/checkin/:id/needs" element={<DeepDiveScreen step="needs" />} />
         <Route path="/checkin/:id/contexts" element={<DeepDiveScreen step="contexts" />} />
         <Route path="/checkin/:id/review" element={<ReviewScreen />} />
         <Route path="/checkin/history" element={<HistoryScreen />} />
-        <Route path="/diary" element={<PlaceholderScreen title="Diary" />} />
-        <Route path="/reminder" element={<ReminderPage />} />
-        <Route path="/future-letter" element={<PlaceholderScreen title="Future Letter" />} />
-        <Route path="/gift-for-tmr" element={<PlaceholderScreen title="Gift for Tmr" />} />
-        <Route path="/admin-studio" element={<PlaceholderScreen title="Admin Studio" />} />
+        <Route path="/diary" element={<DiaryPage />} />
+        <Route path="/action-space" element={<ActionSpacePage />} />
+        <Route path="/reminder" element={<ActionSpacePage />} />
+        <Route path="/future-letter" element={<FutureLetterPage />} />
+        <Route path="/gift-for-tmr" element={<GiftPage />} />
+        <Route path="/admin-studio" element={<AdminStudioPage />} />
         <Route path="*" element={<PlaceholderScreen title="Page not found" />} />
       </Routes>
     </CheckinFlowProvider>

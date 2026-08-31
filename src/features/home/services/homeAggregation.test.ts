@@ -48,14 +48,42 @@ describe('Home aggregation', () => {
     expect(getHomeOrbEntries(records)).toEqual([{ color: '#FF6B8A', intensity: 3 }])
   })
 
-  it('keeps action preview bounded while counting all of today for Hero metrics', () => {
+  it('keeps completed actions out of Home while counting them for Hero metrics', () => {
     const reminders: HomeReminder[] = [
       { id: 'today-pending', sourceCheckinId: null, title: 'Pending', note: null, plannedDate: '2026-08-29', dueTime: null, status: 'pending', completedAt: null, origin: 'manual' },
       { id: 'today-done', sourceCheckinId: null, title: 'Done', note: null, plannedDate: '2026-08-29', dueTime: null, status: 'completed', completedAt: '2026-08-29T02:00:00.000Z', origin: 'manual' },
       { id: 'tomorrow-done', sourceCheckinId: null, title: 'Tomorrow', note: null, plannedDate: '2026-08-30', dueTime: null, status: 'completed', completedAt: '2026-08-29T02:00:00.000Z', origin: 'manual' },
     ]
-    expect(getHomeActionItems(reminders, 'today', now)).toHaveLength(2)
+    expect(getHomeActionItems(reminders, 'today', now)).toHaveLength(1)
+    expect(getHomeActionItems(reminders, 'today', now).map((item) => item.id)).toEqual(['today-pending'])
     expect(getHomeActionSummary(reminders, now)).toEqual({ total: 2, completed: 1, remaining: 1 })
     expect(getHomeActionSummary(reminders, now, 'week')).toEqual({ total: 3, completed: 2, remaining: 1 })
+  })
+
+  it('returns every active Home action so the preview can scroll after the third row', () => {
+    const reminders: HomeReminder[] = Array.from({ length: 8 }, (_, index) => ({
+      id: `action-${index + 1}`,
+      sourceCheckinId: null,
+      title: `Action ${index + 1}`,
+      note: null,
+      plannedDate: '2026-08-29',
+      dueTime: null,
+      status: 'pending',
+      completedAt: null,
+      origin: 'manual',
+    }))
+
+    expect(getHomeActionItems(reminders, 'today', now)).toHaveLength(8)
+    expect(getHomeActionItems(reminders, 'today', now).map((item) => item.id)).toContain('action-8')
+  })
+
+  it('keeps a dated range active across Home today and uses its end for overdue', () => {
+    const reminders: HomeReminder[] = [
+      { id: 'range', sourceCheckinId: null, title: 'Range', note: null, plannedDate: '2026-08-28', plannedEndDate: '2026-08-31', dueTime: null, status: 'pending', completedAt: null, origin: 'manual' },
+      { id: 'old-range', sourceCheckinId: null, title: 'Old range', note: null, plannedDate: '2026-08-20', plannedEndDate: '2026-08-27', dueTime: null, status: 'pending', completedAt: null, origin: 'manual' },
+    ]
+
+    expect(getHomeActionItems(reminders, 'today', now).map((item) => item.id)).toEqual(['range'])
+    expect(getHomeActionItems(reminders, 'overdue', now).map((item) => item.id)).toEqual(['old-range'])
   })
 })
