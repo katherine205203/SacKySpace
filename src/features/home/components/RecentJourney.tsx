@@ -52,11 +52,11 @@ export function RecentJourney({ records, onSelectCheckin }: RecentJourneyProps) 
 
 function JourneyCheckinCard({ record, onSelect }: { record: CheckinRecord; onSelect: () => void }) {
   const presentation = getCheckinPresentation(record)
+  const emotionNameEn = record.primaryEmotion?.emotion_name_en ?? 'Unknown Check-in'
   return <button className="home-v2__journey-card" type="button" onClick={onSelect} aria-label={`${formatCheckinDate(record.createdAt)}, ${formatCheckinTime(record.createdAt)}, ${presentation.title}`}>
     <span className="home-v2__journey-card-date">{formatCheckinDate(record.createdAt)}</span>
     <time className="home-v2__journey-card-time" dateTime={record.createdAt}>{formatCheckinTime(record.createdAt)}</time>
     <span className="home-v2__journey-card-emoji" style={{ background: `color-mix(in srgb, ${presentation.color} 24%, white)` }} aria-hidden="true">{presentation.emoji}</span>
-    <strong className="home-v2__journey-card-title">{presentation.title}</strong>
-    <span className="home-v2__journey-card-color"><i style={{ background: presentation.color }} aria-hidden="true" />{presentation.color}</span>
+    <span className="home-v2__journey-card-names"><strong className="home-v2__journey-card-title">{presentation.title}</strong><span className="home-v2__journey-card-english">{emotionNameEn}</span></span>
   </button>
 }

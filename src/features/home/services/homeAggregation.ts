@@ -92,9 +92,10 @@ const getMatchingHomeActionItems = (
 ): HomeReminder[] => {
   const today = getLocalDateKey(now.toISOString(), HOME_TIME_ZONE)
   const matchesTab = (reminder: HomeReminder): boolean => {
-    if (tab === 'overdue') return Boolean(reminder.plannedDate && reminder.plannedDate < today && !isCompleted(reminder))
+    const endDate = reminder.plannedEndDate || reminder.plannedDate
+    if (tab === 'overdue') return Boolean(endDate && endDate < today && !isCompleted(reminder))
     if (tab === 'upcoming') return Boolean(reminder.plannedDate && reminder.plannedDate > today && !isCompleted(reminder))
-    return !reminder.plannedDate || reminder.plannedDate === today
+    return Boolean((!reminder.plannedDate || (reminder.plannedDate <= today && (endDate ?? today) >= today)) && !isCompleted(reminder))
   }
 
   return reminders
@@ -110,7 +111,7 @@ export const getHomeActionItems = (
   reminders: readonly HomeReminder[],
   tab: HomeActionTab,
   now = new Date(),
-): HomeReminder[] => getMatchingHomeActionItems(reminders, tab, now).slice(0, 4)
+): HomeReminder[] => getMatchingHomeActionItems(reminders, tab, now)
 
 export const getHomeActionSummary = (
   reminders: readonly HomeReminder[],
@@ -121,7 +122,8 @@ export const getHomeActionSummary = (
   const dateRange = getHomeDateRange(range, now, customRange)
   const items = reminders.filter((reminder) => {
     if (!reminder.plannedDate) return range === 'today'
-    return (!dateRange.start || reminder.plannedDate >= dateRange.start) && (!dateRange.end || reminder.plannedDate <= dateRange.end)
+    const endDate = reminder.plannedEndDate || reminder.plannedDate
+    return (!dateRange.end || reminder.plannedDate <= dateRange.end) && (!dateRange.start || endDate >= dateRange.start)
   })
   const completed = items.filter(isCompleted).length
   return {
@@ -158,7 +160,11 @@ export const formatReminderSchedule = (reminder: HomeReminder, now = new Date())
     : reminder.plannedDate === tomorrow
       ? 'Ngày mai'
       : new Date(`${reminder.plannedDate}T12:00:00+07:00`).toLocaleDateString('vi-VN', { day: 'numeric', month: 'short', timeZone: HOME_TIME_ZONE })
-  return reminder.dueTime ? `${dateLabel} · ${reminder.dueTime.slice(0, 5)}` : dateLabel
+  const endDateLabel = reminder.plannedEndDate && reminder.plannedEndDate !== reminder.plannedDate
+    ? new Date(`${reminder.plannedEndDate}T12:00:00+07:00`).toLocaleDateString('vi-VN', { day: 'numeric', month: 'short', timeZone: HOME_TIME_ZONE })
+    : null
+  const scheduleLabel = endDateLabel ? `${dateLabel} – ${endDateLabel}` : dateLabel
+  return reminder.dueTime ? `${scheduleLabel} · ${reminder.dueTime.slice(0, 5)}` : scheduleLabel
 }
 
 export const formatHomeRangeLabel = (range: HomeRange, customRange: DateRange): string => {

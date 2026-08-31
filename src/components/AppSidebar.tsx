@@ -5,9 +5,9 @@ const navigation = [
   { label: 'Home', to: '/', icon: '⌂', end: true },
   { label: 'Check-in', to: '/checkin', icon: '◉' },
   { label: 'Diary', to: '/diary', icon: '▤' },
-  { label: 'Reminder', to: '/reminder', icon: '♧' },
+  { label: 'Action Space', to: '/action-space', icon: '↳' },
   { label: 'Future Letter', to: '/future-letter', icon: '✉' },
-  { label: 'Gift for Tmr', to: '/gift-for-tmr', icon: '◇' },
+  { label: 'Gift for Tomorrow', to: '/gift-for-tmr', icon: '◇' },
 ]
 
 export function AppSidebar() {

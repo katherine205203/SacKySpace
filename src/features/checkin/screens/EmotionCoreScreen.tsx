@@ -1,7 +1,7 @@
 import { useMemo, useState } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { ActionModal, CompletionModal, DecisionModal } from '../components/CheckinModals'
-import { CheckinWorkspaceHeader, EmotionCard, EmotionFilters, IntensityPicker, NoteField, PickerControlShelf, SummaryRail } from '../components/CheckinComponents'
+import { CheckinWorkspaceHeader, EmotionCard, EmotionFilters, IntensityPicker, NoteField, PickerControlShelf, SelectionStatus, SummaryRail } from '../components/CheckinComponents'
 import { useCheckinFlow } from '../useCheckinFlow'
 import { useReferenceData } from '../hooks/useReferenceData'
 import { ReferenceState } from '../hooks/ReferenceState'
@@ -9,7 +9,7 @@ import { ReferenceState } from '../hooks/ReferenceState'
 export function EmotionCoreScreen() {
   const navigate = useNavigate()
   const location = useLocation()
-  const { draft, updateDraft, saveDraft, isSaving, error } = useCheckinFlow()
+  const { draft, updateDraft, saveDraft, completeCheckin, isSaving, error } = useCheckinFlow()
   const { reference, error: referenceError } = useReferenceData()
   const [family, setFamily] = useState('all')
   const [query, setQuery] = useState('')
@@ -43,7 +43,7 @@ export function EmotionCoreScreen() {
       const saved = await saveDraft()
       setFormError(null)
       if (returnToReview) {
-        navigate(`/checkin/${saved.id}/review`)
+        navigate(saved.id ? `/checkin/${saved.id}/review` : '/checkin/review')
         return true
       }
       setModal(nextModal)
@@ -51,24 +51,34 @@ export function EmotionCoreScreen() {
     } catch { return false }
   }
 
-  const goAfterSave = () => {
-    if (returnToReview && draft.id) navigate(`/checkin/${draft.id}/review`)
-    else navigate('/')
+  const completeAndGo = async (nextDraft = draft) => {
+    try {
+      const saved = await completeCheckin(nextDraft)
+      if (returnToReview) navigate(`/checkin/${saved.id}/review`)
+      else navigate('/')
+    } catch {
+      // The flow context keeps the save error visible without navigating away.
+    }
   }
 
   const openDeepDive = () => {
-    if (draft.id) navigate(`/checkin/${draft.id}/secondary-emotions`)
+    navigate(draft.id ? `/checkin/${draft.id}/secondary-emotions` : '/checkin/secondary-emotions')
+  }
+
+  const selectEmotion = (emotionId: string) => {
+    updateDraft({ primaryEmotionId: emotionId, checkinType: 'emotion' })
+    setFormError(null)
   }
 
   return (
     <div className="page-stack checkin-page checkin-workspace">
-      <CheckinWorkspaceHeader active="create" eyebrow="Cảm xúc chính · 1/4" title="Chọn cảm xúc đang rõ nhất với bạn lúc này" copy="Chọn 1 cảm xúc đang hiện diện rõ nhất lúc này." />
+      <CheckinWorkspaceHeader active="create" eyebrow="Đang ở đây · 1/5" title="Cảm xúc chính đang hiện diện là gì?" copy="Chọn một cảm xúc đang rõ nhất với bạn lúc này." />
       <div className="split-workspace">
         <main className="flow-main">
           <PickerControlShelf query={query} onQueryChange={setQuery} onClear={() => setQuery('')} label="Nhóm cảm xúc" resultCount={emotions.length}>
             <EmotionFilters families={reference.emotionFamilies} activeFamily={family} onFamilyChange={setFamily} />
           </PickerControlShelf>
-          <div className="inventory-grid inventory-grid--emotions">{emotions.map((emotion) => <EmotionCard key={emotion.emotion_id} emotion={emotion} selected={emotion.emotion_id === draft.primaryEmotionId} onClick={() => { updateDraft({ primaryEmotionId: emotion.emotion_id, checkinType: 'emotion' }); setFormError(null) }} />)}</div>
+          <section className="selection-panel" aria-labelledby="emotion-collection-title"><div className="selection-panel__header"><span id="emotion-collection-title" className="section-label">Chọn một cảm xúc</span><SelectionStatus selected={primary ? 1 : 0} limit={1} label="cảm xúc chính" /></div><div className="inventory-grid inventory-grid--emotions">{emotions.map((emotion) => <EmotionCard key={emotion.emotion_id} emotion={emotion} selected={emotion.emotion_id === draft.primaryEmotionId} onClick={() => selectEmotion(emotion.emotion_id)} />)}</div></section>
           {!emotions.length && <p className="empty-state">Không tìm thấy cảm xúc phù hợp.</p>}
           <IntensityPicker value={draft.intensity} onChange={(intensity) => updateDraft({ intensity })} />
           <NoteField value={draft.note} onChange={(note) => updateDraft({ note })} />
@@ -78,9 +88,9 @@ export function EmotionCoreScreen() {
         <SummaryRail draft={draft} reference={reference} showPrimaryDetails />
       </div>
       <footer className="flow-footer"><button className="button button--secondary" type="button" onClick={() => navigate('/checkin')}>← Quay lại</button><button className="button button--primary" type="button" onClick={() => void persist('decision')} disabled={isSaving}>{isSaving ? 'Đang lưu…' : 'Lưu'}</button></footer>
-      {modal === 'decision' && <DecisionModal draft={draft} reference={reference} onClose={() => setModal(null)} onFinish={goAfterSave} onDeepDive={openDeepDive} onAction={() => setModal('action')} />}
-      {modal === 'completion' && <CompletionModal onClose={() => setModal(null)} onFinish={goAfterSave} onAction={() => setModal('action')} />}
-      {modal === 'action' && <ActionModal reference={reference} onClose={() => setModal(null)} onSaved={(actions) => { const nextDraft = { ...draft, actions }; updateDraft({ actions }); void saveDraft(nextDraft).then(goAfterSave).catch(() => undefined) }} />}
+      {modal === 'decision' && <DecisionModal draft={draft} reference={reference} onClose={() => setModal(null)} onFinish={() => completeAndGo()} onDeepDive={openDeepDive} onAction={() => setModal('action')} />}
+      {modal === 'completion' && <CompletionModal onClose={() => setModal(null)} onFinish={() => completeAndGo()} onAction={() => setModal('action')} />}
+      {modal === 'action' && <ActionModal reference={reference} onClose={() => setModal('decision')} onSaved={(actions) => { const nextDraft = { ...draft, actions }; updateDraft({ actions }); void completeAndGo(nextDraft) }} />}
     </div>
   )
 }
