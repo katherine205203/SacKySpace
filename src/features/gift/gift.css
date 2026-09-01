@@ -152,3 +152,38 @@
 
 .gift-history-overview { padding: 1rem 1.1rem; }
 .gift-history-empty { min-height: 8rem; padding: 1.7rem 1rem; }
+
+@media (max-width: 58rem) {
+  .gift-modal-backdrop, .gift-read-backdrop { z-index: 80; }
+  .gift-page { max-width: none; }
+  .gift-page__header { align-items: flex-start; flex-direction: column; gap: .75rem; }
+  .gift-page__header-actions { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); width: 100%; }
+  .gift-page__tab { text-align: center; }
+  .gift-hero { grid-template-columns: 1fr; min-height: 0; padding: 1rem; }
+  .gift-hero__copy { align-items: stretch; }
+  .gift-hero__copy .button { width: 100%; }
+  .gift-hero__actions { display: grid; grid-template-columns: 1fr; }
+  .gift-hero__art { min-height: 11rem; }
+  .gift-ritual-card, .gift-empty-history { align-items: stretch; flex-direction: column; padding: 1rem; }
+  .gift-ritual-steps { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .gift-history-overview { align-items: stretch; flex-direction: column; padding: 1rem; }
+  .gift-history-metrics { justify-content: space-between; }
+  .gift-history-toolbar { overflow: visible; }
+  .gift-history-toolbar button { min-height: 2.6rem; }
+  .gift-modal-backdrop, .gift-read-backdrop { place-items: end; padding: 0; }
+  .gift-modal { width: 100%; height: 100dvh; max-height: none; border-radius: 0; }
+  .gift-modal__header { padding-top: calc(1rem + env(safe-area-inset-top)); }
+  .gift-modal__scroll { padding: 1rem .95rem; }
+  .gift-modal__footer { position: sticky; bottom: 0; align-items: stretch; flex-direction: column; padding: .7rem .95rem calc(.7rem + env(safe-area-inset-bottom)); background: rgba(255,255,255,.96); }
+  .gift-modal__footer > div { width: 100%; }
+  .gift-modal__footer > div:last-child .button { flex: 1; }
+  .gift-read-panel { width: 100%; max-height: 92dvh; padding: 1.1rem .95rem calc(1rem + env(safe-area-inset-bottom)); border-radius: 1.25rem 1.25rem 0 0; }
+  .gift-read-panel .gift-modal__close { top: .55rem; right: .55rem; }
+  .gift-history-card { grid-template-columns: 5.2rem minmax(0, 1fr); }
+  .gift-history-card > .button { grid-column: 2; justify-self: start; }
+}
+
+@media (max-width: 30rem) {
+  .gift-ritual-steps { grid-template-columns: 1fr; }
+  .gift-style-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}

@@ -49,7 +49,7 @@
     "diary personal"
     "gift gift";
   gap: 1rem;
-  align-items: start;
+  align-items: stretch;
 }
 
 .home-v2__card {
@@ -199,7 +199,7 @@
 .home-v2__cta { justify-self: start; min-width: 9rem; margin-top: .7rem; border-color: var(--color-violet); color: #fff; background: var(--color-violet); text-decoration: none; box-shadow: 0 7px 16px rgba(116, 60, 255, .16); }
 .home-v2__cta:hover { border-color: var(--color-violet-dark); color: #fff; background: var(--color-violet-dark); box-shadow: 0 9px 20px rgba(83, 38, 190, .2); }
 
-.home-v2__right-column { display: grid; grid-area: journey; grid-template-rows: max-content max-content; align-content: start; align-self: start; gap: 1rem; min-width: 0; }
+.home-v2__right-column { display: grid; grid-area: journey; grid-template-rows: max-content minmax(0, 1fr); align-content: stretch; align-self: stretch; gap: 1rem; min-width: 0; height: 100%; }
 .home-v2__journey { min-height: 0; padding: .75rem 1rem .8rem; }
 .home-v2__section-header a { color: var(--color-violet); font-size: .68rem; text-decoration: none; white-space: nowrap; }
 .home-v2__section-header a:hover { text-decoration: underline; }
@@ -207,7 +207,7 @@
 .home-v2__journey-rail-wrap { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; align-items: center; gap: .45rem; min-width: 0; margin-top: .55rem; }
 .home-v2__journey-rail { display: flex; min-width: 0; gap: .65rem; overflow-x: auto; padding: .1rem .05rem 0; scrollbar-width: none; -ms-overflow-style: none; scroll-snap-type: x proximity; overscroll-behavior-x: contain; }
 .home-v2__journey-rail::-webkit-scrollbar { display: none; }
-.home-v2__journey-card { display: grid; flex: 0 0 11.5rem; grid-template-columns: 1fr; grid-template-rows: auto minmax(2.8rem, 1fr) auto; align-items: center; gap: .18rem; min-width: 11.5rem; min-height: 8.35rem; padding: .76rem .72rem .72rem; border: 1px solid rgba(229, 221, 245, .72); border-radius: 1rem; background: rgba(255, 255, 255, .66); color: var(--color-text); font: inherit; text-align: center; scroll-snap-align: start; transition: transform .16s ease, border-color .16s ease, background .16s ease, box-shadow .16s ease; }
+.home-v2__journey-card { display: grid; flex: 0 0 10.35rem; grid-template-columns: 1fr; grid-template-rows: auto minmax(2.8rem, 1fr) auto; align-items: center; gap: .18rem; min-width: 10.35rem; min-height: 8.35rem; padding: .76rem .72rem .72rem; border: 1px solid rgba(229, 221, 245, .72); border-radius: 1rem; background: rgba(255, 255, 255, .66); color: var(--color-text); font: inherit; text-align: center; scroll-snap-align: start; transition: transform .16s ease, border-color .16s ease, background .16s ease, box-shadow .16s ease; }
 .home-v2__journey-card:hover { border-color: rgba(188, 167, 235, .7); background: rgba(255,255,255,.82); box-shadow: 0 8px 18px rgba(60, 35, 95, .06); transform: translateY(-1px); }
 .home-v2__journey-card-datetime { display: flex; grid-column: 1; align-items: center; justify-content: center; gap: .38rem; min-width: 0; color: var(--color-text-muted); font-size: .64rem; font-variant-numeric: tabular-nums; line-height: 1.2; white-space: nowrap; }
 .home-v2__journey-card-datetime time { color: var(--color-violet-dark); font-size: .65rem; font-weight: 750; }
@@ -218,9 +218,9 @@
 .home-v2__journey-arrow { display: grid; width: 1.8rem; height: 1.8rem; place-items: center; padding: 0; border: 1px solid rgba(113,88,180,.14); border-radius: 50%; background: rgba(255,255,255,.8); color: var(--color-violet-dark); font-size: .8rem; }
 .home-v2__journey-arrow:hover { border-color: rgba(116,60,255,.35); background: var(--color-surface-violet); }
 
-.home-v2__actions { display: flex; min-height: 18.5rem; max-height: 18.5rem; flex-direction: column; padding: 1.25rem; overflow: hidden; }
+.home-v2__actions { display: flex; height: 100%; min-height: 0; flex-direction: column; padding: 1.25rem; overflow: hidden; }
 .home-v2__action-tabs { margin: .75rem 0 .35rem; }
-.home-v2__action-list { display: grid; min-height: 0; overflow-y: auto; overscroll-behavior: contain; scrollbar-width: none; }
+.home-v2__action-list { display: grid; flex: 1 1 auto; min-height: 0; overflow-y: auto; overscroll-behavior: contain; scrollbar-width: none; }
 .home-v2__action-list::-webkit-scrollbar { display: none; }
 .home-v2__action-row { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: .4rem; align-items: center; min-width: 0; padding: .46rem .1rem; border-bottom: 1px solid rgba(229, 221, 245, .72); color: var(--color-text); text-decoration: none; transition: opacity .22s ease, transform .22s ease; }
 .home-v2__action-row:last-child { border-bottom: 0; }
@@ -256,7 +256,7 @@
   .home-v2__action-row.is-completing { animation: none; opacity: .72; }
 }
 
-.home-v2__diary { display: grid; grid-area: diary; grid-template-columns: minmax(0, 1fr) 10.5rem; gap: 1rem; min-height: 12.2rem; padding: 1.35rem; }
+.home-v2__diary { display: grid; grid-area: diary; grid-template-columns: minmax(0, 1fr) 10.5rem; gap: 1rem; min-height: 12.2rem; height: 100%; padding: 1.35rem; }
 .home-v2__diary-copy { display: flex; min-width: 0; flex-direction: column; align-items: flex-start; }
 .home-v2__diary-copy .home-v2__section-header { width: 100%; }
 .home-v2__diary-copy h3 { margin: 1rem 0 .45rem; font-size: .9rem; }
@@ -267,7 +267,7 @@
 .home-v2__diary-art { width: 100%; height: 100%; min-height: 9rem; align-self: center; border-radius: .85rem; object-fit: cover; }
 .home-v2__diary-art { display: grid; place-items: center; background: radial-gradient(circle at 68% 28%, rgba(255, 205, 153, .8) 0 9%, transparent 10%), radial-gradient(ellipse at 18% 78%, rgba(170, 143, 230, .65) 0 30%, transparent 31%), linear-gradient(145deg, #dfe3f3, #fae7e1 50%, #ded3f6); color: rgba(255,255,255,.9); font-size: 2rem; }
 
-.home-v2__personal { display: grid; grid-area: personal; gap: .8rem; padding: 1.35rem; }
+.home-v2__personal { display: grid; grid-area: personal; gap: .8rem; min-height: 0; height: 100%; padding: 1.35rem; }
 .home-v2__personal-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .65rem; min-width: 0; }
 .home-v2__personal-surface { display: grid; position: relative; grid-template-rows: auto 1fr; min-width: 0; min-height: 9.2rem; overflow: hidden; padding: .9rem; border-radius: .95rem; color: var(--color-text); text-decoration: none; }
 .home-v2__personal-surface h3 { margin: 0 0 .25rem; font-size: .76rem; }
@@ -284,6 +284,7 @@
 .home-v2__empty span { color: var(--color-violet); font-size: 1.1rem; }
 .home-v2__empty p { margin: 0; font-size: .72rem; line-height: 1.45; }
 .home-v2__empty--compact { justify-items: center; min-height: 8rem; text-align: center; }
+.home-v2__action-list > .home-v2__empty--compact { min-height: 100%; }
 
 .home-v2__modal-backdrop {
   display: grid;
@@ -454,7 +455,42 @@
 
 @media (max-width: 27rem) {
   .home-v2__journey { padding: 1rem .75rem; }
-  .home-v2__journey-card { flex-basis: 78%; padding-inline: .6rem; }
+  .home-v2__journey-card { flex-basis: 78%; min-width: 78%; padding-inline: .6rem; }
   .home-v2__personal-grid { grid-template-columns: 1fr; }
   .home-v2__personal-surface { min-height: 8rem; }
+}
+
+@media (max-width: 58rem) {
+  .home-v2__modal-backdrop { z-index: 80; }
+  .home-v2__grid { grid-template-columns: minmax(0, 1fr); grid-template-areas: "hero" "journey" "actions" "diary" "personal" "gift"; gap: .75rem; }
+  .home-v2__right-column { display: contents; }
+  .home-v2__journey { grid-area: journey; }
+  .home-v2__actions { grid-area: actions; height: auto; min-height: 18rem; overflow: visible; }
+  .home-v2__action-list { overflow: visible; }
+  .home-v2__hero { min-height: 0; padding: 1rem; }
+  .home-v2__hero-body { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: .8rem; }
+  .home-v2__hero-summary { min-width: 0; }
+  .home-v2__diary, .home-v2__personal { height: auto; min-height: 0; }
+}
+
+@media (max-width: 42rem) {
+  .home-v2__hero-header { align-items: flex-start; }
+  .home-v2__hero-header h1 { font-size: 1.22rem; }
+  .home-v2__hero-body { grid-template-columns: 1fr; gap: .8rem; padding-top: .8rem; }
+  .home-v2__hero-orb { order: -1; }
+  .home-v2 .home-v2__hero-orb .color-orb--large { width: min(58vw, 12.5rem); }
+  .home-v2__hero-summary { display: grid; justify-items: center; text-align: center; }
+  .home-v2__range-tabs { width: 100%; justify-content: center; overflow-x: auto; }
+  .home-v2__metrics { width: 100%; }
+  .home-v2__cta { width: 100%; }
+  .home-v2__journey { padding: .9rem; }
+  .home-v2__journey-rail-wrap { grid-template-columns: minmax(0, 1fr); }
+  .home-v2__journey-arrow { display: none; }
+  .home-v2__journey-card { min-height: 8rem; }
+  .home-v2__actions { padding: 1rem; }
+  .home-v2__action-tabs > div { width: 100%; justify-content: space-between; }
+  .home-v2__action-tabs button { flex: 1; }
+  .home-v2__diary { grid-template-columns: 1fr; }
+  .home-v2__diary-art, .home-v2__diary-image { min-height: 7rem; max-height: 9rem; }
+  .home-v2__personal-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }

@@ -336,22 +336,22 @@
 .checkin-action-modal__selected-list button b { display: grid; width: 1rem; height: 1rem; place-items: center; border-radius: 50%; color: var(--checkin-muted); background: var(--checkin-violet-pale); font-size: .72rem; }
 .checkin-action-modal__selected-empty { color: var(--checkin-muted); font-size: .68rem; }
 .checkin-action-modal__body { display: grid; grid-template-columns: minmax(13.75rem, 16rem) minmax(0, 1fr); gap: 1rem; min-width: 0; min-height: 0; overflow: hidden; padding: .9rem 1.1rem; }
-.checkin-action-modal__context-rail { display: grid; align-content: start; justify-items: start; min-width: 0; padding: 1rem; border: 1px solid color-mix(in srgb, var(--checkin-action-color) 24%, var(--checkin-border)); border-radius: 1rem; background: color-mix(in srgb, var(--checkin-action-color) 6%, white); }
+.checkin-action-modal__context-rail { display: grid; align-content: start; justify-items: center; min-width: 0; padding: 1rem; border: 1px solid color-mix(in srgb, var(--checkin-action-color) 24%, var(--checkin-border)); border-radius: 1rem; background: color-mix(in srgb, var(--checkin-action-color) 6%, white); text-align: center; }
 .checkin-action-modal__context-orb { display: grid; width: 4.2rem; height: 4.2rem; place-items: center; margin-bottom: .9rem; border-radius: 50%; color: var(--checkin-action-color); background: radial-gradient(circle at 35% 30%, #fff 0 18%, color-mix(in srgb, var(--checkin-action-color) 20%, white) 19% 55%, color-mix(in srgb, var(--checkin-action-color) 8%, white) 56%); box-shadow: inset 0 0 0 .45rem rgba(255,255,255,.58), 0 8px 18px color-mix(in srgb, var(--checkin-action-color) 18%, transparent); font-size: 1.55rem; }
 .checkin-action-modal__context-rail .eyebrow { color: var(--checkin-action-color); font-size: .58rem; }
-.checkin-action-modal__context-rail strong { margin-top: .3rem; color: var(--checkin-ink); font-size: 1.02rem; line-height: 1.22; }
-.checkin-action-modal__context-rail small { margin-top: .2rem; color: var(--checkin-muted); font-size: .65rem; }
-.checkin-action-modal__context-limit { padding: .28rem .48rem; border-radius: 999px; color: var(--checkin-action-color); background: #fff; font-size: .62rem; font-weight: 800; }
+.checkin-action-modal__context-rail strong { width: 100%; margin-top: .3rem; color: var(--checkin-ink); font-size: 1.02rem; line-height: 1.22; }
+.checkin-action-modal__context-rail small { width: 100%; margin-top: .2rem; color: var(--checkin-muted); font-size: .65rem; }
+.checkin-action-modal__context-limit { margin-top: .72rem; padding: .28rem .48rem; border-radius: 999px; color: var(--checkin-action-color); background: #fff; font-size: .62rem; font-weight: 800; }
 .checkin-action-modal__suggestions { display: grid; grid-template-rows: auto minmax(0, 1fr) auto; min-width: 0; min-height: 0; }
 .checkin-action-modal__suggestions .action-toolbar { margin: 0 0 .55rem; }
 .checkin-action-modal__suggestions .action-toolbar > div { gap: .45rem; }
 .checkin-action-modal__list { min-width: 0; min-height: 0; overflow-y: auto; padding: .1rem .25rem .2rem 0; scrollbar-color: #c8b9f4 transparent; scrollbar-width: thin; }
 .checkin-action-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .55rem; }
-.checkin-action-card { display: grid; position: relative; grid-template-columns: 2rem minmax(0, 1fr); grid-template-rows: auto 1fr; gap: .05rem .55rem; min-width: 0; min-height: 7.2rem; padding: .7rem; border: 1px solid var(--checkin-border); border-radius: .85rem; color: var(--checkin-ink); background: #fff; text-align: left; }
+.checkin-action-card { display: grid; position: relative; grid-template-columns: 2rem minmax(0, 1fr); gap: .05rem .55rem; min-width: 0; min-height: 6.5rem; padding: .805rem .805rem .63rem; border: 1px solid var(--checkin-border); border-radius: .85rem; color: var(--checkin-ink); background: #fff; text-align: left; }
 .checkin-action-card:hover:not(:disabled) { border-color: #b8a5ff; background: #fcfbff; }
 .checkin-action-card:disabled { cursor: not-allowed; opacity: .42; }
 .checkin-action-card.is-selected { border-color: var(--checkin-violet); background: var(--checkin-violet-pale); box-shadow: inset 0 0 0 1px var(--checkin-violet); }
-.checkin-action-card__emoji { display: grid; grid-row: span 2; width: 2rem; height: 2rem; place-items: center; border-radius: .65rem; background: color-mix(in srgb, var(--checkin-action-color) 10%, white); font-size: 1.1rem; }
+.checkin-action-card__emoji { display: grid; width: 2rem; height: 2rem; place-items: center; border-radius: .65rem; background: color-mix(in srgb, var(--checkin-action-color) 10%, white); font-size: 1.1rem; }
 .checkin-action-card__body { display: grid; min-width: 0; align-content: start; gap: .2rem; }
 .checkin-action-card__body strong { overflow-wrap: anywhere; font-size: .82rem; line-height: 1.25; }
 .checkin-action-card__body span { display: -webkit-box; overflow: hidden; color: var(--checkin-muted); font-size: .7rem; line-height: 1.38; -webkit-box-orient: vertical; -webkit-line-clamp: 2; }
@@ -423,4 +423,63 @@
   .split-workspace, .review-layout, .history-dashboard { min-height: auto; overflow: visible; }
   .flow-main, .review-sections, .history-main { overflow: visible; padding-right: 0; }
   .summary-rail, .history-detail-rail { max-height: none; }
+}
+
+@media (max-width: 58rem) {
+  .modal-backdrop, .drawer-backdrop, .checkin-action-modal-backdrop { z-index: 80; }
+  .checkin-workspace, .checkin-landing, .review-page, .history-page { display: grid; min-height: 0; gap: .75rem; }
+  .checkin-task-header { position: static; min-height: 0; padding: 0 0 .2rem; }
+  .checkin-task-header .page-heading__copy h1 { font-size: clamp(1.55rem, 7vw, 2rem); }
+  .checkin-task-header .page-heading__description { font-size: .75rem; }
+  .split-workspace, .review-layout, .history-dashboard, .landing-layout { display: grid; grid-template-columns: minmax(0, 1fr); min-height: 0; overflow: visible; }
+  .flow-main, .review-sections, .history-main, .landing-main { min-height: 0; overflow: visible; padding-right: 0; }
+  .summary-rail { display: none; }
+  .review-layout, .history-dashboard { gap: .75rem; }
+  .checkin-choice-grid { grid-template-columns: minmax(0, 1fr); gap: .75rem; }
+  .choice-card { min-height: 13.5rem; padding: 1rem; }
+  .landing-hero { grid-template-columns: 1fr; min-height: 0; gap: .8rem; padding: 1rem; }
+  .landing-hero__orb { grid-row: auto; }
+  .landing-hero__orb .color-orb { width: min(58vw, 12rem); }
+  .landing-mode-grid { grid-template-columns: 1fr; }
+  .landing-mode-card { min-height: 11rem; }
+  .flow-footer { position: sticky; z-index: 8; bottom: 0; align-items: stretch; padding: .7rem 0 calc(.7rem + env(safe-area-inset-bottom)); margin-top: .4rem; background: rgba(250,248,255,.94); backdrop-filter: blur(12px); }
+  .flow-footer__actions { margin-left: 0; }
+  .flow-footer .button { flex: 1; }
+  .emotion-selection-viewport { max-height: calc(100dvh - 17rem); min-height: 11rem; overflow-y: auto; padding-right: .15rem; }
+  .inventory-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .55rem; }
+  .inventory-card { min-height: 6.3rem; padding: .6rem .55rem; }
+  .intensity-grid { grid-template-columns: repeat(5, minmax(4.7rem, 1fr)); overflow-x: auto; }
+  .intensity-card { min-height: 4.4rem; }
+  .note-field textarea { min-height: 6.25rem; }
+  .review-sections { display: grid; gap: .55rem; }
+  .review-section { margin: 0; }
+  .history-main { display: grid; gap: .7rem; }
+  .history-detail-rail { max-height: none; overflow: visible; }
+  .history-item { grid-template-columns: .55rem minmax(0, 1fr) auto; }
+  .modal-backdrop, .drawer-backdrop { place-items: end; padding: 0; }
+  .modal-card, .reference-detail-modal { width: 100%; max-height: 92dvh; border-radius: 1.25rem 1.25rem 0 0; }
+  .modal-card__body { max-height: 92dvh; padding: 1.15rem .95rem calc(1rem + env(safe-area-inset-bottom)); }
+  .modal-footer { position: sticky; bottom: 0; padding-bottom: calc(.85rem + env(safe-area-inset-bottom)); background: rgba(255,255,255,.96); }
+  .checkin-action-modal-backdrop { place-items: stretch; padding: 0; }
+  .checkin-action-modal { width: 100%; height: 100dvh; max-height: none; border: 0; border-radius: 0; }
+  .checkin-action-modal__header { padding: calc(1rem + env(safe-area-inset-top)) .95rem .8rem; }
+  .checkin-action-modal__selected { padding-inline: .95rem; }
+  .checkin-action-modal__body { grid-template-columns: 1fr; grid-template-rows: auto minmax(0, 1fr); gap: .65rem; overflow: hidden; padding: .7rem .7rem 0; }
+  .checkin-action-modal__context-rail { grid-template-columns: 1fr; grid-template-rows: auto; justify-items: center; padding: .8rem; text-align: center; }
+  .checkin-action-modal__context-orb { margin: 0 0 .55rem; }
+  .checkin-action-modal__context-rail strong, .checkin-action-modal__context-rail small { width: 100%; }
+  .checkin-action-modal__context-limit { justify-self: center; margin-top: .55rem; }
+  .checkin-action-modal__suggestions { min-height: 0; }
+  .checkin-action-modal__suggestions .action-toolbar { align-items: flex-start; flex-wrap: wrap; }
+  .checkin-action-modal__suggestions .action-toolbar > div { justify-content: flex-start; }
+  .checkin-action-modal__list { overflow-y: auto; padding-right: .1rem; }
+  .checkin-action-grid { grid-template-columns: 1fr; }
+  .checkin-action-modal__footer { padding: .7rem .7rem calc(.7rem + env(safe-area-inset-bottom)); }
+  .checkin-action-modal__footer .button { flex: 1; }
+}
+
+@media (max-width: 30rem) {
+  .checkin-choice-grid, .landing-mode-grid { gap: .6rem; }
+  .selection-context-strip { padding: .65rem; }
+  .history-metrics, .history-filters { gap: .45rem; }
 }

@@ -12,6 +12,7 @@ import { DiaryPage } from '../features/diary/DiaryPage'
 import { FutureLetterPage } from '../features/futureletter/FutureLetterPage'
 import { GiftPage } from '../features/gift/GiftPage'
 import { AdminStudioPage } from '../features/admin/AdminStudioPage'
+import { MorePage } from '../features/more/MorePage'
 
 const PlaceholderScreen = ({ title }: { title: string }) => (
   <section className="placeholder-screen">
@@ -44,6 +45,7 @@ export function AppRoutes() {
         <Route path="/future-letter" element={<FutureLetterPage />} />
         <Route path="/gift-for-tmr" element={<GiftPage />} />
         <Route path="/admin-studio" element={<AdminStudioPage />} />
+        <Route path="/more" element={<MorePage />} />
         <Route path="*" element={<PlaceholderScreen title="Page not found" />} />
       </Routes>
     </CheckinFlowProvider>

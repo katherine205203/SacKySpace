@@ -166,3 +166,16 @@
 @media (max-width: 72rem) { .admin-asset-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); } .admin-capability-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
 @media (max-width: 58rem) { .admin-header, .admin-toolbar { align-items: stretch; flex-direction: column; } .admin-header__status { width: fit-content; } .admin-hero-grid, .admin-section-grid, .admin-data-layout, .admin-rules-layout { grid-template-columns: 1fr; } .admin-drawer { position: static; } .admin-asset-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
 @media (max-width: 38rem) { .admin-page { padding: 1rem .8rem 1.5rem; } .admin-view-tabs button { flex: 1 1 auto; } .admin-mode-switch { align-self: start; } .admin-hero-card { align-items: start; flex-direction: column; } .admin-hero-orb { width: 5rem; height: 5rem; font-size: 1.5rem; } .admin-metric-grid, .admin-capability-grid, .admin-recovery-cards, .admin-asset-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } .admin-quick-grid { grid-template-columns: 1fr; } .admin-config-compare { grid-template-columns: 1fr; } .admin-compare-arrow { transform: rotate(90deg); } .admin-version-row { grid-template-columns: 2rem minmax(0, 1fr) auto; } .admin-version-row small { grid-column: 2; } .admin-version-row .text-button { grid-column: 3; grid-row: 1 / span 2; } }
+
+@media (max-width: 58rem) {
+  .admin-page { width: 100%; padding: 1rem .9rem calc(1rem + env(safe-area-inset-bottom)); }
+  .admin-header, .admin-toolbar { align-items: stretch; flex-direction: column; gap: .7rem; }
+  .admin-header h1 { font-size: clamp(1.8rem, 8vw, 2.5rem); }
+  .admin-view-tabs { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .admin-view-tabs button { min-height: 2.75rem; }
+  .admin-mode-switch { align-self: flex-start; }
+  .admin-hero-grid, .admin-section-grid, .admin-data-layout, .admin-rules-layout { grid-template-columns: 1fr; }
+  .admin-drawer { position: static; }
+  .admin-table-wrap { max-width: 100%; overflow-x: auto; }
+  .admin-table { min-width: 34rem; }
+}
