@@ -12,6 +12,8 @@
     "generate:checkin-seed": "node scripts/generate-checkin-seed.mjs"
   },
   "dependencies": {
+    "@capacitor/core": "^8.5.1",
+    "@capacitor/ios": "^8.5.1",
     "@fontsource/be-vietnam-pro": "^5.3.0",
     "@supabase/supabase-js": "^2.112.4",
     "react": "^19.2.8",
@@ -19,6 +21,7 @@
     "react-router-dom": "^7.18.2"
   },
   "devDependencies": {
+    "@capacitor/cli": "^8.5.1",
     "@types/node": "^24.13.3",
     "@types/react": "^19.2.18",
     "@types/react-dom": "^19.2.4",
