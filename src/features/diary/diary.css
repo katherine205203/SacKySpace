@@ -10,12 +10,12 @@
 .diary-autosave { display: inline-flex; align-items: center; gap: .35rem; margin-right: .25rem; color: var(--color-text-soft); font-size: .7rem; }
 .diary-autosave i { color: var(--color-green); font-size: .55rem; font-style: normal; }
 .diary-metrics { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: .8rem; }
-.diary-metric-card { display: flex; align-items: center; gap: .75rem; min-width: 0; padding: 1rem 1.05rem; border: 1px solid rgba(113, 88, 180, .13); border-radius: 1rem; background: rgba(255,255,255,.82); box-shadow: 0 8px 22px rgba(60, 35, 95, .04), inset 0 1px 0 rgba(255,255,255,.9); }
-.diary-metric-card__icon { display: grid; width: 2.3rem; height: 2.3rem; flex: 0 0 2.3rem; place-items: center; border-radius: .8rem; background: var(--color-surface-violet); color: var(--color-violet); font-size: 1.05rem; }
-.diary-metric-card:nth-child(2) .diary-metric-card__icon { background: #fff7d9; color: #d39800; }
-.diary-metric-card:nth-child(3) .diary-metric-card__icon { background: #e6f8f2; color: #1ca36d; }
-.diary-metric-card:nth-child(4) .diary-metric-card__icon { background: #fff0f7; color: #df4d93; }
-.diary-metric-card div { display: grid; min-width: 0; gap: .04rem; }
+.diary-metric-card { display: grid; grid-template-columns: 2.55rem minmax(0, 1fr); align-items: center; gap: .8rem; min-width: 0; min-height: 6rem; padding: 1rem 1.05rem; border: 1px solid rgba(113, 88, 180, .13); border-radius: 1rem; background: rgba(255,255,255,.82); box-shadow: 0 8px 22px rgba(60, 35, 95, .04), inset 0 1px 0 rgba(255,255,255,.9); }
+.diary-metric-card__icon { display: grid; width: 2.55rem; height: 2.55rem; place-items: center; border-radius: .82rem; background: #e8ddff; color: #6736dc; font-size: 1.2rem; font-weight: 800; }
+.diary-metric-card:nth-child(2) .diary-metric-card__icon { background: #ffe8a8; color: #b66e00; }
+.diary-metric-card:nth-child(3) .diary-metric-card__icon { background: #bff1de; color: #087a57; }
+.diary-metric-card:nth-child(4) .diary-metric-card__icon { background: #ffd4e3; color: #c52b67; }
+.diary-metric-card div { display: grid; align-content: center; min-width: 0; gap: .08rem; }
 .diary-metric-card strong { font-size: 1.35rem; line-height: 1; letter-spacing: -.05em; }
 .diary-metric-card span { overflow: hidden; color: var(--color-text); font-size: .68rem; font-weight: 700; text-overflow: ellipsis; white-space: nowrap; }
 .diary-metric-card small { color: var(--color-text-soft); font-size: .62rem; }

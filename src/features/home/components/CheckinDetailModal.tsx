@@ -183,7 +183,7 @@ export function CheckinDetailModal({ record, linkedActions, onClose, onEdit, onD
           {deleteError && <p className="home-v2__modal-error" role="alert">{deleteError}</p>}
         </div>
         <footer className="home-v2__detail-footer"><div><button className="button button--secondary" type="button" onClick={onEdit} disabled={isDeleting}>Chỉnh sửa</button><button className="button button--danger" type="button" disabled={isDeleting} onClick={handleDelete}>{isDeleting ? 'Đang xoá…' : 'Xoá check-in'}</button></div><button className="button button--primary" type="button" onClick={onClose}>Đóng</button></footer>
-        {reflectionAction && <ReflectionModal action={reflectionAction.action} outcomes={reflectionOutcomes} historyAvailable={reflectionAction.historyAvailable} onClose={() => setReflectionAction(null)} onSave={async (outcome, note) => { await saveActionReflection(reflectionAction.action.id, outcome, note); setReflectionAction(null); refreshHome() }} />}
+        {reflectionAction && <ReflectionModal action={reflectionAction.action} checkin={record} outcomes={reflectionOutcomes} historyAvailable={reflectionAction.historyAvailable} onClose={() => setReflectionAction(null)} onSave={async (outcome, note) => { await saveActionReflection(reflectionAction.action.id, outcome, note); setReflectionAction(null); refreshHome() }} />}
       </section>
     </div>
 }

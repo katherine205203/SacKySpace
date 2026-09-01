@@ -1,4 +1,4 @@
-import { filterByDateRange, getHistoryDateRange, getLocalDateKey, type DateRange, type HistoryPreset } from '../../checkin/utils/history'
+import { filterByDateRange, getCurrentStreakFromCreatedAt, getHistoryDateRange, getLocalDateKey, type DateRange, type HistoryPreset } from '../../checkin/utils/history'
 import type { CheckinRecord } from '../../checkin/types'
 import type { HomeRange, HomeReminder } from '../types'
 
@@ -41,16 +41,7 @@ export const getHomeOrbEntries = (records: readonly CheckinRecord[]): ColorEntry
   })
 
 export const getCurrentStreak = (records: readonly CheckinRecord[], now = new Date()): number => {
-  const checkinDays = new Set(records.map((record) => getLocalDateKey(record.createdAt, HOME_TIME_ZONE)))
-  let cursor = getLocalDateKey(now.toISOString(), HOME_TIME_ZONE)
-  let streak = 0
-
-  while (checkinDays.has(cursor)) {
-    streak += 1
-    cursor = addDays(cursor, -1)
-  }
-
-  return streak
+  return getCurrentStreakFromCreatedAt(records.map((record) => record.createdAt), now, HOME_TIME_ZONE)
 }
 
 export const getRecentJourneyCheckins = (
@@ -149,6 +140,14 @@ export const formatCheckinDate = (createdAt: string): string =>
     day: 'numeric',
     month: 'short',
     year: 'numeric',
+  }).format(new Date(createdAt))
+
+export const formatCheckinDateShort = (createdAt: string): string =>
+  new Intl.DateTimeFormat('en-GB', {
+    timeZone: HOME_TIME_ZONE,
+    day: '2-digit',
+    month: '2-digit',
+    year: '2-digit',
   }).format(new Date(createdAt))
 
 export const formatReminderSchedule = (reminder: HomeReminder, now = new Date()): string => {

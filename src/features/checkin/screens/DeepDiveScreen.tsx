@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { useLocation, useNavigate, useParams } from 'react-router-dom'
 import { ActionModal, DecisionModal } from '../components/CheckinModals'
 import { CheckinWorkspaceHeader, ContextCard, EmotionCard, EmotionFilters, FlowFooter, GroupFilters, NeedCard, NoteField, PickerControlShelf, ReferenceDetailModal, SelectionStatus, SummaryRail, type ReferenceDetail } from '../components/CheckinComponents'
@@ -25,6 +25,7 @@ export function DeepDiveScreen({ step }: { step: DeepDiveStep }) {
   const [group, setGroup] = useState('all')
   const [modal, setModal] = useState<'decision' | 'action' | null>(null)
   const [detail, setDetail] = useState<ReferenceDetail | null>(null)
+  const emotionViewportRef = useRef<HTMLDivElement>(null)
   const info = stepInfo[step]
   const returnToReview = Boolean((location.state as { returnToReview?: boolean } | null)?.returnToReview)
 
@@ -38,6 +39,10 @@ export function DeepDiveScreen({ step }: { step: DeepDiveStep }) {
   const visibleContexts = useMemo(() => reference?.contexts.filter((context) => (group === 'all' || context.context_group === group) && (!normalized || `${context.context_name_vn} ${context.context_group} ${context.description_vn}`.toLocaleLowerCase().includes(normalized))) ?? [], [group, normalized, reference])
   const selected = step === 'secondary' ? draft.secondaryEmotionIds : step === 'needs' ? draft.needIds : draft.contextIds
   const limit = step === 'secondary' ? MAX_SECONDARY_EMOTIONS : step === 'needs' ? MAX_NEEDS : MAX_CONTEXTS
+
+  useEffect(() => {
+    if (step === 'secondary') emotionViewportRef.current?.scrollTo({ top: 0 })
+  }, [group, query, step])
 
   if (!reference) return <div className="page-stack checkin-page"><ReferenceState error={referenceError} /></div>
 
@@ -60,7 +65,7 @@ export function DeepDiveScreen({ step }: { step: DeepDiveStep }) {
   }
   const routeFor = (path: string) => (draft.id ?? id) ? `/checkin/${draft.id ?? id}/${path}` : `/checkin/${path}`
   const nextSelection = () => {
-    if (step === 'secondary') return <section className="selection-panel" aria-labelledby="secondary-selection-title"><div className="selection-panel__header"><span id="secondary-selection-title" className="section-label">Cảm xúc phụ</span><SelectionStatus selected={selected.length} limit={limit} label="cảm xúc phụ" /></div><div className="inventory-grid inventory-grid--emotions">{visibleEmotions.map((emotion) => <EmotionCard key={emotion.emotion_id} emotion={emotion} multi selected={selected.includes(emotion.emotion_id)} disabled={!selected.includes(emotion.emotion_id) && selected.length >= limit} onClick={() => toggle(emotion.emotion_id)} />)}</div></section>
+    if (step === 'secondary') return <section className="selection-panel" aria-labelledby="secondary-selection-title"><div className="selection-panel__header"><span id="secondary-selection-title" className="section-label">Cảm xúc phụ</span><SelectionStatus selected={selected.length} limit={limit} label="cảm xúc phụ" /></div><div ref={emotionViewportRef} className="emotion-selection-viewport"><div className="inventory-grid inventory-grid--emotions">{visibleEmotions.map((emotion) => <EmotionCard key={emotion.emotion_id} emotion={emotion} multi selected={selected.includes(emotion.emotion_id)} disabled={!selected.includes(emotion.emotion_id) && selected.length >= limit} onClick={() => toggle(emotion.emotion_id)} />)}</div></div></section>
     if (step === 'needs') return <section className="selection-panel" aria-labelledby="need-selection-title"><div className="selection-panel__header"><span id="need-selection-title" className="section-label">Điều mình đang cần</span><SelectionStatus selected={selected.length} limit={limit} label="nhu cầu" /></div><div className="inventory-grid inventory-grid--needs">{visibleNeeds.map((need) => <NeedCard key={need.need_id} need={need} selected={selected.includes(need.need_id)} disabled={!selected.includes(need.need_id) && selected.length >= limit} onClick={() => toggle(need.need_id)} onInfo={() => setDetail({ emoji: need.emoji, typeLabel: 'Nhu cầu', nameVn: need.need_name_vn, nameEn: need.need_name_en, groupVn: reference.needGroups.find((groupItem) => groupItem.need_group_id === need.need_group_id)?.group_name_vn, groupEn: reference.needGroups.find((groupItem) => groupItem.need_group_id === need.need_group_id)?.group_name_en, descriptionVn: need.description_vn, descriptionEn: need.description_en, color: need.color_hex })} />)}</div></section>
     return <section className="selection-panel" aria-labelledby="context-selection-title"><div className="selection-panel__header"><span id="context-selection-title" className="section-label">Điều gì đang liên quan?</span><SelectionStatus selected={selected.length} limit={limit} label="bối cảnh" /></div><div className="inventory-grid inventory-grid--contexts">{visibleContexts.map((context) => <ContextCard key={context.context_id} context={context} selected={selected.includes(context.context_id)} disabled={!selected.includes(context.context_id) && selected.length >= limit} onClick={() => toggle(context.context_id)} onInfo={() => setDetail({ emoji: context.emoji, typeLabel: 'Bối cảnh', nameVn: context.context_name_vn, groupVn: context.context_group, descriptionVn: context.description_vn, color: context.color_hex })} />)}</div></section>
   }
@@ -85,7 +90,7 @@ export function DeepDiveScreen({ step }: { step: DeepDiveStep }) {
       </div>
       <FlowFooter onBack={() => navigate(step === 'secondary' ? '/checkin/emotion' : routeFor(step === 'needs' ? 'secondary-emotions' : 'needs'))} onQuickSave={() => void quickSave()} onContinue={() => void saveAndContinue()} isSaving={isSaving} continueLabel={info.next} />
       {modal === 'decision' && <DecisionModal draft={draft} reference={reference} onClose={() => setModal(null)} onFinish={() => completeAndGo()} onDeepDive={() => setModal(null)} onAction={() => setModal('action')} />}
-      {modal === 'action' && <ActionModal reference={reference} onClose={() => setModal('decision')} onSaved={(actions) => { const nextDraft = { ...draft, actions }; updateDraft({ actions }); void completeAndGo(nextDraft) }} />}
+      {modal === 'action' && <ActionModal reference={reference} context={{ emotion: reference.emotions.find((emotion) => emotion.emotion_id === draft.primaryEmotionId), checkinType: draft.checkinType }} onClose={() => setModal('decision')} onSaved={(actions) => { const nextDraft = { ...draft, actions }; updateDraft({ actions }); void completeAndGo(nextDraft) }} />}
       {detail && <ReferenceDetailModal detail={detail} onClose={() => setDetail(null)} />}
     </div>
   )

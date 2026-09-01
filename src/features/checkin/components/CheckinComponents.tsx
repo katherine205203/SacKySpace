@@ -2,6 +2,7 @@ import { useEffect, useId, useRef, type CSSProperties, type ReactNode } from 're
 import { NavLink } from 'react-router-dom'
 import type { CheckinDraft, Context, Emotion, EmotionFamily, Need, NeedGroup, ReferenceData } from '../types'
 import { buildOrbClouds } from '../utils/colorOrb'
+import { PageHeading } from '../../../components/PageHeading'
 
 export function CheckinTabs({ active }: { active: 'create' | 'history' }) {
   return <nav className="checkin-tabs" aria-label="Check-in sections"><NavLink className={active === 'create' ? 'is-active' : undefined} to="/checkin">Tạo check-in</NavLink><NavLink className={active === 'history' ? 'is-active' : undefined} to="/checkin/history">Lịch sử</NavLink></nav>
@@ -11,8 +12,8 @@ export function CheckinPageIntro({ eyebrow, title, copy }: { eyebrow?: string; t
   return <div className="checkin-page-intro">{eyebrow && <p className="eyebrow">{eyebrow}</p>}<h2>{title}</h2><p>{copy}</p></div>
 }
 
-export function CheckinWorkspaceHeader({ active, eyebrow, title, copy, showTabs = false }: { active: 'create' | 'history'; eyebrow: string; title: string; copy: string; showTabs?: boolean }) {
-  return <header className="checkin-task-header"><div className="checkin-task-header__copy"><p className="eyebrow">{eyebrow}</p><h1>{title}</h1><p>{copy}</p></div>{showTabs && <CheckinTabs active={active} />}</header>
+export function CheckinWorkspaceHeader({ active, eyebrow, title, copy, showTabs = false, action }: { active: 'create' | 'history'; eyebrow: string; title: string; copy: string; showTabs?: boolean; action?: ReactNode }) {
+  return <PageHeading className="checkin-task-header" eyebrow={eyebrow} title={title} description={copy} actions={showTabs ? <CheckinTabs active={active} /> : action} />
 }
 
 export function StepProgress({ active }: { active: 'emotion' | 'secondary' | 'needs' | 'contexts' | 'review' | 'unknown' }) {

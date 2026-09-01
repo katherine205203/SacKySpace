@@ -289,10 +289,10 @@ export const archiveFutureLetter = async (id: string): Promise<FutureLetter> => 
 
 export const deleteFutureLetter = async (id: string): Promise<void> => {
   const userId = await currentUserId()
-  try {
-    const { error } = await supabase.from('future_letters').delete().eq('id', id).eq('user_id', userId)
-    if (error) throw error
-  } catch { /* Local-only drafts remain fully usable. */ }
+  await flushFutureLetterDraft()
+  const { error } = await supabase.from('future_letters').delete().eq('id', id).eq('user_id', userId)
+  if (error) throw error
+  knownLetters.delete(id)
   writeLocalLetters(userId, readLocalLetters(userId).filter((letter) => letter.id !== id))
 }
 

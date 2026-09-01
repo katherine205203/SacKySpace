@@ -2,12 +2,12 @@ import { NavLink } from 'react-router-dom'
 import { signOut } from '../services/supabase/auth'
 
 const navigation = [
-  { label: 'Home', to: '/', icon: '⌂', end: true },
-  { label: 'Check-in', to: '/checkin', icon: '◉' },
-  { label: 'Diary', to: '/diary', icon: '▤' },
-  { label: 'Action Space', to: '/action-space', icon: '↳' },
-  { label: 'Future Letter', to: '/future-letter', icon: '✉' },
-  { label: 'Gift for Tomorrow', to: '/gift-for-tmr', icon: '◇' },
+  { label: 'Home', to: '/', end: true },
+  { label: 'Check-in', to: '/checkin' },
+  { label: 'Diary', to: '/diary' },
+  { label: 'Action Space', to: '/action-space' },
+  { label: 'Future Letter', to: '/future-letter' },
+  { label: 'Gift for Tomorrow', to: '/gift-for-tmr' },
 ]
 
 export function AppSidebar() {
@@ -23,7 +23,6 @@ export function AppSidebar() {
           {navigation.map((item) => (
             <li key={item.to}>
               <NavLink to={item.to} end={item.end} className={({ isActive }) => isActive ? 'is-active' : undefined}>
-                <span className="sidebar-nav__icon" aria-hidden="true">{item.icon}</span>
                 <span>{item.label}</span>
               </NavLink>
             </li>
@@ -33,7 +32,6 @@ export function AppSidebar() {
 
       <div className="sidebar-footer">
         <NavLink className="admin-link" to="/admin-studio">
-          <span aria-hidden="true">⚙</span>
           <span>Admin Studio</span>
         </NavLink>
         <button className="sidebar-signout" type="button" onClick={() => void signOut()}>

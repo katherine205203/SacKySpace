@@ -1,7 +1,8 @@
 .gift-page { width: 100%; max-width: 78rem; margin: 0 auto; }
 .gift-page__header { display: flex; align-items: end; justify-content: space-between; gap: 1.5rem; margin-bottom: 1.25rem; }
 .gift-page__header h1 { margin: 0 0 .45rem; font-size: clamp(2rem, 4vw, 3.2rem); line-height: 1.04; letter-spacing: -.065em; }
-.gift-page__header p:not(.eyebrow) { max-width: 38rem; margin: 0; color: var(--color-text-muted); font-size: .84rem; }
+.gift-page__header .page-heading__eyebrow { margin-bottom: .5rem; }
+.gift-page__header .page-heading__description { max-width: 38rem; margin: 0; color: var(--color-text-muted); font-size: .84rem; }
 .gift-page__header-actions { display: flex; flex: 0 0 auto; gap: .25rem; padding: .25rem; border: 1px solid var(--color-border); border-radius: 999px; background: rgba(255,255,255,.75); }
 .gift-page__tab { padding: .48rem .75rem; border-radius: 999px; color: var(--color-text-muted); font-size: .72rem; font-weight: 750; text-decoration: none; }
 .gift-page__tab.is-active { color: #fff; background: var(--color-violet); box-shadow: 0 5px 14px rgba(116,60,255,.18); }
@@ -95,7 +96,8 @@
 .gift-emotion-list button { padding: .35rem .5rem; border: 1px solid var(--color-border); border-radius: 999px; background: rgba(255,255,255,.8); color: var(--color-text-muted); font-size: .65rem; }
 .gift-emotion-list button.is-selected { border-color: var(--emotion-color); background: color-mix(in srgb,var(--emotion-color) 13%,white); color: var(--color-text); }
 .gift-style-grid { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: .65rem; margin-top: .6rem; }
-.gift-style-grid button { display: grid; justify-items: center; gap: .15rem; padding: .65rem; border: 1px solid var(--color-border); border-radius: 1rem; background: rgba(255,255,255,.75); color: var(--color-text); }
+.gift-style-grid button { display: grid; justify-items: center; gap: .15rem; min-width: 0; padding: .65rem; border: 1px solid var(--color-border); border-radius: 1rem; background: rgba(255,255,255,.75); color: var(--color-text); transition: border-color .18s ease, background .18s ease, box-shadow .18s ease, transform .18s ease; }
+.gift-style-grid button:hover { border-color: #bca7eb; background: #fff; transform: translateY(-2px); }
 .gift-style-grid button.is-selected { border-color: var(--color-violet); background: var(--color-surface-violet); box-shadow: 0 0 0 3px rgba(116,60,255,.1); }
 .gift-style-grid .gift-box-art { width: 6.5rem; height: 6rem; filter: drop-shadow(0 8px 8px rgba(60,35,95,.12)); }
 .gift-style-grid strong { font-size: .68rem; }
@@ -121,7 +123,7 @@
 .gift-history-metrics strong { color: var(--color-text); font-size: 1.4rem; }
 .gift-history-toolbar { display: flex; flex-wrap: wrap; gap: .4rem; }
 .gift-history-toolbar button { padding: .45rem .65rem; border: 1px solid var(--color-border); border-radius: 999px; background: rgba(255,255,255,.7); color: var(--color-text-muted); font-size: .68rem; font-weight: 700; }
-.gift-history-toolbar button.is-active { border-color: transparent; color: #fff; background: linear-gradient(100deg,var(--color-violet),var(--color-pink)); }
+.gift-history-toolbar button.is-active { border-color: transparent; color: #fff; background: var(--color-violet); }
 .gift-history-grid { display: grid; gap: .6rem; }
 .gift-history-card { display: grid; grid-template-columns: 7rem minmax(0,1fr) auto; align-items: center; gap: 1rem; padding: .75rem; border: 1px solid var(--color-border); border-radius: 1rem; background: rgba(255,255,255,.8); }
 .gift-history-card__art { display: grid; min-height: 5.5rem; place-items: center; overflow: hidden; border-radius: .75rem; background: #fff8f2; }

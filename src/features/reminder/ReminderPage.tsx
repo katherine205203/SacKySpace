@@ -4,6 +4,7 @@ import { formatReminderSchedule, isReminderCompleted } from '../home/services/ho
 import { deleteReminder, setReminderCompleted, updateReminder, type ReminderEdit } from '../home/services/reminderRepository'
 import { useHomeData } from '../home/hooks/useHomeData'
 import type { HomeReminder } from '../home/types'
+import { PageHeading } from '../../components/PageHeading'
 import './reminder.css'
 
 export function ReminderPage() {
@@ -67,7 +68,7 @@ export function ReminderPage() {
   if (!snapshot) return <section className="reminder-workspace reminder-workspace--error" role="alert"><p className="eyebrow">Sắc Ký</p><h1>Chưa thể mở Action</h1><p>{error ?? 'Dữ liệu chưa sẵn sàng.'}</p><button className="button button--secondary" type="button" onClick={() => void refresh()}>Thử lại</button></section>
 
   return <section className="reminder-workspace" aria-labelledby="reminder-workspace-title">
-    <header className="reminder-workspace__header"><div><p className="eyebrow">Sắc Ký · Action</p><h1 id="reminder-workspace-title">Việc cần làm</h1><p>Những bước nhỏ đang chờ bạn.</p></div><Link className="button button--secondary" to="/">Về Home</Link></header>
+    <PageHeading className="reminder-workspace__header" eyebrow="Sắc Ký · Action" title="Việc cần làm" description="Những bước nhỏ đang chờ bạn." titleId="reminder-workspace-title" actions={<Link className="button button--secondary" to="/">Về Home</Link>} />
     {error && <p className="reminder-workspace__notice" role="alert">Không thể làm mới dữ liệu: {error}</p>}
     {workspaceError && <p className="reminder-workspace__notice" role="alert">{workspaceError}</p>}
     {reminders.length ? <div className="reminder-workspace__list">{reminders.map((reminder) => <ReminderWorkspaceRow key={reminder.id} reminder={reminder} busy={busyId === reminder.id} onToggle={() => void handleToggle(reminder)} onEdit={() => void handleEdit(reminder)} onDelete={() => void handleDelete(reminder)} />)}</div> : <div className="reminder-workspace__empty"><span aria-hidden="true">✦</span><p>Chưa có action nào.</p><Link to="/checkin">Tạo Check-in để gắn một bước nhỏ.</Link></div>}

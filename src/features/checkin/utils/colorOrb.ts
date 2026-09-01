@@ -68,21 +68,21 @@ export const buildOrbClouds = (
   return [...weights.entries()].flatMap(([source, weight], index) => {
     const contribution = weight / total
     const angle = (index / Math.max(weights.size, 1)) * Math.PI * 2 - Math.PI / 2
-    const centerX = 100 + Math.cos(angle) * 17
-    const centerY = 100 + Math.sin(angle) * 17
-    const auraRadius = 70 + contribution * 20
-    const coreRadius = 46 + contribution * 17
-    const amplitude = 13 + contribution * 18
-    const light = tint(source, .3)
-    const pale = tint(source, .62)
-    const deep = shade(source, .22)
+    const centerX = 100 + Math.cos(angle) * 27
+    const centerY = 100 + Math.sin(angle) * 27
+    const auraRadius = 62 + contribution * 12
+    const coreRadius = 39 + contribution * 13
+    const amplitude = 10 + contribution * 10
+    const light = tint(source, .18)
+    const soft = tint(source, .48)
+    const deep = shade(source, .18)
     return [
-      { color: source, x: centerX, y: centerY + 6, radius: auraRadius, opacity: .28 + contribution * .12, blur: 8.5, blendMode: 'normal' },
-      { color: source, x: centerX, y: centerY + 5, radius: coreRadius, opacity: .84 + contribution * .12, blur: .8, blendMode: 'normal' },
-      { color: light, x: centerX + amplitude, y: centerY - amplitude, radius: auraRadius * .72, opacity: .24 + contribution * .14, blur: 3.8, blendMode: 'normal' },
-      { color: pale, x: centerX - amplitude * .7, y: centerY - amplitude * .45, radius: auraRadius * .62, opacity: .12 + contribution * .1, blur: 5.5, blendMode: 'normal' },
-      { color: deep, x: centerX - amplitude, y: centerY + amplitude, radius: auraRadius * .68, opacity: .36 + contribution * .22, blur: 2.4, blendMode: 'normal' },
-      { color: '#FFFFFF', x: centerX + amplitude * .15, y: centerY - amplitude * 1.25, radius: auraRadius * .35, opacity: .07 + contribution * .04, blur: 3, blendMode: 'screen' },
+      { color: source, x: centerX, y: centerY, radius: auraRadius, opacity: .18 + contribution * .1, blur: 3.4, blendMode: 'normal' },
+      { color: source, x: centerX, y: centerY, radius: coreRadius, opacity: .88 + contribution * .08, blur: .4, blendMode: 'normal' },
+      { color: light, x: centerX + amplitude, y: centerY - amplitude, radius: 34 + contribution * 7, opacity: .24 + contribution * .1, blur: 1.2, blendMode: 'normal' },
+      { color: soft, x: centerX - amplitude * .8, y: centerY - amplitude * .4, radius: 27 + contribution * 6, opacity: .16 + contribution * .08, blur: 1.8, blendMode: 'normal' },
+      { color: deep, x: centerX - amplitude, y: centerY + amplitude, radius: 31 + contribution * 7, opacity: .34 + contribution * .16, blur: .9, blendMode: 'normal' },
+      { color: '#FFFFFF', x: centerX + amplitude * .15, y: centerY - amplitude * 1.2, radius: 18 + contribution * 4, opacity: .12 + contribution * .05, blur: .6, blendMode: 'screen' },
     ]
   })
 }

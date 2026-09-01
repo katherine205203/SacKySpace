@@ -1,5 +1,6 @@
 import { supabase } from '../../../services/supabase/client'
 import type { ActionDraft, CheckinDraft, CheckinRecord, ReferenceData } from '../types'
+import { getCurrentStreakFromCreatedAt, getHistoryDateRange, getLocalDateKey } from '../utils/history'
 
 type CheckinRow = {
   id: string
@@ -217,6 +218,50 @@ const mapRecord = (
     createdAt: row.created_at,
     updatedAt: row.updated_at,
   }
+}
+
+export type CheckinLandingSummary = {
+  recent: CheckinRecord[]
+  todayCount: number
+  periodCount: number
+  totalCount: number
+  currentStreak: number
+}
+
+const LANDING_TIME_ZONE = 'Asia/Ho_Chi_Minh'
+const LANDING_SELECT = 'id, user_id, checkin_type, primary_emotion_id, intensity, note, unknown_prompt_id, created_at, updated_at'
+
+const getLocalDayStart = (dateKey: string): Date => new Date(`${dateKey}T00:00:00+07:00`)
+
+/**
+ * Landing only needs the latest records plus lightweight counts and date stamps.
+ * Keeping the streak query bounded prevents the landing from loading full history.
+ */
+export const getCheckinLandingSummary = async (reference: ReferenceData): Promise<CheckinLandingSummary> => {
+  const userId = await currentUserId()
+  const now = new Date()
+  const today = getLocalDateKey(now.toISOString(), LANDING_TIME_ZONE)
+  const tomorrow = getLocalDayStart(today)
+  tomorrow.setUTCDate(tomorrow.getUTCDate() + 1)
+  const monthStart = getHistoryDateRange('month', now, { start: null, end: null }, LANDING_TIME_ZONE).start
+  const monthStartIso = monthStart ? getLocalDayStart(monthStart).toISOString() : undefined
+  const todayStartIso = getLocalDayStart(today).toISOString()
+  const tomorrowStartIso = tomorrow.toISOString()
+  const scoped = () => supabase.from('checkins').select('id', { count: 'exact', head: true }).eq('user_id', userId)
+
+  const [recentResult, totalResult, periodResult, todayResult, streakResult] = await Promise.all([
+    supabase.from('checkins').select(LANDING_SELECT).eq('user_id', userId).order('created_at', { ascending: false }).limit(3),
+    scoped(),
+    monthStartIso ? scoped().gte('created_at', monthStartIso) : scoped(),
+    scoped().gte('created_at', todayStartIso).lt('created_at', tomorrowStartIso),
+    supabase.from('checkins').select('created_at').eq('user_id', userId).order('created_at', { ascending: false }).limit(370),
+  ])
+  for (const result of [recentResult, totalResult, periodResult, todayResult, streakResult]) if (result.error) throw result.error
+
+  const emptyRelations = { secondary: [], needs: [], contexts: [], actions: [] as ActionRow[] }
+  const recent = ((recentResult.data ?? []) as CheckinRow[]).map((row) => mapRecord(row, emptyRelations, reference))
+  const createdAts = ((streakResult.data ?? []) as Array<{ created_at: string }>).map((row) => row.created_at)
+  return { recent, todayCount: todayResult.count ?? 0, periodCount: periodResult.count ?? 0, totalCount: totalResult.count ?? 0, currentStreak: getCurrentStreakFromCreatedAt(createdAts, now, LANDING_TIME_ZONE) }
 }
 
 export const listCheckins = async (reference: ReferenceData, userId?: string): Promise<CheckinRecord[]> => {

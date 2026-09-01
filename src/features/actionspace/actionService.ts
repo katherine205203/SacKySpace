@@ -10,11 +10,13 @@ const EXTENDED_SELECT = `${BASE_SELECT}, planned_end_date`
 
 export const DEFAULT_REFLECTION_OUTCOMES: ActionReflectionOutcome[] = [
   { id: 'better', labelVn: 'Ổn hơn', semanticGroup: 'positive', sortOrder: 1 },
-  { id: 'lighter', labelVn: 'Nhẹ hơn một chút', semanticGroup: 'positive', sortOrder: 2 },
-  { id: 'same', labelVn: 'Không khác mấy', semanticGroup: 'neutral', sortOrder: 3 },
-  { id: 'not_better', labelVn: 'Chưa ổn hơn', semanticGroup: 'negative', sortOrder: 4 },
+  { id: 'lighter', labelVn: 'Thoải mái / thông suốt hơn nhiều', semanticGroup: 'positive', sortOrder: 2 },
+  { id: 'same', labelVn: 'Không có gì khác biệt', semanticGroup: 'neutral', sortOrder: 3 },
+  { id: 'not_better', labelVn: 'Tệ hơn', semanticGroup: 'negative', sortOrder: 4 },
   { id: 'other', labelVn: 'Khác', semanticGroup: 'other', sortOrder: 5 },
 ]
+
+const CANONICAL_REFLECTION_LABELS: Record<string, string> = Object.fromEntries(DEFAULT_REFLECTION_OUTCOMES.map((outcome) => [outcome.id, outcome.labelVn]))
 
 type ActionRow = {
   id: string
@@ -100,7 +102,7 @@ export const listReflectionOutcomes = async (): Promise<ActionReflectionOutcome[
     if (/action_reflection_outcomes|relation .* does not exist|schema cache/i.test(error.message)) return DEFAULT_REFLECTION_OUTCOMES
     throw error
   }
-  return ((data ?? []) as Array<{ id: string; label_vn: string; semantic_group: ActionReflectionOutcome['semanticGroup']; sort_order: number }>).map((row) => ({ id: row.id, labelVn: row.label_vn, semanticGroup: row.semantic_group, sortOrder: row.sort_order }))
+  return ((data ?? []) as Array<{ id: string; label_vn: string; semantic_group: ActionReflectionOutcome['semanticGroup']; sort_order: number }>).map((row) => ({ id: row.id, labelVn: CANONICAL_REFLECTION_LABELS[row.id] ?? row.label_vn, semanticGroup: row.semantic_group, sortOrder: row.sort_order }))
 }
 
 export const listActionReflections = async (actionIds: string[]): Promise<{ reflections: ActionReflection[]; available: boolean }> => {

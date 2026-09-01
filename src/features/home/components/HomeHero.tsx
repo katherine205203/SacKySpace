@@ -32,7 +32,8 @@ export function HomeHero({ displayName, streak, orbEntries, range, customRange, 
     <section className="home-v2__card home-v2__hero" aria-labelledby="home-v2-title">
       <header className="home-v2__hero-header">
         <div>
-          <h2 id="home-v2-title">{greetingLabel} <span aria-hidden="true">🌿</span></h2>
+          <p className="home-v2__eyebrow home-v2__eyebrow--header">Sắc Ký · Home</p>
+          <h1 id="home-v2-title">{greetingLabel} <span aria-hidden="true">🌿</span></h1>
           <p className="home-v2__lede">Hôm nay là một ngày mới, hãy lắng nghe mình nhé.</p>
         </div>
         <div className="home-v2__streak" aria-label={`${streak} ngày liên tiếp`}><span aria-hidden="true">🔥</span><strong>{streak}</strong><small>ngày liên tiếp</small></div>
@@ -48,7 +49,7 @@ export function HomeHero({ displayName, streak, orbEntries, range, customRange, 
             {rangeOptions.map((option) => <button key={option.value} className={range === option.value ? 'is-active' : undefined} type="button" role="tab" aria-selected={range === option.value} onClick={() => onRangeChange(option.value)}>{option.label}</button>)}
           </div>
           {range === 'custom' && <div className="home-v2__custom-range"><label>Từ ngày<input type="date" value={customRange.start ?? ''} onChange={(event) => onCustomRangeChange({ ...customRange, start: event.target.value || null })} /></label><span>→</span><label>Đến ngày<input type="date" value={customRange.end ?? ''} onChange={(event) => onCustomRangeChange({ ...customRange, end: event.target.value || null })} /></label></div>}
-          <div className="home-v2__metrics" aria-label="Tóm tắt khoảng thời gian"><div><span aria-hidden="true">☑</span><strong>{relevantCheckins}</strong><small>Check-in</small></div><div><span aria-hidden="true">✓</span><strong>{completedActions}</strong><small>Action đã xong</small></div><div><span aria-hidden="true">◷</span><strong>{remainingActions}</strong><small>Action còn lại</small></div></div>
+          <div className="home-v2__metrics" aria-label="Tóm tắt khoảng thời gian"><div><strong>{relevantCheckins}</strong><small>Check-in</small></div><div><strong>{completedActions}</strong><small>Action đã xong</small></div><div><strong>{remainingActions}</strong><small>Action còn lại</small></div></div>
           <Link className="button button--primary home-v2__cta" to="/checkin">Check-in ngay <span aria-hidden="true">→</span></Link>
         </div>
       </div>

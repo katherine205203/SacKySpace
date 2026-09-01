@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { ActionModal, CompletionModal, DecisionModal } from '../components/CheckinModals'
 import { CheckinWorkspaceHeader, EmotionCard, EmotionFilters, IntensityPicker, NoteField, PickerControlShelf, SelectionStatus, SummaryRail } from '../components/CheckinComponents'
@@ -15,6 +15,7 @@ export function EmotionCoreScreen() {
   const [query, setQuery] = useState('')
   const [modal, setModal] = useState<'decision' | 'completion' | 'action' | null>(null)
   const [formError, setFormError] = useState<string | null>(null)
+  const emotionViewportRef = useRef<HTMLDivElement>(null)
   const returnToReview = Boolean((location.state as { returnToReview?: boolean } | null)?.returnToReview)
 
   const emotions = useMemo(() => {
@@ -26,6 +27,10 @@ export function EmotionCoreScreen() {
       return familyMatch && queryMatch
     })
   }, [family, query, reference])
+
+  useEffect(() => {
+    emotionViewportRef.current?.scrollTo({ top: 0 })
+  }, [family, query])
 
   if (!reference) return <div className="page-stack checkin-page"><ReferenceState error={referenceError} /></div>
 
@@ -78,7 +83,7 @@ export function EmotionCoreScreen() {
           <PickerControlShelf query={query} onQueryChange={setQuery} onClear={() => setQuery('')} label="Nhóm cảm xúc" resultCount={emotions.length}>
             <EmotionFilters families={reference.emotionFamilies} activeFamily={family} onFamilyChange={setFamily} />
           </PickerControlShelf>
-          <section className="selection-panel" aria-labelledby="emotion-collection-title"><div className="selection-panel__header"><span id="emotion-collection-title" className="section-label">Chọn một cảm xúc</span><SelectionStatus selected={primary ? 1 : 0} limit={1} label="cảm xúc chính" /></div><div className="inventory-grid inventory-grid--emotions">{emotions.map((emotion) => <EmotionCard key={emotion.emotion_id} emotion={emotion} selected={emotion.emotion_id === draft.primaryEmotionId} onClick={() => selectEmotion(emotion.emotion_id)} />)}</div></section>
+          <section className="selection-panel" aria-labelledby="emotion-collection-title"><div className="selection-panel__header"><span id="emotion-collection-title" className="section-label">Chọn một cảm xúc</span><SelectionStatus selected={primary ? 1 : 0} limit={1} label="cảm xúc chính" /></div><div ref={emotionViewportRef} className="emotion-selection-viewport"><div className="inventory-grid inventory-grid--emotions">{emotions.map((emotion) => <EmotionCard key={emotion.emotion_id} emotion={emotion} selected={emotion.emotion_id === draft.primaryEmotionId} onClick={() => selectEmotion(emotion.emotion_id)} />)}</div></div></section>
           {!emotions.length && <p className="empty-state">Không tìm thấy cảm xúc phù hợp.</p>}
           <IntensityPicker value={draft.intensity} onChange={(intensity) => updateDraft({ intensity })} />
           <NoteField value={draft.note} onChange={(note) => updateDraft({ note })} />
@@ -90,7 +95,7 @@ export function EmotionCoreScreen() {
       <footer className="flow-footer"><button className="button button--secondary" type="button" onClick={() => navigate('/checkin')}>← Quay lại</button><button className="button button--primary" type="button" onClick={() => void persist('decision')} disabled={isSaving}>{isSaving ? 'Đang lưu…' : 'Lưu'}</button></footer>
       {modal === 'decision' && <DecisionModal draft={draft} reference={reference} onClose={() => setModal(null)} onFinish={() => completeAndGo()} onDeepDive={openDeepDive} onAction={() => setModal('action')} />}
       {modal === 'completion' && <CompletionModal onClose={() => setModal(null)} onFinish={() => completeAndGo()} onAction={() => setModal('action')} />}
-      {modal === 'action' && <ActionModal reference={reference} onClose={() => setModal('decision')} onSaved={(actions) => { const nextDraft = { ...draft, actions }; updateDraft({ actions }); void completeAndGo(nextDraft) }} />}
+      {modal === 'action' && <ActionModal reference={reference} context={{ emotion: primary, checkinType: draft.checkinType }} onClose={() => setModal('decision')} onSaved={(actions) => { const nextDraft = { ...draft, actions }; updateDraft({ actions }); void completeAndGo(nextDraft) }} />}
     </div>
   )
 }

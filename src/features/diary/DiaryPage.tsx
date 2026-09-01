@@ -6,6 +6,7 @@ import type { CheckinRecord, Emotion } from '../checkin/types'
 import { createEmptyDiaryDraft, deleteDiary, getDiaryEntry, listDiaryEntries, listDiaryPrompts, saveDiary } from './services/diaryRepository'
 import type { DiaryCheckinLink, DiaryDraft, DiaryEntry, DiaryImage, DiaryPrompt, DiaryPromptResponse } from './types'
 import { addDiaryDays, clampDiaryWeight, DIARY_TIME_ZONE, formatDiaryDate, formatDiaryMonth, formatDiaryShortDate, getDiaryLocalDate, getDiaryMetrics, isDiaryDateToday, monthDateKey } from './utils'
+import { PageHeading } from '../../components/PageHeading'
 import './diary.css'
 
 type DiaryPageMode = 'today' | 'editor' | 'history'
@@ -92,14 +93,7 @@ const supabaseCheckins = async (reference: NonNullable<ReturnType<typeof useRefe
 }
 
 const DiaryPageHeader = ({ title, description, children }: { title: string; description: string; children?: ReactNode }) => (
-  <header className="diary-page-header">
-    <div>
-      <p className="eyebrow">Diary</p>
-      <h1>{title}</h1>
-      <p>{description}</p>
-    </div>
-    {children}
-  </header>
+  <PageHeading className="diary-page-header" eyebrow="Diary" title={title} description={description} actions={children} />
 )
 
 const DiaryState = ({ children, error, onRetry }: { children: ReactNode; error?: string | null; onRetry?: () => void }) => (
@@ -179,7 +173,7 @@ export function DiaryTodayPage() {
   return <section className="diary-page" aria-labelledby="diary-today-title">
     <DiaryPageHeader title="Nhật ký hôm nay" description="Một khoảng lặng để bạn ghi lại điều đang ở cùng mình."><div className="diary-header-actions"><Link className="button button--secondary button--small" to="/diary?view=history">Lịch sử nhật ký</Link></div></DiaryPageHeader>
     {deleteError && <p className="form-error" role="alert">{deleteError}</p>}
-    <div className="diary-metrics"><MetricCard icon="◌" value={metrics.currentStreak} label="Chuỗi hiện tại" hint="ngày đã hoàn tất" /><MetricCard icon="♕" value={metrics.longestStreak} label="Chuỗi dài nhất" hint="ngày liên tiếp" /><MetricCard icon="▣" value={metrics.doneCount} label="Đã viết tháng này" hint="bài hoàn tất" /><MetricCard icon="✎" value={metrics.draftCount} label="Bản nháp" hint="có thể viết tiếp" /></div>
+    <div className="diary-metrics"><MetricCard icon="↗" value={metrics.currentStreak} label="Chuỗi hiện tại" hint="ngày đã hoàn tất" /><MetricCard icon="∞" value={metrics.longestStreak} label="Chuỗi dài nhất" hint="ngày liên tiếp" /><MetricCard icon="✍" value={metrics.doneCount} label="Đã viết tháng này" hint="bài hoàn tất" /><MetricCard icon="□" value={metrics.draftCount} label="Bản nháp" hint="có thể viết tiếp" /></div>
     {!todayEntry && <section className="diary-empty-hero"><div className="diary-empty-hero__art" aria-hidden="true"><span>✦</span><i>◌</i></div><div><p className="eyebrow">{formatDiaryDate(today, { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })}</p><h2>Hôm nay vẫn còn một khoảng trống.</h2><p>Không cần viết thật hay. Chỉ cần để lại một dấu nhỏ về ngày hôm nay, theo cách vừa đủ với bạn.</p><button className="button button--primary" type="button" onClick={() => navigate(`/diary?view=editor&date=${today}`)}>✎ Bắt đầu viết</button></div></section>}
     {todayEntry && <section className="diary-today-card"><div className="diary-today-card__intro"><div className="diary-today-card__heading"><div><p className="eyebrow">{formatDiaryDate(today, { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })}</p><h2>{todayEntry.status === 'done' ? 'Một ngày được giữ lại.' : 'Bản nháp của hôm nay'}</h2></div><DiaryStatusBadge status={todayEntry.status} /></div><h3>{todayEntry.title}</h3><p className="diary-today-card__excerpt">{todayEntry.overallText}</p>{todayEntry.promptResponses.length > 0 && <span className="diary-inline-meta">✦ {todayEntry.promptResponses.length} dòng tự sự thêm</span>}{todayEntry.checkinLinks.length > 0 && <span className="diary-inline-meta">↗ {todayEntry.checkinLinks.length} check-in gắn với ngày này</span>}<div className="diary-today-card__actions"><button className="button button--primary" type="button" onClick={() => navigate(`/diary?view=editor&date=${today}`)}>{todayEntry.status === 'done' ? 'Chỉnh sửa' : 'Tiếp tục viết'} <span aria-hidden="true">→</span></button><button className="button button--secondary" type="button" onClick={() => navigate('/diary?view=history')}>Xem lịch sử</button>{todayEntry.status === 'draft' && <button className="button button--danger button--small" type="button" onClick={() => void remove()}>Xóa bản nháp</button>}</div></div><div className="diary-today-card__preview"><span aria-hidden="true">{todayEntry.dailyEmotionSnapshot?.emoji ?? '✦'}</span><small>{todayEntry.dailyEmotionSnapshot?.emotion_name_vn ?? 'Một ngày đang được lắng nghe'}</small><b>{todayEntry.images.length ? `${todayEntry.images.length} ảnh` : 'Không gian của riêng bạn'}</b></div></section>}
     {todayEntry?.status === 'done' && <DiaryReadView entry={todayEntry} onEdit={() => navigate(`/diary?view=editor&date=${today}`)} onDelete={() => void remove()} />}
@@ -347,7 +341,7 @@ export function DiaryHistoryPage() {
   if (error) return <section className="diary-page"><DiaryState error={error} onRetry={() => void refresh()}> </DiaryState></section>
   return <section className="diary-page diary-page--history" aria-labelledby="diary-history-title">
     <DiaryPageHeader title="Lịch sử nhật ký" description="Nhìn lại hành trình viết của bạn theo thời gian."><Link className="button button--secondary button--small" to="/diary">← Hôm nay</Link></DiaryPageHeader>
-    <div className="diary-metrics"><MetricCard icon="◌" value={metrics.currentStreak} label="Chuỗi hiện tại" hint="ngày đã hoàn tất" /><MetricCard icon="♕" value={metrics.longestStreak} label="Chuỗi dài nhất" hint="ngày liên tiếp" /><MetricCard icon="▣" value={metrics.doneCount} label="Đã viết tháng này" hint="bài hoàn tất" /><MetricCard icon="✎" value={metrics.draftCount} label="Bản nháp" hint="chưa hoàn tất" /></div>
+    <div className="diary-metrics"><MetricCard icon="↗" value={metrics.currentStreak} label="Chuỗi hiện tại" hint="ngày đã hoàn tất" /><MetricCard icon="∞" value={metrics.longestStreak} label="Chuỗi dài nhất" hint="ngày liên tiếp" /><MetricCard icon="✍" value={metrics.doneCount} label="Đã viết tháng này" hint="bài hoàn tất" /><MetricCard icon="□" value={metrics.draftCount} label="Bản nháp" hint="chưa hoàn tất" /></div>
     <div className="diary-history-layout"><div className="diary-history-calendar-column"><DiaryCalendar month={month} entries={entries} selectedDate={selectedDate} onSelect={setSelectedDate} onMoveMonth={changeMonth} /><section className="diary-timeline"><div className="diary-section-header"><div><span className="section-label">Dòng thời gian</span><p>Những ngày bạn đã để lại một điều gì đó.</p></div><div className="diary-filter-tabs" role="tablist" aria-label="Lọc nhật ký">{(['all', 'done', 'draft'] as const).map((value) => <button key={value} type="button" className={filter === value ? 'is-active' : ''} onClick={() => setFilter(value)}>{value === 'all' ? 'Tất cả' : value === 'done' ? 'Đã hoàn tất' : 'Bản nháp'}</button>)}</div></div>{visibleEntries.length === 0 && <div className="diary-subtle-empty">Chưa có bài viết nào trong bộ lọc này.</div>}{visibleEntries.map((entry) => <button key={entry.id} type="button" className={`diary-timeline-item ${selectedDate === entry.localDate ? 'is-selected' : ''}`} onClick={() => setSelectedDate(entry.localDate)}><span className={`diary-timeline-item__dot ${statusClass(entry.status)}`} /><div><small>{formatDiaryShortDate(entry.localDate)}</small><strong>{entry.title}</strong><p>{entry.overallText}</p><span>{entry.promptResponses.length ? `✦ ${entry.promptResponses.length} prompt` : ''} {entry.images.length ? ` · ▧ ${entry.images.length} ảnh` : ''}</span></div><DiaryStatusBadge status={entry.status} /></button>)}</section></div><HistoryDetail date={selectedDate} entry={selectedEntry} onEdit={() => navigate(`/diary?view=editor&date=${selectedDate}`)} onDelete={() => void deleteSelected()} /></div>
   </section>
 }

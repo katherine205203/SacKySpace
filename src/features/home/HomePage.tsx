@@ -90,7 +90,7 @@ export function HomePage() {
         <GiftDeliveryCard projection={snapshot.gift} onChanged={() => void refresh()} />
       </div>
       {selectedRecord && <CheckinDetailModal record={selectedRecord} linkedActions={reminders.filter((reminder) => reminder.sourceCheckinId === selectedRecord.id)} onClose={closeSelectedRecord} onEdit={() => void editSelectedRecord()} onDelete={deleteSelectedRecord} onActionChanged={refresh} />}
-      {reflectionAction && <ReflectionModal action={reflectionAction.action} outcomes={reflectionOutcomes} historyAvailable={reflectionAction.historyAvailable} onClose={() => setReflectionAction(null)} onSave={async (outcome, note) => { await saveActionReflection(reflectionAction.action.id, outcome, note); setReflectionAction(null); await refresh() }} />}
+      {reflectionAction && <ReflectionModal action={reflectionAction.action} checkin={records.find((record) => record.id === reflectionAction.action.sourceCheckinId) ?? null} outcomes={reflectionOutcomes} historyAvailable={reflectionAction.historyAvailable} onClose={() => setReflectionAction(null)} onSave={async (outcome, note) => { await saveActionReflection(reflectionAction.action.id, outcome, note); setReflectionAction(null); await refresh() }} />}
     </>}
   </section>
 }

@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { getCurrentStreak, getHomeActionItems, getHomeActionSummary, getHomeOrbEntries, getRecentJourneyCheckins } from './homeAggregation'
+import { formatCheckinDateShort, formatCheckinTime, getCurrentStreak, getHomeActionItems, getHomeActionSummary, getHomeOrbEntries, getRecentJourneyCheckins } from './homeAggregation'
 import type { CheckinRecord } from '../../checkin/types'
 import type { HomeReminder } from '../types'
 
@@ -37,6 +37,12 @@ describe('Home aggregation', () => {
     const journey = getRecentJourneyCheckins(records, now)
     expect(journey).toHaveLength(6)
     expect(journey.map((item) => item.createdAt)).toEqual(records.slice(0, 6).map((item) => item.createdAt))
+  })
+
+  it('formats the Home journey timestamp as a compact local date and time pair', () => {
+    const createdAt = '2026-08-29T23:02:00.000Z'
+    expect(formatCheckinDateShort(createdAt)).toBe('30/08/26')
+    expect(formatCheckinTime(createdAt)).toBe('06:02')
   })
 
   it('counts Unknown Check-ins for streaks but excludes them from Orb color', () => {

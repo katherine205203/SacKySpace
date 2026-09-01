@@ -68,6 +68,23 @@ export const filterByDateRange = (
 export const sortByCreatedAtDesc = (records: readonly CheckinRecord[]): CheckinRecord[] =>
   [...records].sort((left, right) => right.createdAt.localeCompare(left.createdAt))
 
+export const getCurrentStreakFromCreatedAt = (
+  createdAts: readonly string[],
+  now = new Date(),
+  timeZone = 'Asia/Ho_Chi_Minh',
+): number => {
+  const days = new Set(createdAts.map((createdAt) => getLocalDateKey(createdAt, timeZone)))
+  let streak = 0
+  let cursor = getLocalDateKey(now.toISOString(), timeZone)
+
+  while (days.has(cursor)) {
+    streak += 1
+    cursor = addDays(cursor, -1)
+  }
+
+  return streak
+}
+
 export type HistoryMetrics = {
   total: number
   emotionCount: number

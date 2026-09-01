@@ -46,7 +46,7 @@ export function ReviewScreen() {
       {(formError || error) && <p className="form-error" role="alert">{formError ?? error}</p>}
       <footer className="flow-footer"><button className="button button--secondary" type="button" onClick={() => navigate(draft.id ? `/checkin/${draft.id}/contexts` : '/checkin/contexts')}>← Quay lại</button><button className="button button--primary" type="button" disabled={isSaving} onClick={() => void openSave()}>{isSaving ? 'Đang lưu…' : 'Lưu check-in'}</button></footer>
       {modal === 'save' && <CompletionModal title="Hoàn tất check-in" copy="Chọn một hướng cuối cùng cho khoảng dừng này." onClose={() => setModal(null)} onFinish={() => finish()} onAction={() => setModal('action')} />}
-      {modal === 'action' && <ActionModal reference={reference} onClose={() => setModal('save')} onSaved={(actions) => { const nextDraft = { ...draft, actions }; updateDraft({ actions }); void finish(nextDraft) }} />}
+      {modal === 'action' && <ActionModal reference={reference} context={{ emotion: primary, checkinType: draft.checkinType, unknownEmoji: draft.unknownPromptId ? reference.unknownPrompts.find((prompt) => prompt.prompt_id === draft.unknownPromptId)?.emoji : undefined }} onClose={() => setModal('save')} onSaved={(actions) => { const nextDraft = { ...draft, actions }; updateDraft({ actions }); void finish(nextDraft) }} />}
     </div>
   )
 }

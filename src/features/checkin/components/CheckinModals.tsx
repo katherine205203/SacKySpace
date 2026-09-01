@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react'
+import { useMemo, useState, type CSSProperties } from 'react'
 import type { ActionDraft, CareAction, CheckinDraft, ReferenceData } from '../types'
 import { MAX_ACTIONS } from '../utils/selectionRules'
 import { IntensityDots, ModalShell } from './CheckinComponents'
@@ -38,7 +38,13 @@ const today = () => new Date().toISOString().slice(0, 10)
 
 const toDraft = (action: CareAction): ActionDraft => ({ careActionId: action.care_action_id, title: action.title_vn, note: '', plannedDate: '', dueTime: '' })
 
-export function ActionModal({ reference, onClose, onSaved, initialActions = [] }: { reference: ReferenceData; onClose: () => void; onSaved: (actions: ActionDraft[]) => void; initialActions?: ActionDraft[] }) {
+export type ActionModalContext = {
+  emotion: ReferenceData['emotions'][number] | null | undefined
+  checkinType: CheckinDraft['checkinType']
+  unknownEmoji?: string
+}
+
+export function ActionModal({ reference, context, onClose, onSaved, initialActions = [] }: { reference: ReferenceData; context?: ActionModalContext; onClose: () => void; onSaved: (actions: ActionDraft[]) => void; initialActions?: ActionDraft[] }) {
   const [selected, setSelected] = useState<ActionDraft[]>(initialActions)
   const [showAll, setShowAll] = useState(false)
   const [seed, setSeed] = useState(0)
@@ -60,13 +66,23 @@ export function ActionModal({ reference, onClose, onSaved, initialActions = [] }
   }
 
   const updateAction = (index: number, patch: Partial<ActionDraft>) => setSelected((current) => current.map((action, actionIndex) => actionIndex === index ? { ...action, ...patch } : action))
+  const contextColor = context?.emotion?.color_hex ?? (context?.checkinType === 'unknown' ? '#7C9BEF' : '#8D78E8')
+  const contextTitle = context?.emotion?.emotion_name_vn ?? (context?.checkinType === 'unknown' ? 'Mình còn đang mơ hồ' : 'Một bước nhỏ cho bạn')
+  const contextSubtitle = context?.emotion?.emotion_name_en ?? (context?.checkinType === 'unknown' ? 'Unknown Check-in' : 'Action Space')
+  const contextEmoji = context?.emotion?.emoji ?? (context?.checkinType === 'unknown' ? context.unknownEmoji ?? '◌' : '✦')
+  const contextSource = context?.emotion ? 'Đến từ Check-in' : context?.checkinType === 'unknown' ? 'Đến từ Unknown Check-in' : 'Action Space'
 
-  return <ModalShell title="Chọn action" onClose={onClose}>
-    <p className="modal-copy">Chọn tối đa 2 action cho check-in này, hoặc bỏ qua nếu chưa cần.</p>
-    <div className="action-context"><span className="action-context__orb">◈</span><div><span className="section-label">Đã chọn ({selected.length}/2)</span><strong>{selected.length ? selected.map((action) => action.title || 'Action mới').join(' · ') : 'Chưa chọn action'}</strong></div></div>
-    <div className="action-toolbar"><strong>Gợi ý cho bạn</strong><div><button className="text-button" type="button" onClick={() => setSeed((current) => current + 1)}>↻ Làm mới gợi ý</button><button className="text-button" type="button" onClick={() => setShowAll((current) => !current)}>{showAll ? 'Gợi ý' : 'Xem tất cả'}</button><button className="button button--secondary button--small" type="button" onClick={() => { if (selected.length < MAX_ACTIONS) setSelected((current) => [...current, { careActionId: null, title: '', note: '', plannedDate: today(), dueTime: '' }]) }}>＋ Tự viết action</button></div></div>
-    <div className={`action-grid ${showAll ? 'action-grid--all' : ''}`}>{visible.map((action) => <button key={action.care_action_id} className={`action-card ${selectedIds.includes(action.care_action_id) ? 'is-selected' : ''}`} type="button" disabled={!selectedIds.includes(action.care_action_id) && selected.length >= MAX_ACTIONS} onClick={() => toggleAction(action)}><span className="action-card__emoji">{action.emoji}</span><strong>{action.title_vn}</strong><span>{action.description_vn}</span><small>{action.duration_min ? `${action.duration_min} phút` : 'Linh hoạt'}</small>{selectedIds.includes(action.care_action_id) && <b>✓ Đã chọn</b>}</button>)}</div>
-    {selected.length > 0 && <div className="action-config"><span className="section-label">Cấu hình action đã chọn ({selected.length}/2)</span>{selected.map((action, index) => <div className="action-config__item" key={`${action.careActionId ?? 'custom'}-${index}`}><input aria-label="Tên action" placeholder="Tên action" value={action.title} onChange={(event) => updateAction(index, { title: event.target.value })} /><div className="action-config__row"><input aria-label="Ngày dự kiến" type="date" value={action.plannedDate} onChange={(event) => updateAction(index, { plannedDate: event.target.value })} /><input aria-label="Giờ đến hạn" type="time" value={action.dueTime} onChange={(event) => updateAction(index, { dueTime: event.target.value })} /></div><textarea aria-label="Ghi chú action" placeholder="Ghi chú (tuỳ chọn)" value={action.note} onChange={(event) => updateAction(index, { note: event.target.value })} /></div>)}</div>}
-    <div className="modal-footer"><button className="button button--secondary" type="button" onClick={onClose}>Thôi không chọn</button><button className="button button--primary" type="button" disabled={selected.some((action) => !action.title.trim())} onClick={() => onSaved(selected)}>Lưu action ✓</button></div>
-  </ModalShell>
+  return <div className="checkin-action-modal-backdrop" role="presentation" onClick={onClose}><section className="checkin-action-modal" style={{ '--checkin-action-color': contextColor } as CSSProperties} role="dialog" aria-modal="true" aria-labelledby="checkin-action-modal-title" onClick={(event) => event.stopPropagation()}>
+    <button className="checkin-action-modal__close" type="button" onClick={onClose} aria-label="Đóng">×</button>
+    <header className="checkin-action-modal__header"><p className="eyebrow">Một bước nhỏ cho hôm nay</p><h2 id="checkin-action-modal-title">Chọn action</h2><p>Chọn tối đa 2 action cho check-in này, hoặc bỏ qua nếu chưa cần.</p></header>
+    <div className="checkin-action-modal__selected"><div><span className="section-label">Đã chọn</span><strong>{selected.length}/{MAX_ACTIONS}</strong></div><div className="checkin-action-modal__selected-list">{selected.length ? selected.map((action, index) => <button key={`${action.careActionId ?? 'custom'}-${index}`} type="button" onClick={() => setSelected((current) => current.filter((_, itemIndex) => itemIndex !== index))}><span>{action.title || 'Action mới'}</span><b aria-hidden="true">×</b></button>) : <span className="checkin-action-modal__selected-empty">Chưa chọn action</span>}</div></div>
+    <div className="checkin-action-modal__body">
+      <aside className="checkin-action-modal__context-rail"><div className="checkin-action-modal__context-orb" aria-hidden="true">{contextEmoji}</div><span className="eyebrow">{contextSource}</span><strong>{contextTitle}</strong><small>{contextSubtitle}</small><span className="checkin-action-modal__context-limit">Tối đa {MAX_ACTIONS} action</span></aside>
+      <div className="checkin-action-modal__suggestions"><div className="action-toolbar"><strong>{showAll ? 'Tất cả action' : 'Gợi ý cho bạn'}</strong><div><button className="text-button" type="button" onClick={() => setSeed((current) => current + 1)}>↻ Làm mới gợi ý</button><button className="text-button" type="button" onClick={() => setShowAll((current) => !current)}>{showAll ? 'Gợi ý' : 'Xem tất cả'}</button><button className="button button--secondary button--small" type="button" onClick={() => { if (selected.length < MAX_ACTIONS) setSelected((current) => [...current, { careActionId: null, title: '', note: '', plannedDate: today(), dueTime: '' }]) }}>＋ Tự viết action</button></div></div>
+        <div className="checkin-action-modal__list"><div className={`checkin-action-grid ${showAll ? 'checkin-action-grid--all' : ''}`}>{visible.map((action) => <button key={action.care_action_id} className={`checkin-action-card ${selectedIds.includes(action.care_action_id) ? 'is-selected' : ''}`} type="button" disabled={!selectedIds.includes(action.care_action_id) && selected.length >= MAX_ACTIONS} onClick={() => toggleAction(action)}><span className="checkin-action-card__emoji" aria-hidden="true">{action.emoji}</span><span className="checkin-action-card__body"><strong>{action.title_vn}</strong><span>{action.description_vn}</span><small>{action.duration_min ? `${action.duration_min} phút` : 'Linh hoạt'}</small></span>{selectedIds.includes(action.care_action_id) && <b className="checkin-action-card__selected">✓</b>}</button>)}</div></div>
+        {selected.length > 0 && <div className="checkin-action-config"><span className="section-label">Tinh chỉnh action</span>{selected.map((action, index) => <div className="checkin-action-config__item" key={`${action.careActionId ?? 'custom'}-${index}`}><input aria-label="Tên action" placeholder="Tên action" value={action.title} onChange={(event) => updateAction(index, { title: event.target.value })} /><div className="checkin-action-config__row"><input aria-label="Ngày dự kiến" type="date" value={action.plannedDate} onChange={(event) => updateAction(index, { plannedDate: event.target.value })} /><input aria-label="Giờ đến hạn" type="time" value={action.dueTime} onChange={(event) => updateAction(index, { dueTime: event.target.value })} /></div><textarea aria-label="Ghi chú action" placeholder="Ghi chú (tuỳ chọn)" value={action.note} onChange={(event) => updateAction(index, { note: event.target.value })} /></div>)}</div>}
+      </div>
+    </div>
+    <footer className="checkin-action-modal__footer"><button className="button button--secondary" type="button" onClick={onClose}>Thôi không chọn</button><button className="button button--primary" type="button" disabled={selected.some((action) => !action.title.trim())} onClick={() => onSaved(selected)}>Lưu action ✓</button></footer>
+  </section></div>
 }

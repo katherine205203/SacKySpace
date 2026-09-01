@@ -3,6 +3,7 @@ import { ADMIN_ENTITY_REGISTRY, getAdminEntity } from './registry'
 import { compareConfigValues, parseDelimitedText, previewImport, type ImportPreviewRow } from './utils'
 import { adminUserError, claimAdminOwner, deactivateReferenceRow, deleteReferenceRow, exportUserData, fullResetUserData, getAdminSettings, getReferenceUsageCount, listAdminAssets, listAdminAuditLogs, listAdminConfigs, listAdminModuleCounts, listConfigVersions, listReferenceRows, publishConfig, reorderReferenceRows, resetAdminModule, rollbackConfig, saveAdminSettings, saveConfigDraft, updateAdminAsset, updateReferenceRow, upsertReferenceRow } from './services/adminRepository'
 import type { AdminAsset, AdminAuditLog, AdminConfigVersion, AdminEntityDefinition, AdminEntityKey, AdminMode, AdminModuleCount, AdminReferenceRow, AdminRuntimeConfig, AdminView } from './types'
+import { PageHeading } from '../../components/PageHeading'
 import './admin.css'
 
 const viewItems: Array<{ id: AdminView; code: string; label: string }> = [
@@ -50,10 +51,7 @@ export function AdminStudioPage() {
   if (error) return <section className="admin-page admin-page--state admin-page--error"><span className="admin-state-mark">!</span><h1>Chưa thể mở Admin Studio</h1><p>{error}</p><button className="button button--primary" type="button" onClick={() => void load()}>Thử lại</button></section>
 
   return <section className="admin-page" aria-labelledby="admin-studio-title">
-    <header className="admin-header">
-      <div><p className="eyebrow">SacKy · Control plane</p><h1 id="admin-studio-title">Admin Studio</h1><p>Quản trị reference data, runtime config, assets và recovery trong cùng một workspace có audit.</p></div>
-      <div className="admin-header__status"><span className="admin-status-dot" /> Owner only <span className="admin-status-divider" /> v2 control plane</div>
-    </header>
+    <PageHeading className="admin-header" eyebrow="SacKy · Control plane" title="Admin Studio" description="Quản trị reference data, runtime config, assets và recovery trong cùng một workspace có audit." titleId="admin-studio-title" actions={<div className="admin-header__status"><span className="admin-status-dot" /> Owner only <span className="admin-status-divider" /> v2 control plane</div>} />
     <div className="admin-toolbar"><nav className="admin-view-tabs" aria-label="Admin Studio sections">{viewItems.map((item) => <button key={item.id} className={view === item.id ? 'is-active' : ''} type="button" onClick={() => { setView(item.id); setNotice(null) }}><small>{item.code}</small>{item.label}</button>)}</nav><div className="admin-mode-switch" role="group" aria-label="Chế độ Admin Studio"><span>Mode</span><button className={mode === 'basic' ? 'is-active' : ''} type="button" onClick={() => void changeMode('basic')}>Basic</button><button className={mode === 'advanced' ? 'is-active' : ''} type="button" onClick={() => void changeMode('advanced')}>Advanced</button></div></div>
     {notice && <div className="admin-notice" role="status">{notice}</div>}
     {view === 'overview' && <AdminOverview counts={counts} configs={configs} assets={assets} onNavigate={setView} />}

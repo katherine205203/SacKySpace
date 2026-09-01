@@ -81,7 +81,7 @@
   gap: 1rem;
 }
 
-.home-v2__hero-header h2,
+.home-v2__hero-header h1,
 .home-v2__section-header h2,
 .home-v2__personal > h2 {
   margin: 0;
@@ -90,11 +90,13 @@
   letter-spacing: -.035em;
 }
 
-.home-v2__hero-header h2 {
+.home-v2__hero-header h1 {
   font-size: clamp(1.35rem, 2.1vw, 1.75rem);
 }
 
-.home-v2__hero-header h2 span { font-size: .9em; }
+.home-v2__hero-header h1 span { font-size: .9em; }
+
+.home-v2__eyebrow--header { margin-bottom: .25rem; }
 
 .home-v2__eyebrow {
   margin: 0 0 .35rem;
@@ -190,28 +192,27 @@
   border-bottom: 1px solid rgba(113, 88, 180, .1);
 }
 
-.home-v2__metrics div { display: grid; justify-items: center; gap: .08rem; padding: .5rem .35rem; border-right: 1px solid rgba(229, 221, 245, .65); }
+.home-v2__metrics div { display: grid; justify-items: center; gap: .12rem; padding: .45rem .35rem .5rem; border-right: 1px solid rgba(229, 221, 245, .65); }
 .home-v2__metrics div:last-child { border-right: 0; }
-.home-v2__metrics span { color: var(--color-violet); font-size: .8rem; }
-.home-v2__metrics strong { color: var(--color-text-muted); font-size: .85rem; font-weight: 600; }
-.home-v2__metrics small { color: var(--color-text-muted); font-size: .57rem; white-space: nowrap; }
+.home-v2__metrics strong { color: var(--color-text); font-size: 1.25rem; font-weight: 750; line-height: 1; letter-spacing: -.04em; }
+.home-v2__metrics small { color: var(--color-text-muted); font-size: .59rem; white-space: nowrap; }
 .home-v2__cta { justify-self: start; min-width: 9rem; margin-top: .7rem; border-color: var(--color-violet); color: #fff; background: var(--color-violet); text-decoration: none; box-shadow: 0 7px 16px rgba(116, 60, 255, .16); }
 .home-v2__cta:hover { border-color: var(--color-violet-dark); color: #fff; background: var(--color-violet-dark); box-shadow: 0 9px 20px rgba(83, 38, 190, .2); }
 
 .home-v2__right-column { display: grid; grid-area: journey; grid-template-rows: max-content max-content; align-content: start; align-self: start; gap: 1rem; min-width: 0; }
-.home-v2__journey { min-height: 0; padding: .9rem 1.35rem 1.25rem; }
+.home-v2__journey { min-height: 0; padding: .75rem 1rem .8rem; }
 .home-v2__section-header a { color: var(--color-violet); font-size: .68rem; text-decoration: none; white-space: nowrap; }
 .home-v2__section-header a:hover { text-decoration: underline; }
 
 .home-v2__journey-rail-wrap { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; align-items: center; gap: .45rem; min-width: 0; margin-top: .55rem; }
 .home-v2__journey-rail { display: flex; min-width: 0; gap: .65rem; overflow-x: auto; padding: .1rem .05rem 0; scrollbar-width: none; -ms-overflow-style: none; scroll-snap-type: x proximity; overscroll-behavior-x: contain; }
 .home-v2__journey-rail::-webkit-scrollbar { display: none; }
-.home-v2__journey-card { display: grid; flex: 0 0 min(10.5rem, calc((100% - 1.3rem) / 3)); grid-template-columns: 1fr auto; grid-template-rows: auto auto 1fr; align-items: center; gap: .1rem .5rem; min-width: 0; min-height: 9rem; padding: .7rem .65rem; border: 1px solid rgba(229, 221, 245, .72); border-radius: 1rem; background: rgba(255, 255, 255, .66); color: var(--color-text); font: inherit; text-align: center; scroll-snap-align: start; transition: transform .16s ease, border-color .16s ease, background .16s ease, box-shadow .16s ease; }
+.home-v2__journey-card { display: grid; flex: 0 0 11.5rem; grid-template-columns: 1fr; grid-template-rows: auto minmax(2.8rem, 1fr) auto; align-items: center; gap: .18rem; min-width: 11.5rem; min-height: 8.35rem; padding: .76rem .72rem .72rem; border: 1px solid rgba(229, 221, 245, .72); border-radius: 1rem; background: rgba(255, 255, 255, .66); color: var(--color-text); font: inherit; text-align: center; scroll-snap-align: start; transition: transform .16s ease, border-color .16s ease, background .16s ease, box-shadow .16s ease; }
 .home-v2__journey-card:hover { border-color: rgba(188, 167, 235, .7); background: rgba(255,255,255,.82); box-shadow: 0 8px 18px rgba(60, 35, 95, .06); transform: translateY(-1px); }
-.home-v2__journey-card-date { overflow: hidden; color: var(--color-text-muted); font-size: .62rem; text-overflow: ellipsis; white-space: nowrap; }
-.home-v2__journey-card-time { color: var(--color-violet-dark); font-size: .65rem; font-weight: 750; }
-.home-v2__journey-card-emoji { display: grid; grid-column: 1 / -1; width: 2.8rem; height: 2.8rem; place-items: center; justify-self: center; align-self: center; margin: .15rem 0; border-radius: 50%; font-size: 1.35rem; box-shadow: inset 0 1px 0 rgba(255,255,255,.6), 0 7px 16px rgba(60,35,95,.12); }
-.home-v2__journey-card-names { display: grid; grid-column: 1 / -1; align-self: center; gap: 0; min-width: 0; width: 100%; }
+.home-v2__journey-card-datetime { display: flex; grid-column: 1; align-items: center; justify-content: center; gap: .38rem; min-width: 0; color: var(--color-text-muted); font-size: .64rem; font-variant-numeric: tabular-nums; line-height: 1.2; white-space: nowrap; }
+.home-v2__journey-card-datetime time { color: var(--color-violet-dark); font-size: .65rem; font-weight: 750; }
+.home-v2__journey-card-emoji { display: grid; grid-column: 1; width: 2.65rem; height: 2.65rem; place-items: center; justify-self: center; align-self: end; margin: .2rem 0 .25rem; border-radius: 50%; font-size: 1.25rem; box-shadow: inset 0 1px 0 rgba(255,255,255,.6), 0 7px 16px rgba(60,35,95,.12); }
+.home-v2__journey-card-names { display: grid; grid-column: 1; align-self: start; gap: 0; min-width: 0; width: 100%; }
 .home-v2__journey-card-title { overflow: hidden; width: 100%; margin: 0; font-size: .72rem; text-align: center; text-overflow: ellipsis; white-space: nowrap; }
 .home-v2__journey-card-english { overflow: hidden; width: 100%; margin: -.08rem 0 0; color: var(--color-text-muted); font-size: .58rem; text-align: center; text-overflow: ellipsis; white-space: nowrap; }
 .home-v2__journey-arrow { display: grid; width: 1.8rem; height: 1.8rem; place-items: center; padding: 0; border: 1px solid rgba(113,88,180,.14); border-radius: 50%; background: rgba(255,255,255,.8); color: var(--color-violet-dark); font-size: .8rem; }
@@ -438,7 +439,7 @@
 @media (max-width: 42rem) {
   .home-v2__hero { min-height: auto; padding: 1.15rem; }
   .home-v2__hero-header { gap: .6rem; }
-  .home-v2__hero-header h2 { font-size: 1.2rem; }
+  .home-v2__hero-header h1 { font-size: 1.2rem; }
   .home-v2__streak strong { font-size: 1rem; }
   .home-v2__hero-body { grid-template-columns: 1fr; gap: .5rem; padding-top: 1rem; }
   .home-v2__hero-orb { order: -1; }

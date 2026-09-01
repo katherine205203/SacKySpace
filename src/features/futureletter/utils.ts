@@ -20,13 +20,17 @@ export const ENVELOPE_ASSETS = [
   { id: 'envelope-night', label: 'Đêm tím', caption: 'Gửi từ một buổi tối yên', variant: 'envelope' as const },
   { id: 'envelope-garden', label: 'Khu vườn', caption: 'Một điều đang nảy mầm', variant: 'envelope' as const },
   { id: 'envelope-sunrise', label: 'Bình minh', caption: 'Mở ra khi mình sẵn sàng', variant: 'envelope' as const },
+  { id: 'envelope-sea', label: 'Mặt biển', caption: 'Một khoảng xanh để thở', variant: 'envelope' as const },
+  { id: 'envelope-clay', label: 'Đất ấm', caption: 'Dịu dàng như một trang mới', variant: 'envelope' as const },
 ]
 
 export const SEAL_ASSETS = [
-  { id: 'seal-violet', label: 'Ấn tím', caption: 'Một lời hứa nhỏ với mình', variant: 'seal' as const },
-  { id: 'seal-rose', label: 'Ấn hồng', caption: 'Dịu dàng giữ lại', variant: 'seal' as const },
-  { id: 'seal-amber', label: 'Ấn hổ phách', caption: 'Điều mình muốn nhớ', variant: 'seal' as const },
-  { id: 'seal-forest', label: 'Ấn rừng', caption: 'Bền bỉ qua những ngày', variant: 'seal' as const },
+  { id: 'seal-violet', label: 'Ấn tím', caption: 'Một lời hứa nhỏ với mình', symbol: 'S', variant: 'seal' as const },
+  { id: 'seal-rose', label: 'Ấn hồng', caption: 'Dịu dàng giữ lại', symbol: '✦', variant: 'seal' as const },
+  { id: 'seal-amber', label: 'Ấn hổ phách', caption: 'Điều mình muốn nhớ', symbol: '◌', variant: 'seal' as const },
+  { id: 'seal-forest', label: 'Ấn rừng', caption: 'Bền bỉ qua những ngày', symbol: '↗', variant: 'seal' as const },
+  { id: 'seal-sky', label: 'Ấn trời', caption: 'Một khoảng rộng để mở ra', symbol: '≈', variant: 'seal' as const },
+  { id: 'seal-coral', label: 'Ấn san hô', caption: 'Ấm áp và còn đang lớn', symbol: '∞', variant: 'seal' as const },
 ]
 
 export const TRIGGER_OPTIONS: Array<{ type: FutureLetterRule['type']; label: string; description: string; icon: string }> = [

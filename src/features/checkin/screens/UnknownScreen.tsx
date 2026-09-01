@@ -53,7 +53,7 @@ export function UnknownScreen() {
       </div>
       <FlowFooter onBack={() => navigate('/checkin')} onQuickSave={() => void persist()} onContinue={() => void persist()} isSaving={isSaving} continueLabel="Lưu check-in" />
       {modal === 'decision' && <DecisionModal draft={draft} reference={reference} onClose={() => setModal(null)} onFinish={() => completeAndGo()} onDeepDive={deepDive} onAction={() => setModal('action')} />}
-      {modal === 'action' && <ActionModal reference={reference} onClose={() => setModal('decision')} onSaved={(actions) => { const nextDraft = { ...draft, actions }; updateDraft({ actions }); void completeAndGo(nextDraft) }} />}
+      {modal === 'action' && <ActionModal reference={reference} context={{ emotion: null, checkinType: draft.checkinType, unknownEmoji: selectedPrompt?.emoji }} onClose={() => setModal('decision')} onSaved={(actions) => { const nextDraft = { ...draft, actions }; updateDraft({ actions }); void completeAndGo(nextDraft) }} />}
     </div>
   )
 }

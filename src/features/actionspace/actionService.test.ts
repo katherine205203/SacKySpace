@@ -57,7 +57,7 @@ describe('Action completion and reflection persistence', () => {
     const reflectionInsert = builder({ data: null, error: { message: 'temporary write failure' } })
     fromMock.mockImplementation((table: string) => table === 'action_completion_cycles' ? cycleQuery : reflectionInsert)
 
-    await expect(saveActionReflection('action-1', { id: 'same', labelVn: 'Không khác mấy', semanticGroup: 'neutral', sortOrder: 3 }, '')).rejects.toThrow('Không thể lưu reflection lúc này.')
+    await expect(saveActionReflection('action-1', { id: 'same', labelVn: 'Không có gì khác biệt', semanticGroup: 'neutral', sortOrder: 3 }, '')).rejects.toThrow('Không thể lưu reflection lúc này.')
     expect(reflectionInsert.insert).toHaveBeenCalled()
   })
 })
