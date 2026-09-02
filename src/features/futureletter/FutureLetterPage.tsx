@@ -6,6 +6,7 @@ import { createEmptyFutureLetterDraft, deleteFutureLetter, archiveFutureLetter, 
 import { ENVELOPE_ASSETS, SEAL_ASSETS, TRIGGER_OPTIONS, formatFutureLetterDate, formatFutureLetterDateTime, getFutureLetterLocalDate, stateLabel, triggerLabel } from './utils'
 import type { Comparator, FutureLetter, FutureLetterDraft, FutureLetterRule, FutureLetterRuleConfig, FutureLetterRuleGroup, FutureLetterTriggerEvent, GroupOperator } from './types'
 import { PageHeading } from '../../components/PageHeading'
+import { useUiContent } from '../../services/uiContent'
 import './futureLetter.css'
 
 type PageView = 'library' | 'write' | 'trigger' | 'decorate' | 'preview' | 'waiting' | 'available' | 'read' | 'history'
@@ -90,7 +91,10 @@ function Envelope({ envelopeId, sealId, large = false, interactive = false, onCl
 }
 
 function FutureHeader({ title, description, action }: { title: string; description: string; action?: ReactNode }) {
-  return <PageHeading className="future-page-header" eyebrow="FutureMe / Future Letter" title={title} description={description} actions={action} />
+  const eyebrow = useUiContent('futureletter.landing.eyebrow')
+  const landingTitle = useUiContent('futureletter.landing.title')
+  const landingDescription = useUiContent('futureletter.landing.subtitle')
+  return <PageHeading className="future-page-header" eyebrow={eyebrow} title={title === 'Những điều mình gửi về sau' ? landingTitle : title} description={description === 'Viết từ hôm nay, để một phiên bản tương lai của mình gặp được những lời này.' ? landingDescription : description} actions={action} />
 }
 
 function StateMessage({ message, error, onRetry }: { message: string; error?: boolean; onRetry?: () => void }) {
@@ -104,11 +108,14 @@ function StageNav({ view, onNavigate }: { view: PageView; onNavigate: (view: Pag
 }
 
 function LibraryView({ letters, counts, onNew, onOpen, onDelete }: { letters: FutureLetter[]; counts: { draft: number; waiting: number; available: number; opened: number; archived: number }; onNew: () => void; onOpen: (letter: FutureLetter) => void; onDelete: (letter: FutureLetter) => void }) {
+  const newButton = useUiContent('futureletter.landing.new_button')
+  const emptyTitle = useUiContent('futureletter.landing.empty_title')
+  const emptyCopy = useUiContent('futureletter.landing.empty_copy')
   const available = letters.filter((letter) => letter.state === 'available_unopened')
   const drafts = letters.filter((letter) => ['draft', 'writing', 'decorating', 'preview'].includes(letter.state))
   const waiting = letters.filter((letter) => letter.state === 'sealed_waiting')
   const opened = letters.filter((letter) => letter.state === 'opened').slice(0, 3)
-  if (!letters.length) return <><FutureHeader title="Những điều mình gửi về sau" description="Viết từ hôm nay, để một phiên bản tương lai của mình gặp được những lời này." action={<button className="button button--primary" type="button" onClick={onNew}>＋ Viết thư mới</button>} /><section className="future-empty"><Envelope large /><div><p className="eyebrow">Viết → Trang trí → Xem lại → Niêm phong</p><h2>Chưa có lá thư nào ở đây</h2><p>Một lá thư không phải lời nhắc. Nó là một điều mình muốn gửi tới chính mình vào một thời điểm có ý nghĩa.</p><button className="button button--primary" type="button" onClick={onNew}>Viết lá thư đầu tiên</button></div></section><div className="future-ritual-steps"><RitualStep index="01" title="Viết" copy="Một điều thật lòng từ hiện tại." /><RitualStep index="02" title="Trang trí" copy="Chọn một phong bì và một dấu ấn." /><RitualStep index="03" title="Niêm phong" copy="Để nó trở lại khi điều kiện đủ đầy." /></div></>
+  if (!letters.length) return <><FutureHeader title="Những điều mình gửi về sau" description="Viết từ hôm nay, để một phiên bản tương lai của mình gặp được những lời này." action={<button className="button button--primary" type="button" onClick={onNew}>{newButton}</button>} /><section className="future-empty"><Envelope large /><div><p className="eyebrow">Viết → Trang trí → Xem lại → Niêm phong</p><h2>{emptyTitle}</h2><p>{emptyCopy}</p><button className="button button--primary" type="button" onClick={onNew}>Viết lá thư đầu tiên</button></div></section><div className="future-ritual-steps"><RitualStep index="01" title="Viết" copy="Một điều thật lòng từ hiện tại." /><RitualStep index="02" title="Trang trí" copy="Chọn một phong bì và một dấu ấn." /><RitualStep index="03" title="Niêm phong" copy="Để nó trở lại khi điều kiện đủ đầy." /></div></>
   return <><FutureHeader title="Những điều mình gửi về sau" description="Một thư viện nhỏ cho những lời cần thêm thời gian để trở về." action={<button className="button button--primary" type="button" onClick={onNew}>＋ Viết thư mới</button>} /><div className="future-library-summary"><span><strong>{counts.available}</strong> đang chờ mở</span><span><strong>{counts.waiting}</strong> đang chờ ngày trở về</span><span><strong>{counts.draft}</strong> bản nháp</span><Link to="/future-letter?view=history">Lịch sử & lưu giữ →</Link></div>{available.length > 0 && <section className="future-available-hero"><div><p className="eyebrow">Đã trở về · Chưa mở</p><h2>Một lá thư đã trở về.</h2><p>{available[0].title || 'Có điều gì đó mình từng muốn nói.'}</p><button className="future-text-link" type="button" onClick={() => onOpen(available[0])}>Mở lá thư <span aria-hidden="true">→</span></button></div><Envelope envelopeId={available[0].envelopeAssetId} sealId={available[0].sealAssetId} large interactive onClick={() => onOpen(available[0])} /></section>}<LibrarySection title="Bản nháp" count={drafts.length} empty="Những lá thư chưa niêm phong sẽ nằm ở đây.">{drafts.map((letter) => <LetterRow key={letter.id} letter={letter} actionLabel="Tiếp tục viết" onClick={() => onOpen(letter)} onDelete={() => onDelete(letter)} />)}</LibrarySection><LibrarySection title="Đang chờ" count={waiting.length} empty="Những lá thư đã niêm phong sẽ chờ đến lúc thích hợp.">{waiting.map((letter) => <LetterRow key={letter.id} letter={letter} actionLabel="Xem thư" onClick={() => onOpen(letter)} />)}</LibrarySection><LibrarySection title="Mới mở gần đây" count={opened.length} empty="Những lá thư đã mở sẽ xuất hiện ở đây.">{opened.map((letter) => <LetterRow key={letter.id} letter={letter} actionLabel="Đọc lại" onClick={() => onOpen(letter)} />)}</LibrarySection></>
 }
 

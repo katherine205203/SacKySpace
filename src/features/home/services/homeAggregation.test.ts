@@ -66,6 +66,15 @@ describe('Home aggregation', () => {
     expect(getHomeActionSummary(reminders, now, 'week')).toEqual({ total: 3, completed: 2, remaining: 1 })
   })
 
+  it('keeps unscheduled actions out of Today and Home metrics', () => {
+    const reminders: HomeReminder[] = [
+      { id: 'unscheduled', sourceCheckinId: null, title: 'Unscheduled', note: null, plannedDate: null, dueTime: null, status: 'pending', completedAt: null, origin: 'manual' },
+      { id: 'today', sourceCheckinId: null, title: 'Today', note: null, plannedDate: '2026-08-29', dueTime: null, status: 'pending', completedAt: null, origin: 'manual' },
+    ]
+    expect(getHomeActionItems(reminders, 'today', now).map((item) => item.id)).toEqual(['today'])
+    expect(getHomeActionSummary(reminders, now)).toEqual({ total: 1, completed: 0, remaining: 1 })
+  })
+
   it('returns every active Home action so the preview can scroll after the third row', () => {
     const reminders: HomeReminder[] = Array.from({ length: 8 }, (_, index) => ({
       id: `action-${index + 1}`,

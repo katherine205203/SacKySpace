@@ -1,7 +1,7 @@
 import { useEffect, useId, useRef, type CSSProperties, type ReactNode } from 'react'
 import { NavLink } from 'react-router-dom'
 import type { CheckinDraft, Context, Emotion, EmotionFamily, Need, NeedGroup, ReferenceData } from '../types'
-import { buildOrbClouds } from '../utils/colorOrb'
+import { buildColorOrbRegionsFromColors } from '../utils/colorOrb'
 import { PageHeading } from '../../../components/PageHeading'
 
 export function CheckinTabs({ active }: { active: 'create' | 'history' }) {
@@ -23,12 +23,46 @@ export function StepProgress({ active }: { active: 'emotion' | 'secondary' | 'ne
 }
 
 export function ColorOrb({ entries, size = 'medium', label }: { entries: readonly { color: string; intensity: number }[]; size?: 'small' | 'medium' | 'large'; label?: string }) {
-  const clouds = buildOrbClouds(entries)
+  const territories = buildColorOrbRegionsFromColors(entries)
+  const hasData = territories.length > 0
   const id = useId().replaceAll(':', '')
   const clipId = `orb-clip-${id}`
   const baseId = `orb-base-${id}`
   const glowId = `orb-glow-${id}`
-  return <svg className={`color-orb color-orb--${size}`} viewBox="0 0 200 200" role={label ? 'img' : undefined} aria-label={label}><defs><clipPath id={clipId}><circle cx="100" cy="100" r="96" /></clipPath><radialGradient id={baseId} cx="32%" cy="24%" r="88%"><stop offset="0" stopColor="#f7f0ff" stopOpacity=".62" /><stop offset=".64" stopColor="#eee6f8" stopOpacity=".58" /><stop offset="1" stopColor="#d9cfe9" stopOpacity=".82" /></radialGradient><radialGradient id={glowId} cx="34%" cy="24%" r="76%"><stop offset="0" stopColor="#fff" stopOpacity=".2" /><stop offset=".48" stopColor="#fff" stopOpacity=".025" /><stop offset="1" stopColor="#fff" stopOpacity="0" /></radialGradient>{clouds.map((cloud, index) => <radialGradient id={`orb-cloud-${id}-${index}`} key={index} cx="50%" cy="50%" r="50%"><stop offset="0" stopColor={cloud.color} stopOpacity={cloud.opacity} /><stop offset=".42" stopColor={cloud.color} stopOpacity={cloud.opacity * .58} /><stop offset=".78" stopColor={cloud.color} stopOpacity={cloud.opacity * .16} /><stop offset="1" stopColor={cloud.color} stopOpacity="0" /></radialGradient>)}{clouds.map((cloud, index) => <filter id={`orb-cloud-blur-${id}-${index}`} key={`blur-${index}`} x="-30%" y="-30%" width="160%" height="160%"><feGaussianBlur stdDeviation={cloud.blur} /></filter>)}</defs><circle className="color-orb__halo" cx="100" cy="100" r="99" /><circle className="color-orb__base" cx="100" cy="100" r="96" fill={`url(#${baseId})`} /><g clipPath={`url(#${clipId})`}>{clouds.map((cloud, index) => <circle key={`${cloud.color}-${index}`} cx={cloud.x} cy={cloud.y} r={cloud.radius} fill={`url(#orb-cloud-${id}-${index})`} filter={`url(#orb-cloud-blur-${id}-${index})`} style={{ mixBlendMode: cloud.blendMode }} />)}<circle className="color-orb__inner-glow" cx="100" cy="100" r="96" fill={`url(#${glowId})`} /><ellipse className="color-orb__sheen" cx="67" cy="47" rx="44" ry="20" transform="rotate(-18 67 47)" /></g><circle className="color-orb__outline" cx="100" cy="100" r="96" /></svg>
+  const surfaceId = `orb-surface-${id}`
+  return <svg className={`color-orb color-orb--${size} ${hasData ? 'is-vivid' : 'is-empty'}`} viewBox="0 0 200 200" role={label ? 'img' : undefined} aria-label={label}>
+    <defs>
+      <clipPath id={clipId}><circle cx="100" cy="100" r="96" /></clipPath>
+      <radialGradient id={baseId} cx="31%" cy="20%" r="90%">
+        <stop offset="0" stopColor="#ffffff" />
+        <stop offset=".2" stopColor="#fbf9ff" />
+        <stop offset=".58" stopColor="#f1eaff" />
+        <stop offset=".86" stopColor="#e5dafa" />
+        <stop offset="1" stopColor="#d7c9ef" />
+      </radialGradient>
+      <radialGradient id={glowId} cx="34%" cy="24%" r="76%">
+        <stop offset="0" stopColor="#ffffff" stopOpacity=".2" />
+        <stop offset=".42" stopColor="#ffffff" stopOpacity=".04" />
+        <stop offset="1" stopColor="#ffffff" stopOpacity="0" />
+      </radialGradient>
+      <radialGradient id={surfaceId} cx="27%" cy="15%" r="88%">
+        <stop offset="0" stopColor="#ffffff" stopOpacity=".13" />
+        <stop offset=".28" stopColor="#ffffff" stopOpacity=".025" />
+        <stop offset=".72" stopColor="#ffffff" stopOpacity="0" />
+      </radialGradient>
+      <filter id={`orb-territory-edge-${id}`} x="-10%" y="-10%" width="120%" height="120%"><feGaussianBlur stdDeviation=".35" /></filter>
+    </defs>
+    <circle className="color-orb__halo" cx="100" cy="100" r="99" />
+    <circle className="color-orb__base" cx="100" cy="100" r="96" fill={`url(#${baseId})`} />
+    <g clipPath={`url(#${clipId})`}>
+      {territories.map((territory) => <path key={`${territory.color}-${territory.start}`} className="color-orb__territory" d={territory.path} fill={territory.color} fillOpacity=".94" filter={`url(#orb-territory-edge-${id})`} />)}
+      <circle className="color-orb__inner-glow" cx="100" cy="100" r="96" fill={`url(#${glowId})`} />
+      <circle className="color-orb__surface" cx="100" cy="100" r="96" fill={`url(#${surfaceId})`} />
+      <ellipse className="color-orb__sheen" cx="67" cy="47" rx="44" ry="20" transform="rotate(-18 67 47)" />
+      <circle className="color-orb__inner-ring" cx="100" cy="100" r="82" />
+    </g>
+    <circle className="color-orb__outline" cx="100" cy="100" r="96" />
+  </svg>
 }
 
 export function EmotionCard({ emotion, selected, disabled, onClick, multi = false }: { emotion: Emotion; selected: boolean; disabled?: boolean; onClick: () => void; multi?: boolean }) {

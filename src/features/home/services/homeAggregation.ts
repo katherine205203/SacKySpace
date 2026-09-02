@@ -86,7 +86,7 @@ const getMatchingHomeActionItems = (
     const endDate = reminder.plannedEndDate || reminder.plannedDate
     if (tab === 'overdue') return Boolean(endDate && endDate < today && !isCompleted(reminder))
     if (tab === 'upcoming') return Boolean(reminder.plannedDate && reminder.plannedDate > today && !isCompleted(reminder))
-    return Boolean((!reminder.plannedDate || (reminder.plannedDate <= today && (endDate ?? today) >= today)) && !isCompleted(reminder))
+    return Boolean(reminder.plannedDate && reminder.plannedDate <= today && (endDate ?? today) >= today && !isCompleted(reminder))
   }
 
   return reminders
@@ -112,7 +112,7 @@ export const getHomeActionSummary = (
 ): { total: number; completed: number; remaining: number } => {
   const dateRange = getHomeDateRange(range, now, customRange)
   const items = reminders.filter((reminder) => {
-    if (!reminder.plannedDate) return range === 'today'
+    if (!reminder.plannedDate) return false
     const endDate = reminder.plannedEndDate || reminder.plannedDate
     return (!dateRange.end || reminder.plannedDate <= dateRange.end) && (!dateRange.start || endDate >= dateRange.start)
   })

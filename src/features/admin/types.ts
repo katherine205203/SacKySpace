@@ -1,5 +1,5 @@
 export type AdminMode = 'basic' | 'advanced'
-export type AdminView = 'overview' | 'data' | 'prompts' | 'rules' | 'assets' | 'recovery' | 'audit'
+export type AdminView = 'overview' | 'content' | 'data' | 'prompts' | 'rules' | 'assets' | 'recovery' | 'audit'
 export type AdminFieldType = 'text' | 'textarea' | 'number' | 'color' | 'boolean'
 
 export type AdminField = {
@@ -93,4 +93,25 @@ export type AdminModuleCount = {
   label: string
   count: number | null
   status: 'ok' | 'unavailable'
+}
+
+export type AdminUiContent = {
+  id: string
+  contentKey: string
+  module: string
+  screen: string
+  element: string
+  elementType: 'title' | 'subtitle' | 'section_title' | 'button' | 'tab' | 'label' | 'helper' | 'empty_state' | 'confirmation' | 'system_message'
+  defaultTextVn: string
+  textVn: string
+  defaultTextEn: string | null
+  textEn: string | null
+  maxLength: number | null
+  maxLengthMode: 'hard' | 'warning'
+  protected: boolean
+  active: boolean
+  description: string | null
+  placementHint: string | null
+  updatedAt: string | null
+  updatedBy: string | null
 }

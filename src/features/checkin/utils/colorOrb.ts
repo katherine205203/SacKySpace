@@ -49,9 +49,10 @@ const shade = (hex: string, amount: number): string => {
 }
 
 /**
- * Builds overlapping radial cloud layers for the canonical ColorOrb renderer.
- * Intensity controls each color's total visual presence, while all tonal
- * variants remain derived from the same source color.
+ * Builds the visual layers for the canonical ColorOrb renderer.
+ * Intensity controls each territory's total visual presence, while all tonal
+ * variants remain derived from the same source color. The pigment anchor is
+ * intentionally crisp; only the outer aura gets a soft feather.
  */
 export const buildOrbClouds = (
   entries: readonly { color: string; intensity: number }[],
@@ -68,21 +69,22 @@ export const buildOrbClouds = (
   return [...weights.entries()].flatMap(([source, weight], index) => {
     const contribution = weight / total
     const angle = (index / Math.max(weights.size, 1)) * Math.PI * 2 - Math.PI / 2
-    const centerX = 100 + Math.cos(angle) * 27
-    const centerY = 100 + Math.sin(angle) * 27
-    const auraRadius = 62 + contribution * 12
-    const coreRadius = 39 + contribution * 13
-    const amplitude = 10 + contribution * 10
-    const light = tint(source, .18)
-    const soft = tint(source, .48)
-    const deep = shade(source, .18)
+    const centerX = 100 + Math.cos(angle) * (weights.size > 1 ? 35 : 0)
+    const centerY = 100 + Math.sin(angle) * (weights.size > 1 ? 35 : 0)
+    const auraRadius = 52 + contribution * 9
+    const coreRadius = 31 + contribution * 10
+    const amplitude = 7 + contribution * 7
+    const light = tint(source, .14)
+    const soft = tint(source, .34)
+    const deep = shade(source, .1)
     return [
-      { color: source, x: centerX, y: centerY, radius: auraRadius, opacity: .18 + contribution * .1, blur: 3.4, blendMode: 'normal' },
-      { color: source, x: centerX, y: centerY, radius: coreRadius, opacity: .88 + contribution * .08, blur: .4, blendMode: 'normal' },
-      { color: light, x: centerX + amplitude, y: centerY - amplitude, radius: 34 + contribution * 7, opacity: .24 + contribution * .1, blur: 1.2, blendMode: 'normal' },
-      { color: soft, x: centerX - amplitude * .8, y: centerY - amplitude * .4, radius: 27 + contribution * 6, opacity: .16 + contribution * .08, blur: 1.8, blendMode: 'normal' },
-      { color: deep, x: centerX - amplitude, y: centerY + amplitude, radius: 31 + contribution * 7, opacity: .34 + contribution * .16, blur: .9, blendMode: 'normal' },
-      { color: '#FFFFFF', x: centerX + amplitude * .15, y: centerY - amplitude * 1.2, radius: 18 + contribution * 4, opacity: .12 + contribution * .05, blur: .6, blendMode: 'screen' },
+      { color: source, x: centerX, y: centerY, radius: auraRadius, opacity: .035 + contribution * .025, blur: 4.5, blendMode: 'normal' },
+      // The core is the readable Color Territory: vivid, source-colour first.
+      { color: source, x: centerX, y: centerY, radius: coreRadius, opacity: .96 + contribution * .04, blur: 0, blendMode: 'normal' },
+      { color: light, x: centerX + amplitude, y: centerY - amplitude, radius: 23 + contribution * 5, opacity: .13 + contribution * .05, blur: .35, blendMode: 'normal' },
+      { color: soft, x: centerX - amplitude * .65, y: centerY - amplitude * .55, radius: 16 + contribution * 4, opacity: .065 + contribution * .025, blur: .25, blendMode: 'normal' },
+      { color: deep, x: centerX - amplitude * .8, y: centerY + amplitude * .8, radius: 20 + contribution * 5, opacity: .1 + contribution * .04, blur: .3, blendMode: 'normal' },
+      { color: '#FFFFFF', x: centerX + amplitude * .2, y: centerY - amplitude * 1.1, radius: 13 + contribution * 3, opacity: .045 + contribution * .02, blur: .2, blendMode: 'screen' },
     ]
   })
 }
@@ -101,19 +103,20 @@ const hueFromHex = (hex: string): number => {
   return ((red - green) / delta + 4) * 60
 }
 
-const organicPath = (start: number, end: number, index: number): string => {
+const organicBoundary = (x: number, position: number): number => {
+  const wave = Math.sin((x + 18) / 29) * 13 + Math.sin((x + 7) / 14) * 4
+  return 100 + (position - .5) * 170 + wave
+}
+
+const organicPath = (start: number, end: number): string => {
   const left = 0
   const right = 200
-  const amplitude = 15 + (index % 3) * 6
-  const phase = index * 17
-  const wave = (x: number, offset: number) =>
-    100 + offset + Math.sin((x + phase) / 28) * amplitude + Math.sin((x + phase) / 13) * 5
-  const top = wave(left, (start - 0.5) * 170)
-  const topMid = wave(100, (start - 0.5) * 170)
-  const topRight = wave(right, (start - 0.5) * 170)
-  const bottom = wave(left, (end - 0.5) * 170)
-  const bottomMid = wave(100, (end - 0.5) * 170)
-  const bottomRight = wave(right, (end - 0.5) * 170)
+  const top = organicBoundary(left, start)
+  const topMid = organicBoundary(100, start)
+  const topRight = organicBoundary(right, start)
+  const bottom = organicBoundary(left, end)
+  const bottomMid = organicBoundary(100, end)
+  const bottomRight = organicBoundary(right, end)
   return `M ${left} ${top} Q 50 ${topMid - 18} 100 ${topMid} T ${right} ${topRight} L ${right} ${bottomRight} Q 150 ${bottomMid + 18} 100 ${bottomMid} T ${left} ${bottom} Z`
 }
 
@@ -140,7 +143,7 @@ export const buildColorOrbRegionsFromColors = (
   if (!total) return []
 
   let cursor = 0
-  return sorted.map((item, index) => {
+  return sorted.map((item) => {
     const start = cursor
     cursor += item.weight / total
     return {
@@ -148,7 +151,7 @@ export const buildColorOrbRegionsFromColors = (
       weight: item.weight,
       start,
       end: cursor,
-      path: organicPath(start, cursor, index),
+      path: organicPath(start, cursor),
     }
   })
 }

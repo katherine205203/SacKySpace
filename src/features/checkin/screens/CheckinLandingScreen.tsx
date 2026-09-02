@@ -6,6 +6,7 @@ import { ReferenceState } from '../hooks/ReferenceState'
 import { getCheckinLandingSummary, type CheckinLandingSummary } from '../services/checkinRepository'
 import { useCheckinFlow } from '../useCheckinFlow'
 import { getLocalDateKey } from '../utils/history'
+import { useUiContent } from '../../../services/uiContent'
 
 const LANDING_TIME_ZONE = 'Asia/Ho_Chi_Minh'
 
@@ -16,6 +17,14 @@ const NEUTRAL_ORB_ENTRIES = [
 ]
 
 export function CheckinLandingScreen() {
+  const pageEyebrow = useUiContent('checkin.landing.eyebrow')
+  const pageTitle = useUiContent('checkin.landing.title')
+  const pageSubtitle = useUiContent('checkin.landing.subtitle')
+  const historyLabel = useUiContent('checkin.landing.history')
+  const emotionTitle = useUiContent('checkin.landing.emotion_title')
+  const emotionCopy = useUiContent('checkin.landing.emotion_copy')
+  const unknownTitle = useUiContent('checkin.landing.unknown_title')
+  const unknownCopy = useUiContent('checkin.landing.unknown_copy')
   const navigate = useNavigate()
   const { draft, resetDraft } = useCheckinFlow()
   const { reference, error: referenceError } = useReferenceData()
@@ -78,12 +87,12 @@ export function CheckinLandingScreen() {
     <div className="page-stack checkin-page checkin-landing">
       <CheckinWorkspaceHeader
         active="create"
-        eyebrow="Sắc Ký"
-        title="Check-in"
-        copy="Dành vài phút lắng nghe và hiểu mình hơn mỗi ngày."
+        eyebrow={pageEyebrow}
+        title={pageTitle}
+        copy={pageSubtitle}
         action={
           <Link className="button button--secondary landing-history-link" to="/checkin/history">
-            Lịch sử check-in <span aria-hidden="true">→</span>
+            {historyLabel} <span aria-hidden="true">→</span>
           </Link>
         }
       />
@@ -104,8 +113,8 @@ export function CheckinLandingScreen() {
               <ModeCard
                 className="landing-mode-card--emotion"
                 eyebrow="Hiểu cảm xúc"
-                title="Emotion Check-in"
-                copy="Hiểu cảm xúc hiện tại và chăm sóc bản thân tốt hơn mỗi ngày."
+                title={emotionTitle}
+                copy={emotionCopy}
                 onClick={() => begin('emotion')}
               >
                 <ColorOrb entries={emotionOrbEntries.length ? emotionOrbEntries : NEUTRAL_ORB_ENTRIES} size="small" label="Emotion Check-in" />
@@ -113,8 +122,8 @@ export function CheckinLandingScreen() {
               <ModeCard
                 className="landing-mode-card--unknown"
                 eyebrow="Viết ra trước"
-                title="Unknown Check-in"
-                copy="Chưa gọi tên được cảm xúc? Viết ra những gì đang hiện diện."
+                title={unknownTitle}
+                copy={unknownCopy}
                 onClick={() => begin('unknown')}
               >
                 <UnknownCheckinVisual />

@@ -43,7 +43,7 @@ describe('Action visual source semantics', () => {
     expect(getActionAccentColor(action('checkin-1'), [checkin('checkin-1', '#ff7a66')])).toBe('#ff7a66')
   })
 
-  it('uses canonical teal for an independent Action', () => {
+  it('uses a neutral Action Space accent for an independent Action', () => {
     expect(getActionAccentColor(action(null), [])).toBe(ACTION_INDEPENDENT_COLOR)
   })
 })

@@ -2,6 +2,7 @@ import { useCallback, useEffect, useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { formatCheckinDateShort, formatCheckinTime, getCheckinPresentation } from '../services/homeAggregation'
 import type { CheckinRecord } from '../../checkin/types'
+import { useUiContent } from '../../../services/uiContent'
 
 type RecentJourneyProps = {
   records: CheckinRecord[]
@@ -9,6 +10,8 @@ type RecentJourneyProps = {
 }
 
 export function RecentJourney({ records, onSelectCheckin }: RecentJourneyProps) {
+  const journeyTitle = useUiContent('home.landing.journey_title')
+  const historyLabel = useUiContent('home.landing.journey_history')
   const railRef = useRef<HTMLDivElement>(null)
   const [canScrollPrev, setCanScrollPrev] = useState(false)
   const [canScrollNext, setCanScrollNext] = useState(false)
@@ -39,7 +42,7 @@ export function RecentJourney({ records, onSelectCheckin }: RecentJourneyProps) 
   }
 
   return <section className="home-v2__card home-v2__journey" aria-labelledby="recent-journey-title">
-    <header className="home-v2__section-header"><div><h2 id="recent-journey-title">Hành trình gần đây</h2><p>3 ngày gần nhất · {records.length} Check-in</p></div><Link to="/checkin/history">Xem lịch sử</Link></header>
+    <header className="home-v2__section-header"><div><h2 id="recent-journey-title">{journeyTitle}</h2><p>3 ngày gần nhất · {records.length} Check-in</p></div><Link to="/checkin/history">{historyLabel}</Link></header>
     {records.length ? <div className="home-v2__journey-rail-wrap">
       {canScrollPrev && <button className="home-v2__journey-arrow" type="button" aria-label="Xem Check-in cũ hơn" onClick={() => moveRail(-1)}>←</button>}
       <div ref={railRef} className="home-v2__journey-rail" aria-label="Các Check-in trong 3 ngày gần nhất">

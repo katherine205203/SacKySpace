@@ -1,8 +1,9 @@
 import { supabase } from '../../../services/supabase/client'
 import { clearReferenceCache } from '../../checkin/services/referenceRepository'
 import { clearRuntimeConfigCache } from '../../../services/runtimeConfig'
+import { updateUiContentSnapshot } from '../../../services/uiContent'
 import { getAdminEntity } from '../registry'
-import type { AdminAsset, AdminAuditLog, AdminConfigVersion, AdminEntityKey, AdminModuleCount, AdminReferenceRow, AdminRuntimeConfig } from '../types'
+import type { AdminAsset, AdminAuditLog, AdminConfigVersion, AdminEntityKey, AdminModuleCount, AdminReferenceRow, AdminRuntimeConfig, AdminUiContent } from '../types'
 
 const safeMessage = (reason: unknown): string => {
   const message = reason instanceof Error ? reason.message : typeof reason === 'object' && reason !== null && 'message' in reason && typeof reason.message === 'string' ? reason.message : ''
@@ -21,6 +22,16 @@ const mapConfig = (row: Record<string, unknown>): AdminRuntimeConfig => ({
   defaultValue: row.default_value, publishedValue: row.published_value, draftValue: row.draft_value, configurabilityLevel: row.configurability_level as AdminRuntimeConfig['configurabilityLevel'],
   validationSchema: (row.validation_schema ?? {}) as Record<string, unknown>, dependencyTags: (row.dependency_tags ?? []) as string[], publishedVersion: Number(row.published_version ?? 0), effectiveFrom: row.effective_from as string | null, updatedAt: String(row.updated_at),
 })
+
+const mapUiContent = (row: Record<string, unknown>): AdminUiContent => ({
+  id: String(row.id), contentKey: String(row.content_key), module: String(row.module), screen: String(row.screen), element: String(row.element),
+  elementType: row.element_type as AdminUiContent['elementType'], defaultTextVn: String(row.default_text_vn), textVn: String(row.text_vn), defaultTextEn: row.default_text_en as string | null,
+  textEn: row.text_en as string | null, maxLength: row.max_length === null ? null : Number(row.max_length), maxLengthMode: row.max_length_mode as AdminUiContent['maxLengthMode'],
+  protected: Boolean(row.protected), active: Boolean(row.active), description: row.description as string | null, placementHint: row.placement_hint as string | null,
+  updatedAt: row.updated_at as string | null, updatedBy: row.updated_by as string | null,
+})
+
+const toRuntimeUiContent = (record: AdminUiContent) => ({ ...record, description: record.description ?? undefined, placementHint: record.placementHint ?? undefined })
 
 const mapAsset = (row: Record<string, unknown>): AdminAsset => ({
   assetId: String(row.asset_id), assetType: String(row.asset_type), name: String(row.name), previewUrl: row.preview_url as string | null, active: Boolean(row.active), sortOrder: Number(row.sort_order ?? 0), provider: String(row.provider ?? 'external'), currentVersion: Number(row.current_version ?? 1), metadata: (row.metadata ?? {}) as Record<string, unknown>, updatedAt: String(row.updated_at),
@@ -60,6 +71,67 @@ export const listAdminConfigs = async (): Promise<AdminRuntimeConfig[]> => {
   const { data, error } = await supabase.from('admin_runtime_configs').select('*').order('module').order('config_key')
   if (error) throw new Error(safeMessage(error))
   return ((data ?? []) as Record<string, unknown>[]).map(mapConfig)
+}
+
+export const listUiContent = async (): Promise<AdminUiContent[]> => {
+  const { data, error } = await supabase.from('ui_content_registry').select('*').order('module').order('screen').order('element')
+  if (error) {
+    // Keep the existing Admin Studio usable while a deploy has not yet applied
+    // this additive migration; the Content tab will show its setup state.
+    if (/relation|schema|PGRST/i.test(error.message)) return []
+    throw new Error(safeMessage(error))
+  }
+  return ((data ?? []) as Record<string, unknown>[]).map(mapUiContent)
+}
+
+const getUiContent = async (contentKey: string): Promise<AdminUiContent> => {
+  const { data, error } = await supabase.from('ui_content_registry').select('*').eq('content_key', contentKey).single()
+  if (error || !data) throw new Error(safeMessage(error ?? new Error('Không tìm thấy content key.')))
+  return mapUiContent(data as Record<string, unknown>)
+}
+
+const validateUiContentValue = (record: AdminUiContent, textVn: string) => {
+  if (!textVn.trim()) throw new Error('Nội dung tiếng Việt không được để trống.')
+  if (record.maxLength && record.maxLengthMode === 'hard' && textVn.length > record.maxLength) throw new Error(`Nội dung vượt giới hạn ${record.maxLength} ký tự.`)
+}
+
+export const saveUiContent = async (contentKey: string, textVn: string, textEn: string | null): Promise<void> => {
+  const before = await getUiContent(contentKey)
+  if (before.protected) throw new Error('Content protected không thể chỉnh sửa trong Admin Studio.')
+  validateUiContentValue(before, textVn)
+  const { error } = await supabase.from('ui_content_registry').update({ text_vn: textVn.trim(), text_en: textEn?.trim() || null }).eq('content_key', contentKey)
+  if (error) throw new Error(safeMessage(error))
+  const after = await getUiContent(contentKey)
+  updateUiContentSnapshot(toRuntimeUiContent(after))
+  await writeAudit('content', 'update', 'ui_content_registry', contentKey, { textVn: before.textVn, textEn: before.textEn }, { textVn: after.textVn, textEn: after.textEn }, null)
+}
+
+export const resetUiContent = async (contentKey: string): Promise<void> => {
+  const before = await getUiContent(contentKey)
+  if (before.protected) throw new Error('Content protected không thể reset trong Admin Studio.')
+  const { error } = await supabase.from('ui_content_registry').update({ text_vn: before.defaultTextVn, text_en: before.defaultTextEn }).eq('content_key', contentKey)
+  if (error) throw new Error(safeMessage(error))
+  const after = await getUiContent(contentKey)
+  updateUiContentSnapshot(toRuntimeUiContent(after))
+  await writeAudit('content', 'reset', 'ui_content_registry', contentKey, { textVn: before.textVn, textEn: before.textEn }, { textVn: after.textVn, textEn: after.textEn, resetScope: 'element' }, null)
+}
+
+export const resetUiContentScope = async (scope: 'screen' | 'module', module: string, screen?: string): Promise<void> => {
+  let query = supabase.from('ui_content_registry').select('*').eq('module', module).eq('protected', false)
+  if (scope === 'screen' && screen) query = query.eq('screen', screen)
+  const { data: beforeRows, error: beforeError } = await query
+  if (beforeError) throw new Error(safeMessage(beforeError))
+  const before = (beforeRows ?? []) as Record<string, unknown>[]
+  if (!before.length) return
+  // PostgREST cannot copy one column into another in a generic update, so reset
+  // each record explicitly while keeping the operation auditable as one scope.
+  for (const row of before) {
+    const { error } = await supabase.from('ui_content_registry').update({ text_vn: row.default_text_vn, text_en: row.default_text_en }).eq('content_key', row.content_key)
+    if (error) throw new Error(safeMessage(error))
+  }
+  const after = await Promise.all(before.map((row) => getUiContent(String(row.content_key))))
+  after.forEach((record) => updateUiContentSnapshot(toRuntimeUiContent(record)))
+  await writeAudit('content', 'reset', 'ui_content_registry', `${scope}:${module}${screen ? `:${screen}` : ''}`, before.map((row) => ({ contentKey: row.content_key, textVn: row.text_vn, textEn: row.text_en })), after.map((row) => ({ contentKey: row.contentKey, textVn: row.textVn, textEn: row.textEn })), null)
 }
 
 export const saveConfigDraft = async (configKey: string, draftValue: unknown): Promise<void> => {

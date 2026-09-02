@@ -1,17 +1,18 @@
 import { useCallback, useEffect, useState } from 'react'
 import { ADMIN_ENTITY_REGISTRY, getAdminEntity } from './registry'
 import { compareConfigValues, parseDelimitedText, previewImport, type ImportPreviewRow } from './utils'
-import { adminUserError, claimAdminOwner, deactivateReferenceRow, deleteReferenceRow, exportUserData, fullResetUserData, getAdminSettings, getReferenceUsageCount, listAdminAssets, listAdminAuditLogs, listAdminConfigs, listAdminModuleCounts, listConfigVersions, listReferenceRows, publishConfig, reorderReferenceRows, resetAdminModule, rollbackConfig, saveAdminSettings, saveConfigDraft, updateAdminAsset, updateReferenceRow, upsertReferenceRow } from './services/adminRepository'
-import type { AdminAsset, AdminAuditLog, AdminConfigVersion, AdminEntityDefinition, AdminEntityKey, AdminMode, AdminModuleCount, AdminReferenceRow, AdminRuntimeConfig, AdminView } from './types'
+import { adminUserError, claimAdminOwner, deactivateReferenceRow, deleteReferenceRow, exportUserData, fullResetUserData, getAdminSettings, getReferenceUsageCount, listAdminAssets, listAdminAuditLogs, listAdminConfigs, listAdminModuleCounts, listConfigVersions, listReferenceRows, listUiContent, publishConfig, reorderReferenceRows, resetAdminModule, rollbackConfig, saveAdminSettings, saveConfigDraft, updateAdminAsset, updateReferenceRow, upsertReferenceRow } from './services/adminRepository'
+import type { AdminAsset, AdminAuditLog, AdminConfigVersion, AdminEntityDefinition, AdminEntityKey, AdminMode, AdminModuleCount, AdminReferenceRow, AdminRuntimeConfig, AdminUiContent, AdminView } from './types'
+import { UiContentStudio } from './UiContentStudio'
 import { PageHeading } from '../../components/PageHeading'
 import './admin.css'
 
 const viewItems: Array<{ id: AdminView; code: string; label: string }> = [
-  { id: 'overview', code: 'AS01', label: 'Overview' }, { id: 'data', code: 'AS02', label: 'Data Studio' }, { id: 'prompts', code: 'AS08', label: 'Prompts & outcomes' }, { id: 'rules', code: 'AS10', label: 'Rules & Runtime' }, { id: 'assets', code: 'AS13', label: 'Asset Studio' }, { id: 'recovery', code: 'AS15', label: 'Recovery' }, { id: 'audit', code: 'AS19', label: 'Audit Log' },
+  { id: 'overview', code: 'AS01', label: 'Overview' }, { id: 'content', code: 'AS20', label: 'UI Content' }, { id: 'data', code: 'AS02', label: 'Data Studio' }, { id: 'prompts', code: 'AS08', label: 'Prompts & outcomes' }, { id: 'rules', code: 'AS10', label: 'Rules & Runtime' }, { id: 'assets', code: 'AS13', label: 'Asset Studio' }, { id: 'recovery', code: 'AS15', label: 'Recovery' }, { id: 'audit', code: 'AS19', label: 'Audit Log' },
 ]
 
 const capabilityItems = [
-  ['AS01', 'Overview', 'live'], ['AS02–AS05', 'Entity browser + detail', 'live'], ['AS06–AS07', 'Bulk import + reorder', 'live'], ['AS08–AS09', 'Prompt / Action / Reflection', 'live'], ['AS10–AS12', 'Runtime draft / publish / rollback', 'live'], ['AS13–AS14', 'Asset registry + snapshot', 'live'], ['AS15–AS18', 'Export / reset / impact', 'live'], ['AS19', 'Audit log', 'live'],
+  ['AS01', 'Overview', 'live'], ['AS02–AS05', 'Entity browser + detail', 'live'], ['AS06–AS07', 'Bulk import + reorder', 'live'], ['AS08–AS09', 'Prompt / Action / Reflection', 'live'], ['AS10–AS12', 'Runtime draft / publish / rollback', 'live'], ['AS13–AS14', 'Asset registry + snapshot', 'live'], ['AS15–AS18', 'Export / reset / impact', 'live'], ['AS19', 'Audit log', 'live'], ['AS20', 'UI Content registry', 'live'],
 ]
 
 const dateTime = (value: string | null): string => value ? new Intl.DateTimeFormat('vi-VN', { dateStyle: 'short', timeStyle: 'short' }).format(new Date(value)) : '—'
@@ -23,6 +24,7 @@ export function AdminStudioPage() {
   const [mode, setMode] = useState<AdminMode>('basic')
   const [counts, setCounts] = useState<AdminModuleCount[]>([])
   const [configs, setConfigs] = useState<AdminRuntimeConfig[]>([])
+  const [contentRows, setContentRows] = useState<AdminUiContent[]>([])
   const [assets, setAssets] = useState<AdminAsset[]>([])
   const [auditLogs, setAuditLogs] = useState<AdminAuditLog[]>([])
   const [error, setError] = useState<string | null>(null)
@@ -33,8 +35,8 @@ export function AdminStudioPage() {
     setIsLoading(true); setError(null)
     try {
       await claimAdminOwner()
-      const [settings, nextCounts, nextConfigs, nextAssets, nextAudit] = await Promise.all([getAdminSettings(), listAdminModuleCounts(), listAdminConfigs(), listAdminAssets(), listAdminAuditLogs()])
-      setMode(settings.advancedMode ? 'advanced' : 'basic'); setCounts(nextCounts); setConfigs(nextConfigs); setAssets(nextAssets); setAuditLogs(nextAudit)
+      const [settings, nextCounts, nextConfigs, nextAssets, nextAudit, nextContent] = await Promise.all([getAdminSettings(), listAdminModuleCounts(), listAdminConfigs(), listAdminAssets(), listAdminAuditLogs(), listUiContent()])
+      setMode(settings.advancedMode ? 'advanced' : 'basic'); setCounts(nextCounts); setConfigs(nextConfigs); setAssets(nextAssets); setAuditLogs(nextAudit); setContentRows(nextContent)
     } catch (reason: unknown) { setError(adminUserError(reason, 'Không thể tải Admin Studio.')) } finally { setIsLoading(false) }
   }, [])
 
@@ -55,6 +57,7 @@ export function AdminStudioPage() {
     <div className="admin-toolbar"><nav className="admin-view-tabs" aria-label="Admin Studio sections">{viewItems.map((item) => <button key={item.id} className={view === item.id ? 'is-active' : ''} type="button" onClick={() => { setView(item.id); setNotice(null) }}><small>{item.code}</small>{item.label}</button>)}</nav><div className="admin-mode-switch" role="group" aria-label="Chế độ Admin Studio"><span>Mode</span><button className={mode === 'basic' ? 'is-active' : ''} type="button" onClick={() => void changeMode('basic')}>Basic</button><button className={mode === 'advanced' ? 'is-active' : ''} type="button" onClick={() => void changeMode('advanced')}>Advanced</button></div></div>
     {notice && <div className="admin-notice" role="status">{notice}</div>}
     {view === 'overview' && <AdminOverview counts={counts} configs={configs} assets={assets} onNavigate={setView} />}
+    {view === 'content' && <UiContentStudio rows={contentRows} onChanged={async () => { setContentRows(await listUiContent()); await refreshAudit(); setNotice('Đã cập nhật UI Content.') }} />}
     {view === 'data' && <DataStudio mode={mode} initialEntity="emotions" onChanged={async () => { await refreshAudit(); setNotice('Đã cập nhật Data Studio.') }} />}
     {view === 'prompts' && <DataStudio mode={mode} initialEntity="diary_prompts" promptMode onChanged={async () => { await refreshAudit(); setNotice('Đã cập nhật prompt / outcome.') }} />}
     {view === 'rules' && <RulesStudio configs={configs} onChanged={async () => { setConfigs(await listAdminConfigs()); await refreshAudit(); setNotice('Đã cập nhật runtime config.') }} />}

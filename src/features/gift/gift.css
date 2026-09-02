@@ -1,8 +1,8 @@
 .gift-page { width: 100%; max-width: 78rem; margin: 0 auto; }
-.gift-page__header { display: flex; align-items: end; justify-content: space-between; gap: 1.5rem; margin-bottom: 1.25rem; }
-.gift-page__header h1 { margin: 0 0 .45rem; font-size: clamp(2rem, 4vw, 3.2rem); line-height: 1.04; letter-spacing: -.065em; }
-.gift-page__header .page-heading__eyebrow { margin-bottom: .5rem; }
-.gift-page__header .page-heading__description { max-width: 38rem; margin: 0; color: var(--color-text-muted); font-size: .84rem; }
+.gift-page__header { display: flex; align-items: flex-end; justify-content: space-between; gap: 2rem; margin-bottom: 1.35rem; }
+.gift-page__header h1 { max-width: 48rem; margin: 0 0 .5rem; font-size: clamp(1.85rem, 3vw, 2.55rem); line-height: 1.08; letter-spacing: -.06em; }
+.gift-page__header .page-heading__eyebrow { margin: 0 0 .5rem; }
+.gift-page__header .page-heading__description { max-width: 42rem; margin: 0; color: var(--color-text-muted); font-size: .84rem; line-height: 1.65; }
 .gift-page__header-actions { display: flex; flex: 0 0 auto; gap: .25rem; padding: .25rem; border: 1px solid var(--color-border); border-radius: 999px; background: rgba(255,255,255,.75); }
 .gift-page__tab { padding: .48rem .75rem; border-radius: 999px; color: var(--color-text-muted); font-size: .72rem; font-weight: 750; text-decoration: none; }
 .gift-page__tab.is-active { color: #fff; background: var(--color-violet); box-shadow: 0 5px 14px rgba(116,60,255,.18); }

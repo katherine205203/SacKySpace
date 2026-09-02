@@ -17,7 +17,9 @@ import {
   setActionStatus,
   updateAction,
 } from './actionService'
-import { getActionAccentColor } from './actionPresentation'
+import { ACTION_INDEPENDENT_COLOR, getActionAccentColor } from './actionPresentation'
+import { useUiContent } from '../../services/uiContent'
+import { PageHeading } from '../../components/PageHeading'
 import type { ActionDraft, ActionRecord, ActionReflection, ActionReflectionOutcome, ActionSpaceSnapshot, ActionTab } from './types'
 import type { CheckinRecord } from '../checkin/types'
 import './actionspace.css'
@@ -68,6 +70,10 @@ const linkedCheckinLabel = (action: ActionRecord, snapshot: ActionSpaceSnapshot)
 }
 
 export function ActionSpacePage() {
+  const pageEyebrow = useUiContent('actionspace.landing.eyebrow')
+  const pageTitle = useUiContent('actionspace.landing.title')
+  const pageSubtitle = useUiContent('actionspace.landing.subtitle')
+  const addButton = useUiContent('actionspace.landing.add_button')
   const [snapshot, setSnapshot] = useState<ActionSpaceSnapshot | null>(null)
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
@@ -164,18 +170,11 @@ export function ActionSpacePage() {
     await refresh()
   }
 
-  if (isLoading && !snapshot) return <section className="action-space" role="status"><p className="eyebrow">Sắc Ký · Action Space</p><h1>Action Space</h1><p className="action-space__loading">Đang gom những bước nhỏ của bạn…</p></section>
-  if (!snapshot) return <section className="action-space action-space--error" role="alert"><p className="eyebrow">Sắc Ký · Action Space</p><h1>Chưa thể mở Action Space</h1><p>{error ?? 'Dữ liệu chưa sẵn sàng.'}</p><button className="button button--secondary" type="button" onClick={() => void refresh()}>Thử lại</button></section>
+  if (isLoading && !snapshot) return <section className="action-space" role="status"><p className="eyebrow">{pageEyebrow}</p><h1>{pageTitle}</h1><p className="action-space__loading">Đang gom những bước nhỏ của bạn…</p></section>
+  if (!snapshot) return <section className="action-space action-space--error" role="alert"><p className="eyebrow">{pageEyebrow}</p><h1>Chưa thể mở {pageTitle}</h1><p>{error ?? 'Dữ liệu chưa sẵn sàng.'}</p><button className="button button--secondary" type="button" onClick={() => void refresh()}>Thử lại</button></section>
 
   return <section className="action-space" aria-labelledby="action-space-title">
-    <header className="action-space__header">
-      <div>
-        <p className="eyebrow">Sắc Ký · Capture → Plan → Reflect</p>
-        <h1 id="action-space-title">Action Space</h1>
-        <p>Những bước nhỏ đang chờ bạn — có thể lên lịch, hoặc để dành cho lúc sẵn sàng.</p>
-      </div>
-      <button className="button button--primary" type="button" onClick={() => setComposer({ action: null })}>＋ Thêm action</button>
-    </header>
+    <PageHeading className="action-space__header" eyebrow={pageEyebrow} title={pageTitle} description={pageSubtitle} titleId="action-space-title" actions={<button className="button button--primary" type="button" onClick={() => setComposer({ action: null })}>{addButton}</button>} />
 
     {error && <p className="action-space__notice" role="alert">Không thể làm mới dữ liệu: {error}</p>}
     {notice && <p className="action-space__notice" role="alert">{notice}</p>}
@@ -222,21 +221,24 @@ function UpcomingGroups({ snapshot, reflectionOutcomes, onSelect, onDone, busyAc
 
 function ActionCard({ action, snapshot, reflections, reflectionOutcomes, showDone, onSelect, onDone, busy }: { action: ActionRecord; snapshot: ActionSpaceSnapshot; reflections: ActionReflection[]; reflectionOutcomes: ActionReflectionOutcome[]; showDone: boolean; onSelect: () => void; onDone: () => void; busy: boolean }) {
   const color = actionColor(action, snapshot)
-  const linked = linkedCheckinLabel(action, snapshot)
+  const linkedCheckin = getLinkedCheckin(action, snapshot.checkins)
+  const linked = linkedCheckin ? linkedCheckinLabel(action, snapshot) : null
+  const sourceEmoji = linkedCheckin?.primaryEmotion?.emoji ?? linkedCheckin?.unknownPrompt?.emoji
   const latestReflection = reflections[0]
   const reflectionLabel = latestReflection ? reflectionOutcomes.find((outcome) => outcome.id === latestReflection.outcomeId)?.labelVn ?? latestReflection.outcomeSnapshot : null
   return <article className={`action-card ${isActionCompleted(action) ? 'is-completed' : ''}`} style={{ '--action-color': color } as CSSProperties}>
     <button className="action-card__open" type="button" onClick={onSelect} aria-label={`Mở chi tiết ${action.title}`}>
       <span className="action-card__rail" aria-hidden="true" />
-      <span className="action-card__icon" aria-hidden="true">{isActionCompleted(action) ? '✓' : '↳'}</span>
-      <span className="action-card__body"><strong>{action.title}</strong>{action.note && <small>{action.note}</small>}<span className="action-card__meta"><span>{linked ? `Từ Check-in · ${linked}` : 'Action độc lập'}</span><span>{isActionCompleted(action) ? `Hoàn thành · ${formatCompletedAt(action.completedAt) ?? 'đã ghi nhận'}` : getActionScheduleLabel(action)}</span></span>{reflectionLabel && <span className="action-card__reflection-chip">{reflectionLabel}</span>}</span>
+      <span className="action-card__icon" aria-hidden="true">{sourceEmoji ?? (isActionCompleted(action) ? '✓' : '✦')}</span>
+      <span className="action-card__body"><strong>{action.title}</strong>{action.note && <small>{action.note}</small>}<span className="action-card__meta"><span className="action-card__source">{linked ? `Từ Check-in · ${linked}` : 'Action độc lập'}</span><span className="action-card__schedule">{isActionCompleted(action) ? `Hoàn thành · ${formatCompletedAt(action.completedAt) ?? 'đã ghi nhận'}` : getActionScheduleLabel(action)}</span></span>{reflectionLabel && <span className="action-card__reflection-chip">{reflectionLabel}</span>}</span>
     </button>
     {showDone && <button className={`action-card__done ${isActionCompleted(action) ? 'is-done' : ''}`} type="button" disabled={busy} onClick={onDone}>{isActionCompleted(action) ? 'Đã xong' : 'Xong'}</button>}
   </article>
 }
 
 function ActionEmpty({ tab }: { tab: ActionTab }) {
-  const copy = tab === 'unscheduled' ? 'Bạn có thể ghi lại một action trước, rồi lên lịch sau.' : tab === 'overdue' ? 'Mọi thứ đang ở đúng nhịp của bạn.' : tab === 'completed' ? 'Những bước đã làm sẽ ở lại đây.' : 'Chưa có action nào trong nhóm này.'
+  const todayCopy = useUiContent('actionspace.landing.today_empty')
+  const copy = tab === 'unscheduled' ? 'Bạn có thể ghi lại một action trước, rồi lên lịch sau.' : tab === 'overdue' ? 'Mọi thứ đang ở đúng nhịp của bạn.' : tab === 'completed' ? 'Những bước đã làm sẽ ở lại đây.' : todayCopy
   return <div className="action-empty"><span aria-hidden="true">✦</span><strong>{copy}</strong>{tab !== 'completed' && <Link to="/checkin">Tạo một Check-in để bắt đầu từ điều đang hiện diện.</Link>}</div>
 }
 
@@ -278,9 +280,11 @@ function ActionDetailDrawer({ action, snapshot, reflections, onClose, onEdit, on
 
 const getReflectionSource = (checkin: CheckinRecord | null | undefined) => {
   if (checkin?.primaryEmotion) return { emoji: checkin.primaryEmotion.emoji, nameVn: checkin.primaryEmotion.emotion_name_vn, nameEn: checkin.primaryEmotion.emotion_name_en, color: checkin.primaryEmotion.color_hex, sourceLabel: 'Từ Check-in' }
-  if (checkin?.checkinType === 'unknown') return { emoji: checkin.unknownPrompt?.emoji ?? '◌', nameVn: 'Mình còn đang mơ hồ', nameEn: 'Unknown Check-in', color: '#7C9BEF', sourceLabel: 'Từ Unknown Check-in' }
-  return { emoji: '✦', nameVn: 'Action Space', nameEn: 'Một bước nhỏ cho bạn', color: '#8D78E8', sourceLabel: 'Action độc lập' }
+  if (checkin?.checkinType === 'unknown') return { emoji: checkin.unknownPrompt?.emoji ?? '◌', nameVn: 'Mình còn đang mơ hồ', nameEn: 'Unknown Check-in', color: '#7C9BEF', sourceLabel: 'Từ Check-in' }
+  return { emoji: '✦', nameVn: 'Action Space', nameEn: 'Một bước nhỏ cho bạn', color: ACTION_INDEPENDENT_COLOR, sourceLabel: 'Action độc lập' }
 }
+
+const reflectionIcons: Record<string, string> = { better: '↗', lighter: '≈', same: '—', not_better: '↘', other: '✦' }
 
 export function ReflectionModal({ action, checkin, outcomes, onClose, onSave }: { action: ActionRecord; checkin?: CheckinRecord | null; outcomes: ActionReflectionOutcome[]; historyAvailable?: boolean; onClose: () => void; onSave: (outcome: ActionReflectionOutcome, note: string) => Promise<void> }) {
   const availableOutcomes = outcomes.length ? outcomes : DEFAULT_REFLECTION_OUTCOMES
@@ -290,6 +294,5 @@ export function ReflectionModal({ action, checkin, outcomes, onClose, onSave }: 
   const [error, setError] = useState<string | null>(null)
   const submit = async () => { if (!selected) return; setIsSaving(true); setError(null); try { await onSave(selected, note) } catch { setError('Chưa thể lưu lại lúc này. Thử lại nhé.') } finally { setIsSaving(false) } }
   const source = getReflectionSource(checkin)
-  const icons: Record<string, string> = { better: '↗', lighter: '≈', same: '—', not_better: '↘', other: '✦' }
-  return <div className="action-modal-backdrop" role="presentation" onClick={onClose}><section className="reflection-modal" style={{ '--reflection-color': source.color } as CSSProperties} role="dialog" aria-modal="true" aria-labelledby="reflection-modal-title" onClick={(event) => event.stopPropagation()}><button className="action-modal__close" type="button" onClick={onClose} aria-label="Đóng">×</button><div className="reflection-modal__layout"><aside className="reflection-modal__source"><div className="reflection-modal__source-orb" aria-hidden="true">{source.emoji}</div><span className="eyebrow">{source.sourceLabel}</span><strong>{source.nameVn}</strong><small>{source.nameEn}</small><div className="reflection-modal__source-action"><span>✓</span><p>{action.title}</p></div></aside><div className="reflection-modal__main"><p className="eyebrow">Một khoảng nhìn lại</p><h2 id="reflection-modal-title">Làm xong, bạn thấy thế nào rồi?</h2><p className="reflection-modal__prompt">Không cần câu trả lời hoàn hảo — chỉ cần điều đúng nhất với bạn lúc này.</p><div className="reflection-options" role="radiogroup" aria-label="Cảm nhận sau khi làm xong">{availableOutcomes.map((outcome) => <button key={outcome.id} className={`reflection-option reflection-option--${outcome.semanticGroup} ${selected?.id === outcome.id ? 'is-selected' : ''}`} type="button" role="radio" aria-checked={selected?.id === outcome.id} onClick={() => setSelected(outcome)}><span aria-hidden="true">{icons[outcome.id] ?? '◌'}</span><span>{outcome.labelVn}</span>{selected?.id === outcome.id && <b aria-hidden="true">✓</b>}</button>)}</div><label className="reflection-note"><span>Ghi chú tùy chọn</span><textarea rows={4} value={note} onChange={(event) => setNote(event.target.value)} placeholder="Viết một dòng nếu bạn muốn…" /></label>{error && <p className="action-modal__error" role="alert">{error}</p>}<footer><button className="button button--secondary" type="button" onClick={onClose}>Bỏ qua</button><button className="button button--primary" type="button" disabled={!selected || isSaving} onClick={() => void submit()}>{isSaving ? 'Đang lưu…' : 'Lưu lại'}</button></footer></div></div></section></div>
+  return <div className="action-modal-backdrop" role="presentation" onClick={onClose}><section className="reflection-modal" style={{ '--reflection-color': source.color } as CSSProperties} role="dialog" aria-modal="true" aria-labelledby="reflection-modal-title" onClick={(event) => event.stopPropagation()}><button className="action-modal__close" type="button" onClick={onClose} aria-label="Đóng">×</button><div className="reflection-modal__layout"><aside className="reflection-modal__source"><div className="reflection-modal__source-orb" aria-hidden="true">{source.emoji}</div><span className="eyebrow">{source.sourceLabel}</span><strong>{source.nameVn}</strong><small>{source.nameEn}</small><div className="reflection-modal__source-action"><span>✓</span><p>{action.title}</p></div></aside><div className="reflection-modal__main"><p className="eyebrow">Một khoảng nhìn lại</p><h2 id="reflection-modal-title">Làm xong, bạn thấy thế nào rồi?</h2><p className="reflection-modal__prompt">Không cần câu trả lời hoàn hảo — chỉ cần điều đúng nhất với bạn lúc này.</p><div className="reflection-options" role="radiogroup" aria-label="Cảm nhận sau khi làm xong">{availableOutcomes.map((outcome) => <button key={outcome.id} className={`reflection-option reflection-option--${outcome.semanticGroup} ${selected?.id === outcome.id ? 'is-selected' : ''}`} type="button" role="radio" aria-checked={selected?.id === outcome.id} onClick={() => setSelected(outcome)}><span aria-hidden="true">{reflectionIcons[outcome.id] ?? '◌'}</span><span>{outcome.labelVn}</span>{selected?.id === outcome.id && <b aria-hidden="true">✓</b>}</button>)}</div><label className="reflection-note"><span>Ghi chú tùy chọn</span><textarea rows={4} value={note} onChange={(event) => setNote(event.target.value)} placeholder="Viết một dòng nếu bạn muốn…" /></label>{error && <p className="action-modal__error" role="alert">{error}</p>}<footer><button className="button button--secondary" type="button" onClick={onClose}>Bỏ qua</button><button className="button button--primary" type="button" disabled={!selected || isSaving} onClick={() => void submit()}>{isSaving ? 'Đang lưu…' : 'Lưu lại'}</button></footer></div></div></section></div>
 }
