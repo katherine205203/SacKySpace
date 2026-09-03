@@ -1,7 +1,7 @@
 import { useEffect, useId, useRef, type CSSProperties, type ReactNode } from 'react'
 import { NavLink } from 'react-router-dom'
 import type { CheckinDraft, Context, Emotion, EmotionFamily, Need, NeedGroup, ReferenceData } from '../types'
-import { buildColorOrbRegionsFromColors } from '../utils/colorOrb'
+import { buildColorOrbRegionsFromColors, type ColorOrbEntry } from '../utils/colorOrb'
 import { PageHeading } from '../../../components/PageHeading'
 
 export function CheckinTabs({ active }: { active: 'create' | 'history' }) {
@@ -22,43 +22,23 @@ export function StepProgress({ active }: { active: 'emotion' | 'secondary' | 'ne
   return <nav className="checkin-step-progress" aria-label="Tiến trình Check-in">{steps.map((step, index) => <span className={`checkin-step-progress__item ${step.id === active ? 'is-current' : ''} ${activeIndex >= 0 && index < activeIndex ? 'is-complete' : ''}`} key={step.id}><span className="checkin-step-progress__marker" aria-hidden="true">{activeIndex >= 0 && index < activeIndex ? '✓' : index + 1}</span><span>{step.label}</span></span>)}</nav>
 }
 
-export function ColorOrb({ entries, size = 'medium', label }: { entries: readonly { color: string; intensity: number }[]; size?: 'small' | 'medium' | 'large'; label?: string }) {
+export function ColorOrb({ entries, size = 'medium', label }: { entries: readonly ColorOrbEntry[]; size?: 'small' | 'medium' | 'large'; label?: string }) {
   const territories = buildColorOrbRegionsFromColors(entries)
   const hasData = territories.length > 0
   const id = useId().replaceAll(':', '')
   const clipId = `orb-clip-${id}`
   const baseId = `orb-base-${id}`
-  const glowId = `orb-glow-${id}`
-  const surfaceId = `orb-surface-${id}`
   return <svg className={`color-orb color-orb--${size} ${hasData ? 'is-vivid' : 'is-empty'}`} viewBox="0 0 200 200" role={label ? 'img' : undefined} aria-label={label}>
     <defs>
       <clipPath id={clipId}><circle cx="100" cy="100" r="96" /></clipPath>
-      <radialGradient id={baseId} cx="31%" cy="20%" r="90%">
-        <stop offset="0" stopColor="#ffffff" />
-        <stop offset=".2" stopColor="#fbf9ff" />
-        <stop offset=".58" stopColor="#f1eaff" />
-        <stop offset=".86" stopColor="#e5dafa" />
-        <stop offset="1" stopColor="#d7c9ef" />
-      </radialGradient>
-      <radialGradient id={glowId} cx="34%" cy="24%" r="76%">
-        <stop offset="0" stopColor="#ffffff" stopOpacity=".2" />
-        <stop offset=".42" stopColor="#ffffff" stopOpacity=".04" />
-        <stop offset="1" stopColor="#ffffff" stopOpacity="0" />
-      </radialGradient>
-      <radialGradient id={surfaceId} cx="27%" cy="15%" r="88%">
-        <stop offset="0" stopColor="#ffffff" stopOpacity=".13" />
-        <stop offset=".28" stopColor="#ffffff" stopOpacity=".025" />
-        <stop offset=".72" stopColor="#ffffff" stopOpacity="0" />
-      </radialGradient>
-      <filter id={`orb-territory-edge-${id}`} x="-10%" y="-10%" width="120%" height="120%"><feGaussianBlur stdDeviation=".35" /></filter>
+      <radialGradient id={baseId} cx="32%" cy="24%" r="88%"><stop offset="0" stopColor="#FCFBFF" /><stop offset=".72" stopColor="#F3EEFB" /><stop offset="1" stopColor="#E9E1F6" /></radialGradient>
     </defs>
     <circle className="color-orb__halo" cx="100" cy="100" r="99" />
     <circle className="color-orb__base" cx="100" cy="100" r="96" fill={`url(#${baseId})`} />
     <g clipPath={`url(#${clipId})`}>
-      {territories.map((territory) => <path key={`${territory.color}-${territory.start}`} className="color-orb__territory" d={territory.path} fill={territory.color} fillOpacity=".94" filter={`url(#orb-territory-edge-${id})`} />)}
-      <circle className="color-orb__inner-glow" cx="100" cy="100" r="96" fill={`url(#${glowId})`} />
-      <circle className="color-orb__surface" cx="100" cy="100" r="96" fill={`url(#${surfaceId})`} />
-      <ellipse className="color-orb__sheen" cx="67" cy="47" rx="44" ry="20" transform="rotate(-18 67 47)" />
+      {territories.map((territory) => <path key={territory.key} className="color-orb__territory" d={territory.path} fill={territory.color} fillOpacity=".97" stroke="#FFFFFF" strokeOpacity={territory.edgeOpacity} strokeWidth="1.05" strokeLinejoin="round" vectorEffect="non-scaling-stroke" />)}
+      <circle className="color-orb__center-shine" cx="100" cy="100" r="14" />
+      {territories.filter((territory) => territory.showLabel).map((territory) => <text key={`${territory.key}-label`} className="color-orb__territory-label" x={territory.labelX} y={territory.labelY} fill={territory.labelColor} textAnchor="middle" dominantBaseline="middle">{Math.round(territory.percentage)}%</text>)}
       <circle className="color-orb__inner-ring" cx="100" cy="100" r="82" />
     </g>
     <circle className="color-orb__outline" cx="100" cy="100" r="96" />

@@ -4,6 +4,7 @@ import type { HomeRange } from '../types'
 import type { DateRange } from '../../checkin/utils/history'
 import { formatHomeRangeLabel } from '../services/homeAggregation'
 import { useUiContent } from '../../../services/uiContent'
+import { getColorOrbLegend, type ColorOrbEntry } from '../../checkin/utils/colorOrb'
 
 const rangeOptions: { value: HomeRange; label: string }[] = [
   { value: 'today', label: 'Hôm nay' },
@@ -15,7 +16,7 @@ const rangeOptions: { value: HomeRange; label: string }[] = [
 type HomeHeroProps = {
   displayName: string
   streak: number
-  orbEntries: readonly { color: string; intensity: number }[]
+  orbEntries: readonly ColorOrbEntry[]
   range: HomeRange
   customRange: DateRange
   relevantCheckins: number
@@ -30,6 +31,7 @@ export function HomeHero({ displayName, streak, orbEntries, range, customRange, 
   const heroSubtitle = useUiContent('home.landing.hero_subtitle')
   const orbTitle = useUiContent('home.landing.orb_title')
   const checkinCta = useUiContent('home.landing.checkin_cta')
+  const dominantEmotions = getColorOrbLegend(orbEntries)
   const greeting = new Date().getHours() < 12 ? 'Chào buổi sáng' : new Date().getHours() < 18 ? 'Chào buổi chiều' : 'Chào buổi tối'
   const greetingLabel = displayName ? `${greeting}, ${displayName}` : greeting
 
@@ -55,6 +57,7 @@ export function HomeHero({ displayName, streak, orbEntries, range, customRange, 
           </div>
           {range === 'custom' && <div className="home-v2__custom-range"><label>Từ ngày<input type="date" value={customRange.start ?? ''} onChange={(event) => onCustomRangeChange({ ...customRange, start: event.target.value || null })} /></label><span>→</span><label>Đến ngày<input type="date" value={customRange.end ?? ''} onChange={(event) => onCustomRangeChange({ ...customRange, end: event.target.value || null })} /></label></div>}
           <div className="home-v2__metrics" aria-label="Tóm tắt khoảng thời gian"><div><strong>{relevantCheckins}</strong><small>Check-in</small></div><div><strong>{completedActions}</strong><small>Action đã xong</small></div><div><strong>{remainingActions}</strong><small>Action còn lại</small></div></div>
+          <div className="home-v2__orb-legend" aria-label="Cảm xúc hiện diện hôm nay"><div className="home-v2__orb-legend-heading"><span>Màu sắc hôm nay</span><small>{dominantEmotions.length ? 'Nổi bật nhất' : 'Chưa có Emotion Check-in'}</small></div>{dominantEmotions.length ? dominantEmotions.map((emotion) => <div className="home-v2__orb-legend-item" key={emotion.key}><i style={{ background: emotion.color }} aria-hidden="true" /><span>{emotion.emoji && <b aria-hidden="true">{emotion.emoji}</b>}{emotion.label ?? 'Cảm xúc'}</span><strong>{emotion.percentage}%</strong></div>) : <p className="home-v2__orb-legend-empty">Hôm nay chưa có màu cảm xúc nào được ghi nhận.</p>}</div>
           <Link className="button button--primary home-v2__cta" to="/checkin">{checkinCta} <span aria-hidden="true">→</span></Link>
         </div>
       </div>

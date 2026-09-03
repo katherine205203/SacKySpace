@@ -1,11 +1,12 @@
 import { filterByDateRange, getCurrentStreakFromCreatedAt, getHistoryDateRange, getLocalDateKey, type DateRange, type HistoryPreset } from '../../checkin/utils/history'
 import type { CheckinRecord } from '../../checkin/types'
+import { intensityToPresenceWeight, type ColorOrbEntry } from '../../checkin/utils/colorOrb'
 import type { HomeRange, HomeReminder } from '../types'
 
 export const HOME_TIME_ZONE = 'Asia/Ho_Chi_Minh'
 export const UNKNOWN_PRESENTATION_COLOR = '#b8a5df'
 
-type ColorEntry = { color: string; intensity: number }
+export type ColorEntry = ColorOrbEntry
 
 const addDays = (dateKey: string, days: number): string => {
   const [year, month, day] = dateKey.split('-').map(Number)
@@ -29,15 +30,25 @@ export const getHomeRecordsForRange = (
 ): CheckinRecord[] => filterByDateRange(records, getHomeDateRange(range, now, customRange), HOME_TIME_ZONE)
 
 /**
- * PASS 1 orb formula: each emotion check-in contributes its primary emotion
- * color with a weight equal to its stored intensity. Secondary emotions are
- * intentionally excluded here because Home represents the primary emotional
- * signal only. Unknown check-ins count elsewhere but contribute no color.
+ * A Color Orb is a map of emotional presence, not a count of check-ins.
+ * Unknown Check-ins still participate in streaks and metrics, but never enter
+ * this list. One check-in owns one total weight; secondary emotions only share
+ * that weight with the primary emotion.
  */
 export const getHomeOrbEntries = (records: readonly CheckinRecord[]): ColorEntry[] =>
   records.flatMap((record) => {
     if (record.checkinType !== 'emotion' || !record.primaryEmotion) return []
-    return [{ color: record.primaryEmotion.color_hex, intensity: record.intensity ?? 1 }]
+    const totalWeight = intensityToPresenceWeight(record.intensity ?? 1)
+    const secondary = record.secondaryEmotions.filter((emotion, index, list) => emotion.emotion_id !== record.primaryEmotion?.emotion_id && list.findIndex((item) => item.emotion_id === emotion.emotion_id) === index)
+    const shares = secondary.length === 0 ? [1] : secondary.length === 1 ? [.7, .3] : [.7, .15, .15]
+    return [record.primaryEmotion, ...secondary].map((emotion, index) => ({
+      color: emotion.color_hex,
+      intensity: record.intensity ?? 1,
+      presenceWeight: totalWeight * (shares[index] ?? 0),
+      ...(emotion.emotion_id ? { emotionId: emotion.emotion_id } : {}),
+      ...(emotion.emotion_name_vn ? { label: emotion.emotion_name_vn } : {}),
+      ...(emotion.emoji ? { emoji: emotion.emoji } : {}),
+    }))
   })
 
 export const getCurrentStreak = (records: readonly CheckinRecord[], now = new Date()): number => {

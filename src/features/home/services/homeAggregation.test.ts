@@ -51,7 +51,24 @@ describe('Home aggregation', () => {
       record('2026-08-28T03:00:00.000Z', 'unknown'),
     ]
     expect(getCurrentStreak(records, now)).toBe(2)
-    expect(getHomeOrbEntries(records)).toEqual([{ color: '#FF6B8A', intensity: 3 }])
+    expect(getHomeOrbEntries(records)).toEqual([{ color: '#FF6B8A', intensity: 3, presenceWeight: 1.8 }])
+  })
+
+  it('splits one emotion check-in across primary and secondary presence without adding weight', () => {
+    const emotion = (id: string, name: string, color: string) => ({ emotion_id: id, emotion_name_vn: name, emotion_name_en: name, emoji: '◉', color_hex: color })
+    const richRecord = {
+      ...record('2026-08-29T03:00:00.000Z'),
+      intensity: 5,
+      primaryEmotion: emotion('interest', 'Hứng thú', '#FF9F1C') as CheckinRecord['primaryEmotion'],
+      secondaryEmotions: [
+        emotion('calm', 'Bình yên', '#52B788') as NonNullable<CheckinRecord['primaryEmotion']>,
+        emotion('curious', 'Tò mò', '#118AB2') as NonNullable<CheckinRecord['primaryEmotion']>,
+      ],
+    }
+    const entries = getHomeOrbEntries([richRecord])
+    expect(entries[0].presenceWeight).toBeCloseTo(2.24)
+    expect(entries.slice(1).map((entry) => entry.presenceWeight)).toEqual([.48, .48])
+    expect(entries.reduce((sum, entry) => sum + (entry.presenceWeight ?? 0), 0)).toBeCloseTo(3.2)
   })
 
   it('keeps completed actions out of Home while counting them for Hero metrics', () => {

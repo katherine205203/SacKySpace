@@ -34,6 +34,7 @@ export function HomePage() {
   const records = useMemo(() => snapshot?.records ?? [], [snapshot])
   const reminders = useMemo(() => snapshot?.reminders ?? [], [snapshot])
   const rangeRecords = useMemo(() => getHomeRecordsForRange(records, range, now, customRange), [customRange, now, range, records])
+  const todayOrbEntries = useMemo(() => getHomeOrbEntries(getHomeRecordsForRange(records, 'today', now)), [now, records])
   const journeyCheckins = useMemo(() => getRecentJourneyCheckins(records, now), [now, records])
   const actionSummary = useMemo(() => getHomeActionSummary(reminders, now, range, customRange), [customRange, now, range, reminders])
   const selectedRecord = selectedRecordId ? records.find((record) => record.id === selectedRecordId) ?? null : null
@@ -83,7 +84,7 @@ export function HomePage() {
     {interactionError && <p className="home-v2__data-state home-v2__data-state--error" role="alert">{interactionError}</p>}
     {snapshot && <>
       <div className="home-v2__grid">
-        <HomeHero displayName={snapshot.displayName} streak={getCurrentStreak(records, now)} orbEntries={getHomeOrbEntries(rangeRecords)} range={range} customRange={customRange} relevantCheckins={rangeRecords.length} completedActions={actionSummary.completed} remainingActions={actionSummary.remaining} onRangeChange={setRange} onCustomRangeChange={setCustomRange} />
+        <HomeHero displayName={snapshot.displayName} streak={getCurrentStreak(records, now)} orbEntries={todayOrbEntries} range={range} customRange={customRange} relevantCheckins={rangeRecords.length} completedActions={actionSummary.completed} remainingActions={actionSummary.remaining} onRangeChange={setRange} onCustomRangeChange={setCustomRange} />
         <div className="home-v2__right-column"><RecentJourney records={journeyCheckins} onSelectCheckin={(record) => { setInteractionError(null); setSelectedRecordId(record.id) }} /><ActionPreview reminders={reminders} checkins={records} onDone={(reminder) => completeHomeAction(reminder)} /></div>
         <DiaryToday preview={diaryPreview} />
         <PersonalSurfaces futureLetter={snapshot.futureLetter} gift={snapshot.gift} />
