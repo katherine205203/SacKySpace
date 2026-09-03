@@ -89,6 +89,7 @@ describe('Home aggregation', () => {
       { id: 'today', sourceCheckinId: null, title: 'Today', note: null, plannedDate: '2026-08-29', dueTime: null, status: 'pending', completedAt: null, origin: 'manual' },
     ]
     expect(getHomeActionItems(reminders, 'today', now).map((item) => item.id)).toEqual(['today'])
+    expect(getHomeActionItems(reminders, 'unscheduled', now).map((item) => item.id)).toEqual(['unscheduled'])
     expect(getHomeActionSummary(reminders, now)).toEqual({ total: 1, completed: 0, remaining: 1 })
   })
 

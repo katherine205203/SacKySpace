@@ -86,7 +86,7 @@ export const getCheckinPresentation = (record: CheckinRecord): { title: string; 
 const isCompleted = (reminder: HomeReminder): boolean =>
   reminder.status.toLowerCase() === 'completed' || Boolean(reminder.completedAt)
 
-export type HomeActionTab = 'today' | 'upcoming' | 'overdue'
+export type HomeActionTab = 'today' | 'upcoming' | 'overdue' | 'unscheduled'
 
 const getMatchingHomeActionItems = (
   reminders: readonly HomeReminder[],
@@ -97,6 +97,7 @@ const getMatchingHomeActionItems = (
   const matchesTab = (reminder: HomeReminder): boolean => {
     const endDate = reminder.plannedEndDate || reminder.plannedDate
     if (tab === 'overdue') return Boolean(endDate && endDate < today && !isCompleted(reminder))
+    if (tab === 'unscheduled') return !reminder.plannedDate && !isCompleted(reminder)
     if (tab === 'upcoming') return Boolean(reminder.plannedDate && reminder.plannedDate > today && !isCompleted(reminder))
     return Boolean(reminder.plannedDate && reminder.plannedDate <= today && (endDate ?? today) >= today && !isCompleted(reminder))
   }

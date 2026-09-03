@@ -116,12 +116,13 @@
 .action-card__body { display: grid; min-width: 0; gap: .1rem; }
 .action-card__body strong { overflow: hidden; font-size: .82rem; text-overflow: ellipsis; white-space: nowrap; }
 .action-card.is-completed .action-card__body strong { color: var(--color-text-muted); text-decoration: line-through; }
-.action-card__body > small { overflow: hidden; color: var(--color-text-muted); font-size: .65rem; line-height: 1.2; text-overflow: ellipsis; white-space: nowrap; }
+.action-card__description { display: block; color: var(--color-text-muted); font-size: .68rem; line-height: 1.45; white-space: pre-wrap; overflow-wrap: anywhere; }
 .action-card__meta { display: flex; flex-wrap: wrap; align-items: center; gap: .28rem .45rem; color: var(--color-text-soft); font-size: .6rem; line-height: 1.2; }
 .action-card__source { max-width: 100%; overflow: hidden; padding: .14rem .38rem; border: 1px solid color-mix(in srgb, var(--action-color, var(--color-violet)) 22%, var(--color-border)); border-radius: 999px; color: color-mix(in srgb, var(--action-color, var(--color-violet)) 78%, var(--color-text-muted)); background: color-mix(in srgb, var(--action-color, var(--color-violet)) 7%, white); font-weight: 750; text-overflow: ellipsis; white-space: nowrap; }
 .action-card__schedule { color: var(--color-text-soft); }
 .action-card__reflection-chip { width: fit-content; max-width: 100%; overflow: hidden; padding: .12rem .35rem; border: 1px solid color-mix(in srgb, var(--action-color, var(--color-violet)) 22%, var(--color-border)); border-radius: 999px; color: color-mix(in srgb, var(--action-color, var(--color-violet)) 75%, var(--color-text-muted)); background: color-mix(in srgb, var(--action-color, var(--color-violet)) 6%, white); font-size: .58rem; text-overflow: ellipsis; white-space: nowrap; }
-.action-card__done { align-self: stretch; min-width: 3.8rem; margin: .4rem 0; padding: .32rem .5rem; border: 1px solid color-mix(in srgb, var(--action-color, var(--color-violet)) 28%, var(--color-border)); border-radius: .68rem; color: var(--action-color, var(--color-violet-dark)); background: color-mix(in srgb, var(--action-color, var(--color-violet)) 6%, white); font-size: .64rem; font-weight: 800; }
+.action-card__done { display: inline-flex; align-self: stretch; align-items: center; justify-content: center; min-width: 3.8rem; gap: .28rem; margin: .4rem 0; padding: .32rem .5rem; border: 1px solid color-mix(in srgb, var(--action-color, var(--color-violet)) 28%, var(--color-border)); border-radius: .68rem; color: var(--action-color, var(--color-violet-dark)); background: color-mix(in srgb, var(--action-color, var(--color-violet)) 6%, white); font-size: .64rem; font-weight: 800; }
+.action-card__done > span:first-child { font-size: .78rem; line-height: 1; }
 .action-card__done:hover:not(:disabled) { color: white; background: var(--action-color, var(--color-violet)); }
 .action-card__done.is-done { border-color: var(--action-color, var(--color-violet)); color: white; background: var(--action-color, var(--color-violet)); }
 .action-card__done:disabled { cursor: wait; opacity: .55; }

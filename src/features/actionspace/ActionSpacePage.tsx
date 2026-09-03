@@ -209,7 +209,7 @@ function Metric({ label, value }: { label: string; value: string | number }) {
 function ActionList({ actions, snapshot, tab, onSelect, onDone, busyActionId, reflectionOutcomes }: { actions: ActionRecord[]; snapshot: ActionSpaceSnapshot; tab: ActionTab; onSelect: (id: string) => void; onDone: (action: ActionRecord) => void; busyActionId: string | null; reflectionOutcomes: ActionReflectionOutcome[] }) {
   return <section className="action-list" aria-live="polite">
     <div className="action-list__heading"><div><span className="section-label">{tab === 'today' ? 'Những bước hôm nay' : tabs.find((item) => item.value === tab)?.label}</span><h2>{tab === 'overdue' ? 'Có vài action vẫn đang chờ bạn.' : tab === 'unscheduled' ? 'Những điều bạn muốn giữ lại' : tab === 'completed' ? 'Những bước bạn đã làm được' : 'Đi từng bước vừa đủ.'}</h2></div><span className="action-list__count">{actions.length} action</span></div>
-    {actions.length ? <div className="action-list__items">{actions.map((action) => <ActionCard key={action.id} action={action} snapshot={snapshot} reflections={snapshot.reflections.filter((item) => item.actionId === action.id)} reflectionOutcomes={reflectionOutcomes} showDone={tab !== 'completed'} onSelect={() => onSelect(action.id)} onDone={() => onDone(action)} busy={busyActionId === action.id} />)}</div> : <ActionEmpty tab={tab} />}
+    {actions.length ? <div className="action-list__items">{actions.map((action) => <ActionCard key={action.id} action={action} snapshot={snapshot} reflections={snapshot.reflections.filter((item) => item.actionId === action.id)} reflectionOutcomes={reflectionOutcomes} showDone onSelect={() => onSelect(action.id)} onDone={() => onDone(action)} busy={busyActionId === action.id} />)}</div> : <ActionEmpty tab={tab} />}
   </section>
 }
 
@@ -223,16 +223,16 @@ function ActionCard({ action, snapshot, reflections, reflectionOutcomes, showDon
   const color = actionColor(action, snapshot)
   const linkedCheckin = getLinkedCheckin(action, snapshot.checkins)
   const linked = linkedCheckin ? linkedCheckinLabel(action, snapshot) : null
-  const sourceEmoji = linkedCheckin?.primaryEmotion?.emoji ?? linkedCheckin?.unknownPrompt?.emoji
+  const sourceEmoji = linkedCheckin?.primaryEmotion?.emoji ?? linkedCheckin?.unknownPrompt?.emoji ?? '✨'
   const latestReflection = reflections[0]
   const reflectionLabel = latestReflection ? reflectionOutcomes.find((outcome) => outcome.id === latestReflection.outcomeId)?.labelVn ?? latestReflection.outcomeSnapshot : null
   return <article className={`action-card ${isActionCompleted(action) ? 'is-completed' : ''}`} style={{ '--action-color': color } as CSSProperties}>
     <button className="action-card__open" type="button" onClick={onSelect} aria-label={`Mở chi tiết ${action.title}`}>
       <span className="action-card__rail" aria-hidden="true" />
       <span className="action-card__icon" aria-hidden="true">{sourceEmoji ?? (isActionCompleted(action) ? '✓' : '✦')}</span>
-      <span className="action-card__body"><strong>{action.title}</strong>{action.note && <small>{action.note}</small>}<span className="action-card__meta"><span className="action-card__source">{linked ? `Từ Check-in · ${linked}` : 'Action độc lập'}</span><span className="action-card__schedule">{isActionCompleted(action) ? `Hoàn thành · ${formatCompletedAt(action.completedAt) ?? 'đã ghi nhận'}` : getActionScheduleLabel(action)}</span></span>{reflectionLabel && <span className="action-card__reflection-chip">{reflectionLabel}</span>}</span>
+      <span className="action-card__body"><strong>{action.title}</strong><span className="action-card__description">{action.note || 'Chưa thêm mô tả.'}</span><span className="action-card__meta"><span className="action-card__source">{linked ? `Từ Check-in ${linked}` : 'Độc lập'}</span><span className="action-card__schedule">{isActionCompleted(action) ? `Hoàn thành · ${formatCompletedAt(action.completedAt) ?? 'đã ghi nhận'}` : getActionScheduleLabel(action)}</span></span>{reflectionLabel && <span className="action-card__reflection-chip">{reflectionLabel}</span>}</span>
     </button>
-    {showDone && <button className={`action-card__done ${isActionCompleted(action) ? 'is-done' : ''}`} type="button" disabled={busy} onClick={onDone}>{isActionCompleted(action) ? 'Đã xong' : 'Xong'}</button>}
+    {showDone && <button className={`action-card__done ${isActionCompleted(action) ? 'is-done' : ''}`} type="button" disabled={busy} onClick={onDone}><span aria-hidden="true">{isActionCompleted(action) ? '✓' : '○'}</span><span>{isActionCompleted(action) ? 'Đã xong' : 'Xong'}</span></button>}
   </article>
 }
 

@@ -16,7 +16,8 @@ const entry = (localDate: string, status: DiaryEntry['status']): DiaryEntry => (
   images: [],
   createdAt: `${localDate}T03:00:00.000Z`,
   updatedAt: `${localDate}T03:00:00.000Z`,
-  completedAt: status === 'done' ? `${localDate}T03:00:00.000Z` : null,
+  completedAt: ['done', 'user_done', 'day_locked'].includes(status) ? `${localDate}T03:00:00.000Z` : null,
+  dayLockedAt: status === 'day_locked' ? `${localDate}T17:00:00.000Z` : null,
 })
 
 describe('Diary metrics', () => {

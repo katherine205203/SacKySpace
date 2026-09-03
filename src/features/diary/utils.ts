@@ -48,7 +48,8 @@ export const createDiaryId = (): string => {
 }
 
 export const getDiaryMetrics = (entries: readonly DiaryEntry[], now = new Date()) => {
-  const doneDates = new Set(entries.filter((entry) => entry.status === 'done').map((entry) => entry.localDate))
+  const isFinished = (entry: DiaryEntry): boolean => entry.status === 'done' || entry.status === 'user_done' || entry.status === 'day_locked'
+  const doneDates = new Set(entries.filter(isFinished).map((entry) => entry.localDate))
   let currentStreak = 0
   let cursor = getDiaryLocalDate(now)
   while (doneDates.has(cursor)) {
@@ -68,7 +69,7 @@ export const getDiaryMetrics = (entries: readonly DiaryEntry[], now = new Date()
   return {
     currentStreak,
     longestStreak,
-    doneCount: entries.filter((entry) => entry.status === 'done' && entry.localDate.startsWith(month)).length,
+    doneCount: entries.filter((entry) => isFinished(entry) && entry.localDate.startsWith(month)).length,
     draftCount: entries.filter((entry) => entry.status === 'draft').length,
   }
 }

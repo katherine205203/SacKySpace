@@ -2,7 +2,7 @@ import { getLinkedCheckin } from './actionAggregation'
 import type { ActionRecord } from './types'
 import type { CheckinRecord } from '../checkin/types'
 
-export const ACTION_INDEPENDENT_COLOR = '#82749f'
+export const ACTION_INDEPENDENT_COLOR = '#743CFF'
 export const UNKNOWN_ACTION_COLOR = '#b8a5df'
 
 export const getActionAccentColor = (action: ActionRecord, checkins: readonly CheckinRecord[]): string => {

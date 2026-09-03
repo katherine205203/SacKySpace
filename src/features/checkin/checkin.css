@@ -96,6 +96,7 @@
 .note-field > span { color: var(--checkin-violet); font-size: .65rem; font-weight: 800; letter-spacing: .09em; text-transform: uppercase; }
 .note-field > span small { color: var(--checkin-soft-ink); font-size: .63rem; font-weight: 500; letter-spacing: 0; text-transform: none; }
 .note-field textarea { min-height: 5rem; resize: vertical; padding: .8rem; border: 1px solid var(--checkin-border); border-radius: 9px; outline: 0; background: white; color: var(--checkin-ink); font-size: .78rem; line-height: 1.45; }
+.note-field--optional textarea { min-height: 10rem; }
 .note-field textarea:focus { border-color: var(--checkin-violet); box-shadow: 0 0 0 3px #ece8ff; }
 .note-field__count { position: absolute; right: .65rem; bottom: .55rem; color: var(--checkin-soft-ink); font-size: .62rem; }
 .selection-hint, .form-hint, .empty-state, .loading-state { color: var(--checkin-muted); font-size: .72rem; }
@@ -448,6 +449,7 @@
   .intensity-grid { grid-template-columns: repeat(5, minmax(4.7rem, 1fr)); overflow-x: auto; }
   .intensity-card { min-height: 4.4rem; }
   .note-field textarea { min-height: 6.25rem; }
+  .note-field--optional textarea { min-height: 12.5rem; }
   .review-sections { display: grid; gap: .55rem; }
   .review-section { margin: 0; }
   .history-main { display: grid; gap: .7rem; }

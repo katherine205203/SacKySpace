@@ -36,7 +36,7 @@ export function CompletionModal({ onClose, onFinish, onAction, title = 'HoÃ n tá
 
 const today = () => new Date().toISOString().slice(0, 10)
 
-const toDraft = (action: CareAction): ActionDraft => ({ careActionId: action.care_action_id, title: action.title_vn, note: '', plannedDate: '', dueTime: '' })
+const toDraft = (action: CareAction): ActionDraft => ({ careActionId: action.care_action_id, title: action.title_vn, note: action.description_vn, plannedDate: '', dueTime: '' })
 
 export type ActionModalContext = {
   emotion: ReferenceData['emotions'][number] | null | undefined

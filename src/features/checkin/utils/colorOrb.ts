@@ -10,6 +10,13 @@ export type ColorOrbEntry = {
   emoji?: string
 }
 
+export type LabColor = { l: number; a: number; b: number }
+export type RgbColor = readonly [number, number, number]
+
+/**
+ * Metadata for one continuous field territory. There is intentionally no
+ * path or polygon here: the renderer samples the weighted field directly.
+ */
 export type OrbRegion = {
   key: string
   color: string
@@ -17,16 +24,40 @@ export type OrbRegion = {
   percentage: number
   start: number
   end: number
-  path: string
+  seedX: number
+  seedY: number
   labelX: number
   labelY: number
   labelColor: '#FFFFFF' | '#231B46'
   showLabel: boolean
-  edgeOpacity: number
   label?: string
   labelEn?: string
   emoji?: string
   emotionId?: string
+  colorLab: LabColor
+  colorRgb: RgbColor
+  influenceStrength: number
+  /**
+   * Additive offset calibrated against a low-resolution area map. It keeps a
+   * territory's visible area faithful to its real presence weight without
+   * turning the map into radial percentage wedges.
+   */
+  fieldBias: number
+  warpPhase: number
+  rotation: number
+  aspect: number
+}
+
+export type OrbField = {
+  regions: OrbRegion[]
+  totalWeight: number
+}
+
+export type OrbFieldSample = {
+  primaryIndex: number
+  secondaryIndex: number
+  blend: number
+  ratio: number
 }
 
 export type OrbLegendEntry = {
@@ -39,19 +70,17 @@ export type OrbLegendEntry = {
 }
 
 export const PRESENCE_WEIGHT_BY_INTENSITY = [0, 1, 1.35, 1.8, 2.4, 3.2] as const
+export const ORB_VIEW_SIZE = 200
+export const ORB_RADIUS = 96
 
-const GRID_SIZE = 52
-const ORB_CENTER = 100
-const ORB_RADIUS = 96
-const GRID_RADIUS = 94
 const EPSILON = 0.000001
-
-type Point = { x: number; y: number }
-type Seed = Point & { index: number }
-type LabColor = { l: number; a: number; b: number }
-type AggregatedEntry = ColorOrbEntry & { key: string; weight: number; index: number }
+const TWO_PI = Math.PI * 2
 
 const clamp = (value: number, min: number, max: number): number => Math.min(max, Math.max(min, value))
+const smoothStep = (value: number): number => {
+  const t = clamp(value, 0, 1)
+  return t * t * (3 - 2 * t)
+}
 
 const normalizeHex = (hex: string): string => {
   const value = hex.trim().replace(/^#/, '')
@@ -65,7 +94,12 @@ const srgbToLinear = (value: number): number => {
   return normalized <= 0.04045 ? normalized / 12.92 : ((normalized + 0.055) / 1.055) ** 2.4
 }
 
-const hexToRgb = (hex: string): [number, number, number] => {
+const linearToSrgb = (value: number): number => {
+  const normalized = clamp(value, 0, 1)
+  return normalized <= 0.0031308 ? normalized * 12.92 : 1.055 * (normalized ** (1 / 2.4)) - 0.055
+}
+
+const hexToRgb = (hex: string): RgbColor => {
   const normalized = normalizeHex(hex).slice(1)
   return [
     Number.parseInt(normalized.slice(0, 2), 16),
@@ -89,6 +123,16 @@ export const hexToOklab = (hex: string): LabColor => {
   }
 }
 
+export const oklabToRgb = (color: LabColor): RgbColor => {
+  const lRoot = color.l + 0.3963377774 * color.a + 0.2158037573 * color.b
+  const mRoot = color.l - 0.1055613458 * color.a - 0.0638541728 * color.b
+  const sRoot = color.l - 0.0894841775 * color.a - 1.291485548 * color.b
+  const red = 4.0767416621 * lRoot ** 3 - 3.3077115913 * mRoot ** 3 + 0.2309699292 * sRoot ** 3
+  const green = -1.2684380046 * lRoot ** 3 + 2.6097574011 * mRoot ** 3 - 0.3413193965 * sRoot ** 3
+  const blue = -0.0041960863 * lRoot ** 3 - 0.7034186147 * mRoot ** 3 + 1.707614701 * sRoot ** 3
+  return [Math.round(linearToSrgb(red) * 255), Math.round(linearToSrgb(green) * 255), Math.round(linearToSrgb(blue) * 255)]
+}
+
 export const colorDistance = (first: string, second: string): number => {
   const left = hexToOklab(first)
   const right = hexToOklab(second)
@@ -108,6 +152,8 @@ const stableHash = (value: string): number => {
   }
   return (hash >>> 0) / 4294967296
 }
+
+type AggregatedEntry = ColorOrbEntry & { key: string; weight: number; index: number }
 
 const aggregateEntries = (entries: readonly ColorOrbEntry[]): AggregatedEntry[] => {
   const grouped = new Map<string, AggregatedEntry>()
@@ -147,217 +193,192 @@ const orderByColorAffinity = (entries: readonly AggregatedEntry[]): AggregatedEn
   return ordered
 }
 
-const makeSeeds = (entries: readonly AggregatedEntry[]): Seed[] => {
-  const angleStep = Math.PI * (3 - Math.sqrt(5))
+type Point = { x: number; y: number }
+
+// These are fixed, non-radial anchor slots. Color-affinity ordering puts
+// related emotions next to one another before stable per-emotion jitter.
+const seedLayouts: Point[][] = [
+  [{ x: 0, y: 0 }],
+  [{ x: -47, y: -22 }, { x: 43, y: 27 }],
+  [{ x: -45, y: -38 }, { x: 43, y: -35 }, { x: 8, y: 52 }],
+  [{ x: -49, y: -39 }, { x: 42, y: -35 }, { x: 48, y: 26 }, { x: -38, y: 46 }],
+  [{ x: -49, y: -29 }, { x: 5, y: -55 }, { x: 54, y: -8 }, { x: 24, y: 50 }, { x: -51, y: 30 }],
+]
+
+const makeSeeds = (entries: readonly AggregatedEntry[]): Point[] => {
+  const layout = seedLayouts[entries.length - 1] ?? []
   return entries.map((entry, index) => {
-    const random = stableHash(`${entry.key}:seed`)
-    const angle = -Math.PI * 0.8 + index * angleStep + (random - 0.5) * 0.52
-    const radius = entries.length === 1 ? 0 : 38 + random * 20
-    return {
-      index,
-      x: ORB_CENTER + Math.cos(angle) * radius,
-      y: ORB_CENTER + Math.sin(angle) * radius,
-    }
+    const anchor = layout[index] ?? { x: 0, y: 0 }
+    const jitterX = (stableHash(`${entry.key}:seed-x`) - 0.5) * 4.5
+    const jitterY = (stableHash(`${entry.key}:seed-y`) - 0.5) * 4.5
+    return { x: 100 + anchor.x + jitterX, y: 100 + anchor.y + jitterY }
   })
 }
-
-const cellCenter = (column: number, row: number): Point => ({
-  x: ((column + 0.5) / GRID_SIZE) * ORB_RADIUS * 2 + (ORB_CENTER - ORB_RADIUS),
-  y: ((row + 0.5) / GRID_SIZE) * ORB_RADIUS * 2 + (ORB_CENTER - ORB_RADIUS),
-})
-
-const isInsideDisc = (point: Point): boolean => Math.hypot(point.x - ORB_CENTER, point.y - ORB_CENTER) <= GRID_RADIUS
-
-const pointKey = (point: Point): string => `${point.x.toFixed(3)}:${point.y.toFixed(3)}`
-
-const organicPoint = (point: Point, entryKey: string): Point => {
-  const dx = point.x - ORB_CENTER
-  const dy = point.y - ORB_CENTER
-  const radius = Math.hypot(dx, dy)
-  if (radius < EPSILON || radius > GRID_RADIUS - 3) {
-    if (radius > GRID_RADIUS - 3) {
-      const angle = Math.atan2(dy, dx)
-      const nudge = Math.sin(angle * 4.7 + stableHash(entryKey) * Math.PI * 2) * 1.05
-      const nextRadius = GRID_RADIUS - 0.7 + nudge
-      return { x: ORB_CENTER + Math.cos(angle) * nextRadius, y: ORB_CENTER + Math.sin(angle) * nextRadius }
-    }
-    return point
-  }
-  const angle = Math.atan2(dy, dx)
-  const nudge = Math.sin(angle * 3.2 + stableHash(entryKey) * Math.PI * 2) * 0.9
-  const nextRadius = Math.min(GRID_RADIUS - 1, radius + nudge)
-  return { x: ORB_CENTER + (dx / radius) * nextRadius, y: ORB_CENTER + (dy / radius) * nextRadius }
-}
-
-const roundedPolygonPath = (points: readonly Point[]): string => {
-  if (points.length === 0) return ''
-  if (points.length === 1) {
-    const point = points[0]
-    return `M ${point.x.toFixed(2)} ${point.y.toFixed(2)} Q ${(point.x + 1).toFixed(2)} ${point.y.toFixed(2)} ${point.x.toFixed(2)} ${(point.y + 1).toFixed(2)} Q ${(point.x - 1).toFixed(2)} ${point.y.toFixed(2)} ${point.x.toFixed(2)} ${point.y.toFixed(2)} Z`
-  }
-  const first = points[0]
-  const last = points[points.length - 1]
-  const start = { x: (last.x + first.x) / 2, y: (last.y + first.y) / 2 }
-  const commands = [`M ${start.x.toFixed(2)} ${start.y.toFixed(2)}`]
-  points.forEach((point, index) => {
-    const next = points[(index + 1) % points.length]
-    const midpoint = { x: (point.x + next.x) / 2, y: (point.y + next.y) / 2 }
-    commands.push(`Q ${point.x.toFixed(2)} ${point.y.toFixed(2)} ${midpoint.x.toFixed(2)} ${midpoint.y.toFixed(2)}`)
-  })
-  return `${commands.join(' ')} Z`
-}
-
-const fullDiscPath = (): string => 'M 100 4 Q 100 4 100 4 A 96 96 0 1 1 99.99 4 Q 100 4 100 4 Z'
 
 const getLabelColor = (color: string): '#FFFFFF' | '#231B46' => hexToOklab(color).l < 0.72 ? '#FFFFFF' : '#231B46'
 
-const getBoundaryPoints = (
-  regionIndex: number,
-  cells: readonly number[][],
-  entry: AggregatedEntry,
-  cellSize: number,
-): Point[] => {
-  const points = new Map<string, Point>()
-  const addPoint = (point: Point) => {
-    if (!isInsideDisc(point) && Math.hypot(point.x - ORB_CENTER, point.y - ORB_CENTER) < GRID_RADIUS + 4) return
-    const adjusted = organicPoint(point, entry.key)
-    points.set(pointKey(adjusted), adjusted)
+const warpOrbPoint = (x: number, y: number): Point => ({
+  // A shared, gentle coordinate warp makes every boundary curve organically.
+  // It is intentionally shared instead of region-specific, so it cannot make
+  // spikes, cracks, or independent noisy islands.
+  x: x + Math.sin(y * 0.071 + 0.9) * 9 + Math.sin((x + y) * 0.033) * 4,
+  y: y + Math.sin(x * 0.063 - 1.2) * 8 + Math.sin((x - y) * 0.029) * 3,
+})
+
+const sampleScores = (field: OrbField, x: number, y: number): number[] => field.regions.map((region) => {
+  const { x: warpedX, y: warpedY } = warpOrbPoint(x, y)
+  const dx = warpedX - region.seedX
+  const dy = warpedY - region.seedY
+  const cosine = Math.cos(region.rotation)
+  const sine = Math.sin(region.rotation)
+  const longitudinal = dx * cosine + dy * sine
+  const transverse = -dx * sine + dy * cosine
+  const territoryScale = 30 + Math.sqrt(region.influenceStrength) * 44
+  const organicDistance = Math.hypot(longitudinal / (territoryScale * region.aspect), transverse / (territoryScale / region.aspect))
+  // This is intentionally low-frequency and small: it rounds a boundary, but
+  // never competes with the dominant distance field or creates tiny islands.
+  const organicNoise = Math.sin(warpedX * 0.041 + region.warpPhase) * 0.022 + Math.sin(warpedY * 0.053 - region.warpPhase) * 0.014
+  return region.fieldBias - organicDistance ** 1.72 + organicNoise
+})
+
+/**
+ * A weighted Voronoi-style map looks natural, but raw distance fields do not
+ * make a 30% entry occupy 30% of the circle. Calibrate additive field offsets
+ * over an internal circular grid, then render at much higher resolution. This
+ * preserves organic borders while making the visual weights honest.
+ */
+const calibrateTerritoryAreas = (regions: OrbRegion[]): void => {
+  if (regions.length < 2) return
+  const sampleSize = 84
+  const samplePoints: Point[] = []
+  for (let row = 0; row < sampleSize; row += 1) {
+    for (let column = 0; column < sampleSize; column += 1) {
+      const x = ((column + 0.5) / sampleSize) * ORB_VIEW_SIZE
+      const y = ((row + 0.5) / sampleSize) * ORB_VIEW_SIZE
+      if (Math.hypot(x - 100, y - 100) <= ORB_RADIUS) samplePoints.push({ x, y })
+    }
   }
-  cells.forEach((row, rowIndex) => row.forEach((cell, columnIndex) => {
-    if (cell !== regionIndex) return
-    const x = (ORB_CENTER - ORB_RADIUS) + columnIndex * cellSize
-    const y = (ORB_CENTER - ORB_RADIUS) + rowIndex * cellSize
-    const top = rowIndex === 0 ? -1 : cells[rowIndex - 1][columnIndex]
-    const right = columnIndex === GRID_SIZE - 1 ? -1 : row[columnIndex + 1]
-    const bottom = rowIndex === GRID_SIZE - 1 ? -1 : cells[rowIndex + 1][columnIndex]
-    const left = columnIndex === 0 ? -1 : row[columnIndex - 1]
-    if (top !== regionIndex) { addPoint({ x, y }); addPoint({ x: x + cellSize, y }) }
-    if (right !== regionIndex) { addPoint({ x: x + cellSize, y }); addPoint({ x: x + cellSize, y: y + cellSize }) }
-    if (bottom !== regionIndex) { addPoint({ x: x + cellSize, y: y + cellSize }); addPoint({ x, y: y + cellSize }) }
-    if (left !== regionIndex) { addPoint({ x, y: y + cellSize }); addPoint({ x, y }) }
-  }))
-  return [...points.values()]
+  const field: OrbField = { regions, totalWeight: regions.reduce((sum, region) => sum + region.weight, 0) }
+  for (let iteration = 0; iteration < 28; iteration += 1) {
+    const areas = regions.map(() => 0)
+    samplePoints.forEach(({ x, y }) => {
+      const sample = sampleColorOrbField(field, x, y)
+      if (sample.primaryIndex >= 0) areas[sample.primaryIndex] += 1
+    })
+    let largestError = 0
+    regions.forEach((region, index) => {
+      const observed = areas[index] / samplePoints.length
+      const expected = region.weight / field.totalWeight
+      const error = expected - observed
+      largestError = Math.max(largestError, Math.abs(error))
+      // A restrained update converges without introducing seed-order jitter.
+      region.fieldBias += error * 1.45
+    })
+    if (largestError < 0.0035) break
+  }
 }
 
-const assignCells = (entries: readonly AggregatedEntry[], seeds: readonly Seed[]): number[][] => {
-  const totalWeight = entries.reduce((sum, entry) => sum + entry.weight, 0)
-  const proportions = entries.map((entry) => entry.weight / totalWeight)
-  const cells = Array.from({ length: GRID_SIZE }, () => Array.from({ length: GRID_SIZE }, () => -1))
-  for (let row = 0; row < GRID_SIZE; row += 1) {
-    for (let column = 0; column < GRID_SIZE; column += 1) {
-      const point = cellCenter(column, row)
-      if (!isInsideDisc(point)) continue
-      let selected = 0
-      let selectedScore = Number.POSITIVE_INFINITY
-      seeds.forEach((seed, index) => {
-        const distance = Math.hypot(point.x - seed.x, point.y - seed.y)
-        const affinity = Math.sqrt(Math.max(proportions[index], 0.01))
-        const score = distance / (0.22 + affinity * 1.62) + stableHash(entries[index].key) * 0.00001
-        if (score < selectedScore) {
-          selectedScore = score
-          selected = index
-        }
-      })
-      cells[row][column] = selected
-    }
-  }
-  entries.forEach((_, index) => {
-    if (cells.some((row) => row.includes(index))) return
-    let closest: { column: number; row: number; distance: number } | null = null
-    for (let rowIndex = 0; rowIndex < GRID_SIZE; rowIndex += 1) {
-      for (let columnIndex = 0; columnIndex < GRID_SIZE; columnIndex += 1) {
-        if (cells[rowIndex][columnIndex] < 0) continue
-        const point = cellCenter(columnIndex, rowIndex)
-        const distance = Math.hypot(point.x - seeds[index].x, point.y - seeds[index].y)
-        if (!closest || distance < closest.distance) closest = { column: columnIndex, row: rowIndex, distance }
-      }
-    }
-    if (closest !== null) {
-      const nearestCell = closest
-      cells[nearestCell.row][nearestCell.column] = index
+export const sampleColorOrbField = (field: OrbField, x: number, y: number): OrbFieldSample => {
+  if (!field.regions.length || Math.hypot(x - 100, y - 100) > ORB_RADIUS) return { primaryIndex: -1, secondaryIndex: -1, blend: 0, ratio: 0 }
+  const scores = sampleScores(field, x, y)
+  let primaryIndex = 0
+  let secondaryIndex = -1
+  scores.forEach((score, index) => {
+    if (score > scores[primaryIndex]) {
+      secondaryIndex = primaryIndex
+      primaryIndex = index
+    } else if (index !== primaryIndex && (secondaryIndex < 0 || score > scores[secondaryIndex])) {
+      secondaryIndex = index
     }
   })
-  return cells
+  if (secondaryIndex < 0) return { primaryIndex, secondaryIndex, blend: 0, ratio: 0 }
+  const topScore = scores[primaryIndex]
+  const margin = Math.max(0, topScore - scores[secondaryIndex])
+  const ratio = Math.exp(-margin)
+  const distance = Math.hypot(
+    field.regions[primaryIndex].colorLab.l - field.regions[secondaryIndex].colorLab.l,
+    field.regions[primaryIndex].colorLab.a - field.regions[secondaryIndex].colorLab.a,
+    field.regions[primaryIndex].colorLab.b - field.regions[secondaryIndex].colorLab.b,
+  )
+  const affinity = 1 - clamp(distance / 0.42, 0, 1)
+  // A winner owns every pixel outside this deliberately narrow band. Similar
+  // hues get a modestly wider feather, but their cores remain their real hex.
+  // At the exact shared edge the mix is 50/50, preventing a hard alias line.
+  // Do not create muddy bands between unrelated emotion colors. A very close
+  // pair may feather by a maximum of a few high-resolution pixels; the canvas
+  // downsample still anti-aliases every other shared edge.
+  const blendWidth = affinity < 0.22 ? 0 : 0.012 + affinity * 0.052
+  const blend = blendWidth > 0 ? 0.5 * (1 - smoothStep(margin / blendWidth)) : 0
+  return { primaryIndex, secondaryIndex, blend, ratio }
 }
 
-const getCellCentroid = (regionIndex: number, cells: readonly number[][]): Point => {
-  const points: Point[] = []
-  cells.forEach((row, rowIndex) => row.forEach((cell, columnIndex) => {
-    if (cell === regionIndex) points.push(cellCenter(columnIndex, rowIndex))
-  }))
-  if (points.length === 0) return { x: ORB_CENTER, y: ORB_CENTER }
-  return points.reduce((sum, point) => ({ x: sum.x + point.x / points.length, y: sum.y + point.y / points.length }), { x: 0, y: 0 })
-}
-
-const getEdgeOpacity = (regionIndex: number, entries: readonly AggregatedEntry[], cells: readonly number[][]): number => {
-  const neighbors = new Set<number>()
-  cells.forEach((row, rowIndex) => row.forEach((cell, columnIndex) => {
-    if (cell !== regionIndex) return
-    const candidates = [rowIndex > 0 ? cells[rowIndex - 1][columnIndex] : -1, columnIndex < GRID_SIZE - 1 ? row[columnIndex + 1] : -1, rowIndex < GRID_SIZE - 1 ? cells[rowIndex + 1][columnIndex] : -1, columnIndex > 0 ? row[columnIndex - 1] : -1]
-    candidates.forEach((candidate) => { if (candidate >= 0 && candidate !== regionIndex) neighbors.add(candidate) })
-  }))
-  if (neighbors.size === 0) return 0.34
-  const nearestDistance = Math.min(...[...neighbors].map((index) => colorDistance(entries[regionIndex].color, entries[index].color)))
-  return 0.2 + clamp((nearestDistance - 0.035) / 0.42, 0, 1) * 0.38
-}
-
-export const buildColorOrbRegionsFromColors = (entries: readonly ColorOrbEntry[]): OrbRegion[] => {
-  const aggregated = orderByColorAffinity(aggregateEntries(entries))
-  if (aggregated.length === 0) return []
-  const totalWeight = aggregated.reduce((sum, entry) => sum + entry.weight, 0)
-  if (aggregated.length === 1) {
-    const entry = aggregated[0]
-    return [{
-      key: entry.key,
-      color: entry.color,
-      weight: entry.weight,
-      percentage: 100,
-      start: 0,
-      end: 1,
-      path: fullDiscPath(),
-      labelX: ORB_CENTER,
-      labelY: ORB_CENTER,
-      labelColor: getLabelColor(entry.color),
-      showLabel: true,
-      edgeOpacity: 0.35,
-      ...(entry.emotionId ? { emotionId: entry.emotionId } : {}),
-      ...(entry.label ? { label: entry.label } : {}),
-      ...(entry.labelEn ? { labelEn: entry.labelEn } : {}),
-      ...(entry.emoji ? { emoji: entry.emoji } : {}),
-    }]
+const deriveVisualCenters = (field: OrbField): OrbRegion[] => {
+  const sampleSize = 144
+  const centers = field.regions.map(() => ({ x: 0, y: 0, weight: 0 }))
+  for (let row = 0; row < sampleSize; row += 1) {
+    for (let column = 0; column < sampleSize; column += 1) {
+      const x = ((column + 0.5) / sampleSize) * ORB_VIEW_SIZE
+      const y = ((row + 0.5) / sampleSize) * ORB_VIEW_SIZE
+      const sample = sampleColorOrbField(field, x, y)
+      if (sample.primaryIndex < 0) continue
+      const confidence = Math.max(0.2, 1 - sample.ratio)
+      centers[sample.primaryIndex].x += x * confidence
+      centers[sample.primaryIndex].y += y * confidence
+      centers[sample.primaryIndex].weight += confidence
+    }
   }
+  return field.regions.map((region, index) => {
+    const center = centers[index]
+    const labelX = center.weight > EPSILON ? clamp(center.x / center.weight, 20, 180) : region.seedX
+    const labelY = center.weight > EPSILON ? clamp(center.y / center.weight, 20, 180) : region.seedY
+    const visibleArea = center.weight / (sampleSize * sampleSize)
+    return { ...region, labelX, labelY, showLabel: region.percentage >= 7.5 && visibleArea >= 0.035 }
+  })
+}
 
+export const buildColorOrbField = (entries: readonly ColorOrbEntry[]): OrbField => {
+  const aggregated = orderByColorAffinity(aggregateEntries(entries))
+  const totalWeight = aggregated.reduce((sum, entry) => sum + entry.weight, 0)
+  if (!aggregated.length || totalWeight <= EPSILON) return { regions: [], totalWeight: 0 }
   const seeds = makeSeeds(aggregated)
-  const cells = assignCells(aggregated, seeds)
-  const cellSize = (ORB_RADIUS * 2) / GRID_SIZE
   let cursor = 0
-  return aggregated.map((entry, index) => {
+  const regions: OrbRegion[] = aggregated.map((entry, index) => {
     const percentage = (entry.weight / totalWeight) * 100
-    const centroid = getCellCentroid(index, cells)
-    const boundary = getBoundaryPoints(index, cells, entry, cellSize)
-    const sortedBoundary = boundary.sort((left, right) => Math.atan2(left.y - centroid.y, left.x - centroid.x) - Math.atan2(right.y - centroid.y, right.x - centroid.x))
-    const start = cursor
-    cursor += entry.weight / totalWeight
-    return {
+    const proportion = entry.weight / totalWeight
+    const region: OrbRegion = {
       key: entry.key,
       color: entry.color,
       weight: entry.weight,
       percentage,
-      start,
-      end: index === aggregated.length - 1 ? 1 : cursor,
-      path: roundedPolygonPath(sortedBoundary),
-      labelX: clamp(centroid.x, 22, 178),
-      labelY: clamp(centroid.y, 22, 178),
+      start: cursor,
+      end: index === aggregated.length - 1 ? 1 : cursor + proportion,
+      seedX: seeds[index].x,
+      seedY: seeds[index].y,
+      labelX: seeds[index].x,
+      labelY: seeds[index].y,
       labelColor: getLabelColor(entry.color),
       showLabel: percentage >= 7.5,
-      edgeOpacity: getEdgeOpacity(index, aggregated, cells),
+      colorLab: hexToOklab(entry.color),
+      colorRgb: hexToRgb(entry.color),
+      influenceStrength: proportion ** 0.72,
+      fieldBias: 0,
+      warpPhase: stableHash(`${entry.key}:warp`) * TWO_PI,
+      rotation: (stableHash(`${entry.key}:rotation`) - 0.5) * 0.9,
+      aspect: 0.84 + stableHash(`${entry.key}:aspect`) * 0.34,
       ...(entry.emotionId ? { emotionId: entry.emotionId } : {}),
       ...(entry.label ? { label: entry.label } : {}),
       ...(entry.labelEn ? { labelEn: entry.labelEn } : {}),
       ...(entry.emoji ? { emoji: entry.emoji } : {}),
     }
+    cursor += proportion
+    return region
   })
+  calibrateTerritoryAreas(regions)
+  return { regions: deriveVisualCenters({ regions, totalWeight }), totalWeight }
 }
+
+/** Compatibility name for callers that only need field metadata. */
+export const buildColorOrbRegionsFromColors = (entries: readonly ColorOrbEntry[]): OrbRegion[] => buildColorOrbField(entries).regions
 
 export const buildColorOrbRegions = (records: readonly CheckinRecord[]): OrbRegion[] => buildColorOrbRegionsFromColors(records.flatMap((record) => {
   if (record.checkinType !== 'emotion' || !record.primaryEmotion) return []
@@ -387,4 +408,127 @@ export const getColorOrbLegend = (entries: readonly ColorOrbEntry[], limit = 3):
     ...(entry.labelEn ? { labelEn: entry.labelEn } : {}),
     ...(entry.emoji ? { emoji: entry.emoji } : {}),
   }))
+}
+
+export type ColorHaloSegment = {
+  key: string
+  color: string
+  weight: number
+  percentage: number
+  start: number
+  end: number
+  transitionBefore: number
+  transitionAfter: number
+  labelAngle: number
+  labelColor: '#FFFFFF' | '#231B46'
+  showLabel: boolean
+  label?: string
+  labelEn?: string
+  emoji?: string
+  emotionId?: string
+}
+
+export type ColorHaloRing = {
+  segments: ColorHaloSegment[]
+  totalWeight: number
+  gradient: string
+}
+
+const getTransitionWidth = (first: string, second: string, firstSpan: number, secondSpan: number): number => {
+  const affinity = 1 - clamp(colorDistance(first, second) / 0.42, 0, 1)
+  const idealWidth = 0.018 + affinity * 0.074
+  return Math.min(idealWidth, firstSpan * 0.42, secondSpan * 0.42)
+}
+
+const toGradientStops = (segments: readonly ColorHaloSegment[]): string => {
+  if (!segments.length) return 'conic-gradient(#ECE4FF, #F5F1FF, #ECE4FF)'
+  const stops: Array<{ position: number; color: string }> = [
+    { position: 0, color: segments[0].color },
+    { position: 1, color: segments[0].color },
+  ]
+  const append = (position: number, color: string) => stops.push({ position: clamp(position, 0, 1), color })
+
+  segments.forEach((segment, index) => {
+    const next = segments[index + 1]
+    const transition = segment.transitionAfter
+    const coreStart = segment.start + segment.transitionBefore / 2
+    const coreEnd = segment.end - transition / 2
+    append(coreStart, segment.color)
+    append(coreEnd, segment.color)
+    if (next) {
+      append(segment.end - transition / 2, segment.color)
+      append(segment.end + transition / 2, next.color)
+    } else {
+      // The final boundary wraps to 0°. Keeping both seam stops in-range
+      // avoids invalid gradients while preserving a soft wrap transition.
+      append(1 - transition / 2, segment.color)
+      append(1, segments[0].color)
+    }
+  })
+
+  const normalized = stops.sort((left, right) => left.position - right.position)
+  const deduped = normalized.filter((stop, index) => index === 0 || stop.position - normalized[index - 1].position > 0.00001)
+  return `conic-gradient(${deduped.map(({ position, color }) => `${color} ${position * 100}%`).join(', ')})`
+}
+
+const toProportionalGradient = (segments: readonly ColorHaloSegment[]): string => {
+  if (!segments.length) return 'conic-gradient(#ECE4FF, #F5F1FF, #ECE4FF)'
+  return `conic-gradient(${segments.map((segment) => `${segment.color} ${segment.start * 100}% ${segment.end * 100}%`).join(', ')})`
+}
+
+const toSafeGradient = (segments: readonly ColorHaloSegment[]): string => {
+  try {
+    return toGradientStops(segments)
+  } catch {
+    return toProportionalGradient(segments)
+  }
+}
+
+/**
+ * Builds the stable, data-driven model for the Home Color Halo Ring.
+ * Arc ownership stays proportional to presence; only the visual transition
+ * around a shared boundary is expanded, and hit testing still uses start/end.
+ */
+export const buildColorHaloRing = (entries: readonly ColorOrbEntry[]): ColorHaloRing => {
+  const aggregated = orderByColorAffinity(aggregateEntries(entries))
+  const totalWeight = aggregated.reduce((sum, entry) => sum + entry.weight, 0)
+  if (!aggregated.length || totalWeight <= EPSILON) return { segments: [], totalWeight: 0, gradient: toSafeGradient([]) }
+
+  let cursor = 0
+  const spans = aggregated.map((entry) => entry.weight / totalWeight)
+  const segments = aggregated.map((entry, index) => {
+    const start = cursor
+    const end = index === aggregated.length - 1 ? 1 : cursor + spans[index]
+    cursor = end
+    return {
+      entry,
+      start,
+      end,
+      percentage: spans[index] * 100,
+    }
+  })
+  const ringSegments: ColorHaloSegment[] = segments.map(({ entry, start, end, percentage }, index) => {
+    const previous = segments[(index - 1 + segments.length) % segments.length]
+    const next = segments[(index + 1) % segments.length]
+    const transitionBefore = getTransitionWidth(entry.color, previous.entry.color, end - start, previous.end - previous.start)
+    const transitionAfter = getTransitionWidth(entry.color, next.entry.color, end - start, next.end - next.start)
+    return {
+      key: entry.key,
+      color: entry.color,
+      weight: entry.weight,
+      percentage,
+      start,
+      end,
+      transitionBefore,
+      transitionAfter,
+      labelAngle: (start + end) / 2,
+      labelColor: getLabelColor(entry.color),
+      showLabel: percentage >= 7.5,
+      ...(entry.emotionId ? { emotionId: entry.emotionId } : {}),
+      ...(entry.label ? { label: entry.label } : {}),
+      ...(entry.labelEn ? { labelEn: entry.labelEn } : {}),
+      ...(entry.emoji ? { emoji: entry.emoji } : {}),
+    }
+  })
+  return { segments: ringSegments, totalWeight, gradient: toSafeGradient(ringSegments) }
 }

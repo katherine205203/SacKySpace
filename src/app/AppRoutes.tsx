@@ -9,6 +9,7 @@ import { UnknownScreen } from '../features/checkin/screens/UnknownScreen'
 import { HomePage } from '../features/home/HomePage'
 import { ActionSpacePage } from '../features/actionspace/ActionSpacePage'
 import { DiaryPage } from '../features/diary/DiaryPage'
+import { JourneyPage } from '../features/diary/JourneyPage'
 import { FutureLetterPage } from '../features/futureletter/FutureLetterPage'
 import { GiftPage } from '../features/gift/GiftPage'
 import { AdminStudioPage } from '../features/admin/AdminStudioPage'
@@ -40,6 +41,7 @@ export function AppRoutes() {
         <Route path="/checkin/:id/review" element={<ReviewScreen />} />
         <Route path="/checkin/history" element={<HistoryScreen />} />
         <Route path="/diary" element={<DiaryPage />} />
+        <Route path="/journey" element={<JourneyPage />} />
         <Route path="/action-space" element={<ActionSpacePage />} />
         <Route path="/reminder" element={<ActionSpacePage />} />
         <Route path="/future-letter" element={<FutureLetterPage />} />

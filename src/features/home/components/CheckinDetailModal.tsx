@@ -1,7 +1,7 @@
 import { useEffect, useState, type ReactNode } from 'react'
 import { Link } from 'react-router-dom'
 import { HomeOrb } from './HomeOrb'
-import { formatCheckinDate, formatCheckinTime, formatReminderSchedule, getCheckinPresentation, isReminderCompleted } from '../services/homeAggregation'
+import { formatCheckinDate, formatCheckinTime, formatReminderSchedule, getCheckinPresentation, getHomeOrbEntries, isReminderCompleted } from '../services/homeAggregation'
 import { deleteReminder, updateReminder, type ReminderEdit } from '../services/reminderRepository'
 import { DEFAULT_REFLECTION_OUTCOMES, listReflectionOutcomes, saveActionReflection, setActionStatus } from '../../actionspace/actionService'
 import { ReflectionModal } from '../../actionspace/ActionSpacePage'
@@ -33,7 +33,7 @@ export function CheckinDetailModal({ record, linkedActions, onClose, onEdit, onD
   const [reflectionOutcomes, setReflectionOutcomes] = useState<ActionReflectionOutcome[]>(DEFAULT_REFLECTION_OUTCOMES)
   const presentation = getCheckinPresentation(record)
   const isUnknown = record.checkinType === 'unknown'
-  const orbEntries = isUnknown ? [] : [{ color: presentation.color, intensity: record.intensity ?? 1 }]
+  const orbEntries = isUnknown ? [] : getHomeOrbEntries([record])
   const reflection = (record as CheckinRecordWithReflection).reflection?.trim()
   const actions = linkedActions.filter((action) => !deletedActionIds.includes(action.id)).map((action) => ({ ...action, ...actionPatches[action.id] }))
 

@@ -3,6 +3,7 @@ import { NavLink, useLocation, useNavigate } from 'react-router-dom'
 const routeLabels: Array<{ match: (pathname: string) => boolean; label: string }> = [
   { match: (pathname) => pathname.startsWith('/checkin'), label: 'Check-in' },
   { match: (pathname) => pathname.startsWith('/diary'), label: 'Diary' },
+  { match: (pathname) => pathname.startsWith('/journey'), label: 'Journey' },
   { match: (pathname) => pathname.startsWith('/action-space') || pathname.startsWith('/reminder'), label: 'Action Space' },
   { match: (pathname) => pathname.startsWith('/future-letter'), label: 'Future Letter' },
   { match: (pathname) => pathname.startsWith('/gift-for-tmr'), label: 'Gift for Tomorrow' },
@@ -12,7 +13,8 @@ const routeLabels: Array<{ match: (pathname: string) => boolean; label: string }
 
 const focusedRoute = (pathname: string, search: string): boolean => {
   if (pathname.startsWith('/checkin/') && !pathname.endsWith('/history')) return true
-  if (pathname === '/diary' && new URLSearchParams(search).get('view') === 'editor') return true
+  if (pathname === '/diary' && ['editor', 'read'].includes(new URLSearchParams(search).get('view') ?? '')) return true
+  if (pathname.startsWith('/journey') && ['editor', 'read', 'setup', 'journey-editor', 'journey-read', 'journey-setup'].includes(new URLSearchParams(search).get('view') ?? '')) return true
   if (pathname === '/future-letter') return ['write', 'trigger', 'decorate', 'preview', 'available', 'read'].includes(new URLSearchParams(search).get('view') ?? '')
   return false
 }
@@ -20,6 +22,7 @@ const focusedRoute = (pathname: string, search: string): boolean => {
 const fallbackFor = (pathname: string): string => {
   if (pathname.startsWith('/checkin/')) return '/checkin'
   if (pathname.startsWith('/diary')) return '/diary'
+  if (pathname.startsWith('/journey')) return '/journey'
   if (pathname.startsWith('/future-letter')) return '/future-letter'
   return '/'
 }

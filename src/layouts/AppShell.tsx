@@ -10,14 +10,16 @@ export function AppShell({ children }: AppShellProps) {
   const { pathname, search } = useLocation()
   const isCheckin = pathname.startsWith('/checkin')
   const isDiary = pathname.startsWith('/diary')
+  const isJourney = pathname.startsWith('/journey')
   const isAdmin = pathname.startsWith('/admin-studio')
-  const isFocusedFlow = (pathname.startsWith('/checkin/') && !pathname.endsWith('/history')) || (pathname === '/diary' && new URLSearchParams(search).get('view') === 'editor') || (pathname === '/future-letter' && ['write', 'trigger', 'decorate', 'preview', 'available', 'read'].includes(new URLSearchParams(search).get('view') ?? ''))
+  const diaryView = new URLSearchParams(search).get('view')
+  const isFocusedFlow = (pathname.startsWith('/checkin/') && !pathname.endsWith('/history')) || ((isDiary || isJourney) && ['editor', 'journey-editor', 'journey-read', 'setup', 'read'].includes(diaryView ?? '')) || (pathname === '/future-letter' && ['write', 'trigger', 'decorate', 'preview', 'available', 'read'].includes(diaryView ?? ''))
   return (
     <div className={`app-shell ${isFocusedFlow ? 'app-shell--focused' : ''}`}>
       <AppSidebar />
       <div className="app-main">
         <MobileAppShell />
-        <main className={`app-content ${isCheckin ? 'app-content--checkin' : ''} ${isDiary ? 'app-content--diary' : ''} ${isAdmin ? 'app-content--admin' : ''}`}>{children}</main>
+        <main className={`app-content ${isCheckin ? 'app-content--checkin' : ''} ${isDiary || isJourney ? 'app-content--diary' : ''} ${isAdmin ? 'app-content--admin' : ''}`}>{children}</main>
       </div>
     </div>
   )

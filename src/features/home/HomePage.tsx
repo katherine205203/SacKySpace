@@ -34,13 +34,13 @@ export function HomePage() {
   const records = useMemo(() => snapshot?.records ?? [], [snapshot])
   const reminders = useMemo(() => snapshot?.reminders ?? [], [snapshot])
   const rangeRecords = useMemo(() => getHomeRecordsForRange(records, range, now, customRange), [customRange, now, range, records])
-  const todayOrbEntries = useMemo(() => getHomeOrbEntries(getHomeRecordsForRange(records, 'today', now)), [now, records])
+  const orbEntries = useMemo(() => getHomeOrbEntries(rangeRecords), [rangeRecords])
   const journeyCheckins = useMemo(() => getRecentJourneyCheckins(records, now), [now, records])
   const actionSummary = useMemo(() => getHomeActionSummary(reminders, now, range, customRange), [customRange, now, range, reminders])
   const selectedRecord = selectedRecordId ? records.find((record) => record.id === selectedRecordId) ?? null : null
   const todayDiary = useMemo(() => snapshot?.diaryEntries.find((entry) => entry.localDate === getDiaryLocalDate()) ?? null, [snapshot])
   const diaryPreview: HomeDiaryPreview = todayDiary
-    ? { status: todayDiary.status === 'done' ? 'done' : 'draft', title: todayDiary.title, excerpt: todayDiary.overallText, imageUrl: todayDiary.images[0]?.externalUrl }
+    ? { status: ['done', 'user_done', 'day_locked'].includes(todayDiary.status) ? 'done' : 'draft', title: todayDiary.title, excerpt: todayDiary.overallText, imageUrl: todayDiary.images[0]?.externalUrl }
     : { status: 'empty' }
 
   useEffect(() => { void listReflectionOutcomes().then((outcomes) => { if (outcomes.length) setReflectionOutcomes(outcomes) }).catch(() => undefined) }, [])
@@ -84,7 +84,7 @@ export function HomePage() {
     {interactionError && <p className="home-v2__data-state home-v2__data-state--error" role="alert">{interactionError}</p>}
     {snapshot && <>
       <div className="home-v2__grid">
-        <HomeHero displayName={snapshot.displayName} streak={getCurrentStreak(records, now)} orbEntries={todayOrbEntries} range={range} customRange={customRange} relevantCheckins={rangeRecords.length} completedActions={actionSummary.completed} remainingActions={actionSummary.remaining} onRangeChange={setRange} onCustomRangeChange={setCustomRange} />
+        <HomeHero displayName={snapshot.displayName} streak={getCurrentStreak(records, now)} orbEntries={orbEntries} range={range} customRange={customRange} relevantCheckins={rangeRecords.length} completedActions={actionSummary.completed} remainingActions={actionSummary.remaining} onRangeChange={setRange} onCustomRangeChange={setCustomRange} />
         <div className="home-v2__right-column"><RecentJourney records={journeyCheckins} onSelectCheckin={(record) => { setInteractionError(null); setSelectedRecordId(record.id) }} /><ActionPreview reminders={reminders} checkins={records} onDone={(reminder) => completeHomeAction(reminder)} /></div>
         <DiaryToday preview={diaryPreview} />
         <PersonalSurfaces futureLetter={snapshot.futureLetter} gift={snapshot.gift} />
