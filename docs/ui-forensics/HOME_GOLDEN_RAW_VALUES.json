@@ -1,0 +1,529 @@
+{
+  "metadata": {
+    "auditDate": "2026-08-29",
+    "repository": "/Users/katherinebui/Documents/SacKySpace",
+    "auditedCommit": "503712c",
+    "scope": "Source-backed visual extraction for the current Sắc Ký v2 Home.",
+    "sourceFilesModified": false,
+    "liveAuthenticatedEvidence": false,
+    "liveEvidenceNote": "https://sacky-space.vercel.app/ rendered the sign-in gate; no credentials were entered.",
+    "referenceImages": [
+      {
+        "path": "/Users/katherinebui/Documents/SacKySpace/docs/ui-reference/home-v2-option-a.png",
+        "dimensions": "1586x992"
+      },
+      {
+        "path": "/Users/katherinebui/Documents/SacKySpace/docs/ui-reference/home-v2-checkin-detail-modal.png",
+        "dimensions": "1536x1024"
+      }
+    ]
+  },
+  "colors": {
+    "rootTokens": [
+      {
+        "name": "color-background",
+        "value": "#f8f6ff",
+        "source": "/Users/katherinebui/Documents/SacKySpace/src/styles/globals.css:2",
+        "roles": ["html", "root", "app-shell canvas"]
+      },
+      {
+        "name": "color-surface",
+        "value": "#ffffff",
+        "source": "/Users/katherinebui/Documents/SacKySpace/src/styles/globals.css:3",
+        "roles": ["surface", "inputs", "modal/auth backgrounds"]
+      },
+      {
+        "name": "color-surface-soft",
+        "value": "#f3eef9",
+        "source": "/Users/katherinebui/Documents/SacKySpace/src/styles/globals.css:4",
+        "roles": ["soft control/hover surface", "Orb base CSS fill"]
+      },
+      {
+        "name": "color-surface-violet",
+        "value": "#ece4ff",
+        "source": "/Users/katherinebui/Documents/SacKySpace/src/styles/globals.css:5",
+        "roles": ["violet surface", "selected/hover fills"]
+      },
+      {
+        "name": "color-surface-rose",
+        "value": "#fff0f7",
+        "source": "/Users/katherinebui/Documents/SacKySpace/src/styles/globals.css:6",
+        "roles": ["rose semantic surface"]
+      },
+      {
+        "name": "color-surface-mint",
+        "value": "#ecfff8",
+        "source": "/Users/katherinebui/Documents/SacKySpace/src/styles/globals.css:7",
+        "roles": ["mint semantic surface"]
+      },
+      {
+        "name": "color-text",
+        "value": "#231b46",
+        "source": "/Users/katherinebui/Documents/SacKySpace/src/styles/globals.css:8",
+        "roles": ["primary ink"]
+      },
+      {
+        "name": "color-text-muted",
+        "value": "#625a75",
+        "source": "/Users/katherinebui/Documents/SacKySpace/src/styles/globals.css:9",
+        "roles": ["secondary copy", "metadata", "labels"]
+      },
+      {
+        "name": "color-text-soft",
+        "value": "#887f9d",
+        "source": "/Users/katherinebui/Documents/SacKySpace/src/styles/globals.css:10",
+        "roles": ["tertiary copy", "sign-out"]
+      },
+      {
+        "name": "color-border",
+        "value": "#e5ddf5",
+        "source": "/Users/katherinebui/Documents/SacKySpace/src/styles/globals.css:11",
+        "roles": ["control/card border"]
+      },
+      {
+        "name": "color-divider",
+        "value": "#ddd3ef",
+        "source": "/Users/katherinebui/Documents/SacKySpace/src/styles/globals.css:12",
+        "roles": ["section/footer divider"]
+      },
+      {
+        "name": "color-violet",
+        "value": "#743cff",
+        "source": "/Users/katherinebui/Documents/SacKySpace/src/styles/globals.css:13",
+        "roles": ["brand accent", "active state", "Orb halo"]
+      },
+      {
+        "name": "color-violet-dark",
+        "value": "#5326be",
+        "source": "/Users/katherinebui/Documents/SacKySpace/src/styles/globals.css:14",
+        "roles": ["accent text", "hover text"]
+      },
+      {
+        "name": "color-violet-pale",
+        "value": "#ece4ff",
+        "source": "/Users/katherinebui/Documents/SacKySpace/src/styles/globals.css:15",
+        "roles": ["focus/selected surface"]
+      },
+      {
+        "name": "color-pink",
+        "value": "#ff4fa3",
+        "source": "/Users/katherinebui/Documents/SacKySpace/src/styles/globals.css:16",
+        "roles": ["gradient endpoint"]
+      },
+      {
+        "name": "color-coral",
+        "value": "#ff7a66",
+        "source": "/Users/katherinebui/Documents/SacKySpace/src/styles/globals.css:17",
+        "roles": ["semantic reference color"]
+      },
+      {
+        "name": "color-mango",
+        "value": "#ffc24c",
+        "source": "/Users/katherinebui/Documents/SacKySpace/src/styles/globals.css:18",
+        "roles": ["semantic reference color"]
+      },
+      {
+        "name": "color-cyan",
+        "value": "#55d8ff",
+        "source": "/Users/katherinebui/Documents/SacKySpace/src/styles/globals.css:19",
+        "roles": ["semantic reference color"]
+      },
+      {
+        "name": "color-mint",
+        "value": "#4de2b1",
+        "source": "/Users/katherinebui/Documents/SacKySpace/src/styles/globals.css:20",
+        "roles": ["semantic reference color"]
+      },
+      {
+        "name": "color-blue",
+        "value": "#4c7dff",
+        "source": "/Users/katherinebui/Documents/SacKySpace/src/styles/globals.css:21",
+        "roles": ["semantic reference color"]
+      },
+      {
+        "name": "color-green",
+        "value": "#2fcb8f",
+        "source": "/Users/katherinebui/Documents/SacKySpace/src/styles/globals.css:22",
+        "roles": ["semantic reference color", "action state"]
+      },
+      {
+        "name": "color-danger",
+        "value": "#ff5c70",
+        "source": "/Users/katherinebui/Documents/SacKySpace/src/styles/globals.css:23",
+        "roles": ["error/danger"]
+      }
+    ],
+    "homeLocalColors": [
+      {
+        "value": "rgba(113, 88, 180, .14)",
+        "source": "/Users/katherinebui/Documents/SacKySpace/src/features/home/home.css:33,56,281",
+        "roles": ["Home panel/card/detail border"]
+      },
+      {
+        "value": "rgba(255, 255, 255, .8)",
+        "source": "/Users/katherinebui/Documents/SacKySpace/src/features/home/home.css:58",
+        "roles": ["Home card fill"]
+      },
+      {
+        "value": "rgba(60, 35, 95, .055)",
+        "source": "/Users/katherinebui/Documents/SacKySpace/src/features/home/home.css:37,59",
+        "roles": ["Home panel/card soft shadow"]
+      },
+      {
+        "value": "rgba(204, 187, 255, .35)",
+        "source": "/Users/katherinebui/Documents/SacKySpace/src/features/home/home.css:70",
+        "roles": ["hero radial wash"]
+      },
+      {
+        "value": "rgba(255, 217, 229, .3)",
+        "source": "/Users/katherinebui/Documents/SacKySpace/src/features/home/home.css:71",
+        "roles": ["hero radial wash"]
+      },
+      {
+        "value": "#fff7f4",
+        "source": "/Users/katherinebui/Documents/SacKySpace/src/features/home/home.css:72",
+        "roles": ["hero gradient endpoint"]
+      },
+      {
+        "value": "rgba(241, 239, 246, .82)",
+        "source": "/Users/katherinebui/Documents/SacKySpace/src/features/home/home.css:158",
+        "roles": ["range/action control track"]
+      },
+      {
+        "value": "#5c43c6",
+        "source": "/Users/katherinebui/Documents/SacKySpace/src/features/home/home.css:177",
+        "roles": ["action tab gradient endpoint"]
+      },
+      {
+        "value": "#c8c4dc",
+        "source": "/Users/katherinebui/Documents/SacKySpace/src/features/home/home.css:224",
+        "roles": ["unchecked action circle"]
+      },
+      {
+        "value": "#c4bfd5",
+        "source": "/Users/katherinebui/Documents/SacKySpace/src/features/home/home.css:231",
+        "roles": ["action overflow affordance"]
+      },
+      {
+        "value": "#dfe3f3 → #fae7e1 → #ded3f6",
+        "source": "/Users/katherinebui/Documents/SacKySpace/src/features/home/home.css:242",
+        "roles": ["diary CSS art gradient"]
+      },
+      {
+        "value": "#f2eaff → #fff2f8",
+        "source": "/Users/katherinebui/Documents/SacKySpace/src/features/home/home.css:249",
+        "roles": ["Future Letter tile"]
+      },
+      {
+        "value": "#f4f2eb → #fffdf8",
+        "source": "/Users/katherinebui/Documents/SacKySpace/src/features/home/home.css:250",
+        "roles": ["Gift tile"]
+      },
+      {
+        "value": "#a94d70",
+        "source": "/Users/katherinebui/Documents/SacKySpace/src/features/home/home.css:253",
+        "roles": ["CSS envelope seal"]
+      }
+    ],
+    "dynamicColors": [
+      {
+        "value": "emotion.color_hex",
+        "source": "/Users/katherinebui/Documents/SacKySpace/src/features/home/services/homeAggregation.ts:37-41",
+        "roles": ["Home Orb entries", "Journey card swatch/background"]
+      },
+      {
+        "value": "#b8a5df",
+        "source": "/Users/katherinebui/Documents/SacKySpace/src/features/home/services/homeAggregation.ts:6,69-73",
+        "roles": ["Unknown presentation color"]
+      },
+      {
+        "value": "#e6def6",
+        "source": "/Users/katherinebui/Documents/SacKySpace/src/features/home/components/HomeOrb.tsx:4",
+        "roles": ["empty Home Orb fallback"]
+      },
+      {
+        "value": "color-mix(in srgb, presentation.color 24%, white)",
+        "source": "/Users/katherinebui/Documents/SacKySpace/src/features/home/components/RecentJourney.tsx:58",
+        "roles": ["Journey emoji background"]
+      }
+    ]
+  },
+  "typography": {
+    "family": {
+      "value": "\"Be Vietnam Pro\", ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, \"Segoe UI\", sans-serif",
+      "source": "/Users/katherinebui/Documents/SacKySpace/src/styles/globals.css:26"
+    },
+    "imports": {
+      "weights": [400, 500, 600, 700],
+      "source": "/Users/katherinebui/Documents/SacKySpace/src/main.tsx:3-6",
+      "package": "@fontsource/be-vietnam-pro"
+    },
+    "root": {
+      "fontSize": "1rem",
+      "lineHeight": "1.5",
+      "source": "/Users/katherinebui/Documents/SacKySpace/src/styles/globals.css:27-28,42-44"
+    },
+    "patterns": [
+      {"selector": ".home-v2__hero-header h2", "value": "clamp(1.35rem, 2.1vw, 1.75rem)", "weight": "inherited", "letterSpacing": "-.035em", "source": "/Users/katherinebui/Documents/SacKySpace/src/features/home/home.css:83-94"},
+      {"selector": ".home-v2__hero-summary h3", "value": "clamp(1.2rem, 2.4vw, 1.55rem)", "weight": "inherited", "letterSpacing": "-.04em", "source": "/Users/katherinebui/Documents/SacKySpace/src/features/home/home.css:146-148"},
+      {"selector": ".home-v2__eyebrow", "value": ".62rem", "weight": 800, "lineHeight": "normal", "letterSpacing": ".12em", "transform": "uppercase", "source": "/Users/katherinebui/Documents/SacKySpace/src/features/home/home.css:98-105"},
+      {"selector": ".home-v2__lede/.home-v2__section-header p", "value": ".76rem", "weight": "inherited", "source": "/Users/katherinebui/Documents/SacKySpace/src/features/home/home.css:107-112"},
+      {"selector": ".home-v2__metrics strong", "value": ".85rem", "weight": 600, "source": "/Users/katherinebui/Documents/SacKySpace/src/features/home/home.css:194-196"},
+      {"selector": ".home-v2__action-copy strong", "value": ".72rem", "weight": 650, "source": "/Users/katherinebui/Documents/SacKySpace/src/features/home/home.css:227-230"},
+      {"selector": ".home-v2__detail-header h2", "value": "clamp(1.35rem, 2.4vw, 1.8rem)", "weight": "inherited", "letterSpacing": "-.05em", "source": "/Users/katherinebui/Documents/SacKySpace/src/features/home/home.css:330-332"},
+      {"selector": ".eyebrow", "value": ".68rem", "weight": 800, "letterSpacing": ".12em", "transform": "uppercase", "source": "/Users/katherinebui/Documents/SacKySpace/src/styles/globals.css:91"}
+    ]
+  },
+  "spacing": {
+    "rootTokens": [
+      {"name": "space-1", "value": "0.25rem", "source": "/Users/katherinebui/Documents/SacKySpace/src/styles/globals.css:29"},
+      {"name": "space-2", "value": "0.5rem", "source": "/Users/katherinebui/Documents/SacKySpace/src/styles/globals.css:30"},
+      {"name": "space-3", "value": "0.75rem", "source": "/Users/katherinebui/Documents/SacKySpace/src/styles/globals.css:31"},
+      {"name": "space-4", "value": "1rem", "source": "/Users/katherinebui/Documents/SacKySpace/src/styles/globals.css:32"},
+      {"name": "space-5", "value": "1.5rem", "source": "/Users/katherinebui/Documents/SacKySpace/src/styles/globals.css:33"},
+      {"name": "space-6", "value": "2rem", "source": "/Users/katherinebui/Documents/SacKySpace/src/styles/globals.css:34"},
+      {"name": "space-7", "value": "3rem", "source": "/Users/katherinebui/Documents/SacKySpace/src/styles/globals.css:35"},
+      {"name": "space-8", "value": "4rem", "source": "/Users/katherinebui/Documents/SacKySpace/src/styles/globals.css:36"}
+    ],
+    "shell": [
+      {"property": "sidebar gap", "value": "2.5rem", "source": "/Users/katherinebui/Documents/SacKySpace/src/styles/globals.css:60"},
+      {"property": "sidebar padding", "value": "1.5rem .9rem 1.25rem", "source": "/Users/katherinebui/Documents/SacKySpace/src/styles/globals.css:60"},
+      {"property": "nav list gap", "value": ".3rem", "source": "/Users/katherinebui/Documents/SacKySpace/src/styles/globals.css:63"},
+      {"property": "nav row padding", "value": ".4rem .5rem", "source": "/Users/katherinebui/Documents/SacKySpace/src/styles/globals.css:64"},
+      {"property": "content padding", "value": "clamp(1.75rem, 3vw, 2.5rem) clamp(1rem, 3vw, 2.25rem) 2rem", "source": "/Users/katherinebui/Documents/SacKySpace/src/styles/globals.css:75"}
+    ],
+    "home": [
+      {"property": "grid gap", "value": "1rem", "source": "/Users/katherinebui/Documents/SacKySpace/src/features/home/home.css:44-52"},
+      {"property": "hero padding", "value": "1.35rem 1.65rem 1.2rem", "source": "/Users/katherinebui/Documents/SacKySpace/src/features/home/home.css:62-73"},
+      {"property": "hero body gap", "value": "clamp(.75rem, 2vw, 2rem)", "source": "/Users/katherinebui/Documents/SacKySpace/src/features/home/home.css:126-133"},
+      {"property": "journey rail gap", "value": ".65rem", "source": "/Users/katherinebui/Documents/SacKySpace/src/features/home/home.css:205-207"},
+      {"property": "action row padding", "value": ".68rem .1rem", "source": "/Users/katherinebui/Documents/SacKySpace/src/features/home/home.css:220-222"},
+      {"property": "personal tile padding", "value": ".9rem", "source": "/Users/katherinebui/Documents/SacKySpace/src/features/home/home.css:244-248"}
+    ]
+  },
+  "geometry": {
+    "layout": [
+      {"name": "sidebar width", "value": "13.25rem", "source": "/Users/katherinebui/Documents/SacKySpace/src/styles/globals.css:40,59-60"},
+      {"name": "global content max width", "value": "91rem", "source": "/Users/katherinebui/Documents/SacKySpace/src/styles/globals.css:41,75"},
+      {"name": "Home max width", "value": "92rem", "source": "/Users/katherinebui/Documents/SacKySpace/src/features/home/home.css:1-5"},
+      {"name": "Home columns", "value": "minmax(0, 1.45fr) minmax(25rem, .95fr)", "source": "/Users/katherinebui/Documents/SacKySpace/src/features/home/home.css:44-49"},
+      {"name": "Home areas", "value": "hero journey / diary personal", "source": "/Users/katherinebui/Documents/SacKySpace/src/features/home/home.css:47-50"},
+      {"name": "Home hero min-height", "value": "34.5rem", "source": "/Users/katherinebui/Documents/SacKySpace/src/features/home/home.css:62-68"},
+      {"name": "Home right column rows", "value": "auto auto", "source": "/Users/katherinebui/Documents/SacKySpace/src/features/home/home.css:200"},
+      {"name": "Diary columns", "value": "minmax(0, 1fr) 10.5rem", "source": "/Users/katherinebui/Documents/SacKySpace/src/features/home/home.css:233"},
+      {"name": "Diary min-height", "value": "12.2rem", "source": "/Users/katherinebui/Documents/SacKySpace/src/features/home/home.css:233"},
+      {"name": "Personal grid columns", "value": "repeat(2, minmax(0, 1fr))", "source": "/Users/katherinebui/Documents/SacKySpace/src/features/home/home.css:245"},
+      {"name": "Personal tile min-height", "value": "9.2rem", "source": "/Users/katherinebui/Documents/SacKySpace/src/features/home/home.css:246"},
+      {"name": "Detail modal max width", "value": "min(100%, 60rem)", "source": "/Users/katherinebui/Documents/SacKySpace/src/features/home/home.css:273-280"},
+      {"name": "Detail modal max height", "value": "min(90svh, 48rem)", "source": "/Users/katherinebui/Documents/SacKySpace/src/features/home/home.css:277-279"}
+    ],
+    "controls": [
+      {"name": "nav row min-height", "value": "3.15rem", "source": "/Users/katherinebui/Documents/SacKySpace/src/styles/globals.css:64"},
+      {"name": "brand mark", "value": "2.15rem x 2.15rem", "source": "/Users/katherinebui/Documents/SacKySpace/src/styles/globals.css:62"},
+      {"name": "button min-height", "value": "2.5rem", "source": "/Users/katherinebui/Documents/SacKySpace/src/styles/globals.css:202"},
+      {"name": "range/action button min-height", "value": "1.8rem", "source": "/Users/katherinebui/Documents/SacKySpace/src/features/home/home.css:161-169"},
+      {"name": "journey card basis", "value": "min(13rem, 76%)", "source": "/Users/katherinebui/Documents/SacKySpace/src/features/home/home.css:207"},
+      {"name": "journey card min-height", "value": "9rem", "source": "/Users/katherinebui/Documents/SacKySpace/src/features/home/home.css:207"},
+      {"name": "journey arrow", "value": "1.8rem x 1.8rem", "source": "/Users/katherinebui/Documents/SacKySpace/src/features/home/home.css:215"},
+      {"name": "action status circle", "value": "1rem x 1rem", "source": "/Users/katherinebui/Documents/SacKySpace/src/features/home/home.css:224"},
+      {"name": "surface arrow", "value": "1.75rem x 1.75rem", "source": "/Users/katherinebui/Documents/SacKySpace/src/features/home/home.css:255"}
+    ]
+  },
+  "shape": {
+    "radii": [
+      {"value": "999px", "source": "/Users/katherinebui/Documents/SacKySpace/src/features/home/home.css:150-177", "roles": ["segmented track", "segmented option", "status pill"]},
+      {"value": "1.35rem", "source": "/Users/katherinebui/Documents/SacKySpace/src/features/home/home.css:34,57,282", "roles": ["Home panels/cards/detail modal"]},
+      {"value": "1.375rem", "source": "/Users/katherinebui/Documents/SacKySpace/src/styles/globals.css:126", "roles": ["shared summary rail"]},
+      {"value": "1rem", "source": "/Users/katherinebui/Documents/SacKySpace/src/features/home/home.css:207,215", "roles": ["journey card", "circle control via separate width/height"]},
+      {"value": ".95rem", "source": "/Users/katherinebui/Documents/SacKySpace/src/features/home/home.css:246", "roles": ["personal tile"]},
+      {"value": ".85rem", "source": "/Users/katherinebui/Documents/SacKySpace/src/features/home/home.css:241", "roles": ["diary art"]},
+      {"value": ".25rem", "source": "/Users/katherinebui/Documents/SacKySpace/src/features/home/home.css:251", "roles": ["envelope"]
+      }
+    ],
+    "borders": [
+      {"value": "1px solid rgba(113,88,180,.14)", "source": "/Users/katherinebui/Documents/SacKySpace/src/features/home/home.css:33,56,281"},
+      {"value": "1px solid rgba(229,221,245,.72)", "source": "/Users/katherinebui/Documents/SacKySpace/src/features/home/home.css:207,221"},
+      {"value": "1px solid var(--color-border)", "source": "/Users/katherinebui/Documents/SacKySpace/src/styles/globals.css:95,159,191,202"}
+    ]
+  },
+  "effects": {
+    "shadows": [
+      {"name": "shadow-card", "value": "0 10px 30px rgba(60, 35, 95, .08)", "source": "/Users/katherinebui/Documents/SacKySpace/src/styles/globals.css:24"},
+      {"name": "shadow-floating", "value": "0 18px 54px rgba(60, 35, 95, .14)", "source": "/Users/katherinebui/Documents/SacKySpace/src/styles/globals.css:25"},
+      {"name": "Home card", "value": "0 10px 30px rgba(60, 35, 95, .055), inset 0 1px 0 rgba(255, 255, 255, .9)", "source": "/Users/katherinebui/Documents/SacKySpace/src/features/home/home.css:59"},
+      {"name": "Home detail modal", "value": "0 20px 70px rgba(30, 18, 67, .2)", "source": "/Users/katherinebui/Documents/SacKySpace/src/features/home/home.css:284"},
+      {"name": "Orb drop shadow", "value": "drop-shadow(0 14px 22px rgba(74, 43, 132, .12))", "source": "/Users/katherinebui/Documents/SacKySpace/src/styles/globals.css:115"}
+    ],
+    "backdrops": [
+      {"value": "rgba(35, 27, 70, .28) + blur(6px)", "source": "/Users/katherinebui/Documents/SacKySpace/src/features/home/home.css:262-270", "role": "Home detail modal"},
+      {"value": "rgba(35,27,70,.22) + blur(3px)", "source": "/Users/katherinebui/Documents/SacKySpace/src/features/home/home.css:379", "role": "reflection modal"}
+    ],
+    "opacityAndBlend": [
+      {"value": "rgba(255,255,255,.8)", "source": "/Users/katherinebui/Documents/SacKySpace/src/features/home/home.css:58", "role": "Home card surface"},
+      {"value": "mix-blend-mode: screen", "source": "/Users/katherinebui/Documents/SacKySpace/src/features/checkin/components/CheckinComponents.tsx:71, /Users/katherinebui/Documents/SacKySpace/src/features/checkin/utils/colorOrb.ts:85", "role": "Orb sheen/highlight"}
+    ]
+  },
+  "motion": {
+    "transitions": [
+      {"value": "transform .16s ease, background .16s ease, color .16s ease, border-color .16s ease, box-shadow .16s ease", "source": "/Users/katherinebui/Documents/SacKySpace/src/styles/globals.css:64", "role": "sidebar nav"},
+      {"value": "transform .16s ease, border-color .16s ease, background .16s ease, box-shadow .16s ease", "source": "/Users/katherinebui/Documents/SacKySpace/src/features/home/home.css:207", "role": "journey cards"},
+      {"value": "transform .16s ease, box-shadow .16s ease, border-color .16s ease, background .16s ease", "source": "/Users/katherinebui/Documents/SacKySpace/src/styles/globals.css:202", "role": "buttons"},
+      {"value": "transform .15s ease, border-color .15s ease, background .15s ease, color .15s ease", "source": "/Users/katherinebui/Documents/SacKySpace/src/styles/globals.css:159", "role": "filter chips"}
+    ],
+    "hoverTransforms": [
+      {"value": "translateX(2px)", "source": "/Users/katherinebui/Documents/SacKySpace/src/styles/globals.css:65", "role": "sidebar nav"},
+      {"value": "translateY(-1px)", "source": "/Users/katherinebui/Documents/SacKySpace/src/features/home/home.css:208", "role": "journey card"},
+      {"value": "translateY(-1px)", "source": "/Users/katherinebui/Documents/SacKySpace/src/styles/globals.css:203", "role": "button"},
+      {"value": "translateY(-1px)", "source": "/Users/katherinebui/Documents/SacKySpace/src/styles/globals.css:159-162", "role": "filter chip"}
+    ],
+    "carousel": {
+      "value": "scrollBy({ left: direction * Math.max(rail.clientWidth * .78, 220), behavior: 'smooth' })",
+      "source": "/Users/katherinebui/Documents/SacKySpace/src/features/home/components/RecentJourney.tsx:35-39"
+    },
+    "animationDeclarations": {
+      "value": "none found",
+      "source": "Audited src/styles/globals.css, src/features/home/home.css, src/features/reminder/reminder.css and Home/Orb TS/TSX."
+    }
+  },
+  "orb": {
+    "renderer": {
+      "source": "/Users/katherinebui/Documents/SacKySpace/src/features/checkin/components/CheckinComponents.tsx:34-75",
+      "technique": "inline SVG with clipPath, radialGradient, feGaussianBlur, CSS mix-blend-mode",
+      "viewBox": "0 0 200 200",
+      "clipCircleRadius": 96,
+      "outline": "white rgba(.9), stroke-width 2.5",
+      "halo": "rgba(116,60,255,.1), stroke-width 2, circle radius 99",
+      "cssSizes": {
+        "small": "5.5rem",
+        "medium": "10rem",
+        "large": "12rem"
+      },
+      "homeOverrides": [
+        {"value": "width: min(100%, 20rem); height: auto", "source": "/Users/katherinebui/Documents/SacKySpace/src/features/home/home.css:141-143"},
+        {"value": "width: 4.4rem; height: 4.4rem", "source": "/Users/katherinebui/Documents/SacKySpace/src/features/home/home.css:312-317"}
+      ]
+    },
+    "baseGradient": [
+      {"offset": "0", "color": "#F7F0FF", "opacity": ".78", "source": "/Users/katherinebui/Documents/SacKySpace/src/features/checkin/components/CheckinComponents.tsx:46-50"},
+      {"offset": ".64", "color": "#EEE6F8", "opacity": ".72", "source": "/Users/katherinebui/Documents/SacKySpace/src/features/checkin/components/CheckinComponents.tsx:46-50"},
+      {"offset": "1", "color": "#D9CFE9", "opacity": ".9", "source": "/Users/katherinebui/Documents/SacKySpace/src/features/checkin/components/CheckinComponents.tsx:46-50"}
+    ],
+    "innerGlowGradient": [
+      {"offset": "0", "color": "#FFFFFF", "opacity": ".28", "source": "/Users/katherinebui/Documents/SacKySpace/src/features/checkin/components/CheckinComponents.tsx:51-55"},
+      {"offset": ".48", "color": "#FFFFFF", "opacity": ".04", "source": "/Users/katherinebui/Documents/SacKySpace/src/features/checkin/components/CheckinComponents.tsx:51-55"},
+      {"offset": "1", "color": "#FFFFFF", "opacity": "0", "source": "/Users/katherinebui/Documents/SacKySpace/src/features/checkin/components/CheckinComponents.tsx:51-55"}
+    ],
+    "cloudFormula": {
+      "source": "/Users/katherinebui/Documents/SacKySpace/src/features/checkin/utils/colorOrb.ts:56-88",
+      "weight": "sum(max(entry.intensity, .25)) per normalized uppercase source color",
+      "contribution": "weight / total",
+      "center": "100 + cos(angle)*17, 100 + sin(angle)*17; angle=(index/max(size,1))*2π - π/2",
+      "aura": {"radius": "70 + contribution*20", "opacity": ".28 + contribution*.12", "blur": "8.5", "blendMode": "normal"},
+      "core": {"radius": "46 + contribution*17", "opacity": ".84 + contribution*.12", "blur": ".8", "blendMode": "normal"},
+      "lightTint": {"transformation": "tint(source,.3)", "radius": "aura*.72", "opacity": ".24 + contribution*.14", "blur": "3.8", "blendMode": "normal"},
+      "paleTint": {"transformation": "tint(source,.62)", "radius": "aura*.62", "opacity": ".12 + contribution*.1", "blur": "5.5", "blendMode": "normal"},
+      "deepShade": {"transformation": "shade(source,.22)", "radius": "aura*.68", "opacity": ".36 + contribution*.22", "blur": "2.4", "blendMode": "normal"},
+      "whiteHighlight": {"color": "#FFFFFF", "radius": "aura*.35", "opacity": ".07 + contribution*.04", "blur": "3", "blendMode": "screen"}
+    },
+    "homeInputs": {
+      "inputSource": "/Users/katherinebui/Documents/SacKySpace/src/features/home/services/homeAggregation.ts:37-41",
+      "included": "primary emotion color_hex with stored intensity",
+      "excluded": "secondary emotions and Unknown check-ins",
+      "emptyFallback": "#e6def6",
+      "emptyFallbackSource": "/Users/katherinebui/Documents/SacKySpace/src/features/home/components/HomeOrb.tsx:3-4"
+    },
+    "missingReferenceFeatures": [
+      "No sparkle/star elements in current ColorOrb TSX.",
+      "No keyframe animation in current Orb styles."
+    ]
+  },
+  "responsive": [
+    {
+      "breakpoint": "58rem",
+      "source": "/Users/katherinebui/Documents/SacKySpace/src/features/home/home.css:407-411 and /Users/katherinebui/Documents/SacKySpace/src/styles/globals.css:320-340",
+      "behavior": "Home grid becomes one column in area order hero/journey/diary/personal; right column becomes two columns; shell becomes stacked horizontal nav; sidebar footer hidden; content document-scrolls."
+    },
+    {
+      "breakpoint": "70rem",
+      "source": "/Users/katherinebui/Documents/SacKySpace/src/features/home/home.css:401-405 and /Users/katherinebui/Documents/SacKySpace/src/styles/globals.css:341-343",
+      "behavior": "Home columns shrink to 1.25fr/.9fr; hero padding and body minimum columns contract; shared inventory grids become three columns."
+    },
+    {
+      "breakpoint": "42rem",
+      "source": "/Users/katherinebui/Documents/SacKySpace/src/features/home/home.css:391-399,413-427 and /Users/katherinebui/Documents/SacKySpace/src/styles/globals.css:344-368",
+      "behavior": "Detail modal layout collapses; hero becomes one column with Orb first and centered summary; right column becomes one column; diary art becomes 7rem column; Home padding contracts; global nav/content/forms contract."
+    },
+    {
+      "breakpoint": "27rem",
+      "source": "/Users/katherinebui/Documents/SacKySpace/src/features/home/home.css:429-434 and /Users/katherinebui/Documents/SacKySpace/src/styles/globals.css:369-379",
+      "behavior": "Journey padding/card width contract; personal grid becomes one column; personal tile minimum becomes 8rem; global nav typography and modal padding contract."
+    }
+  ],
+  "repeatedValues": [
+    {
+      "value": "var(--color-text-muted)",
+      "approximateOccurrences": 67,
+      "scope": "audited CSS files",
+      "sourceLocations": [
+        "/Users/katherinebui/Documents/SacKySpace/src/styles/globals.css",
+        "/Users/katherinebui/Documents/SacKySpace/src/features/home/home.css",
+        "/Users/katherinebui/Documents/SacKySpace/src/features/reminder/reminder.css"
+      ],
+      "likelyRole": "secondary text and metadata"
+    },
+    {
+      "value": "var(--color-violet)",
+      "approximateOccurrences": 48,
+      "scope": "audited CSS files",
+      "sourceLocations": [
+        "/Users/katherinebui/Documents/SacKySpace/src/styles/globals.css",
+        "/Users/katherinebui/Documents/SacKySpace/src/features/home/home.css"
+      ],
+      "likelyRole": "brand/active/accent state"
+    },
+    {
+      "value": "var(--color-border)",
+      "approximateOccurrences": 35,
+      "scope": "audited CSS files",
+      "sourceLocations": [
+        "/Users/katherinebui/Documents/SacKySpace/src/styles/globals.css",
+        "/Users/katherinebui/Documents/SacKySpace/src/features/home/home.css"
+      ],
+      "likelyRole": "restrained border and form outline"
+    },
+    {
+      "value": "var(--color-text)",
+      "approximateOccurrences": 30,
+      "scope": "audited CSS files",
+      "sourceLocations": [
+        "/Users/katherinebui/Documents/SacKySpace/src/styles/globals.css",
+        "/Users/katherinebui/Documents/SacKySpace/src/features/home/home.css"
+      ],
+      "likelyRole": "primary ink"
+    },
+    {
+      "value": "var(--shadow-card)",
+      "approximateOccurrences": 9,
+      "scope": "audited CSS files",
+      "sourceLocations": [
+        "/Users/katherinebui/Documents/SacKySpace/src/styles/globals.css"
+      ],
+      "likelyRole": "shared card/hover elevation"
+    },
+    {
+      "value": "1rem",
+      "approximateOccurrences": "high frequency; exact all-source count not normalized",
+      "scope": "Home and global CSS",
+      "sourceLocations": [
+        "/Users/katherinebui/Documents/SacKySpace/src/features/home/home.css:50,200,233,307,330,334",
+        "/Users/katherinebui/Documents/SacKySpace/src/styles/globals.css:32,95,110,126,202"
+      ],
+      "likelyRole": "section/card rhythm and control geometry"
+    }
+  ],
+  "evidenceLimits": [
+    "Authenticated production Home could not be inspected.",
+    "The checked-in Home reference screenshot does not exactly match current Home source: screenshot shows five metric cells/photo/gift illustration and a 3/7/14-day timeline; source renders three metrics/CSS diary art/emoji gift and only a three-day card rail.",
+    "Effective computed values can vary with browser defaults, viewport, loaded data, and font rendering."
+  ]
+}

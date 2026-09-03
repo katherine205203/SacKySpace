@@ -90,6 +90,64 @@ function Envelope({ envelopeId, sealId, large = false, interactive = false, onCl
   return interactive ? <button type="button" className={className} aria-label="Mở lá thư" onClick={onClick}>{content}</button> : <div className={className}>{content}</div>
 }
 
+function LandingEnvelope() {
+  return <div className="future-hero-envelope" aria-hidden="true">
+    <span className="future-hero-envelope__inner-paper" />
+    <span className="future-hero-envelope__fold future-hero-envelope__fold--left" />
+    <span className="future-hero-envelope__fold future-hero-envelope__fold--right" />
+    <span className="future-hero-envelope__ribbon" />
+    <span className="future-hero-envelope__flap" />
+    <span className="future-hero-envelope__seal"><span>S</span></span>
+  </div>
+}
+
+function FutureLandscape() {
+  return <svg className="future-landscape" viewBox="0 0 840 300" aria-hidden="true" focusable="false">
+    <circle cx="704" cy="128" r="70" fill="#FFD99A" />
+    <path d="M0 220C105 168 174 187 245 210c83 27 126 23 196-4 69-27 111-40 169-10 84 42 138 28 230-19v123H0Z" fill="#D9C9FA" />
+    <path d="M0 244c89-44 169-20 247 1 80 22 140 18 205-10 69-30 113-27 167-4 69 29 132 23 221-30v98H0Z" fill="#B69BEF" />
+    <path d="M0 267c100-29 178-10 253 7 75 17 139 9 202-14 82-30 123-12 188 8 66 20 124 8 197-29v57H0Z" fill="#9271DF" />
+    <path d="M588 300c49-38 104-40 143-55 36-14 48-28 20-42-23-12-64-13-91-2-31 13-28 30 8 38 48 11 62 24 42 38-19 14-62 18-101 23Z" fill="#FFF0D6" />
+    <path d="M588 300c49-38 104-40 143-55 36-14 48-28 20-42" fill="none" stroke="#FFF8E8" strokeLinecap="round" strokeWidth="5" />
+    <path d="m488 97 4 10 10 4-10 4-4 10-4-10-10-4 10-4Z" fill="#FF956A" />
+    <path d="m630 56 3 8 8 3-8 3-3 8-3-8-8-3 8-3Z" fill="#FFFFFF" opacity=".82" />
+    <path d="M774 90c6-6 12-6 18 0M774 90c-2-4-5-6-9-6" fill="none" stroke="#B69BEF" strokeLinecap="round" strokeWidth="3" />
+    <path d="M794 178c5-5 10-5 15 0M794 178c-2-4-4-5-8-5" fill="none" stroke="#FFB993" strokeLinecap="round" strokeWidth="3" />
+  </svg>
+}
+
+type JourneyVariant = 'write' | 'decorate' | 'seal'
+
+function JourneyIllustration({ variant }: { variant: JourneyVariant }) {
+  const background = variant === 'seal' ? '#FFF2E7' : '#F1E9FF'
+  return <svg className={`future-journey-illustration future-journey-illustration--${variant}`} viewBox="0 0 148 124" aria-hidden="true" focusable="false">
+    <rect x="8" y="8" width="132" height="108" rx="20" fill={background} />
+    {variant === 'write' && <>
+      <rect x="36" y="25" width="61" height="75" rx="7" fill="#FFFFFF" opacity=".75" transform="rotate(-4 36 25)" />
+      <path d="M51 44h37M49 56h31M48 68h35M47 80h20" fill="none" stroke="#D7C8F8" strokeLinecap="round" strokeWidth="4" />
+      <path d="m65 91 19-38 12 6-19 38-15 5Z" fill="#8D6BE2" />
+      <path d="m84 53 5-10c1-2 4-3 6-2l7 4c2 1 3 4 2 6l-5 9Z" fill="#A98CF0" />
+      <path d="m65 91-2 11 10-5Z" fill="#F2D2B0" />
+    </>}
+    {variant === 'decorate' && <>
+      <path d="M25 49 69 28l54 16-39 47-57-8Z" fill="#E4D5FF" />
+      <path d="m28 49 56 14 39-19-54-16Z" fill="#FFFDFC" />
+      <path d="m28 49 56 14v28l-56-8Z" fill="#F4EDFF" />
+      <path d="m84 63 39-19v28L84 91Z" fill="#D9C5FA" />
+      <path d="M84 67c-7-9-19 0 0 13 19-13 7-22 0-13Z" fill="#A982EE" />
+      <path d="m112 38 5-5 7 5-5 5Z" fill="#FF9D73" />
+    </>}
+    {variant === 'seal' && <>
+      <path d="M25 46 74 28l49 18-49 30Z" fill="#FFFDFC" />
+      <path d="M25 46v42l49 22V76Z" fill="#F4E7D8" />
+      <path d="m74 76 49-30v42l-49 22Z" fill="#EED5BE" />
+      <circle cx="74" cy="76" r="14" fill="#865BEA" />
+      <circle cx="74" cy="76" r="10" fill="none" stroke="#C6B2FF" strokeWidth="2" />
+      <text x="74" y="81" fill="#FFFFFF" fontSize="12" fontWeight="800" textAnchor="middle">S</text>
+    </>}
+  </svg>
+}
+
 function FutureHeader({ title, description, action }: { title: string; description: string; action?: ReactNode }) {
   const eyebrow = useUiContent('futureletter.landing.eyebrow')
   const landingTitle = useUiContent('futureletter.landing.title')
@@ -115,11 +173,11 @@ function LibraryView({ letters, counts, onNew, onOpen, onDelete }: { letters: Fu
   const drafts = letters.filter((letter) => ['draft', 'writing', 'decorating', 'preview'].includes(letter.state))
   const waiting = letters.filter((letter) => letter.state === 'sealed_waiting')
   const opened = letters.filter((letter) => letter.state === 'opened').slice(0, 3)
-  if (!letters.length) return <><FutureHeader title="Những điều mình gửi về sau" description="Viết từ hôm nay, để một phiên bản tương lai của mình gặp được những lời này." action={<button className="button button--primary" type="button" onClick={onNew}>{newButton}</button>} /><section className="future-empty"><Envelope large /><div><p className="eyebrow">Viết → Trang trí → Xem lại → Niêm phong</p><h2>{emptyTitle}</h2><p>{emptyCopy}</p><button className="button button--primary" type="button" onClick={onNew}>Viết lá thư đầu tiên</button></div></section><div className="future-ritual-steps"><RitualStep index="01" title="Viết" copy="Một điều thật lòng từ hiện tại." /><RitualStep index="02" title="Trang trí" copy="Chọn một phong bì và một dấu ấn." /><RitualStep index="03" title="Niêm phong" copy="Để nó trở lại khi điều kiện đủ đầy." /></div></>
+  if (!letters.length) return <><FutureHeader title="Những điều mình gửi về sau" description="Viết từ hôm nay, để một phiên bản tương lai của mình gặp được những lời này." action={<button className="button button--primary" type="button" onClick={onNew}>{newButton}</button>} /><section className="future-empty" aria-labelledby="future-empty-title"><div className="future-empty__landscape"><FutureLandscape /></div><div className="future-empty__visual"><span className="future-empty__spark future-empty__spark--one">✦</span><span className="future-empty__spark future-empty__spark--two">✦</span><LandingEnvelope /></div><div className="future-empty__copy"><p className="eyebrow">Viết → Trang trí → Xem lại → Niêm phong</p><h2 id="future-empty-title">{emptyTitle}</h2><p>{emptyCopy}</p><button className="button button--primary" type="button" onClick={onNew}>Viết lá thư đầu tiên</button></div></section><div className="future-ritual-steps" aria-label="Các bước của Future Letter"><RitualStep index="01" title="Viết" copy="Ghi lại những điều muốn nói với chính mình." variant="write" /><RitualStep index="02" title="Trang trí" copy="Chọn phong thư và dấu ấn để lá thư mang dấu ấn riêng." variant="decorate" /><RitualStep index="03" title="Niêm phong" copy="Niêm phong và để thời gian mang nó đến đúng lúc." variant="seal" /></div></>
   return <><FutureHeader title="Những điều mình gửi về sau" description="Một thư viện nhỏ cho những lời cần thêm thời gian để trở về." action={<button className="button button--primary" type="button" onClick={onNew}>＋ Viết thư mới</button>} /><div className="future-library-summary"><span><strong>{counts.available}</strong> đang chờ mở</span><span><strong>{counts.waiting}</strong> đang chờ ngày trở về</span><span><strong>{counts.draft}</strong> bản nháp</span><Link to="/future-letter?view=history">Lịch sử & lưu giữ →</Link></div>{available.length > 0 && <section className="future-available-hero"><div><p className="eyebrow">Đã trở về · Chưa mở</p><h2>Một lá thư đã trở về.</h2><p>{available[0].title || 'Có điều gì đó mình từng muốn nói.'}</p><button className="future-text-link" type="button" onClick={() => onOpen(available[0])}>Mở lá thư <span aria-hidden="true">→</span></button></div><Envelope envelopeId={available[0].envelopeAssetId} sealId={available[0].sealAssetId} large interactive onClick={() => onOpen(available[0])} /></section>}<LibrarySection title="Bản nháp" count={drafts.length} empty="Những lá thư chưa niêm phong sẽ nằm ở đây.">{drafts.map((letter) => <LetterRow key={letter.id} letter={letter} actionLabel="Tiếp tục viết" onClick={() => onOpen(letter)} onDelete={() => onDelete(letter)} />)}</LibrarySection><LibrarySection title="Đang chờ" count={waiting.length} empty="Những lá thư đã niêm phong sẽ chờ đến lúc thích hợp.">{waiting.map((letter) => <LetterRow key={letter.id} letter={letter} actionLabel="Xem thư" onClick={() => onOpen(letter)} />)}</LibrarySection><LibrarySection title="Mới mở gần đây" count={opened.length} empty="Những lá thư đã mở sẽ xuất hiện ở đây.">{opened.map((letter) => <LetterRow key={letter.id} letter={letter} actionLabel="Đọc lại" onClick={() => onOpen(letter)} />)}</LibrarySection></>
 }
 
-function RitualStep({ index, title, copy }: { index: string; title: string; copy: string }) { return <div className="future-ritual-step"><span>{index}</span><strong>{title}</strong><p>{copy}</p></div> }
+function RitualStep({ index, title, copy, variant }: { index: string; title: string; copy: string; variant: JourneyVariant }) { return <article className={`future-ritual-step future-ritual-step--${variant}`}><div className="future-ritual-step__copy"><span>{index}</span><strong>{title}</strong><p>{copy}</p></div><JourneyIllustration variant={variant} /></article> }
 
 function LibrarySection({ title, count, empty, children }: { title: string; count: number; empty: string; children: ReactNode }) {
   return <section className="future-library-section"><div className="future-section-heading"><div><p className="eyebrow">Future Letter</p><h2>{title}</h2></div><span>{count}</span></div>{count ? <div className="future-letter-list">{children}</div> : <p className="future-section-empty">{empty}</p>}</section>
