@@ -1,4 +1,4 @@
-import { useEffect, useId, useRef, type CSSProperties, type ReactNode } from 'react'
+import { useEffect, useId, useRef, useState, type CSSProperties, type ReactNode } from 'react'
 import { NavLink } from 'react-router-dom'
 import type { CheckinDraft, Context, Emotion, EmotionFamily, Need, NeedGroup, ReferenceData } from '../types'
 import { buildColorOrbRegionsFromColors, type ColorOrbEntry } from '../utils/colorOrb'
@@ -28,21 +28,79 @@ export function ColorOrb({ entries, size = 'medium', label }: { entries: readonl
   const id = useId().replaceAll(':', '')
   const clipId = `orb-clip-${id}`
   const baseId = `orb-base-${id}`
-  return <svg className={`color-orb color-orb--${size} ${hasData ? 'is-vivid' : 'is-empty'}`} viewBox="0 0 200 200" role={label ? 'img' : undefined} aria-label={label}>
-    <defs>
-      <clipPath id={clipId}><circle cx="100" cy="100" r="96" /></clipPath>
-      <radialGradient id={baseId} cx="32%" cy="24%" r="88%"><stop offset="0" stopColor="#FCFBFF" /><stop offset=".72" stopColor="#F3EEFB" /><stop offset="1" stopColor="#E9E1F6" /></radialGradient>
-    </defs>
-    <circle className="color-orb__halo" cx="100" cy="100" r="99" />
-    <circle className="color-orb__base" cx="100" cy="100" r="96" fill={`url(#${baseId})`} />
-    <g clipPath={`url(#${clipId})`}>
-      {territories.map((territory) => <path key={territory.key} className="color-orb__territory" d={territory.path} fill={territory.color} fillOpacity=".97" stroke="#FFFFFF" strokeOpacity={territory.edgeOpacity} strokeWidth="1.05" strokeLinejoin="round" vectorEffect="non-scaling-stroke" />)}
-      <circle className="color-orb__center-shine" cx="100" cy="100" r="14" />
-      {territories.filter((territory) => territory.showLabel).map((territory) => <text key={`${territory.key}-label`} className="color-orb__territory-label" x={territory.labelX} y={territory.labelY} fill={territory.labelColor} textAnchor="middle" dominantBaseline="middle">{Math.round(territory.percentage)}%</text>)}
-      <circle className="color-orb__inner-ring" cx="100" cy="100" r="82" />
-    </g>
-    <circle className="color-orb__outline" cx="100" cy="100" r="96" />
-  </svg>
+  const tooltipId = `orb-tooltip-${id}`
+  const shellRef = useRef<HTMLDivElement>(null)
+  const [hoveredKey, setHoveredKey] = useState<string | null>(null)
+  const [focusedKey, setFocusedKey] = useState<string | null>(null)
+  const [selectedKey, setSelectedKey] = useState<string | null>(null)
+  const activeKey = selectedKey ?? focusedKey ?? hoveredKey
+  const activeRegion = territories.find((territory) => territory.key === activeKey)
+
+  useEffect(() => {
+    if (!selectedKey) return undefined
+    const clearSelection = (event: PointerEvent) => {
+      if (!shellRef.current?.contains(event.target as Node)) setSelectedKey(null)
+    }
+    const clearWithEscape = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') setSelectedKey(null)
+    }
+    document.addEventListener('pointerdown', clearSelection)
+    document.addEventListener('keydown', clearWithEscape)
+    return () => {
+      document.removeEventListener('pointerdown', clearSelection)
+      document.removeEventListener('keydown', clearWithEscape)
+    }
+  }, [selectedKey])
+
+  const selectTerritory = (key: string) => setSelectedKey((current) => current === key ? null : key)
+
+  return <div ref={shellRef} className={`color-orb-shell color-orb-shell--${size}`}>
+    <svg className={`color-orb color-orb--${size} ${hasData ? 'is-vivid' : 'is-empty'}`} viewBox="0 0 200 200" role={label ? 'group' : undefined} aria-label={label}>
+      <defs>
+        <clipPath id={clipId}><circle cx="100" cy="100" r="96" /></clipPath>
+        <radialGradient id={baseId} cx="32%" cy="24%" r="88%"><stop offset="0" stopColor="#FCFBFF" /><stop offset=".72" stopColor="#F3EEFB" /><stop offset="1" stopColor="#E9E1F6" /></radialGradient>
+      </defs>
+      <circle className="color-orb__halo" cx="100" cy="100" r="99" />
+      <circle className="color-orb__base" cx="100" cy="100" r="96" fill={`url(#${baseId})`} />
+      <g clipPath={`url(#${clipId})`}>
+        {territories.map((territory) => <path
+          key={territory.key}
+          className={`color-orb__territory ${activeKey === territory.key ? 'is-active' : ''} ${activeKey && activeKey !== territory.key ? 'is-muted' : ''}`}
+          d={territory.path}
+          fill={territory.color}
+          fillOpacity=".98"
+          stroke="#FFFFFF"
+          strokeOpacity={territory.edgeOpacity}
+          strokeWidth={activeKey === territory.key ? '1.35' : '1.05'}
+          strokeLinejoin="round"
+          vectorEffect="non-scaling-stroke"
+          tabIndex={0}
+          role="button"
+          aria-label={`${territory.emoji ? `${territory.emoji} ` : ''}${territory.label ?? 'Cảm xúc'}, ${Math.round(territory.percentage)} phần trăm hiện diện hôm nay`}
+          aria-describedby={activeRegion?.key === territory.key ? tooltipId : undefined}
+          onPointerEnter={() => setHoveredKey(territory.key)}
+          onPointerLeave={() => setHoveredKey(null)}
+          onFocus={() => setFocusedKey(territory.key)}
+          onBlur={() => setFocusedKey(null)}
+          onClick={() => selectTerritory(territory.key)}
+          onKeyDown={(event) => {
+            if (event.key === 'Enter' || event.key === ' ') {
+              event.preventDefault()
+              selectTerritory(territory.key)
+            }
+          }}
+        />)}
+        {territories.filter((territory) => territory.showLabel).map((territory) => <text key={`${territory.key}-label`} className="color-orb__territory-label" x={territory.labelX} y={territory.labelY} fill={territory.labelColor} textAnchor="middle" dominantBaseline="middle">{Math.round(territory.percentage)}%</text>)}
+      </g>
+      <circle className="color-orb__outline" cx="100" cy="100" r="96" />
+    </svg>
+    {activeRegion && <div id={tooltipId} className="color-orb__tooltip" role="tooltip" style={{ left: `${Math.min(78, Math.max(22, activeRegion.labelX / 2))}%`, top: `${Math.min(72, Math.max(18, activeRegion.labelY / 2))}%` }}>
+      <span className="color-orb__tooltip-accent" style={{ background: activeRegion.color }} />
+      <strong>{activeRegion.emoji && <span aria-hidden="true">{activeRegion.emoji} </span>}{activeRegion.label ?? 'Cảm xúc'}</strong>
+      {activeRegion.labelEn && <small>{activeRegion.labelEn}</small>}
+      <span>{Math.round(activeRegion.percentage)}% hiện diện hôm nay</span>
+    </div>}
+  </div>
 }
 
 export function EmotionCard({ emotion, selected, disabled, onClick, multi = false }: { emotion: Emotion; selected: boolean; disabled?: boolean; onClick: () => void; multi?: boolean }) {

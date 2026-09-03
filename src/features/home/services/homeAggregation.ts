@@ -47,6 +47,7 @@ export const getHomeOrbEntries = (records: readonly CheckinRecord[]): ColorEntry
       presenceWeight: totalWeight * (shares[index] ?? 0),
       ...(emotion.emotion_id ? { emotionId: emotion.emotion_id } : {}),
       ...(emotion.emotion_name_vn ? { label: emotion.emotion_name_vn } : {}),
+      ...(emotion.emotion_name_en ? { labelEn: emotion.emotion_name_en } : {}),
       ...(emotion.emoji ? { emoji: emotion.emoji } : {}),
     }))
   })
