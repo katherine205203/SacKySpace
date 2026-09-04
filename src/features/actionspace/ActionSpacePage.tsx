@@ -26,7 +26,7 @@ import './actionspace.css'
 
 const tabs: { value: ActionTab; label: string }[] = [
   { value: 'today', label: 'Hôm nay' },
-  { value: 'upcoming', label: 'Upcoming' },
+  { value: 'upcoming', label: 'Sắp tới' },
   { value: 'overdue', label: 'Quá hạn' },
   { value: 'unscheduled', label: 'Chưa lên lịch' },
   { value: 'completed', label: 'Đã hoàn thành' },

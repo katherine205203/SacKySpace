@@ -16,8 +16,12 @@ import './home.css'
 import { getDiaryLocalDate } from '../diary/utils'
 import { DEFAULT_REFLECTION_OUTCOMES, listReflectionOutcomes, saveActionReflection, setActionStatus } from '../actionspace/actionService'
 import { ReflectionModal } from '../actionspace/ActionSpacePage'
-import { GiftDeliveryCard } from '../gift/components/GiftDeliveryCard'
 import type { ActionRecord, ActionReflectionOutcome } from '../actionspace/types'
+
+const getDiaryPreviewExcerpt = (entry: NonNullable<ReturnType<typeof useHomeData>['snapshot']>['diaryEntries'][number]): string => {
+  const authoredPrompt = entry.promptResponses.find((response) => response.responseText.trim())?.responseText ?? ''
+  return (entry.overallText.trim() || authoredPrompt.trim()).replace(/\s+/g, ' ').trim()
+}
 
 export function HomePage() {
   const navigate = useNavigate()
@@ -40,7 +44,7 @@ export function HomePage() {
   const selectedRecord = selectedRecordId ? records.find((record) => record.id === selectedRecordId) ?? null : null
   const todayDiary = useMemo(() => snapshot?.diaryEntries.find((entry) => entry.localDate === getDiaryLocalDate()) ?? null, [snapshot])
   const diaryPreview: HomeDiaryPreview = todayDiary
-    ? { status: ['done', 'user_done', 'day_locked'].includes(todayDiary.status) ? 'done' : 'draft', title: todayDiary.title, excerpt: todayDiary.overallText, imageUrl: todayDiary.images[0]?.externalUrl }
+    ? { status: ['done', 'user_done', 'day_locked'].includes(todayDiary.status) ? 'done' : 'draft', title: todayDiary.title.trim() || undefined, excerpt: getDiaryPreviewExcerpt(todayDiary), imageUrl: todayDiary.images[0]?.externalUrl }
     : { status: 'empty' }
 
   useEffect(() => { void listReflectionOutcomes().then((outcomes) => { if (outcomes.length) setReflectionOutcomes(outcomes) }).catch(() => undefined) }, [])
@@ -87,8 +91,7 @@ export function HomePage() {
         <HomeHero displayName={snapshot.displayName} streak={getCurrentStreak(records, now)} orbEntries={orbEntries} range={range} customRange={customRange} relevantCheckins={rangeRecords.length} completedActions={actionSummary.completed} remainingActions={actionSummary.remaining} onRangeChange={setRange} onCustomRangeChange={setCustomRange} />
         <div className="home-v2__right-column"><RecentJourney records={journeyCheckins} onSelectCheckin={(record) => { setInteractionError(null); setSelectedRecordId(record.id) }} /><ActionPreview reminders={reminders} checkins={records} onDone={(reminder) => completeHomeAction(reminder)} /></div>
         <DiaryToday preview={diaryPreview} />
-        <PersonalSurfaces futureLetter={snapshot.futureLetter} gift={snapshot.gift} />
-        <GiftDeliveryCard projection={snapshot.gift} onChanged={() => void refresh()} />
+        <PersonalSurfaces futureLetter={snapshot.futureLetter} gift={snapshot.gift} onGiftChanged={() => void refresh()} />
       </div>
       {selectedRecord && <CheckinDetailModal record={selectedRecord} linkedActions={reminders.filter((reminder) => reminder.sourceCheckinId === selectedRecord.id)} onClose={closeSelectedRecord} onEdit={() => void editSelectedRecord()} onDelete={deleteSelectedRecord} onActionChanged={refresh} />}
       {reflectionAction && <ReflectionModal action={reflectionAction.action} checkin={records.find((record) => record.id === reflectionAction.action.sourceCheckinId) ?? null} outcomes={reflectionOutcomes} historyAvailable={reflectionAction.historyAvailable} onClose={() => setReflectionAction(null)} onSave={async (outcome, note) => { await saveActionReflection(reflectionAction.action.id, outcome, note); setReflectionAction(null); await refresh() }} />}

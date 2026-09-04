@@ -1,12 +1,13 @@
 import { useEffect, useMemo, useRef, useState, type ReactNode } from 'react'
-import { Link, useSearchParams } from 'react-router-dom'
+import { Link, useNavigate, useSearchParams } from 'react-router-dom'
 import { getReferenceData } from '../checkin/services/referenceRepository'
 import { getPublishedRuntimeValue } from '../../services/runtimeConfig'
 import type { Emotion } from '../checkin/types'
-import { getGiftAnswer, listGiftBoxStyles, listGifts, saveGiftAnswer, sendGift, setGiftOpened, setGiftReceipt, rememberGiftDraft, saveGiftDraft, convertGiftQuestionToDiary } from './services/giftRepository'
+import { DiaryPromptLimitError, getGiftAnswer, getGiftDiaryConversion, listGiftBoxStyles, listGifts, saveGiftAnswer, sendGift, setGiftOpened, setGiftReceipt, rememberGiftDraft, saveGiftDraft, convertGiftQuestionToDiary } from './services/giftRepository'
 import { GiftBoxArt } from './components/GiftBoxArt'
+import { GiftReadPanel } from './components/GiftReadPanel'
 import { createGiftId, formatGiftDate, formatGiftDateTime, getGiftLocalDate, giftUserError, isGiftEditable, isGiftFilterMatch, isGiftInHistory, isGiftOnHome, receiptLabel, statusLabel } from './utils'
-import type { GiftBoxStyle, GiftDraft, GiftHistoryFilter, GiftQuestionAnswer, GiftRecord, GiftType } from './types'
+import type { DiaryConversionLink, GiftBoxStyle, GiftDraft, GiftHistoryFilter, GiftQuestionAnswer, GiftRecord, GiftType } from './types'
 import { PageHeading } from '../../components/PageHeading'
 import { useUiContent } from '../../services/uiContent'
 import './gift.css'
@@ -48,8 +49,12 @@ export function GiftPage() {
   const [selectedGift, setSelectedGift] = useState<GiftRecord | null>(null)
   const [answer, setAnswer] = useState<GiftQuestionAnswer | null>(null)
   const [answerSaveNotice, setAnswerSaveNotice] = useState('')
+  const [conversionLink, setConversionLink] = useState<DiaryConversionLink | null>(null)
   const [isConverting, setIsConverting] = useState(false)
+  const [isSavingAnswer, setIsSavingAnswer] = useState(false)
+  const [conversionLimitOpen, setConversionLimitOpen] = useState(false)
   const [giftTimes, setGiftTimes] = useState({ cutoff: '23:30', delivery: '03:00' })
+  const navigate = useNavigate()
   const draftRevisionRef = useRef(0)
   const view = searchParams.get('view') === 'history' ? 'history' : 'home'
   const today = getGiftLocalDate()
@@ -117,8 +122,10 @@ export function GiftPage() {
     setGifts((items) => items.map((item) => item.id === gift.id ? openedGift : item))
     setAnswer(null)
     setAnswerSaveNotice('')
+    setConversionLink(null)
     if (!gift.openedAt) void setGiftOpened(gift.id).then((saved) => { setSelectedGift((current) => current?.id === saved.id ? { ...current, ...saved } : current); setGifts((items) => items.map((item) => item.id === saved.id ? saved : item)) }).catch((reason: unknown) => setError(giftUserError(reason, 'Không thể lưu trạng thái đã mở.')))
     if (gift.type === 'question') void getGiftAnswer(gift.id).then(setAnswer).catch(() => setAnswerSaveNotice('Chưa tải được câu trả lời cũ.'))
+    void getGiftDiaryConversion(gift.id).then(setConversionLink).catch(() => setConversionLink(null))
   }
 
   useEffect(() => {
@@ -127,10 +134,30 @@ export function GiftPage() {
     return () => window.clearTimeout(timer)
   }, [answer, selectedGift])
 
+  const saveAnswerNow = async () => {
+    if (!selectedGift || selectedGift.type !== 'question' || !answer?.answerText.trim()) return
+    setIsSavingAnswer(true)
+    try {
+      setAnswer(await saveGiftAnswer(selectedGift.id, answer.answerText, answer.isDone))
+      setAnswerSaveNotice('Đã lưu câu trả lời')
+    } catch (reason: unknown) {
+      setAnswerSaveNotice(giftUserError(reason, 'Chưa lưu được — nội dung vẫn còn ở đây.'))
+    } finally {
+      setIsSavingAnswer(false)
+    }
+  }
+
   const convertToDiary = async () => {
     if (!selectedGift || !answer) return
     setIsConverting(true)
-    try { await convertGiftQuestionToDiary(selectedGift, answer); setAnswerSaveNotice('Đã chuyển câu trả lời sang Diary') } catch (reason: unknown) { setAnswerSaveNotice(giftUserError(reason, 'Chưa thể chuyển sang Diary.')) } finally { setIsConverting(false) }
+    try {
+      const result = await convertGiftQuestionToDiary(selectedGift, answer)
+      setConversionLink(result.link)
+      setAnswerSaveNotice('Đã đưa câu trả lời vào nhật ký')
+    } catch (reason: unknown) {
+      if (reason instanceof DiaryPromptLimitError) setConversionLimitOpen(true)
+      setAnswerSaveNotice(giftUserError(reason, 'Chưa thể đưa vào nhật ký.'))
+    } finally { setIsConverting(false) }
   }
 
   if (isLoading && gifts.length === 0) return <GiftPageState />
@@ -139,7 +166,8 @@ export function GiftPage() {
     {error && <p className="gift-page__error" role="alert">{error} <button className="text-button" type="button" onClick={() => void refresh()}>Thử lại</button></p>}
     <PageHeading className="gift-page__header" eyebrow={pageEyebrow} title={pageTitle} description={pageSubtitle} titleId="gift-page-title" actions={<div className="gift-page__header-actions"><Link className={`gift-page__tab ${view === 'home' ? 'is-active' : ''}`} to="/gift-for-tmr">Hôm nay</Link><Link className={`gift-page__tab ${view === 'history' ? 'is-active' : ''}`} to="/gift-for-tmr?view=history">Gift History</Link></div>} />
     {view === 'history' ? <GiftHistory gifts={history} onOpen={(gift) => void openDeliveredGift(gift)} /> : <GiftHome todayGift={todayGift} homeGift={homeGift} stylesById={stylesById} cutoffTime={giftTimes.cutoff} deliveryTime={giftTimes.delivery} onCreate={(type) => openEditor(undefined, type)} onEdit={(gift) => openEditor(gift)} onOpen={(gift) => void openDeliveredGift(gift)} />}
-    {selectedGift && <GiftReadPanel gift={selectedGift} answer={answer} answerSaveNotice={answerSaveNotice} isConverting={isConverting} onAnswerChange={(patch) => setAnswer((current) => ({ giftId: selectedGift.id, answerText: '', isDone: false, answeredAt: null, updatedAt: new Date().toISOString(), ...current, ...patch }))} onReceipt={async (status) => { try { const updated = await setGiftReceipt(selectedGift.id, status); setSelectedGift(updated); setGifts((items) => items.map((item) => item.id === updated.id ? updated : item)) } catch (reason: unknown) { setAnswerSaveNotice(giftUserError(reason, 'Chưa lưu được phản hồi.')) } }} onConvert={() => void convertToDiary()} onClose={() => setSelectedGift(null)} />}
+    {selectedGift && <GiftReadPanel gift={selectedGift} answer={answer} answerSaveNotice={answerSaveNotice} isConverting={isConverting} isSavingAnswer={isSavingAnswer} conversionLink={conversionLink} onViewDiary={() => navigate(`/diary?view=read&date=${selectedGift.deliveredAt ? getGiftLocalDate(new Date(selectedGift.deliveredAt)) : today}`)} onAnswerChange={(patch) => setAnswer((current) => ({ giftId: selectedGift.id, answerText: '', isDone: false, answeredAt: null, updatedAt: new Date().toISOString(), ...current, ...patch }))} onSaveAnswer={() => void saveAnswerNow()} onReceipt={async (status) => { try { const updated = await setGiftReceipt(selectedGift.id, status); setSelectedGift(updated); setGifts((items) => items.map((item) => item.id === updated.id ? updated : item)) } catch (reason: unknown) { setAnswerSaveNotice(giftUserError(reason, 'Chưa lưu được phản hồi.')) } }} onConvert={() => void convertToDiary()} onClose={() => setSelectedGift(null)} />}
+    {conversionLimitOpen && <div className="gift-read-backdrop" role="presentation" onClick={() => setConversionLimitOpen(false)}><section className="gift-read-panel gift-limit-panel" role="dialog" aria-modal="true" aria-labelledby="gift-limit-title" onClick={(event) => event.stopPropagation()}><button className="gift-modal__close" type="button" onClick={() => setConversionLimitOpen(false)} aria-label="Đóng">×</button><p className="eyebrow">Giữ nguyên những dòng bạn đã chọn</p><h2 id="gift-limit-title">Diary đã đủ 6 prompt</h2><p>Để đưa món quà này vào nhật ký, hãy bỏ hoặc thay một prompt trước. Mình không xoá prompt nào tự động.</p><div className="gift-limit-panel__actions"><button className="button button--secondary" type="button" onClick={() => setConversionLimitOpen(false)}>Để sau</button><button className="button button--primary" type="button" onClick={() => { setConversionLimitOpen(false); setSelectedGift(null); navigate(`/diary?view=editor&date=${selectedGift?.deliveredAt ? getGiftLocalDate(new Date(selectedGift.deliveredAt)) : today}`) }}>Mở Diary để thay prompt</button></div></section></div>}
     {editor && <GiftComposer editor={editor} styles={styles} emotions={emotions} cutoffTime={giftTimes.cutoff} deliveryTime={giftTimes.delivery} saveNotice={saveNotice} onClose={closeEditor} onUpdate={updateDraft} onContinue={continueEditor} onBack={() => setEditor((current) => current ? { ...current, step: current.step === 'preview' ? 'decorate' : 'type' } : current)} onSend={() => void send()} />}
   </section>
 }
@@ -169,8 +197,4 @@ function GiftHistoryCard({ gift, onOpen }: { gift: GiftRecord; onOpen: (gift: Gi
   const style = gift.boxStyleSnapshot ?? fallbackStyles.find((item) => item.id === gift.boxStyleId) ?? fallbackStyles[0]
   const isOpened = Boolean(gift.openedAt)
   return <article className="gift-history-card"><div className="gift-history-card__art"><GiftBoxArt style={style} opened={isOpened} /></div><div className="gift-history-card__body"><div><span className="gift-history-card__type">{gift.type === 'question' ? '✦ Câu hỏi' : '♡ Lời nhắn'}</span><span className={`gift-status gift-status--${gift.status}`}>{statusLabel(gift.status)}</span></div><h3>{gift.type === 'question' ? gift.questionText : gift.messageText}</h3><p>{gift.deliveredAt ? `Đến ${formatGiftDateTime(gift.deliveredAt)}` : `Tạo ${formatGiftDate(gift.creationLocalDate)}`}</p><div className="gift-history-card__meta"><span>{isOpened ? 'Đã mở' : 'Chưa mở'}</span><span>{receiptLabel(gift.receiptStatus)}</span></div></div>{gift.status === 'delivered' && <button className="button button--secondary button--small" type="button" onClick={() => onOpen(gift)}>{isOpened ? 'Xem lại' : 'Mở quà'}</button>}</article>
-}
-
-function GiftReadPanel({ gift, answer, answerSaveNotice, isConverting, onAnswerChange, onReceipt, onConvert, onClose }: { gift: GiftRecord; answer: GiftQuestionAnswer | null; answerSaveNotice: string; isConverting: boolean; onAnswerChange: (patch: Partial<GiftQuestionAnswer>) => void; onReceipt: (status: 'received' | 'declined') => Promise<void>; onConvert: () => void; onClose: () => void }) {
-  return <div className="gift-read-backdrop" role="presentation" onClick={onClose}><section className="gift-read-panel" role="dialog" aria-modal="true" aria-labelledby="gift-read-title" onClick={(event) => event.stopPropagation()}><button className="gift-modal__close" type="button" onClick={onClose} aria-label="Đóng">×</button><p className="eyebrow">{gift.type === 'question' ? 'Câu hỏi từ hôm qua' : 'Lời nhắn từ hôm qua'}</p><h2 id="gift-read-title">{gift.type === 'question' ? gift.questionText : gift.messageText}</h2>{gift.emotionSnapshot && <span className="gift-read-emotion">{gift.emotionSnapshot.emoji} {gift.emotionSnapshot.emotion_name_vn}</span>}{gift.type === 'question' && <div className="gift-answer"><label htmlFor="gift-answer">Câu trả lời của mình</label><textarea id="gift-answer" rows={7} value={answer?.answerText ?? ''} onChange={(event) => onAnswerChange({ answerText: event.target.value, answeredAt: event.target.value.trim() ? new Date().toISOString() : null })} placeholder="Không cần thật hay. Chỉ cần thật với mình." /><div className="gift-answer__footer"><label><input type="checkbox" checked={answer?.isDone ?? false} onChange={(event) => onAnswerChange({ isDone: event.target.checked })} /> Mình đã trả lời xong</label><small>{answerSaveNotice || 'Tự động lưu'}</small></div>{answer?.answerText.trim() && <button className="button button--secondary button--small" type="button" onClick={onConvert} disabled={isConverting}>{isConverting ? 'Đang chuyển…' : 'Chuyển câu trả lời sang Diary'}</button>}</div>}<div className="gift-read-receipt"><span>Phản hồi món quà</span><button type="button" className={gift.receiptStatus === 'received' ? 'is-selected' : ''} onClick={() => void onReceipt('received')}>Mình đã nhận được quà rồi</button><button type="button" className={gift.receiptStatus === 'declined' ? 'is-selected' : ''} onClick={() => void onReceipt('declined')}>Không nhận nữa đâu!</button><small>{gift.receiptStatus === 'pending' ? 'Bạn có thể đổi lựa chọn bất cứ lúc nào.' : receiptLabel(gift.receiptStatus)}</small></div></section></div>
 }

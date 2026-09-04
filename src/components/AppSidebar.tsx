@@ -32,10 +32,10 @@ export function AppSidebar() {
               <NavLink to="/diary" end className={diaryActive ? 'is-active' : undefined} aria-current={diaryActive ? 'page' : undefined}>
                 <span>Diary</span>
               </NavLink>
-              <ul className="sidebar-subnav" aria-label="Diary sections">
+              {diaryActive && <ul className="sidebar-subnav" aria-label="Diary sections">
                 <li><NavLink to="/diary" end={false} className={dailyActive ? 'is-active' : undefined} aria-current={dailyActive ? 'page' : undefined}>Diary</NavLink></li>
                 <li><NavLink to="/journey" className={journeyActive ? 'is-active' : undefined} aria-current={journeyActive ? 'page' : undefined}>Journey</NavLink></li>
-              </ul>
+              </ul>}
             </li>
           ) : (
             <li key={item.to}>

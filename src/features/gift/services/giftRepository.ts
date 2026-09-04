@@ -1,8 +1,8 @@
 import { supabase } from '../../../services/supabase/client'
 import { getPublishedRuntimeValue } from '../../../services/runtimeConfig'
-import { getDiaryEntry, listDiaryPrompts, saveDiary } from '../../diary/services/diaryRepository'
+import { getDiaryEntry, saveDiary } from '../../diary/services/diaryRepository'
 import { createEmptyDiaryDraft } from '../../diary/services/diaryRepository'
-import type { DiaryEntry } from '../../diary/types'
+import type { DiaryEntry, DiaryPrompt } from '../../diary/types'
 import { createGiftId, getGiftLocalDate, isGiftOnHome } from '../utils'
 import type { DiaryConversionLink, GiftBoxStyle, GiftDraft, GiftHomeProjection, GiftQuestionAnswer, GiftReceiptStatus, GiftRecord, GiftType } from '../types'
 
@@ -29,6 +29,7 @@ type GiftRow = {
 }
 
 type GiftAnswerRow = { gift_id: string; answer_text: string; is_done: boolean; answered_at: string | null; updated_at: string }
+type GiftConversionRow = { gift_id: string; diary_id: string; diary_prompt_response_id: string | null; converted_at: string }
 type StyleRow = { id: string; name: string; palette: string[]; ribbon: string; shape: GiftBoxStyle['shape']; config: Record<string, unknown> }
 
 let giftDraftQueue: Promise<void> = Promise.resolve()
@@ -52,6 +53,7 @@ const mapGift = (row: GiftRow): GiftRecord => ({
 })
 
 const mapAnswer = (row: GiftAnswerRow): GiftQuestionAnswer => ({ giftId: row.gift_id, answerText: row.answer_text, isDone: row.is_done, answeredAt: row.answered_at, updatedAt: row.updated_at })
+const mapConversion = (row: GiftConversionRow): DiaryConversionLink => ({ giftId: row.gift_id, diaryId: row.diary_id, diaryPromptResponseId: row.diary_prompt_response_id, convertedAt: row.converted_at })
 
 export const listGiftBoxStyles = async (): Promise<GiftBoxStyle[]> => {
   const { data, error } = await supabase.from('gift_box_styles').select('id, name, palette, ribbon, shape, config').eq('active', true).order('sort_order')
@@ -138,6 +140,12 @@ export const saveGiftAnswer = async (giftId: string, answerText: string, isDone:
   return mapAnswer(data as GiftAnswerRow)
 }
 
+export const getGiftDiaryConversion = async (giftId: string): Promise<DiaryConversionLink | null> => {
+  const { data, error } = await supabase.from('gift_diary_conversion_links').select('gift_id, diary_id, diary_prompt_response_id, converted_at').eq('gift_id', giftId).maybeSingle()
+  if (error) throw error
+  return data ? mapConversion(data as GiftConversionRow) : null
+}
+
 export const setGiftOpened = async (giftId: string): Promise<GiftRecord> => {
   const userId = await currentUserId()
   const { data, error } = await supabase.from('gifts').update({ opened_at: new Date().toISOString() }).eq('id', giftId).eq('user_id', userId).eq('status', 'delivered').select(selectGift).single()
@@ -152,21 +160,53 @@ export const setGiftReceipt = async (giftId: string, receiptStatus: Exclude<Gift
   return mapGift(data as GiftRow)
 }
 
-export const convertGiftQuestionToDiary = async (gift: GiftRecord, answer: GiftQuestionAnswer): Promise<{ diary: DiaryEntry; link: DiaryConversionLink }> => {
+export class DiaryPromptLimitError extends Error {
+  readonly code = 'DIARY_PROMPT_LIMIT'
+
+  constructor() {
+    super('Diary đã có đủ 6 prompt. Hãy bỏ hoặc thay một prompt trước khi thêm Quà cho ngày mai.')
+    this.name = 'DiaryPromptLimitError'
+  }
+}
+
+const giftPrompt = (gift: GiftRecord): DiaryPrompt => ({
+  id: `gift:${gift.id}`,
+  code: 'gift_for_tomorrow',
+  textVn: gift.questionText?.trim() || 'Câu hỏi từ Quà cho ngày mai',
+  textEn: 'Gift for Tomorrow',
+  emoji: gift.emotionSnapshot?.emoji ?? '🎁',
+  hexColor: gift.emotionSnapshot?.color_hex ?? '#743CFF',
+  description: 'Từ Quà cho ngày mai',
+  source: 'gift_for_tomorrow',
+  sourceGiftId: gift.id,
+})
+
+export const convertGiftQuestionToDiary = async (gift: GiftRecord, answer: GiftQuestionAnswer): Promise<{ diary: DiaryEntry; link: DiaryConversionLink; created: boolean }> => {
   if (gift.type !== 'question') throw new Error('Chỉ câu hỏi mới có thể chuyển sang Diary.')
   if (!answer.answerText.trim()) throw new Error('Hãy viết câu trả lời trước khi chuyển sang Diary.')
   const deliveryDate = gift.deliveredAt ? getGiftLocalDate(new Date(gift.deliveredAt)) : getGiftLocalDate()
-  if (await getDiaryEntry(deliveryDate)) throw new Error('Ngày này đã có một bài Diary. Mình giữ nguyên bài viết hiện có.')
-  const prompts = await listDiaryPrompts()
-  const prompt = prompts[0]
-  const base = createEmptyDiaryDraft(deliveryDate)
-  const diary = await saveDiary({ ...base, title: 'Quà cho ngày mai', overallText: `${gift.questionText ?? 'Câu hỏi từ món quà'}\n\n${answer.answerText.trim()}`, status: 'user_done', promptResponses: prompt ? [{ promptId: prompt.id, promptSnapshot: prompt, position: 1, responseText: answer.answerText.trim(), isDone: true }] : [] })
-  const { data: responseRow } = await supabase.from('diary_prompt_responses').select('diary_id, prompt_id').eq('diary_id', diary.id).limit(1).maybeSingle()
-  const promptResponseKey = responseRow ? `${responseRow.diary_id}:${responseRow.prompt_id}` : null
-  const { data: linkRow, error } = await supabase.from('gift_diary_conversion_links').upsert({ gift_id: gift.id, diary_id: diary.id, diary_prompt_response_id: promptResponseKey }, { onConflict: 'gift_id' }).select('gift_id, diary_id, diary_prompt_response_id, converted_at').single()
+  const existing = await getDiaryEntry(deliveryDate)
+  const prompt = giftPrompt(gift)
+  const existingGiftResponse = existing?.promptResponses.find((response) => response.promptSnapshot.sourceGiftId === gift.id)
+  if (existing && existingGiftResponse) {
+    const nextResponse = { ...existingGiftResponse, responseText: answer.answerText.trim(), isDone: answer.isDone }
+    const diary = existingGiftResponse.responseText === nextResponse.responseText && existingGiftResponse.isDone === nextResponse.isDone
+      ? existing
+      : await saveDiary({ ...existing, promptResponses: existing.promptResponses.map((response) => response.promptSnapshot.sourceGiftId === gift.id ? nextResponse : response) })
+    const { data: linkRow, error } = await supabase.from('gift_diary_conversion_links').upsert({ gift_id: gift.id, diary_id: diary.id, diary_prompt_response_id: null }, { onConflict: 'gift_id' }).select('gift_id, diary_id, diary_prompt_response_id, converted_at').single()
+    if (error) throw error
+    return { diary, created: false, link: mapConversion(linkRow as GiftConversionRow) }
+  }
+  if (existing && existing.promptResponses.length >= 6) throw new DiaryPromptLimitError()
+  const base = existing ?? createEmptyDiaryDraft(deliveryDate)
+  const diary = await saveDiary({
+    ...base,
+    status: existing?.status ?? 'draft',
+    promptResponses: [...base.promptResponses, { promptId: null, promptSnapshot: prompt, position: base.promptResponses.length + 1, responseText: answer.answerText.trim(), isDone: answer.isDone }],
+  })
+  const { data: linkRow, error } = await supabase.from('gift_diary_conversion_links').upsert({ gift_id: gift.id, diary_id: diary.id, diary_prompt_response_id: null }, { onConflict: 'gift_id' }).select('gift_id, diary_id, diary_prompt_response_id, converted_at').single()
   if (error) throw error
-  const row = linkRow as { gift_id: string; diary_id: string; diary_prompt_response_id: string | null; converted_at: string }
-  return { diary, link: { giftId: row.gift_id, diaryId: row.diary_id, diaryPromptResponseId: row.diary_prompt_response_id, convertedAt: row.converted_at } }
+  return { diary, created: !existing, link: mapConversion(linkRow as GiftConversionRow) }
 }
 
 export const getGiftHomeProjection = async (userId?: string): Promise<GiftHomeProjection> => {

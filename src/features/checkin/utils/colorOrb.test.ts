@@ -173,6 +173,19 @@ describe('Color Halo Ring', () => {
     expect(positions.every((position) => position >= 0 && position <= 100)).toBe(true)
   })
 
+  it('labels only the larger halo arcs', () => {
+    const ring = buildColorHaloRing([
+      { color: '#743CFF', intensity: 1, presenceWeight: 40, emotionId: 'forty' },
+      { color: '#FFB703', intensity: 1, presenceWeight: 25, emotionId: 'twenty-five' },
+      { color: '#34D399', intensity: 1, presenceWeight: 19, emotionId: 'nineteen' },
+      { color: '#FF6B4A', intensity: 1, presenceWeight: 11, emotionId: 'eleven' },
+      { color: '#38BDF8', intensity: 1, presenceWeight: 5, emotionId: 'five' },
+    ])
+    const labelled = ring.segments.filter((segment) => segment.showLabel).map((segment) => segment.emotionId)
+    expect(labelled).toHaveLength(3)
+    expect(labelled).toEqual(expect.arrayContaining(['forty', 'twenty-five', 'nineteen']))
+  })
+
   it('gives perceptually similar neighbors a wider blend transition', () => {
     const similar = buildColorHaloRing([
       { color: '#743CFF', intensity: 1, presenceWeight: 1, emotionId: 'violet' },

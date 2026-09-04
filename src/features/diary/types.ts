@@ -13,12 +13,16 @@ export type DiaryPrompt = {
   emoji: string
   hexColor: string
   description?: string
+  source?: 'catalog' | 'gift_for_tomorrow'
+  sourceGiftId?: string
 }
 
-export type DiaryEmotionSnapshot = Pick<Emotion, 'emotion_id' | 'emotion_name_vn' | 'emotion_name_en' | 'emoji' | 'color_hex'>
+export type DiaryEmotionSnapshot = Pick<Emotion, 'emotion_id' | 'emotion_name_vn' | 'emotion_name_en' | 'emoji' | 'color_hex'> & {
+  description_vn?: string
+}
 
 export type DiaryPromptResponse = {
-  promptId: string
+  promptId: string | null
   promptSnapshot: DiaryPrompt
   position: number
   responseText: string

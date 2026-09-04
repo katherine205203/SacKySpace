@@ -523,7 +523,7 @@ export const buildColorHaloRing = (entries: readonly ColorOrbEntry[]): ColorHalo
       transitionAfter,
       labelAngle: (start + end) / 2,
       labelColor: getLabelColor(entry.color),
-      showLabel: percentage >= 7.5,
+      showLabel: percentage >= 12.5,
       ...(entry.emotionId ? { emotionId: entry.emotionId } : {}),
       ...(entry.label ? { label: entry.label } : {}),
       ...(entry.labelEn ? { labelEn: entry.labelEn } : {}),

@@ -8,7 +8,7 @@ import { useUiContent } from '../../../services/uiContent'
 
 const tabs: { value: HomeActionTab; label: string }[] = [
   { value: 'today', label: 'Hôm nay' },
-  { value: 'upcoming', label: 'Upcoming' },
+  { value: 'upcoming', label: 'Sắp tới' },
   { value: 'overdue', label: 'Quá hạn' },
   { value: 'unscheduled', label: 'Chưa lên lịch' },
 ]
@@ -25,7 +25,7 @@ export function ActionPreview({ reminders, checkins, onDone }: { reminders: Home
   return <section className="home-v2__card home-v2__actions" aria-labelledby="home-actions-title">
     <header className="home-v2__section-header"><h2 id="home-actions-title">{title}</h2><Link to="/action-space">{viewAll}</Link></header>
     <div className="home-v2__action-tabs" role="tablist" aria-label="Lọc action"><div>{tabs.map((item) => <button key={item.value} className={tab === item.value ? 'is-active' : undefined} type="button" role="tab" aria-selected={tab === item.value} onClick={() => setTab(item.value)}>{item.label}</button>)}</div></div>
-    <div className="home-v2__action-list">{items.map((item) => <ActionRow key={item.id} reminder={item} checkin={item.sourceCheckinId ? checkins.find((checkin) => checkin.id === item.sourceCheckinId) ?? null : null} onDone={() => onDone(item)} />)}{!items.length && <div className="home-v2__empty home-v2__empty--compact"><span aria-hidden="true">✦</span><p>{emptyCopy}</p></div>}</div>
+    <div className={`home-v2__action-list ${items.length <= 2 ? 'is-few' : 'is-many'}`}>{items.map((item) => <ActionRow key={item.id} reminder={item} checkin={item.sourceCheckinId ? checkins.find((checkin) => checkin.id === item.sourceCheckinId) ?? null : null} onDone={() => onDone(item)} />)}{!items.length && <div className="home-v2__empty home-v2__empty--compact"><span aria-hidden="true">✦</span><p>{emptyCopy}</p></div>}</div>
   </section>
 }
 
@@ -39,7 +39,7 @@ function ActionRow({ reminder, checkin, onDone }: { reminder: HomeReminder; chec
   const [isCompleting, setIsCompleting] = useState(false)
   const presentation = checkin ? getCheckinPresentation(checkin) : null
   const color = presentation?.color ?? ACTION_INDEPENDENT_COLOR
-  const sourceLabel = presentation ? `Từ Check-in ${presentation.title}` : 'Độc lập'
+  const sourceLabel = presentation ? `Từ Check-in · ${presentation.title}` : 'Độc lập'
   const sourceEmoji = presentation?.emoji ?? '✨'
   const handleDone = async () => {
     if (completed || isCompleting) return

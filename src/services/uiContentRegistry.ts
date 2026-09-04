@@ -44,7 +44,7 @@ export const UI_CONTENT_DEFAULTS: Record<string, UiContentDefinition> = {
   'home.landing.diary_start': { module: 'Home', screen: 'Landing', element: 'Diary empty CTA', elementType: 'button', defaultTextVn: 'Bắt đầu viết', defaultTextEn: null, maxLength: 24, maxLengthMode: 'hard' },
   'home.landing.for_me_title': { module: 'Home', screen: 'Landing', element: 'Personal surfaces title', elementType: 'section_title', defaultTextVn: 'Dành cho mình', defaultTextEn: null, maxLength: 40, maxLengthMode: 'warning' },
   'home.landing.future_letter_title': { module: 'Home', screen: 'Landing', element: 'Future letter surface title', elementType: 'title', defaultTextVn: 'Thư cho mình', defaultTextEn: null, maxLength: 32, maxLengthMode: 'warning' },
-  'home.landing.gift_title': { module: 'Home', screen: 'Landing', element: 'Gift surface title', elementType: 'title', defaultTextVn: 'Quà cho ngày mai', defaultTextEn: null, maxLength: 40, maxLengthMode: 'warning' },
+  'home.landing.gift_title': { module: 'Home', screen: 'Landing', element: 'Gift surface title', elementType: 'title', defaultTextVn: 'A Gift for Myself', defaultTextEn: null, maxLength: 40, maxLengthMode: 'warning' },
 
   'checkin.landing.eyebrow': { module: 'Check-in', screen: 'Landing', element: 'Page eyebrow', elementType: 'label', defaultTextVn: 'Sắc Ký · Check-in', defaultTextEn: null, maxLength: 32, maxLengthMode: 'hard' },
   'checkin.landing.title': { module: 'Check-in', screen: 'Landing', element: 'Page title', elementType: 'title', defaultTextVn: 'Check-in', defaultTextEn: null, maxLength: 48, maxLengthMode: 'warning' },

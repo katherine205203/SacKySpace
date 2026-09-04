@@ -11,8 +11,8 @@ type DiaryEntryRow = {
   user_id: string
   local_date: string
   status: string
-  title: string
-  overall_text: string
+  title: string | null
+  overall_text: string | null
   daily_emotion_id: string | null
   daily_emotion_snapshot: DiaryEntry['dailyEmotionSnapshot']
   created_at: string
@@ -91,6 +91,8 @@ const promptFromUnknown = (value: unknown): DiaryPrompt | null => {
     emoji: typeof item.emoji === 'string' ? item.emoji : '✦',
     hexColor: typeof item.hexColor === 'string' ? item.hexColor : '#9B5DE5',
     description: typeof item.description === 'string' ? item.description : undefined,
+    source: item.source === 'gift_for_tomorrow' ? item.source : 'catalog',
+    sourceGiftId: typeof item.sourceGiftId === 'string' ? item.sourceGiftId : undefined,
   }
 }
 
@@ -135,7 +137,7 @@ const writeLocalEntries = (userId: string, entries: DiaryEntry[]): void => {
 
 const mapRemoteEntry = (
   row: DiaryEntryRow,
-  promptRows: Array<{ diary_id: string; prompt_id: string; prompt_snapshot: unknown; position: number; response_text: string; is_done: boolean }>,
+  promptRows: Array<{ diary_id: string; prompt_id: string | null; prompt_snapshot: unknown; position: number; response_text: string; is_done: boolean }>,
   linkRows: Array<{ diary_id: string; checkin_id: string; weight_percent: number; position: number }>,
   imageRows: Array<{ id: string; diary_id: string; external_file_id: string | null; external_url: string; position: number; caption: string | null; metadata: Record<string, unknown> | null }>,
 ): DiaryEntry => ({
@@ -143,8 +145,8 @@ const mapRemoteEntry = (
   userId: row.user_id,
   localDate: row.local_date,
   status: normalizeDiaryStatus(row.status),
-  title: row.title,
-  overallText: row.overall_text,
+  title: row.title ?? '',
+  overallText: row.overall_text ?? '',
   dailyEmotionId: row.daily_emotion_id,
   dailyEmotionSnapshot: row.daily_emotion_snapshot,
   promptResponses: promptRows
@@ -250,14 +252,29 @@ const normalizeDraft = (draft: DiaryDraft, userId: string, existing?: DiaryEntry
   }
 }
 
-const saveRemoteEntry = async (entry: DiaryEntry): Promise<DiaryEntry> => {
+const syncGiftDiaryPrompts = async (entry: DiaryEntry, previousEntry: DiaryEntry | null): Promise<void> => {
+  const previousGiftIds = new Set((previousEntry?.promptResponses ?? []).map((response) => response.promptSnapshot.sourceGiftId).filter((id): id is string => Boolean(id)))
+  const nextGiftResponses = entry.promptResponses.filter((response) => Boolean(response.promptSnapshot.sourceGiftId))
+  const nextGiftIds = new Set(nextGiftResponses.map((response) => response.promptSnapshot.sourceGiftId).filter((id): id is string => Boolean(id)))
+  for (const giftId of previousGiftIds) {
+    if (nextGiftIds.has(giftId)) continue
+    await supabase.from('gift_diary_conversion_links').delete().eq('gift_id', giftId).eq('diary_id', entry.id)
+  }
+  for (const response of nextGiftResponses) {
+    const giftId = response.promptSnapshot.sourceGiftId
+    if (!giftId) continue
+    await supabase.from('gift_question_answers').upsert({ gift_id: giftId, answer_text: response.responseText, is_done: response.isDone, answered_at: response.responseText.trim() ? new Date().toISOString() : null }, { onConflict: 'gift_id' })
+  }
+}
+
+const saveRemoteEntry = async (entry: DiaryEntry, previousEntry: DiaryEntry | null): Promise<DiaryEntry> => {
   const payload: Record<string, unknown> = {
       id: entry.id,
       user_id: entry.userId,
       local_date: entry.localDate,
       status: entry.status,
-      title: entry.title,
-      overall_text: entry.overallText,
+      title: entry.title.trim() || null,
+      overall_text: entry.overallText.trim() || null,
       daily_emotion_id: entry.dailyEmotionId,
       daily_emotion_snapshot: entry.dailyEmotionSnapshot,
       completed_at: entry.completedAt,
@@ -295,20 +312,19 @@ const saveRemoteEntry = async (entry: DiaryEntry): Promise<DiaryEntry> => {
     const { error: insertError } = await supabase.from('diary_images').insert(entry.images.map((item) => ({ id: item.id, diary_id: entryId, external_file_id: item.externalFileId ?? null, external_url: item.externalUrl, position: item.position, caption: item.caption || null, metadata: item.metadata ?? null })))
     if (insertError) throw insertError
   }
+  await syncGiftDiaryPrompts({ ...entry, id: entryId }, previousEntry)
   return { ...entry, id: entryId, status: normalizeDiaryStatus(row.status), createdAt: row.created_at, updatedAt: row.updated_at, completedAt: row.completed_at, dayLockedAt: row.day_locked_at ?? entry.dayLockedAt }
 }
 
 export const saveDiary = async (draft: DiaryDraft): Promise<DiaryEntry> => {
   if (!draft.localDate) throw new Error('Diary needs a local date.')
-  if (!draft.title.trim()) throw new Error('Hãy thêm tiêu đề cho nhật ký.')
-  if (!draft.overallText.trim()) throw new Error('Hãy viết một chút cho phần tổng quan.')
   if (draft.promptResponses.length > 6) throw new Error('Diary chỉ có thể chọn tối đa 6 prompt.')
   if (draft.images.length > 4) throw new Error('Diary chỉ có thể thêm tối đa 4 ảnh.')
   const userId = await currentUserId()
   const existing = (await listDiaryEntries()).find((entry) => entry.localDate === draft.localDate) ?? null
   const entry = normalizeDraft(draft, userId, existing)
   try {
-    const saved = await saveRemoteEntry(entry)
+    const saved = await saveRemoteEntry(entry, existing)
     const localEntries = readLocalEntries(userId).filter((item) => item.localDate !== saved.localDate)
     writeLocalEntries(userId, [saved, ...localEntries])
     return saved
@@ -324,6 +340,7 @@ export const deleteDiary = async (id: string): Promise<void> => {
   try {
     const { error } = await supabase.from('diary_entries').update({ status: 'deleted', deleted_at: new Date().toISOString() }).eq('id', id).eq('user_id', userId)
     if (error) throw error
+    await supabase.from('gift_diary_conversion_links').delete().eq('diary_id', id)
   } catch {
     // Local-only drafts do not have a remote row yet.
   }
