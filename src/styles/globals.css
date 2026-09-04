@@ -140,7 +140,7 @@ h1, h2, h3, p { margin-top: 0; }
 .color-halo-ring__inner {
   position: absolute;
   z-index: 1;
-  inset: 17%;
+  inset: 23%;
   border: 1px solid color-mix(in srgb, var(--color-surface) 45%, transparent);
   border-radius: 50%;
   background: var(--color-surface);

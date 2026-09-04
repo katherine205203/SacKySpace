@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { buildColorHaloRing, buildColorOrbField, buildColorOrbRegionsFromColors, colorDistance, getColorOrbLegend, intensityToPresenceWeight, ORB_RADIUS, ORB_VIEW_SIZE, sampleColorOrbField } from './colorOrb'
+import { buildColorHaloRing, buildColorOrbField, buildColorOrbRegionsFromColors, colorDistance, getColorOrbLegend, intensityToPresenceWeight, ORB_RADIUS, ORB_VIEW_SIZE, sampleColorOrbField, simplifyColorOrbEntries } from './colorOrb'
 
 describe('Color Orb regions', () => {
   it('maps stored intensity to the non-linear presence weights', () => {
@@ -130,6 +130,23 @@ describe('Color Orb regions', () => {
     }
     const expected = field.regions.map((region) => region.weight / field.totalWeight)
     areas.forEach((area, index) => expect(area / total).toBeCloseTo(expected[index], 1))
+  })
+
+  it('simplifies long-range visuals without changing the total presence weight', () => {
+    const simplified = simplifyColorOrbEntries([
+      { color: '#FF9F1C', intensity: 1, presenceWeight: 40, emotionId: 'orange' },
+      { color: '#743CFF', intensity: 1, presenceWeight: 20, emotionId: 'violet' },
+      { color: '#3B82F6', intensity: 1, presenceWeight: 15, emotionId: 'blue' },
+      { color: '#22C55E', intensity: 1, presenceWeight: 10, emotionId: 'green' },
+      { color: '#FF6B4A', intensity: 1, presenceWeight: 5, emotionId: 'coral' },
+      { color: '#6A5ACD', intensity: 1, presenceWeight: 4, emotionId: 'blue-violet' },
+      { color: '#FFB703', intensity: 1, presenceWeight: 3, emotionId: 'yellow' },
+    ])
+    expect(simplified).toHaveLength(4)
+    expect(simplified.map((entry) => entry.emotionId)).toEqual(['orange', 'violet', 'blue', 'green'])
+    expect(simplified.reduce((sum, entry) => sum + (entry.presenceWeight ?? 0), 0)).toBe(97)
+    expect(simplified.find((entry) => entry.emotionId === 'orange')?.presenceWeight).toBeGreaterThan(40)
+    expect(simplified.find((entry) => entry.emotionId === 'violet')?.presenceWeight).toBeGreaterThan(20)
   })
 })
 

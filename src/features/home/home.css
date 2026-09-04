@@ -510,6 +510,7 @@
   .home-v2__hero-header h1 { font-size: 1.22rem; }
   .home-v2__hero-body { grid-template-columns: 1fr; gap: .8rem; padding-top: .8rem; }
   .home-v2__hero-orb { order: -1; }
+  .home-v2 .home-v2__hero-orb .color-orb-shell { width: min(66vw, 14rem); }
   .home-v2 .home-v2__hero-orb .color-orb--large { width: min(66vw, 14rem); }
   .home-v2__hero-summary { display: grid; justify-items: center; text-align: center; }
   .home-v2__range-tabs { width: 100%; justify-content: center; overflow-x: auto; }

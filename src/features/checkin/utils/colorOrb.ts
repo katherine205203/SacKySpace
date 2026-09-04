@@ -203,6 +203,7 @@ const seedLayouts: Point[][] = [
   [{ x: -45, y: -38 }, { x: 43, y: -35 }, { x: 8, y: 52 }],
   [{ x: -49, y: -39 }, { x: 42, y: -35 }, { x: 48, y: 26 }, { x: -38, y: 46 }],
   [{ x: -49, y: -29 }, { x: 5, y: -55 }, { x: 54, y: -8 }, { x: 24, y: 50 }, { x: -51, y: 30 }],
+  [{ x: -52, y: -38 }, { x: 0, y: -57 }, { x: 53, y: -34 }, { x: 53, y: 31 }, { x: 0, y: 57 }, { x: -53, y: 29 }],
 ]
 
 const makeSeeds = (entries: readonly AggregatedEntry[]): Point[] => {
@@ -404,6 +405,47 @@ export const getColorOrbLegend = (entries: readonly ColorOrbEntry[], limit = 3):
     key: entry.key,
     color: entry.color,
     percentage: Math.round((entry.weight / totalWeight) * 100),
+    ...(entry.label ? { label: entry.label } : {}),
+    ...(entry.labelEn ? { labelEn: entry.labelEn } : {}),
+    ...(entry.emoji ? { emoji: entry.emoji } : {}),
+  }))
+}
+
+export const SIMPLIFIED_ORB_MIN_PERCENTAGE = 6.5
+export const SIMPLIFIED_ORB_MAX_REGIONS = 6
+
+/**
+ * Reduces only the visual field for longer Home ranges. The source entries
+ * and their real percentages remain untouched; low-share entries borrow the
+ * nearest perceptual color territory instead of becoming tiny new blobs.
+ */
+export const simplifyColorOrbEntries = (
+  entries: readonly ColorOrbEntry[],
+  minPercentage = SIMPLIFIED_ORB_MIN_PERCENTAGE,
+  maxRegions = SIMPLIFIED_ORB_MAX_REGIONS,
+): ColorOrbEntry[] => {
+  const aggregated = aggregateEntries(entries)
+  const totalWeight = aggregated.reduce((sum, entry) => sum + entry.weight, 0)
+  if (!aggregated.length || totalWeight <= EPSILON) return []
+
+  const candidates = aggregated.slice(0, maxRegions)
+  const minimumVisibleCount = Math.min(4, candidates.length)
+  const retained = candidates.filter((entry, index) => index < minimumVisibleCount || (entry.weight / totalWeight) * 100 >= minPercentage)
+  const visible = retained.length ? retained : [candidates[0]]
+  const visualWeights = new Map(visible.map((entry) => [entry.key, entry.weight]))
+  const visibleByColor = visible.map((entry) => ({ entry, color: entry.color }))
+
+  aggregated.filter((entry) => !visualWeights.has(entry.key)).forEach((entry) => {
+    if (visualWeights.has(entry.key)) return
+    const nearest = visibleByColor.reduce((best, candidate) => colorDistance(entry.color, candidate.color) < colorDistance(entry.color, best.color) ? candidate : best, visibleByColor[0])
+    visualWeights.set(nearest.entry.key, (visualWeights.get(nearest.entry.key) ?? 0) + entry.weight)
+  })
+
+  return visible.map((entry) => ({
+    color: entry.color,
+    intensity: entry.intensity,
+    presenceWeight: visualWeights.get(entry.key) ?? entry.weight,
+    ...(entry.emotionId ? { emotionId: entry.emotionId } : {}),
     ...(entry.label ? { label: entry.label } : {}),
     ...(entry.labelEn ? { labelEn: entry.labelEn } : {}),
     ...(entry.emoji ? { emoji: entry.emoji } : {}),

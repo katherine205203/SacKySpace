@@ -1,5 +1,11 @@
-import { useEffect, useId, useMemo, useRef, useState, type CSSProperties, type KeyboardEvent as ReactKeyboardEvent, type PointerEvent as ReactPointerEvent } from 'react'
-import { buildColorHaloRing, type ColorOrbEntry, type ColorHaloSegment } from '../../checkin/utils/colorOrb'
+import { useEffect, useId, useLayoutEffect, useMemo, useRef, useState, type CSSProperties, type KeyboardEvent as ReactKeyboardEvent, type PointerEvent as ReactPointerEvent } from 'react'
+import { ColorOrb as BlendedColorOrb } from '../../checkin/components/BlendedColorOrb'
+import { buildColorHaloRing, simplifyColorOrbEntries, type ColorOrbEntry, type ColorHaloSegment } from '../../checkin/utils/colorOrb'
+
+export type HomeOrbRenderer = 'CHECKIN_BLEND_ORB' | 'HALO_RING'
+export type HomeOrbDensity = 'full' | 'simplified'
+
+export const HOME_ORB_RENDERER: HomeOrbRenderer = 'CHECKIN_BLEND_ORB'
 
 type HomeOrbProps = {
   entries: readonly ColorOrbEntry[]
@@ -8,15 +14,25 @@ type HomeOrbProps = {
   controlledActiveKey?: string | null
   onHoverKeyChange?: (key: string | null) => void
   onSelectKeyChange?: (key: string | null) => void
+  renderer?: HomeOrbRenderer
+  density?: HomeOrbDensity
 }
 
-export function HomeOrb({ entries, size = 'large', label, controlledActiveKey, onHoverKeyChange, onSelectKeyChange }: HomeOrbProps) {
+export function HomeOrb(props: HomeOrbProps) {
+  const { renderer = HOME_ORB_RENDERER, density = 'full', size = 'large', entries, ...orbProps } = props
+  const visualEntries = useMemo(() => density === 'simplified' ? simplifyColorOrbEntries(entries) : entries, [density, entries])
+  const sizedOrbProps = { ...orbProps, entries: visualEntries, size }
+  return renderer === 'CHECKIN_BLEND_ORB' ? <BlendedColorOrb {...sizedOrbProps} /> : <HaloRingOrb {...sizedOrbProps} />
+}
+
+function HaloRingOrb({ entries, size = 'large', label, controlledActiveKey, onHoverKeyChange, onSelectKeyChange }: HomeOrbProps) {
   const ring = useMemo(() => buildColorHaloRing(entries), [entries])
   const hasData = ring.segments.length > 0
   const id = useId().replaceAll(':', '')
   const tooltipId = `halo-tooltip-${id}`
   const shellRef = useRef<HTMLDivElement>(null)
   const ringRef = useRef<HTMLDivElement>(null)
+  const tooltipRef = useRef<HTMLDivElement>(null)
   const [hoveredKey, setHoveredKey] = useState<string | null>(null)
   const [focusedKey, setFocusedKey] = useState<string | null>(null)
   const [selectedKey, setSelectedKey] = useState<string | null>(null)
@@ -24,6 +40,7 @@ export function HomeOrb({ entries, size = 'large', label, controlledActiveKey, o
   const localActiveKey = (isKnownSegment(selectedKey) ? selectedKey : null) ?? (isKnownSegment(focusedKey) ? focusedKey : null) ?? (isKnownSegment(hoveredKey) ? hoveredKey : null)
   const activeKey = (isKnownSegment(controlledActiveKey ?? null) ? controlledActiveKey : null) ?? localActiveKey
   const activeSegment = ring.segments.find((segment) => segment.key === activeKey)
+  const [tooltipPosition, setTooltipPosition] = useState<CSSProperties | null>(null)
 
   useEffect(() => {
     if (!selectedKey && !controlledActiveKey) return undefined
@@ -46,6 +63,65 @@ export function HomeOrb({ entries, size = 'large', label, controlledActiveKey, o
       document.removeEventListener('keydown', clearWithEscape)
     }
   }, [controlledActiveKey, onHoverKeyChange, onSelectKeyChange, selectedKey])
+
+  useLayoutEffect(() => {
+    const tooltip = tooltipRef.current
+    const shell = shellRef.current
+    if (!activeSegment || !tooltip || !shell) {
+      setTooltipPosition(null)
+      return undefined
+    }
+
+    let frame = 0
+    const positionTooltip = () => {
+      window.cancelAnimationFrame(frame)
+      frame = window.requestAnimationFrame(() => {
+        const shellBounds = shell.getBoundingClientRect()
+        const tooltipBounds = tooltip.getBoundingClientRect()
+        if (!shellBounds.width || !shellBounds.height || !tooltipBounds.width || !tooltipBounds.height) return
+        const container = shell.closest<HTMLElement>('.home-v2__card, .summary-rail')
+        const containerBounds = container?.getBoundingClientRect()
+        const padding = 8
+        const minLeft = Math.max(padding, containerBounds?.left ?? 0, 0)
+        const minTop = Math.max(padding, containerBounds?.top ?? 0, 0)
+        const maxRight = Math.min(window.innerWidth - padding, containerBounds?.right ?? window.innerWidth - padding)
+        const maxBottom = Math.min(window.innerHeight - padding, containerBounds?.bottom ?? window.innerHeight - padding)
+        const angle = activeSegment.labelAngle * Math.PI * 2
+        const anchorX = shellBounds.left + (0.5 + Math.sin(angle) * 0.39) * shellBounds.width
+        const anchorY = shellBounds.top + (0.5 - Math.cos(angle) * 0.39) * shellBounds.height
+        const gap = 10
+        const candidates = activeSegment.labelAngle < 0.5
+          ? [
+              { left: anchorX - tooltipBounds.width / 2, top: anchorY - tooltipBounds.height - gap },
+              { left: anchorX - tooltipBounds.width / 2, top: anchorY + gap },
+              { left: anchorX + gap, top: anchorY - tooltipBounds.height / 2 },
+              { left: anchorX - tooltipBounds.width - gap, top: anchorY - tooltipBounds.height / 2 },
+            ]
+          : [
+              { left: anchorX - tooltipBounds.width / 2, top: anchorY + gap },
+              { left: anchorX - tooltipBounds.width / 2, top: anchorY - tooltipBounds.height - gap },
+              { left: anchorX + gap, top: anchorY - tooltipBounds.height / 2 },
+              { left: anchorX - tooltipBounds.width - gap, top: anchorY - tooltipBounds.height / 2 },
+            ]
+        const fits = (candidate: { left: number; top: number }) => candidate.left >= minLeft && candidate.top >= minTop && candidate.left + tooltipBounds.width <= maxRight && candidate.top + tooltipBounds.height <= maxBottom
+        const candidate = candidates.find(fits) ?? candidates[0]
+        const maxLeft = Math.max(minLeft, maxRight - tooltipBounds.width)
+        const maxTop = Math.max(minTop, maxBottom - tooltipBounds.height)
+        const left = Math.min(maxLeft, Math.max(minLeft, candidate.left)) - shellBounds.left
+        const top = Math.min(maxTop, Math.max(minTop, candidate.top)) - shellBounds.top
+        setTooltipPosition({ left: `${Math.round(left)}px`, top: `${Math.round(top)}px`, transform: 'none' })
+      })
+    }
+    positionTooltip()
+    window.addEventListener('resize', positionTooltip)
+    const resizeObserver = typeof ResizeObserver === 'undefined' ? null : new ResizeObserver(positionTooltip)
+    resizeObserver?.observe(shell)
+    return () => {
+      window.cancelAnimationFrame(frame)
+      window.removeEventListener('resize', positionTooltip)
+      resizeObserver?.disconnect()
+    }
+  }, [activeSegment, activeSegment?.key, activeSegment?.labelAngle, activeSegment?.label, activeSegment?.labelEn, activeSegment?.percentage, size])
 
   const segmentAtPoint = (clientX: number, clientY: number): ColorHaloSegment | null => {
     const ringElement = ringRef.current
@@ -135,7 +211,7 @@ export function HomeOrb({ entries, size = 'large', label, controlledActiveKey, o
         {ring.segments.filter((segment) => segment.showLabel).map((segment) => <span className="color-halo-ring__label" key={segment.key} style={{ ...positionForAngle(segment.labelAngle), color: segment.labelColor }}>{Math.round(segment.percentage)}%</span>)}
         {!hasData && <span className="color-halo-ring__empty-label">Chưa có màu cảm xúc</span>}
       </div>
-      {activeSegment && <div id={tooltipId} className="color-orb__tooltip" role="tooltip">
+      {activeSegment && <div ref={tooltipRef} id={tooltipId} className="color-orb__tooltip" role="tooltip" style={tooltipPosition ?? { left: '50%', top: '50%' }}>
         <span className="color-orb__tooltip-accent" style={{ background: activeSegment.color }} />
         <strong>{activeSegment.emoji && <span aria-hidden="true">{activeSegment.emoji} </span>}{activeSegment.label ?? 'Cảm xúc'}</strong>
         {activeSegment.labelEn && <small>{activeSegment.labelEn}</small>}

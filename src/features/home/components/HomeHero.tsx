@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
-import { HomeOrb } from './HomeOrb'
+import { HomeOrb, type HomeOrbRenderer } from './HomeOrb'
 import type { HomeRange } from '../types'
 import type { DateRange } from '../../checkin/utils/history'
 import { formatHomeRangeLabel } from '../services/homeAggregation'
@@ -25,9 +25,10 @@ type HomeHeroProps = {
   remainingActions: number
   onRangeChange: (range: HomeRange) => void
   onCustomRangeChange: (range: DateRange) => void
+  renderer?: HomeOrbRenderer
 }
 
-export function HomeHero({ displayName, streak, orbEntries, range, customRange, relevantCheckins, completedActions, remainingActions, onRangeChange, onCustomRangeChange }: HomeHeroProps) {
+export function HomeHero({ displayName, streak, orbEntries, range, customRange, relevantCheckins, completedActions, remainingActions, onRangeChange, onCustomRangeChange, renderer }: HomeHeroProps) {
   const heroEyebrow = useUiContent('home.landing.hero_eyebrow')
   const heroSubtitle = useUiContent('home.landing.hero_subtitle')
   const orbTitle = useUiContent('home.landing.orb_title')
@@ -51,7 +52,7 @@ export function HomeHero({ displayName, streak, orbEntries, range, customRange, 
       </header>
 
       <div className="home-v2__hero-body">
-        <div className="home-v2__hero-orb"><HomeOrb entries={orbEntries} label="Color Orb Home" controlledActiveKey={legendActiveKey} onHoverKeyChange={setLegendHoverKey} onSelectKeyChange={setLegendSelectedKey} /></div>
+        <div className="home-v2__hero-orb"><HomeOrb entries={orbEntries} label="Color Orb Home" renderer={renderer} density={range === 'today' ? 'full' : 'simplified'} controlledActiveKey={legendActiveKey} onHoverKeyChange={setLegendHoverKey} onSelectKeyChange={setLegendSelectedKey} /></div>
         <div className="home-v2__hero-summary">
           <p className="home-v2__eyebrow">{orbTitle}</p>
           <h3>{formatHomeRangeLabel(range, customRange)}</h3>
