@@ -170,6 +170,7 @@
 .landing-streak-dots i { width: .52rem; height: .52rem; border-radius: 50%; background: #e8e2fa; }
 .landing-streak-dots i.is-filled { background: var(--color-violet); box-shadow: 0 0 0 3px rgba(116, 60, 255, .1); }
 .landing-hero__orb { display: grid; place-items: center; min-width: 0; }
+.landing-hero__orb .color-orb-shell::before { display: none; }
 .landing-hero__orb .color-orb { width: min(100%, 11rem); height: auto; }
 .landing-hero__orb .color-orb, .landing-mode-card--emotion .color-orb { filter: drop-shadow(0 10px 16px rgba(74, 43, 132, .12)) saturate(1.2) contrast(1.04); }
 .landing-hero__today h2 { margin: .2rem 0 .3rem; font-size: clamp(1.2rem, 2vw, 1.55rem); letter-spacing: -.05em; }

@@ -1,16 +1,19 @@
-import { useEffect, useState, type CSSProperties, type ReactNode } from 'react'
+import { useEffect, useMemo, useState, type CSSProperties, type ReactNode } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import { CheckinWorkspaceHeader, ColorOrb } from '../components/CheckinComponents'
+import { CheckinWorkspaceHeader } from '../components/CheckinComponents'
+import { HomeOrb } from '../../home/components/HomeOrb'
+import { getHomeOrbEntries } from '../../home/services/homeAggregation'
 import { useReferenceData } from '../hooks/useReferenceData'
 import { ReferenceState } from '../hooks/ReferenceState'
 import { getCheckinLandingSummary, type CheckinLandingSummary } from '../services/checkinRepository'
 import { useCheckinFlow } from '../useCheckinFlow'
 import { getLocalDateKey } from '../utils/history'
+import type { ColorOrbEntry } from '../utils/colorOrb'
 import { useUiContent } from '../../../services/uiContent'
 
 const LANDING_TIME_ZONE = 'Asia/Ho_Chi_Minh'
 
-const NEUTRAL_ORB_ENTRIES = [
+const NEUTRAL_ORB_ENTRIES: ColorOrbEntry[] = [
   { color: '#8D78E8', intensity: 1 },
   { color: '#BDA9F4', intensity: 0.8 },
   { color: '#D9D0EA', intensity: 0.55 },
@@ -80,7 +83,8 @@ export function CheckinLandingScreen() {
     setSummaryError(null)
     setReloadKey((key) => key + 1)
   }
-  const emotionOrbEntries = reference?.emotions.slice(0, 4).map((emotion) => ({ color: emotion.color_hex, intensity: 2 })) ?? []
+  const landingOrbEntries = useMemo(() => summary ? getHomeOrbEntries(summary.recent) : [], [summary])
+  const emotionOrbEntries = useMemo(() => reference?.emotions.slice(0, 4).map((emotion) => ({ color: emotion.color_hex, intensity: 2 })) ?? [], [reference])
   const landingError = referenceError ?? summaryError
 
   return (
@@ -108,7 +112,7 @@ export function CheckinLandingScreen() {
       <div className="landing-layout">
         {summary && (
           <main className="landing-main">
-            <LandingHero summary={summary} entries={NEUTRAL_ORB_ENTRIES} />
+            <LandingHero summary={summary} entries={landingOrbEntries.length ? landingOrbEntries : NEUTRAL_ORB_ENTRIES} />
             <section className="landing-mode-grid" aria-label="Chọn cách check-in">
               <ModeCard
                 className="landing-mode-card--emotion"
@@ -117,7 +121,7 @@ export function CheckinLandingScreen() {
                 copy={emotionCopy}
                 onClick={() => begin('emotion')}
               >
-                <ColorOrb entries={emotionOrbEntries.length ? emotionOrbEntries : NEUTRAL_ORB_ENTRIES} size="small" label="Emotion Check-in" />
+                <HomeOrb entries={emotionOrbEntries.length ? emotionOrbEntries : NEUTRAL_ORB_ENTRIES} size="small" label="Emotion Check-in" />
               </ModeCard>
               <ModeCard
                 className="landing-mode-card--unknown"
@@ -158,7 +162,7 @@ export function CheckinLandingScreen() {
   )
 }
 
-function LandingHero({ summary, entries }: { summary: CheckinLandingSummary; entries: Array<{ color: string; intensity: number }> }) {
+function LandingHero({ summary, entries }: { summary: CheckinLandingSummary; entries: readonly ColorOrbEntry[] }) {
   const todayDone = summary.todayCount > 0
   const filledDots = Math.min(summary.currentStreak, 7)
 
@@ -178,7 +182,7 @@ function LandingHero({ summary, entries }: { summary: CheckinLandingSummary; ent
         </div>
       </div>
       <div className="landing-hero__orb">
-        <ColorOrb entries={entries} size="large" label="Không gian check-in" />
+        <HomeOrb entries={entries} size="large" label="Không gian check-in" />
       </div>
       <div className="landing-hero__today">
         <span className="section-label">Hôm nay</span>
