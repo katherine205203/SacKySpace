@@ -1,6 +1,7 @@
 import { supabase } from '../../../services/supabase/client'
 import type { ActionDraft, CheckinDraft, CheckinRecord, ReferenceData } from '../types'
 import { getCurrentStreakFromCreatedAt, getHistoryDateRange, getLocalDateKey } from '../utils/history'
+import { isRichTextEmpty } from '../../../components/richText'
 
 type CheckinRow = {
   id: string
@@ -104,7 +105,7 @@ export const createCheckin = async (
       checkin_type: draft.checkinType,
       primary_emotion_id: draft.primaryEmotionId,
       intensity: draft.intensity,
-      note: draft.note.trim() || null,
+      note: isRichTextEmpty(draft.note) ? null : draft.note,
       unknown_prompt_id: draft.unknownPromptId,
     })
     .select('id, created_at, updated_at')
@@ -126,7 +127,7 @@ export const updateCheckin = async (
       checkin_type: draft.checkinType,
       primary_emotion_id: draft.primaryEmotionId,
       intensity: draft.intensity,
-      note: draft.note.trim() || null,
+      note: isRichTextEmpty(draft.note) ? null : draft.note,
       unknown_prompt_id: draft.unknownPromptId,
     })
     .eq('id', draft.id)

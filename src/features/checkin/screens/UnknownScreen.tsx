@@ -6,6 +6,7 @@ import { useCheckinFlow } from '../useCheckinFlow'
 import { useReferenceData } from '../hooks/useReferenceData'
 import { ReferenceState } from '../hooks/ReferenceState'
 import { convertUnknownToEmotion } from '../utils/unknownConversion'
+import { isRichTextEmpty } from '../../../components/richText'
 
 export function UnknownScreen() {
   const navigate = useNavigate()
@@ -20,7 +21,7 @@ export function UnknownScreen() {
   if (!reference) return <div className="page-stack checkin-page"><ReferenceState error={referenceError} /></div>
 
   const persist = async () => {
-    if (!draft.unknownPromptId || !draft.note.trim()) return
+    if (!draft.unknownPromptId || isRichTextEmpty(draft.note)) return
     try { await saveDraft(); setModal('decision') } catch { /* surfaced by context */ }
   }
   const deepDive = () => {
@@ -28,7 +29,7 @@ export function UnknownScreen() {
     navigate('/checkin/emotion')
   }
   const selectedPrompt = reference.unknownPrompts.find((prompt) => prompt.prompt_id === draft.unknownPromptId)
-  const canSave = Boolean(draft.unknownPromptId && draft.note.trim())
+  const canSave = Boolean(draft.unknownPromptId && !isRichTextEmpty(draft.note))
   const changePrompt = () => {
     if (!selectedPrompt || reference.unknownPrompts.length < 2) return
     const index = reference.unknownPrompts.findIndex((prompt) => prompt.prompt_id === selectedPrompt.prompt_id)

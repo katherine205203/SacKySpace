@@ -7,6 +7,7 @@ import { listDiaryEntries } from '../../diary/services/diaryRepository'
 import type { CheckinRecord, Emotion, ReferenceData } from '../../checkin/types'
 import type { FutureLetter, FutureLetterDraft, FutureLetterRule, FutureLetterRuleGroup, FutureLetterTriggerEvent, FutureLetterEvaluationContext } from '../types'
 import { ENVELOPE_ASSETS, RANDOM_DAILY_CHANCE, SEAL_ASSETS, evaluateGroup, evaluateRule, evaluateTriggerGroups, getFutureLetterLocalDate, getLocalDateKey, getEmotionChainEvidence, isHomeAvailable, isTriggerTypeLatched, selectRandomPoolLetter } from '../utils'
+import { isRichTextEmpty } from '../../../components/richText'
 
 const LOCAL_STORAGE_KEY = 'sacky:future-letter:v2:'
 let remoteDraftQueue: Promise<void> = Promise.resolve()
@@ -232,7 +233,7 @@ export const flushFutureLetterDraft = async (): Promise<void> => {
 
 export const saveFutureLetterDraft = async (draft: FutureLetterDraft): Promise<FutureLetter> => {
   if (!draft.title.trim()) throw new Error('Hãy đặt tiêu đề cho bản nháp.')
-  if (!draft.body.trim()) throw new Error('Hãy viết nội dung cho bản nháp.')
+  if (isRichTextEmpty(draft.body)) throw new Error('Hãy viết nội dung cho bản nháp.')
   const userId = await currentUserId()
   const existing = draft.id ? readLocalLetters(userId).find((letter) => letter.id === draft.id) ?? knownLetters.get(draft.id) ?? null : null
   if (existing?.state === 'sealed_waiting' || existing?.state === 'available_unopened' || existing?.state === 'opened' || existing?.state === 'archived') throw new Error('Lá thư đã niêm phong nên không thể chỉnh sửa.')
@@ -244,7 +245,7 @@ export const saveFutureLetterDraft = async (draft: FutureLetterDraft): Promise<F
 
 const validateSeal = (letter: FutureLetter): void => {
   if (!letter.title.trim()) throw new Error('Hãy đặt tiêu đề cho lá thư.')
-  if (!letter.body.trim()) throw new Error('Hãy viết nội dung trước khi niêm phong.')
+  if (isRichTextEmpty(letter.body)) throw new Error('Hãy viết nội dung trước khi niêm phong.')
   if (!letter.groups.some((group) => group.rules.length)) throw new Error('Hãy thêm ít nhất một cách để lá thư trở lại với mình.')
   if (!letter.envelopeAssetId || !letter.sealAssetId) throw new Error('Hãy chọn phong bì và ấn niêm phong.')
   for (const rule of letter.groups.flatMap((group) => group.rules)) {

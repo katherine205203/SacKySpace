@@ -5,6 +5,7 @@ import { CheckinWorkspaceHeader, IntensityDots, SummaryRail, TagList } from '../
 import { useCheckinFlow } from '../useCheckinFlow'
 import { useReferenceData } from '../hooks/useReferenceData'
 import { ReferenceState } from '../hooks/ReferenceState'
+import { isRichTextEmpty, RichTextRenderer } from '../../../components/richText'
 
 export function ReviewScreen() {
   const navigate = useNavigate()
@@ -24,7 +25,7 @@ export function ReviewScreen() {
   const contexts = reference.contexts.filter((context) => draft.contextIds.includes(context.context_id))
   const finish = async (nextDraft = draft) => { try { await completeCheckin(nextDraft); navigate('/') } catch { /* surfaced by context */ } }
   const openSave = async () => {
-    const valid = draft.checkinType === 'unknown' ? Boolean(draft.unknownPromptId && draft.note.trim()) : Boolean(draft.primaryEmotionId && draft.intensity)
+    const valid = draft.checkinType === 'unknown' ? Boolean(draft.unknownPromptId && !isRichTextEmpty(draft.note)) : Boolean(draft.primaryEmotionId && draft.intensity)
     if (!valid) { setFormError(draft.checkinType === 'unknown' ? 'Unknown Check-in cần prompt và ghi chú.' : 'Check-in cảm xúc cần cảm xúc chính và cường độ.'); return }
     await saveDraft()
     setFormError(null)
@@ -40,7 +41,7 @@ export function ReviewScreen() {
         <ReviewSection number="3" label="Cảm xúc phụ" value={secondary.length ? <TagList items={secondary.map((item) => `${item.emoji} ${item.emotion_name_vn}`)} /> : <span className="muted-text">Không có</span>} onEdit={() => navigate(draft.id ? `/checkin/${draft.id}/secondary-emotions` : '/checkin/secondary-emotions', { state: { returnToReview: true } })} />
         <ReviewSection number="4" label="Nhu cầu" value={needs.length ? <TagList items={needs.map((item) => `${item.emoji} ${item.need_name_vn}`)} /> : <span className="muted-text">Không có</span>} onEdit={() => navigate(draft.id ? `/checkin/${draft.id}/needs` : '/checkin/needs', { state: { returnToReview: true } })} />
         <ReviewSection number="5" label="Bối cảnh" value={contexts.length ? <TagList items={contexts.map((item) => `${item.emoji} ${item.context_name_vn}`)} /> : <span className="muted-text">Không có</span>} onEdit={() => navigate(draft.id ? `/checkin/${draft.id}/contexts` : '/checkin/contexts', { state: { returnToReview: true } })} />
-        <ReviewSection number="6" label="Ghi chú" value={<p className="review-note">{draft.note || 'Không có ghi chú.'}</p>} onEdit={() => navigate('/checkin/emotion', { state: { returnToReview: true } })} />
+        <ReviewSection number="6" label="Ghi chú" value={isRichTextEmpty(draft.note) ? <p className="review-note">Không có ghi chú.</p> : <RichTextRenderer value={draft.note} className="review-note" />} onEdit={() => navigate('/checkin/emotion', { state: { returnToReview: true } })} />
       </main><SummaryRail draft={draft} reference={reference} title="Tóm tắt check-in" showPrimaryDetails />
       </div>
       {(formError || error) && <p className="form-error" role="alert">{formError ?? error}</p>}

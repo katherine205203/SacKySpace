@@ -5,6 +5,7 @@ import { createEmptyDiaryDraft } from '../../diary/services/diaryRepository'
 import type { DiaryEntry, DiaryPrompt } from '../../diary/types'
 import { createGiftId, getGiftLocalDate, isGiftOnHome } from '../utils'
 import type { DiaryConversionLink, GiftBoxStyle, GiftDraft, GiftHomeProjection, GiftQuestionAnswer, GiftReceiptStatus, GiftRecord, GiftType } from '../types'
+import { isRichTextEmpty } from '../../../components/richText'
 
 type GiftRow = {
   id: string
@@ -120,7 +121,7 @@ export const saveGiftDraft = async (draft: GiftDraft): Promise<GiftRecord> => {
 
 export const sendGift = async (draft: GiftDraft): Promise<GiftRecord> => {
   if (draft.type === 'question' && !draft.questionText.trim()) throw new Error('Hãy viết câu hỏi trước khi gửi.')
-  if (draft.type === 'message' && !draft.messageText.trim()) throw new Error('Hãy viết lời nhắn trước khi gửi.')
+  if (draft.type === 'message' && isRichTextEmpty(draft.messageText)) throw new Error('Hãy viết lời nhắn trước khi gửi.')
   const gift = await saveGiftDraft(draft)
   await flushGiftDraftPersistence()
   const { data, error } = await supabase.rpc('send_gift', { p_gift_id: gift.id, p_question_text: draft.type === 'question' ? draft.questionText.trim() : null, p_message_text: draft.type === 'message' ? draft.messageText.trim() : null, p_emotion_id: draft.emotionId, p_emotion_snapshot: draft.emotionSnapshot, p_box_style_id: draft.boxStyleId, p_box_style_snapshot: draft.boxStyleSnapshot })

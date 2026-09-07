@@ -17,10 +17,11 @@ import { getDiaryLocalDate } from '../diary/utils'
 import { DEFAULT_REFLECTION_OUTCOMES, listReflectionOutcomes, saveActionReflection, setActionStatus } from '../actionspace/actionService'
 import { ReflectionModal } from '../actionspace/ActionSpacePage'
 import type { ActionRecord, ActionReflectionOutcome } from '../actionspace/types'
+import { richTextToPlainText } from '../../components/richText'
 
 const getDiaryPreviewExcerpt = (entry: NonNullable<ReturnType<typeof useHomeData>['snapshot']>['diaryEntries'][number]): string => {
-  const authoredPrompt = entry.promptResponses.find((response) => response.responseText.trim())?.responseText ?? ''
-  return (entry.overallText.trim() || authoredPrompt.trim()).replace(/\s+/g, ' ').trim()
+  const authoredPrompt = entry.promptResponses.find((response) => richTextToPlainText(response.responseText).trim())?.responseText ?? ''
+  return (richTextToPlainText(entry.overallText).trim() || richTextToPlainText(authoredPrompt).trim()).replace(/\s+/g, ' ').trim()
 }
 
 export function HomePage() {

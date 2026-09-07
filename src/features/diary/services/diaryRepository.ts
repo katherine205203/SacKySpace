@@ -1,7 +1,9 @@
 import { supabase } from '../../../services/supabase/client'
 import { createDiaryId, getDiaryLocalDate } from '../utils'
 import { DEFAULT_DIARY_PROMPTS } from '../prompts'
-import type { DiaryCheckinLink, DiaryDraft, DiaryEntry, DiaryPrompt, DiaryStatus, JourneyDraft, JourneyEntry, JourneyStatus } from '../types'
+import { resolveDiaryMediaUrl, syncDiaryMedia } from './diaryMedia'
+import type { DiaryCheckinLink, DiaryDraft, DiaryEntry, DiaryImage, DiaryPrompt, DiaryStatus, JourneyDraft, JourneyEntry, JourneyStatus } from '../types'
+import { isRichTextEmpty } from '../../../components/richText'
 
 const LOCAL_STORAGE_PREFIX = 'sacky:diary:v2:'
 const LOCAL_JOURNEY_STORAGE_PREFIX = 'sacky:diary:journey:v1:'
@@ -50,6 +52,24 @@ type JourneyEntryRow = {
   completed_at: string | null
 }
 
+type DiaryImageRow = {
+  id: string
+  diary_id: string
+  external_file_id: string | null
+  external_url: string
+  position: number
+  caption: string | null
+  metadata: Record<string, unknown> | null
+  media_key?: string | null
+  source_type?: DiaryImage['sourceType'] | null
+  original_source_url?: string | null
+  mime_type?: string | null
+  width?: number | null
+  height?: number | null
+  file_size_bytes?: number | null
+  upload_status?: DiaryImage['uploadStatus'] | null
+}
+
 const JOURNEY_ENTRY_SELECT = 'id, user_id, status, range_start, range_end, title, overall_text, primary_emotion_id, primary_emotion_snapshot, closing_thought, created_at, updated_at, completed_at'
 
 const currentUserId = async (): Promise<string> => {
@@ -68,6 +88,10 @@ const normalizeDiaryStatus = (status: string): DiaryStatus => {
 }
 
 const missingDayLockColumn = (message: string): boolean => /day_locked_at|column .* does not exist|schema cache/i.test(message)
+const missingDiaryMediaTable = (message: string): boolean => /diary_media|relation .* does not exist|schema cache/i.test(message)
+
+const isManagedDiaryImage = (image: DiaryImage): boolean => image.sourceType === 'local_upload' || image.sourceType === 'url_import' || Boolean(image.mediaKey)
+const hasManagedDiaryImages = (images: DiaryImage[]): boolean => images.some(isManagedDiaryImage)
 
 const toPrompt = (row: DiaryPromptRow): DiaryPrompt => ({
   id: row.id,
@@ -139,7 +163,7 @@ const mapRemoteEntry = (
   row: DiaryEntryRow,
   promptRows: Array<{ diary_id: string; prompt_id: string | null; prompt_snapshot: unknown; position: number; response_text: string; is_done: boolean }>,
   linkRows: Array<{ diary_id: string; checkin_id: string; weight_percent: number; position: number }>,
-  imageRows: Array<{ id: string; diary_id: string; external_file_id: string | null; external_url: string; position: number; caption: string | null; metadata: Record<string, unknown> | null }>,
+  imageRows: DiaryImageRow[],
 ): DiaryEntry => ({
   id: row.id,
   userId: row.user_id,
@@ -166,7 +190,7 @@ const mapRemoteEntry = (
   images: imageRows
     .filter((item) => item.diary_id === row.id)
     .sort((left, right) => left.position - right.position)
-    .map((item) => ({ id: item.id, externalFileId: item.external_file_id ?? undefined, externalUrl: item.external_url, position: item.position, caption: item.caption ?? '', metadata: item.metadata ?? undefined })),
+    .map((item) => ({ id: item.id, externalFileId: item.external_file_id ?? undefined, externalUrl: item.external_url, position: item.position, caption: item.caption ?? '', mediaKey: item.media_key ?? undefined, sourceType: item.source_type ?? (item.external_file_id ? 'legacy' : undefined), originalSourceUrl: item.original_source_url ?? undefined, mimeType: item.mime_type ?? undefined, width: item.width ?? undefined, height: item.height ?? undefined, fileSizeBytes: item.file_size_bytes ?? undefined, uploadStatus: item.upload_status ?? undefined, metadata: item.metadata ?? undefined })),
   createdAt: row.created_at,
   updatedAt: row.updated_at,
   completedAt: row.completed_at,
@@ -186,15 +210,25 @@ const listRemoteEntries = async (userId: string): Promise<DiaryEntry[]> => {
   const rows = (result.data ?? []) as unknown as DiaryEntryRow[]
   if (!rows.length) return []
   const ids = rows.map((row) => row.id)
-  const [promptResult, linkResult, imageResult] = await Promise.all([
+  const [promptResult, linkResult, imageResult, legacyImageResult] = await Promise.all([
     supabase.from('diary_prompt_responses').select('diary_id, prompt_id, prompt_snapshot, position, response_text, is_done').in('diary_id', ids).order('position'),
     supabase.from('diary_checkin_links').select('diary_id, checkin_id, weight_percent, position').in('diary_id', ids).order('position'),
+    supabase.from('diary_media').select('id, diary_id, drive_file_id, slot_order, source_type, media_key, original_source_url, mime_type, width, height, file_size_bytes, upload_status, caption').in('diary_id', ids).order('slot_order'),
     supabase.from('diary_images').select('id, diary_id, external_file_id, external_url, position, caption, metadata').in('diary_id', ids).order('position'),
   ])
   if (promptResult.error) throw promptResult.error
   if (linkResult.error) throw linkResult.error
-  if (imageResult.error) throw imageResult.error
-  return rows.map((row) => mapRemoteEntry(row, promptResult.data ?? [], linkResult.data ?? [], imageResult.data ?? []))
+  const mediaRows = imageResult.error && missingDiaryMediaTable(imageResult.error.message) ? [] : imageResult.data as unknown as Array<{ id: string; diary_id: string; drive_file_id: string; slot_order: number; source_type: DiaryImage['sourceType']; media_key: string; original_source_url: string | null; mime_type: string; width: number; height: number; file_size_bytes: number; upload_status: DiaryImage['uploadStatus']; caption: string | null }>
+  if (imageResult.error && !missingDiaryMediaTable(imageResult.error.message)) throw imageResult.error
+  if (legacyImageResult.error) throw legacyImageResult.error
+  const resolvedMediaRows = await Promise.all(mediaRows.map(async (item) => {
+    let externalUrl = ''
+    try { externalUrl = await resolveDiaryMediaUrl(item.id) } catch { /* A missing resolver should not hide legacy text content. */ }
+    return { id: item.id, diary_id: item.diary_id, external_file_id: item.drive_file_id, external_url: externalUrl, position: item.slot_order, caption: item.caption, metadata: null, media_key: item.media_key, source_type: item.source_type, original_source_url: item.original_source_url, mime_type: item.mime_type, width: item.width, height: item.height, file_size_bytes: item.file_size_bytes, upload_status: item.upload_status } satisfies DiaryImageRow
+  }))
+  const occupiedSlots = new Set(resolvedMediaRows.map((item) => `${item.diary_id}:${item.position}`))
+  const legacyRows = ((legacyImageResult.data ?? []) as DiaryImageRow[]).filter((item) => !occupiedSlots.has(`${item.diary_id}:${item.position}`)).map((item) => ({ ...item, source_type: 'legacy' as const }))
+  return rows.map((row) => mapRemoteEntry(row, promptResult.data ?? [], linkResult.data ?? [], [...resolvedMediaRows, ...legacyRows]))
 }
 
 export const listDiaryEntries = async (): Promise<DiaryEntry[]> => {
@@ -263,7 +297,7 @@ const syncGiftDiaryPrompts = async (entry: DiaryEntry, previousEntry: DiaryEntry
   for (const response of nextGiftResponses) {
     const giftId = response.promptSnapshot.sourceGiftId
     if (!giftId) continue
-    await supabase.from('gift_question_answers').upsert({ gift_id: giftId, answer_text: response.responseText, is_done: response.isDone, answered_at: response.responseText.trim() ? new Date().toISOString() : null }, { onConflict: 'gift_id' })
+    await supabase.from('gift_question_answers').upsert({ gift_id: giftId, answer_text: response.responseText, is_done: response.isDone, answered_at: isRichTextEmpty(response.responseText) ? null : new Date().toISOString() }, { onConflict: 'gift_id' })
   }
 }
 
@@ -274,7 +308,7 @@ const saveRemoteEntry = async (entry: DiaryEntry, previousEntry: DiaryEntry | nu
       local_date: entry.localDate,
       status: entry.status,
       title: entry.title.trim() || null,
-      overall_text: entry.overallText.trim() || null,
+      overall_text: isRichTextEmpty(entry.overallText) ? null : entry.overallText,
       daily_emotion_id: entry.dailyEmotionId,
       daily_emotion_snapshot: entry.dailyEmotionSnapshot,
       completed_at: entry.completedAt,
@@ -308,10 +342,12 @@ const saveRemoteEntry = async (entry: DiaryEntry, previousEntry: DiaryEntry | nu
     const { error: insertError } = await supabase.from('diary_checkin_links').insert(entry.checkinLinks.map((item) => ({ diary_id: entryId, checkin_id: item.checkinId, weight_percent: item.weightPercent, position: item.position })))
     if (insertError) throw insertError
   }
-  if (entry.images.length) {
-    const { error: insertError } = await supabase.from('diary_images').insert(entry.images.map((item) => ({ id: item.id, diary_id: entryId, external_file_id: item.externalFileId ?? null, external_url: item.externalUrl, position: item.position, caption: item.caption || null, metadata: item.metadata ?? null })))
+  const legacyImages = entry.images.filter((item) => item.sourceType === 'legacy' || (!item.sourceType && !item.mediaKey))
+  if (legacyImages.length) {
+    const { error: insertError } = await supabase.from('diary_images').insert(legacyImages.map((item) => ({ id: item.id, diary_id: entryId, external_file_id: item.externalFileId ?? null, external_url: item.externalUrl, position: item.position, caption: item.caption || null, metadata: item.metadata ?? null })))
     if (insertError) throw insertError
   }
+  if (hasManagedDiaryImages(entry.images) || hasManagedDiaryImages(previousEntry?.images ?? [])) await syncDiaryMedia(entryId, entry.images)
   await syncGiftDiaryPrompts({ ...entry, id: entryId }, previousEntry)
   return { ...entry, id: entryId, status: normalizeDiaryStatus(row.status), createdAt: row.created_at, updatedAt: row.updated_at, completedAt: row.completed_at, dayLockedAt: row.day_locked_at ?? entry.dayLockedAt }
 }
@@ -328,7 +364,8 @@ export const saveDiary = async (draft: DiaryDraft): Promise<DiaryEntry> => {
     const localEntries = readLocalEntries(userId).filter((item) => item.localDate !== saved.localDate)
     writeLocalEntries(userId, [saved, ...localEntries])
     return saved
-  } catch {
+  } catch (reason: unknown) {
+    if (hasManagedDiaryImages(entry.images) || hasManagedDiaryImages(existing?.images ?? [])) throw reason
     const localEntries = readLocalEntries(userId).filter((item) => item.localDate !== entry.localDate)
     writeLocalEntries(userId, [entry, ...localEntries])
     return entry
@@ -337,6 +374,8 @@ export const saveDiary = async (draft: DiaryDraft): Promise<DiaryEntry> => {
 
 export const deleteDiary = async (id: string): Promise<void> => {
   const userId = await currentUserId()
+  const existing = (await listDiaryEntries()).find((entry) => entry.id === id)
+  if (existing && hasManagedDiaryImages(existing.images)) await syncDiaryMedia(id, [])
   try {
     const { error } = await supabase.from('diary_entries').update({ status: 'deleted', deleted_at: new Date().toISOString() }).eq('id', id).eq('user_id', userId)
     if (error) throw error
@@ -534,7 +573,7 @@ const saveRemoteJourney = async (entry: JourneyEntry): Promise<JourneyEntry> => 
 export const saveJourney = async (draft: JourneyDraft): Promise<JourneyEntry> => {
   if (!draft.rangeStart || !draft.rangeEnd || draft.rangeStart > draft.rangeEnd) throw new Error('Chọn một khoảng thời gian hợp lệ cho nhật ký chặng.')
   if (!draft.title.trim()) throw new Error('Hãy thêm tiêu đề cho nhật ký chặng.')
-  if (!draft.overallText.trim()) throw new Error('Hãy viết một chút cho phần tổng quan chặng.')
+  if (isRichTextEmpty(draft.overallText)) throw new Error('Hãy viết một chút cho phần tổng quan chặng.')
   const userId = await currentUserId()
   const existing = draft.id ? (await listJourneyEntries()).find((entry) => entry.id === draft.id) ?? null : null
   const entry = normalizeJourneyDraft(draft, userId, existing)

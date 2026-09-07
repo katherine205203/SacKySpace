@@ -1,0 +1,197 @@
+.rich-text-editor {
+  position: relative;
+  display: grid;
+  gap: .5rem;
+  font-family: 'Be Vietnam Pro', sans-serif;
+}
+
+.rich-text-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: .25rem;
+  max-height: 0;
+  overflow: hidden;
+  opacity: 0;
+  transform: translateY(-.25rem);
+  transition: max-height .18s ease, opacity .18s ease, transform .18s ease;
+}
+
+.rich-text-editor.is-active .rich-text-toolbar {
+  max-height: 4rem;
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.rich-text-toolbar button {
+  min-height: 1.9rem;
+  padding: .28rem .5rem;
+  border: 1px solid transparent;
+  border-radius: .45rem;
+  background: transparent;
+  color: var(--color-text-muted);
+  font: inherit;
+  font-size: .67rem;
+  font-weight: 750;
+  cursor: pointer;
+}
+
+.rich-text-toolbar button:hover,
+.rich-text-toolbar button.is-active {
+  border-color: var(--color-border);
+  background: var(--color-surface-soft);
+  color: var(--color-violet-dark);
+}
+
+.rich-text-toolbar button:first-child {
+  font-size: .77rem;
+  font-weight: 900;
+}
+
+.rich-text-toolbar button:nth-child(2) {
+  font-size: .77rem;
+  font-style: italic;
+  font-weight: 850;
+}
+
+.rich-text-spacing-popover {
+  position: absolute;
+  z-index: 5;
+  top: 2.45rem;
+  left: 8.2rem;
+  display: grid;
+  gap: .65rem;
+  width: min(17rem, calc(100vw - 2rem));
+  padding: .75rem;
+  border: 1px solid var(--color-border);
+  border-radius: .7rem;
+  background: #fff;
+  box-shadow: var(--shadow-floating);
+}
+
+.rich-text-spacing-popover label {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: center;
+  gap: .75rem;
+  color: var(--color-text-muted);
+  font-size: .66rem;
+  font-weight: 700;
+}
+
+.rich-text-spacing-popover select {
+  min-height: 2rem;
+  padding: .2rem .45rem;
+  border: 1px solid var(--color-border);
+  border-radius: .4rem;
+  background: var(--color-surface-soft);
+  color: var(--color-text);
+  font: inherit;
+  font-size: .65rem;
+}
+
+.rich-text-content {
+  min-height: 8rem;
+  padding: .85rem .95rem;
+  border: 1px solid var(--color-border);
+  border-radius: .75rem;
+  outline: none;
+  background: #fff;
+  color: var(--color-text);
+  font-size: .84rem;
+  line-height: var(--rich-line-height, 1.7);
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  cursor: text;
+}
+
+.rich-text-content:focus {
+  border-color: var(--color-violet);
+  box-shadow: 0 0 0 3px var(--color-violet-pale);
+}
+
+.rich-text-content[data-empty='true']::before {
+  content: attr(data-placeholder);
+  color: var(--color-text-soft);
+  pointer-events: none;
+}
+
+.rich-text-content p,
+.rich-text-content blockquote,
+.rich-text-content ul,
+.rich-text-content ol,
+.rich-text-renderer p,
+.rich-text-renderer blockquote,
+.rich-text-renderer ul,
+.rich-text-renderer ol {
+  margin: 0;
+}
+
+.rich-text-content p + p,
+.rich-text-content p + blockquote,
+.rich-text-content blockquote + p,
+.rich-text-content ul + p,
+.rich-text-content ol + p,
+.rich-text-content p + ul,
+.rich-text-content p + ol,
+.rich-text-content ul + ul,
+.rich-text-content ol + ol,
+.rich-text-content blockquote + blockquote {
+  margin-top: var(--rich-paragraph-gap, .85rem);
+}
+
+.rich-text-content blockquote,
+.rich-text-renderer blockquote {
+  padding: .15rem 0 .15rem .8rem;
+  border-left: 3px solid var(--color-violet-light, #cdbbf5);
+  color: var(--color-text-muted);
+  font-style: italic;
+}
+
+.rich-text-content ul,
+.rich-text-content ol,
+.rich-text-renderer ul,
+.rich-text-renderer ol {
+  padding-left: 1.35rem;
+}
+
+.rich-text-content li + li,
+.rich-text-renderer li + li {
+  margin-top: .25rem;
+}
+
+.rich-text-renderer {
+  display: grid;
+  gap: var(--rich-paragraph-gap, .85rem);
+  color: inherit;
+  line-height: var(--rich-line-height, 1.7) !important;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+.rich-text-renderer > p,
+.rich-text-renderer > blockquote,
+.rich-text-renderer > ul,
+.rich-text-renderer > ol {
+  margin: 0 !important;
+  line-height: inherit !important;
+}
+
+.rich-text-renderer ul,
+.rich-text-renderer ol {
+  display: grid;
+  gap: var(--rich-paragraph-gap, .85rem);
+  margin: 0;
+}
+
+@media (max-width: 640px) {
+  .rich-text-editor .rich-text-toolbar {
+    max-height: 4rem;
+    opacity: 1;
+    transform: none;
+  }
+
+  .rich-text-spacing-popover {
+    left: 0;
+  }
+}

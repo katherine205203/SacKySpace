@@ -9,6 +9,7 @@ import type { ActionRecord, ActionReflectionOutcome } from '../../actionspace/ty
 import type { HomeReminder } from '../types'
 import type { CheckinRecord } from '../../checkin/types'
 import { IntensityDots, TagList } from '../../checkin/components/CheckinComponents'
+import { isRichTextEmpty, RichTextRenderer } from '../../../components/richText'
 
 type CheckinDetailModalProps = {
   record: CheckinRecord
@@ -148,7 +149,7 @@ export function CheckinDetailModal({ record, linkedActions, onClose, onEdit, onD
               {!isUnknown && record.secondaryEmotions.length > 0 && <DetailSection label="Cảm xúc phụ"><TagList items={record.secondaryEmotions.map((item) => `${item.emoji} ${item.emotion_name_vn}`)} /></DetailSection>}
               {!isUnknown && record.needs.length > 0 && <DetailSection label="Nhu cầu"><TagList items={record.needs.map((item) => `${item.emoji} ${item.need_name_vn}`)} /></DetailSection>}
               {!isUnknown && record.contexts.length > 0 && <DetailSection label="Bối cảnh"><TagList items={record.contexts.map((item) => `${item.emoji} ${item.context_name_vn}`)} /></DetailSection>}
-              <DetailSection label="Ghi chú"><p className="home-v2__detail-note">{record.note || 'Không có ghi chú.'}</p></DetailSection>
+              <DetailSection label="Ghi chú">{isRichTextEmpty(record.note) ? <p className="home-v2__detail-note">Không có ghi chú.</p> : <RichTextRenderer value={record.note} className="home-v2__detail-note" />}</DetailSection>
             </div>
 
             <aside className="home-v2__detail-summary">

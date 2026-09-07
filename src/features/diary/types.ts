@@ -38,9 +38,17 @@ export type DiaryCheckinLink = {
 export type DiaryImage = {
   id: string
   externalFileId?: string
+  mediaKey?: string
   externalUrl: string
   position: number
   caption: string
+  sourceType?: 'local_upload' | 'url_import' | 'legacy'
+  originalSourceUrl?: string
+  mimeType?: string
+  width?: number
+  height?: number
+  fileSizeBytes?: number
+  uploadStatus?: 'saved' | 'failed'
   metadata?: Record<string, unknown>
 }
 

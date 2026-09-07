@@ -10,6 +10,7 @@ import { useCheckinFlow } from '../useCheckinFlow'
 import { getLocalDateKey } from '../utils/history'
 import type { ColorOrbEntry } from '../utils/colorOrb'
 import { useUiContent } from '../../../services/uiContent'
+import { isRichTextEmpty, richTextToPlainText } from '../../../components/richText'
 
 const LANDING_TIME_ZONE = 'Asia/Ho_Chi_Minh'
 
@@ -62,7 +63,7 @@ export function CheckinLandingScreen() {
     draft.id ||
       draft.primaryEmotionId ||
       draft.unknownPromptId ||
-      draft.note.trim() ||
+      !isRichTextEmpty(draft.note) ||
       draft.secondaryEmotionIds.length ||
       draft.needIds.length ||
       draft.contextIds.length ||
@@ -255,7 +256,7 @@ function RecentActivityItem({ record }: { record: CheckinLandingSummary['recent'
   const isUnknown = record.checkinType === 'unknown'
   const activityColor = isUnknown ? '#5e8cf0' : record.primaryEmotion?.color_hex ?? '#8d78e8'
   const activityLabel = isUnknown ? 'Unknown Check-in' : 'Emotion Check-in'
-  const detail = isUnknown ? record.unknownPrompt?.prompt_text_vn ?? record.note?.trim() ?? 'Bạn đã ghi lại cảm xúc' : record.primaryEmotion?.emotion_name_vn ?? 'Đã gọi tên cảm xúc'
+  const detail = isUnknown ? record.unknownPrompt?.prompt_text_vn ?? (richTextToPlainText(record.note).trim() || 'Bạn đã ghi lại cảm xúc') : record.primaryEmotion?.emotion_name_vn ?? 'Đã gọi tên cảm xúc'
   const intensity = record.intensity ? `${record.intensity}/5` : null
 
   return (
@@ -268,7 +269,7 @@ function RecentActivityItem({ record }: { record: CheckinLandingSummary['recent'
           {formatRecentDate(record.createdAt)} <span aria-hidden="true">•</span> {activityLabel}
         </small>
         <strong>{detail}</strong>
-        <p>{record.note?.trim() || (isUnknown ? 'Một khoảng dừng để viết ra điều đang hiện diện.' : 'Bạn đã dành thời gian lắng nghe mình.')}</p>
+        <p>{richTextToPlainText(record.note).trim() || (isUnknown ? 'Một khoảng dừng để viết ra điều đang hiện diện.' : 'Bạn đã dành thời gian lắng nghe mình.')}</p>
       </div>
       {intensity && <span className="landing-recent__intensity">{intensity}</span>}
     </article>

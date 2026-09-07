@@ -3,6 +3,7 @@ import { createCheckin, draftFromRecord, getCheckin, updateCheckin } from './ser
 import { getReferenceData } from './services/referenceRepository'
 import { createEmptyDraft, type CheckinDraft } from './types'
 import { checkinFlowContext, type CheckinFlowContextValue } from './useCheckinFlow'
+import { isRichTextEmpty } from '../../components/richText'
 
 const DRAFT_STORAGE_KEY = 'sacky:checkin-draft:v1'
 
@@ -82,7 +83,7 @@ export function CheckinFlowProvider({ children }: { children: ReactNode }) {
         draft.id
         || draft.primaryEmotionId
         || draft.unknownPromptId
-        || draft.note.trim()
+        || !isRichTextEmpty(draft.note)
         || draft.secondaryEmotionIds.length
         || draft.needIds.length
         || draft.contextIds.length

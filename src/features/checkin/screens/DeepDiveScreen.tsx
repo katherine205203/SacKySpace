@@ -6,6 +6,7 @@ import { useCheckinFlow } from '../useCheckinFlow'
 import { useReferenceData } from '../hooks/useReferenceData'
 import { ReferenceState } from '../hooks/ReferenceState'
 import { canSelect, MAX_CONTEXTS, MAX_NEEDS, MAX_SECONDARY_EMOTIONS, toggleSelection } from '../utils/selectionRules'
+import { richTextToPlainText } from '../../../components/richText'
 
 type DeepDiveStep = 'secondary' | 'needs' | 'contexts'
 
@@ -80,7 +81,7 @@ export function DeepDiveScreen({ step }: { step: DeepDiveStep }) {
             {step === 'needs' && <GroupFilters groups={reference.needGroups} activeGroup={group} onGroupChange={setGroup} />}
             {step === 'contexts' && <><button className={`filter-chip filter-chip--all ${group === 'all' ? 'is-active' : ''}`} type="button" onClick={() => setGroup('all')}>Tất cả</button>{Array.from(new Set(reference.contexts.map((context) => context.context_group))).map((item) => <button key={item} className={`filter-chip ${group === item ? 'is-active' : ''}`} type="button" onClick={() => setGroup(item)}>{item}</button>)}</>}
           </PickerControlShelf>
-          <section className="selection-context-strip" aria-label="Thông tin đã chọn"><div><span className="section-label">Cảm xúc chính</span><strong>{reference.emotions.find((emotion) => emotion.emotion_id === draft.primaryEmotionId)?.emoji} {reference.emotions.find((emotion) => emotion.emotion_id === draft.primaryEmotionId)?.emotion_name_vn ?? 'Chưa chọn'}</strong></div><div><span className="section-label">Cường độ</span><strong>{draft.intensity ? `${draft.intensity}/5` : 'Chưa chọn'}</strong></div><div><span className="section-label">Ghi chú của bạn</span><strong>{draft.note || 'Chưa có ghi chú'}</strong></div></section>
+          <section className="selection-context-strip" aria-label="Thông tin đã chọn"><div><span className="section-label">Cảm xúc chính</span><strong>{reference.emotions.find((emotion) => emotion.emotion_id === draft.primaryEmotionId)?.emoji} {reference.emotions.find((emotion) => emotion.emotion_id === draft.primaryEmotionId)?.emotion_name_vn ?? 'Chưa chọn'}</strong></div><div><span className="section-label">Cường độ</span><strong>{draft.intensity ? `${draft.intensity}/5` : 'Chưa chọn'}</strong></div><div><span className="section-label">Ghi chú của bạn</span><strong>{richTextToPlainText(draft.note).trim() || 'Chưa có ghi chú'}</strong></div></section>
           {nextSelection()}
           {selected.length === 0 && <p className="empty-state">Bạn có thể bỏ qua bước này.</p>}
           <NoteField value={draft.note} onChange={(note) => updateDraft({ note })} />
