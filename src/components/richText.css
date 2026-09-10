@@ -99,6 +99,7 @@
   background: #fff;
   color: var(--color-text);
   font-size: .84rem;
+  font-weight: 400;
   line-height: var(--rich-line-height, 1.7);
   white-space: pre-wrap;
   overflow-wrap: anywhere;
@@ -164,6 +165,7 @@
   display: grid;
   gap: var(--rich-paragraph-gap, .85rem);
   color: inherit;
+  font-weight: 400;
   line-height: var(--rich-line-height, 1.7) !important;
   white-space: pre-wrap;
   overflow-wrap: anywhere;

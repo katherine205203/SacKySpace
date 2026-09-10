@@ -91,12 +91,13 @@ export const serializeRichText = (document: RichTextDocument): string => `${RICH
 
 const inlineText = (children: RichTextText[]): string => children.map((child) => child.text).join('')
 
+const documentToPlainText = (document: RichTextDocument): string => document.blocks.map((block) => {
+  if (block.type === 'bullet_list' || block.type === 'numbered_list') return block.items.map((item) => inlineText(item.children)).join('\n')
+  return inlineText(block.children)
+}).join('\n')
+
 export const richTextToPlainText = (value: string | null | undefined): string => {
-  const document = parseRichText(value)
-  return document.blocks.map((block) => {
-    if (block.type === 'bullet_list' || block.type === 'numbered_list') return block.items.map((item) => inlineText(item.children)).join('\n')
-    return inlineText(block.children)
-  }).join('\n')
+  return documentToPlainText(parseRichText(value))
 }
 
 export const isRichTextEmpty = (value: string | null | undefined): boolean => !richTextToPlainText(value).trim()
@@ -220,30 +221,75 @@ const toolbarButton = (label: string, ariaLabel: string, onMouseDown: (event: Re
 
 export function RichTextEditor({ value, onChange, placeholder, ariaLabel, className = '', minHeight, maxLength }: { value: string; onChange: (value: string) => void; placeholder: string; ariaLabel: string; className?: string; minHeight?: number; maxLength?: number }) {
   const editorRef = useRef<HTMLDivElement>(null)
+  const syncFrameRef = useRef<number | null>(null)
+  const modelRef = useRef<RichTextDocument | null>(null)
+  const onChangeRef = useRef(onChange)
+  const maxLengthRef = useRef(maxLength)
   const [isFocused, setIsFocused] = useState(false)
   const [showSpacing, setShowSpacing] = useState(false)
   const model = parseRichText(value)
+  const isEmpty = !documentToPlainText(model).trim()
   const active = isFocused || showSpacing
   const editorStyle = { '--rich-line-height': model.lineSpacing === 'compact' ? 1.45 : model.lineSpacing === 'airy' ? 2 : 1.7, '--rich-paragraph-gap': model.paragraphSpacing === 'small' ? '.45rem' : model.paragraphSpacing === 'large' ? '1.35rem' : '.85rem' } as CSSProperties
+
+  useEffect(() => {
+    modelRef.current = model
+    onChangeRef.current = onChange
+    maxLengthRef.current = maxLength
+  }, [maxLength, model, onChange])
 
   useEffect(() => {
     if (!editorRef.current || isFocused) return
     editorRef.current.innerHTML = documentToEditorHtml(parseRichText(value))
   }, [isFocused, value])
 
+  useEffect(() => () => {
+    if (syncFrameRef.current !== null) window.cancelAnimationFrame(syncFrameRef.current)
+  }, [])
+
   const syncFromDom = () => {
     if (!editorRef.current) return
-    const nextDocument = serializeEditorDom(editorRef.current, model)
-    const limitedDocument = maxLength === undefined ? nextDocument : truncateDocument(nextDocument, maxLength)
+    const nextDocument = serializeEditorDom(editorRef.current, modelRef.current ?? model)
+    const limitedDocument = maxLengthRef.current === undefined ? nextDocument : truncateDocument(nextDocument, maxLengthRef.current)
     const nextValue = serializeRichText(limitedDocument)
     if (nextValue !== serializeRichText(nextDocument)) editorRef.current.innerHTML = documentToEditorHtml(limitedDocument)
-    onChange(nextValue)
+    onChangeRef.current(nextValue)
+  }
+
+  const scheduleSyncFromDom = () => {
+    if (syncFrameRef.current !== null) return
+    syncFrameRef.current = window.requestAnimationFrame(() => {
+      syncFrameRef.current = null
+      syncFromDom()
+    })
+  }
+
+  const flushScheduledSync = () => {
+    if (syncFrameRef.current !== null) {
+      window.cancelAnimationFrame(syncFrameRef.current)
+      syncFrameRef.current = null
+    }
+    syncFromDom()
   }
 
   const runCommand = (command: RichTextCommand) => {
     editorRef.current?.focus()
     if (command === 'quote') window.document.execCommand('formatBlock', false, 'blockquote')
     else window.document.execCommand(command, false)
+    syncFromDom()
+  }
+
+  const undo = (event: React.MouseEvent<HTMLButtonElement>) => {
+    preventToolbarBlur(event)
+    editorRef.current?.focus()
+    window.document.execCommand('undo', false)
+    syncFromDom()
+  }
+
+  const redo = (event: React.MouseEvent<HTMLButtonElement>) => {
+    preventToolbarBlur(event)
+    editorRef.current?.focus()
+    window.document.execCommand('redo', false)
     syncFromDom()
   }
 
@@ -280,10 +326,10 @@ export function RichTextEditor({ value, onChange, placeholder, ariaLabel, classN
       {toolbarButton('1. List', 'Danh sách đánh số', commandMouseDown('insertOrderedList'))}
       {toolbarButton('Quote', 'Trích dẫn', commandMouseDown('quote'))}
       <button className={`rich-text-spacing-trigger ${showSpacing ? 'is-active' : ''}`} type="button" title="Khoảng cách" aria-label="Khoảng cách" aria-expanded={showSpacing} onMouseDown={(event) => { preventToolbarBlur(event); setShowSpacing((current) => !current) }}>Spacing</button>
-      {toolbarButton('↶', 'Hoàn tác', (event) => { preventToolbarBlur(event); editorRef.current?.focus(); window.document.execCommand('undo', false); syncFromDom() })}
-      {toolbarButton('↷', 'Làm lại', (event) => { preventToolbarBlur(event); editorRef.current?.focus(); window.document.execCommand('redo', false); syncFromDom() })}
+      {toolbarButton('↶', 'Hoàn tác', undo)}
+      {toolbarButton('↷', 'Làm lại', redo)}
     </div>
     {showSpacing && <div className="rich-text-spacing-popover" role="dialog" aria-label="Thiết lập khoảng cách"><label><span>Line spacing</span><select value={model.lineSpacing} onChange={(event) => updateSpacing('lineSpacing', event.target.value)}><option value="compact">Compact</option><option value="normal">Normal</option><option value="airy">Airy</option></select></label><label><span>Paragraph spacing</span><select value={model.paragraphSpacing} onChange={(event) => updateSpacing('paragraphSpacing', event.target.value)}><option value="small">Small</option><option value="normal">Normal</option><option value="large">Large</option></select></label></div>}
-    <div ref={editorRef} className="rich-text-content" contentEditable role="textbox" aria-multiline="true" aria-label={ariaLabel} data-placeholder={placeholder} data-empty={isRichTextEmpty(value)} style={minHeight ? { minHeight } : undefined} suppressContentEditableWarning onFocus={() => setIsFocused(true)} onBlur={(event) => { syncFromDom(); if (event.relatedTarget instanceof Node && event.currentTarget.parentElement?.contains(event.relatedTarget)) return; setIsFocused(false); setShowSpacing(false) }} onInput={syncFromDom} onKeyDown={handleKeyDown} />
+    <div ref={editorRef} className="rich-text-content" contentEditable role="textbox" aria-multiline="true" aria-label={ariaLabel} data-placeholder={placeholder} data-empty={isEmpty} style={minHeight ? { minHeight } : undefined} suppressContentEditableWarning onFocus={() => setIsFocused(true)} onBlur={(event) => { flushScheduledSync(); if (event.relatedTarget instanceof Node && event.currentTarget.parentElement?.contains(event.relatedTarget)) return; setIsFocused(false); setShowSpacing(false) }} onInput={scheduleSyncFromDom} onKeyDown={handleKeyDown} />
   </div>
 }
