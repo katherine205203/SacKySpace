@@ -52,7 +52,7 @@ export function HomeHero({ displayName, streak, orbEntries, range, customRange, 
       </header>
 
       <div className="home-v2__hero-body">
-        <div className="home-v2__hero-orb"><HomeOrb entries={orbEntries} label="Color Orb Home" renderer={renderer} density={range === 'today' ? 'full' : 'simplified'} controlledActiveKey={legendActiveKey} onHoverKeyChange={setLegendHoverKey} onSelectKeyChange={setLegendSelectedKey} /></div>
+        <div className="home-v2__hero-orb"><HomeOrb entries={orbEntries} label="Color Orb Home" renderer={renderer} density={range === 'today' ? 'readable' : 'simplified'} controlledActiveKey={legendActiveKey} onHoverKeyChange={setLegendHoverKey} onSelectKeyChange={setLegendSelectedKey} /></div>
         <div className="home-v2__hero-summary">
           <p className="home-v2__eyebrow">{orbTitle}</p>
           <h3>{formatHomeRangeLabel(range, customRange)}</h3>

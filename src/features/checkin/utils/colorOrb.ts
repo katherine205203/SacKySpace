@@ -4,6 +4,7 @@ export type ColorOrbEntry = {
   color: string
   intensity: number
   presenceWeight?: number
+  showLabel?: boolean
   emotionId?: string
   label?: string
   labelEn?: string
@@ -332,7 +333,7 @@ const deriveVisualCenters = (field: OrbField): OrbRegion[] => {
     const center = centers[index]
     const labelX = center.weight > EPSILON ? clamp(center.x / center.weight, 20, 180) : region.seedX
     const labelY = center.weight > EPSILON ? clamp(center.y / center.weight, 20, 180) : region.seedY
-    return { ...region, labelX, labelY, showLabel: true }
+    return { ...region, labelX, labelY, showLabel: region.showLabel }
   })
 }
 
@@ -357,7 +358,7 @@ export const buildColorOrbField = (entries: readonly ColorOrbEntry[]): OrbField 
       labelX: seeds[index].x,
       labelY: seeds[index].y,
       labelColor: getLabelColor(entry.color),
-      showLabel: true,
+      showLabel: entry.showLabel ?? true,
       colorLab: hexToOklab(entry.color),
       colorRgb: hexToRgb(entry.color),
       influenceStrength: proportion ** 0.72,
@@ -412,6 +413,28 @@ export const getColorOrbLegend = (entries: readonly ColorOrbEntry[], limit = 3):
 
 export const SIMPLIFIED_ORB_MIN_PERCENTAGE = 6.5
 export const SIMPLIFIED_ORB_MAX_REGIONS = 6
+export const READABLE_ORB_MAX_LABELS = 3
+
+const mergeEntriesIntoVisible = (aggregated: readonly AggregatedEntry[], visible: readonly AggregatedEntry[]): ColorOrbEntry[] => {
+  const visualWeights = new Map(visible.map((entry) => [entry.key, entry.weight]))
+  const visibleByColor = visible.map((entry) => ({ entry, color: entry.color }))
+
+  aggregated.filter((entry) => !visualWeights.has(entry.key)).forEach((entry) => {
+    if (visualWeights.has(entry.key)) return
+    const nearest = visibleByColor.reduce((best, candidate) => colorDistance(entry.color, candidate.color) < colorDistance(entry.color, best.color) ? candidate : best, visibleByColor[0])
+    visualWeights.set(nearest.entry.key, (visualWeights.get(nearest.entry.key) ?? 0) + entry.weight)
+  })
+
+  return visible.map((entry) => ({
+    color: entry.color,
+    intensity: entry.intensity,
+    presenceWeight: visualWeights.get(entry.key) ?? entry.weight,
+    ...(entry.emotionId ? { emotionId: entry.emotionId } : {}),
+    ...(entry.label ? { label: entry.label } : {}),
+    ...(entry.labelEn ? { labelEn: entry.labelEn } : {}),
+    ...(entry.emoji ? { emoji: entry.emoji } : {}),
+  }))
+}
 
 /**
  * Reduces only the visual field for longer Home ranges. The source entries
@@ -431,23 +454,24 @@ export const simplifyColorOrbEntries = (
   const minimumVisibleCount = Math.min(4, candidates.length)
   const retained = candidates.filter((entry, index) => index < minimumVisibleCount || (entry.weight / totalWeight) * 100 >= minPercentage)
   const visible = retained.length ? retained : [candidates[0]]
-  const visualWeights = new Map(visible.map((entry) => [entry.key, entry.weight]))
-  const visibleByColor = visible.map((entry) => ({ entry, color: entry.color }))
+  return mergeEntriesIntoVisible(aggregated, visible)
+}
 
-  aggregated.filter((entry) => !visualWeights.has(entry.key)).forEach((entry) => {
-    if (visualWeights.has(entry.key)) return
-    const nearest = visibleByColor.reduce((best, candidate) => colorDistance(entry.color, candidate.color) < colorDistance(entry.color, best.color) ? candidate : best, visibleByColor[0])
-    visualWeights.set(nearest.entry.key, (visualWeights.get(nearest.entry.key) ?? 0) + entry.weight)
-  })
-
-  return visible.map((entry) => ({
-    color: entry.color,
-    intensity: entry.intensity,
-    presenceWeight: visualWeights.get(entry.key) ?? entry.weight,
-    ...(entry.emotionId ? { emotionId: entry.emotionId } : {}),
-    ...(entry.label ? { label: entry.label } : {}),
-    ...(entry.labelEn ? { labelEn: entry.labelEn } : {}),
-    ...(entry.emoji ? { emoji: entry.emoji } : {}),
+/**
+ * Keeps every color territory in a small-range orb while limiting inline
+ * percentage labels to the dominant territories. Smaller emotions remain
+ * interactive and expose their exact percentage through the tooltip.
+ */
+export const readableColorOrbEntries = (
+  entries: readonly ColorOrbEntry[],
+  maxLabels = READABLE_ORB_MAX_LABELS,
+): ColorOrbEntry[] => {
+  const aggregated = aggregateEntries(entries)
+  const safeMaxLabels = Math.max(1, Math.floor(maxLabels))
+  const labelKeys = new Set(aggregated.slice(0, safeMaxLabels).map((entry) => entry.key))
+  return entries.map((entry) => ({
+    ...entry,
+    showLabel: labelKeys.has(entry.emotionId ? `emotion:${entry.emotionId}` : `color:${normalizeHex(entry.color)}`),
   }))
 }
 
@@ -564,7 +588,7 @@ export const buildColorHaloRing = (entries: readonly ColorOrbEntry[]): ColorHalo
       transitionAfter,
       labelAngle: (start + end) / 2,
       labelColor: getLabelColor(entry.color),
-      showLabel: true,
+      showLabel: entry.showLabel ?? true,
       ...(entry.emotionId ? { emotionId: entry.emotionId } : {}),
       ...(entry.label ? { label: entry.label } : {}),
       ...(entry.labelEn ? { labelEn: entry.labelEn } : {}),

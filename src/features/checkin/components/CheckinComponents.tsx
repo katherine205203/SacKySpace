@@ -1,4 +1,5 @@
-import { memo, useEffect, useMemo, useRef, type CSSProperties, type ReactNode } from 'react'
+import { createPortal } from 'react-dom'
+import { memo, useEffect, useMemo, useRef, useState, type CSSProperties, type ReactNode } from 'react'
 import { NavLink } from 'react-router-dom'
 import type { CheckinDraft, Context, Emotion, EmotionFamily, Need, NeedGroup, ReferenceData } from '../types'
 import { ColorOrb } from './BlendedColorOrb'
@@ -25,9 +26,50 @@ export function StepProgress({ active }: { active: 'emotion' | 'secondary' | 'ne
   return <nav className="checkin-step-progress" aria-label="Tiến trình Check-in">{steps.map((step, index) => <span className={`checkin-step-progress__item ${step.id === active ? 'is-current' : ''} ${activeIndex >= 0 && index < activeIndex ? 'is-complete' : ''}`} key={step.id}><span className="checkin-step-progress__marker" aria-hidden="true">{activeIndex >= 0 && index < activeIndex ? '✓' : index + 1}</span><span>{step.label}</span></span>)}</nav>
 }
 
-export function EmotionCard({ emotion, selected, disabled, onClick, multi = false }: { emotion: Emotion; selected: boolean; disabled?: boolean; onClick: () => void; multi?: boolean }) {
+export function EmotionCard({ emotion, selected, disabled, onClick, multi = false, showTooltip = false }: { emotion: Emotion; selected: boolean; disabled?: boolean; onClick: () => void; multi?: boolean; showTooltip?: boolean }) {
   const style = { '--semantic-color': emotion.color_hex } as CSSProperties
-  return <button className={`inventory-card selection-tile ${selected ? 'is-selected' : ''} ${disabled ? 'is-disabled' : ''}`} style={style} title={emotion.description_vn} type="button" disabled={disabled} aria-pressed={selected} onClick={onClick}><span className="inventory-card__emoji" aria-hidden="true">{emotion.emoji}</span><strong>{emotion.emotion_name_vn}</strong><span>{emotion.emotion_name_en}</span>{selected && <span className="selection-check" aria-label={multi ? 'Đã chọn cảm xúc phụ' : 'Đã chọn cảm xúc chính'}>✓</span>}</button>
+  const cardRef = useRef<HTMLButtonElement>(null)
+  const tooltipRef = useRef<HTMLDivElement>(null)
+  const [isHovered, setIsHovered] = useState(false)
+  const [isFocused, setIsFocused] = useState(false)
+  const [tooltipStyle, setTooltipStyle] = useState<CSSProperties>({})
+  const tooltipVisible = showTooltip && (isHovered || isFocused)
+  const tooltipId = `emotion-card-tooltip-${emotion.emotion_id}`
+
+  useEffect(() => {
+    if (!tooltipVisible) return
+
+    const reposition = () => {
+      const card = cardRef.current
+      const tooltip = tooltipRef.current
+      if (!card || !tooltip) return
+
+      const cardRect = card.getBoundingClientRect()
+      const tooltipRect = tooltip.getBoundingClientRect()
+      const edgeGap = 12
+      const gap = 10
+      const left = Math.max(edgeGap, Math.min(cardRect.left + (cardRect.width - tooltipRect.width) / 2, window.innerWidth - tooltipRect.width - edgeGap))
+      const fitsBelow = cardRect.bottom + gap + tooltipRect.height <= window.innerHeight - edgeGap
+      const top = fitsBelow ? cardRect.bottom + gap : Math.max(edgeGap, cardRect.top - tooltipRect.height - gap)
+
+      setTooltipStyle({ left, top, width: tooltipRect.width })
+    }
+
+    reposition()
+    const frame = window.requestAnimationFrame(reposition)
+    window.addEventListener('resize', reposition)
+    window.addEventListener('scroll', reposition, true)
+    return () => {
+      window.cancelAnimationFrame(frame)
+      window.removeEventListener('resize', reposition)
+      window.removeEventListener('scroll', reposition, true)
+    }
+  }, [emotion.emotion_id, tooltipVisible])
+
+  const card = <button ref={showTooltip ? cardRef : undefined} className={`inventory-card selection-tile ${selected ? 'is-selected' : ''} ${disabled ? 'is-disabled' : ''}`} style={style} title={showTooltip ? undefined : emotion.description_vn} type="button" disabled={disabled} aria-pressed={selected} aria-describedby={tooltipVisible ? tooltipId : undefined} onFocus={() => setIsFocused(true)} onBlur={() => { setIsFocused(false); if (!isHovered) setTooltipStyle({}) }} onClick={onClick}><span className="inventory-card__emoji" aria-hidden="true">{emotion.emoji}</span><strong>{emotion.emotion_name_vn}</strong><span>{emotion.emotion_name_en}</span>{selected && <span className="selection-check" aria-label={multi ? 'Đã chọn cảm xúc phụ' : 'Đã chọn cảm xúc chính'}>✓</span>}</button>
+
+  if (!showTooltip) return card
+  return <div className="inventory-card-wrap emotion-card-wrap" onMouseEnter={() => setIsHovered(true)} onMouseLeave={() => { setIsHovered(false); if (!isFocused) setTooltipStyle({}) }}>{card}{tooltipVisible && typeof document !== 'undefined' && createPortal(<div ref={tooltipRef} id={tooltipId} className="emotion-card-tooltip" style={tooltipStyle} data-positioned={tooltipStyle.left !== undefined ? 'true' : undefined} role="tooltip"><span className="emotion-card-tooltip__emoji" style={{ background: `color-mix(in srgb, ${emotion.color_hex} 18%, white)` }} aria-hidden="true">{emotion.emoji}</span><div><strong>{emotion.emotion_name_vn}</strong><small>{emotion.emotion_name_en}</small><p>{emotion.description_vn}</p>{emotion.description_en && <p lang="en">{emotion.description_en}</p>}</div></div>, document.body)}</div>
 }
 
 export function NeedCard({ need, selected, disabled, onClick, onInfo }: { need: Need; selected: boolean; disabled?: boolean; onClick: () => void; onInfo?: () => void }) {

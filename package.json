@@ -9,7 +9,8 @@
     "lint": "oxlint",
     "preview": "vite preview",
     "test": "vitest run",
-    "generate:checkin-seed": "node scripts/generate-checkin-seed.mjs"
+    "generate:checkin-seed": "node scripts/generate-checkin-seed.mjs",
+    "generate:emotion-reference-migration": "node scripts/generate-emotion-reference-migration.mjs"
   },
   "dependencies": {
     "@capacitor/core": "^8.5.1",

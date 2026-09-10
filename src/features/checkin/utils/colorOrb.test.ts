@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { buildColorHaloRing, buildColorOrbField, buildColorOrbRegionsFromColors, colorDistance, getColorOrbLegend, intensityToPresenceWeight, ORB_RADIUS, ORB_VIEW_SIZE, sampleColorOrbField, simplifyColorOrbEntries } from './colorOrb'
+import { buildColorHaloRing, buildColorOrbField, buildColorOrbRegionsFromColors, colorDistance, getColorOrbLegend, intensityToPresenceWeight, ORB_RADIUS, ORB_VIEW_SIZE, readableColorOrbEntries, sampleColorOrbField, simplifyColorOrbEntries } from './colorOrb'
 
 describe('Color Orb regions', () => {
   it('maps stored intensity to the non-linear presence weights', () => {
@@ -147,6 +147,23 @@ describe('Color Orb regions', () => {
     expect(simplified.reduce((sum, entry) => sum + (entry.presenceWeight ?? 0), 0)).toBe(97)
     expect(simplified.find((entry) => entry.emotionId === 'orange')?.presenceWeight).toBeGreaterThan(40)
     expect(simplified.find((entry) => entry.emotionId === 'violet')?.presenceWeight).toBeGreaterThan(20)
+  })
+
+  it('keeps secondary color territories while limiting inline labels', () => {
+    const readable = readableColorOrbEntries([
+      { color: '#FFB703', intensity: 1, presenceWeight: 30, emotionId: 'joy', label: 'Jovial' },
+      { color: '#6C757D', intensity: 1, presenceWeight: 24, emotionId: 'bored', label: 'Mất động lực' },
+      { color: '#34C3B8', intensity: 1, presenceWeight: 18, emotionId: 'free', label: 'Phóng khoáng' },
+      { color: '#FF6B8A', intensity: 1, presenceWeight: 8, emotionId: 'close' },
+      { color: '#3B82F6', intensity: 1, presenceWeight: 7, emotionId: 'tired' },
+      { color: '#E56A96', intensity: 1, presenceWeight: 5, emotionId: 'sad' },
+    ])
+    expect(readable).toHaveLength(6)
+    expect(readable.filter((entry) => entry.showLabel).map((entry) => entry.emotionId)).toEqual(['joy', 'bored', 'free'])
+    const field = buildColorOrbField(readable)
+    expect(field.regions).toHaveLength(6)
+    expect(field.regions.filter((region) => region.showLabel)).toHaveLength(3)
+    expect(field.totalWeight).toBe(92)
   })
 })
 

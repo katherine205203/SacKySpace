@@ -1,9 +1,9 @@
 import { useEffect, useId, useLayoutEffect, useMemo, useRef, useState, type CSSProperties, type KeyboardEvent as ReactKeyboardEvent, type PointerEvent as ReactPointerEvent } from 'react'
 import { ColorOrb as BlendedColorOrb } from '../../checkin/components/BlendedColorOrb'
-import { buildColorHaloRing, simplifyColorOrbEntries, type ColorOrbEntry, type ColorHaloSegment } from '../../checkin/utils/colorOrb'
+import { buildColorHaloRing, readableColorOrbEntries, simplifyColorOrbEntries, type ColorOrbEntry, type ColorHaloSegment } from '../../checkin/utils/colorOrb'
 
 export type HomeOrbRenderer = 'CHECKIN_BLEND_ORB' | 'HALO_RING'
-export type HomeOrbDensity = 'full' | 'simplified'
+export type HomeOrbDensity = 'full' | 'simplified' | 'readable'
 
 export const HOME_ORB_RENDERER: HomeOrbRenderer = 'CHECKIN_BLEND_ORB'
 
@@ -20,7 +20,10 @@ type HomeOrbProps = {
 
 export function HomeOrb(props: HomeOrbProps) {
   const { renderer = HOME_ORB_RENDERER, density = 'full', size = 'large', entries, ...orbProps } = props
-  const visualEntries = useMemo(() => density === 'simplified' ? simplifyColorOrbEntries(entries) : entries, [density, entries])
+  const visualEntries = useMemo(() => {
+    if (density === 'readable') return readableColorOrbEntries(entries)
+    return density === 'simplified' ? simplifyColorOrbEntries(entries) : entries
+  }, [density, entries])
   const sizedOrbProps = { ...orbProps, entries: visualEntries, size }
   return renderer === 'CHECKIN_BLEND_ORB' ? <BlendedColorOrb {...sizedOrbProps} /> : <HaloRingOrb {...sizedOrbProps} />
 }
