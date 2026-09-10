@@ -332,8 +332,7 @@ const deriveVisualCenters = (field: OrbField): OrbRegion[] => {
     const center = centers[index]
     const labelX = center.weight > EPSILON ? clamp(center.x / center.weight, 20, 180) : region.seedX
     const labelY = center.weight > EPSILON ? clamp(center.y / center.weight, 20, 180) : region.seedY
-    const visibleArea = center.weight / (sampleSize * sampleSize)
-    return { ...region, labelX, labelY, showLabel: region.percentage >= 7.5 && visibleArea >= 0.035 }
+    return { ...region, labelX, labelY, showLabel: true }
   })
 }
 
@@ -358,7 +357,7 @@ export const buildColorOrbField = (entries: readonly ColorOrbEntry[]): OrbField 
       labelX: seeds[index].x,
       labelY: seeds[index].y,
       labelColor: getLabelColor(entry.color),
-      showLabel: percentage >= 7.5,
+      showLabel: true,
       colorLab: hexToOklab(entry.color),
       colorRgb: hexToRgb(entry.color),
       influenceStrength: proportion ** 0.72,
@@ -565,7 +564,7 @@ export const buildColorHaloRing = (entries: readonly ColorOrbEntry[]): ColorHalo
       transitionAfter,
       labelAngle: (start + end) / 2,
       labelColor: getLabelColor(entry.color),
-      showLabel: percentage >= 12.5,
+      showLabel: true,
       ...(entry.emotionId ? { emotionId: entry.emotionId } : {}),
       ...(entry.label ? { label: entry.label } : {}),
       ...(entry.labelEn ? { labelEn: entry.labelEn } : {}),

@@ -54,6 +54,20 @@
 .admin-capability-grid strong { font-size: .73rem; }
 .admin-capability-grid small { color: var(--color-text-muted); font-size: .59rem; }
 .admin-data-studio, .admin-overview, .admin-asset-studio, .admin-recovery-layout { display: grid; gap: 1rem; }
+.admin-export-panel { background: linear-gradient(135deg, rgba(255,255,255,.96), rgba(241,237,255,.72)); }
+.admin-export-toolbar { display: flex; flex-wrap: wrap; align-items: end; gap: .65rem; margin-bottom: .8rem; }
+.admin-export-selection-actions { display: flex; align-items: center; gap: .65rem; margin-right: auto; }
+.admin-export-format { display: grid; gap: .25rem; min-width: 14rem; }
+.admin-export-format span { color: var(--color-text-muted); font-size: .62rem; font-weight: 750; }
+.admin-export-format select { min-height: 2.35rem; padding: .4rem .55rem; border: 1px solid var(--color-border); border-radius: .7rem; outline: 0; background: #fff; color: var(--color-text); font-size: .72rem; }
+.admin-export-format select:focus { border-color: var(--color-violet); box-shadow: 0 0 0 3px var(--color-violet-pale); }
+.admin-export-options { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: .5rem; }
+.admin-export-option { display: flex; align-items: flex-start; gap: .5rem; min-width: 0; padding: .6rem .65rem; border: 1px solid var(--color-border); border-radius: .7rem; background: rgba(255,255,255,.82); cursor: pointer; }
+.admin-export-option:hover, .admin-export-option.is-selected { border-color: #bda9ed; background: var(--color-surface-violet); }
+.admin-export-option input { width: 1rem; min-width: 1rem; height: 1rem; margin: .1rem 0 0; accent-color: var(--color-violet); }
+.admin-export-option span { display: grid; gap: .15rem; min-width: 0; }
+.admin-export-option strong { overflow: hidden; font-size: .68rem; text-overflow: ellipsis; white-space: nowrap; }
+.admin-export-option small { overflow: hidden; color: var(--color-text-soft); font-size: .57rem; text-overflow: ellipsis; white-space: nowrap; }
 .admin-entity-tabs { display: flex; flex-wrap: wrap; gap: .45rem; }
 .admin-entity-tabs button { display: grid; min-width: 9rem; gap: .15rem; padding: .6rem .7rem; border: 1px solid var(--color-border); border-radius: .75rem; background: #fff; color: var(--color-text); text-align: left; }
 .admin-entity-tabs button span { color: var(--color-text-soft); font-size: .55rem; }
@@ -165,7 +179,9 @@
 .admin-audit-table tbody tr { cursor: default; }
 @media (max-width: 72rem) { .admin-asset-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); } .admin-capability-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
 @media (max-width: 58rem) { .admin-header, .admin-toolbar { align-items: stretch; flex-direction: column; } .admin-header__status { width: fit-content; } .admin-hero-grid, .admin-section-grid, .admin-data-layout, .admin-rules-layout { grid-template-columns: 1fr; } .admin-drawer { position: static; } .admin-asset-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 58rem) { .admin-export-options { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
 @media (max-width: 38rem) { .admin-page { padding: 1rem .8rem 1.5rem; } .admin-view-tabs button { flex: 1 1 auto; } .admin-mode-switch { align-self: start; } .admin-hero-card { align-items: start; flex-direction: column; } .admin-hero-orb { width: 5rem; height: 5rem; font-size: 1.5rem; } .admin-metric-grid, .admin-capability-grid, .admin-recovery-cards, .admin-asset-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } .admin-quick-grid { grid-template-columns: 1fr; } .admin-config-compare { grid-template-columns: 1fr; } .admin-compare-arrow { transform: rotate(90deg); } .admin-version-row { grid-template-columns: 2rem minmax(0, 1fr) auto; } .admin-version-row small { grid-column: 2; } .admin-version-row .text-button { grid-column: 3; grid-row: 1 / span 2; } }
+@media (max-width: 38rem) { .admin-export-toolbar { align-items: stretch; } .admin-export-selection-actions { margin-right: 0; } .admin-export-format { min-width: 0; width: 100%; } .admin-export-toolbar > .button { width: 100%; } .admin-export-options { grid-template-columns: 1fr; } }
 
 @media (max-width: 58rem) {
   .admin-page { width: 100%; padding: 1rem .9rem calc(1rem + env(safe-area-inset-bottom)); }

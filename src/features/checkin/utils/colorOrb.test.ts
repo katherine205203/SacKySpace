@@ -190,7 +190,7 @@ describe('Color Halo Ring', () => {
     expect(positions.every((position) => position >= 0 && position <= 100)).toBe(true)
   })
 
-  it('labels only the larger halo arcs', () => {
+  it('labels every halo arc with its percentage', () => {
     const ring = buildColorHaloRing([
       { color: '#743CFF', intensity: 1, presenceWeight: 40, emotionId: 'forty' },
       { color: '#FFB703', intensity: 1, presenceWeight: 25, emotionId: 'twenty-five' },
@@ -199,8 +199,8 @@ describe('Color Halo Ring', () => {
       { color: '#38BDF8', intensity: 1, presenceWeight: 5, emotionId: 'five' },
     ])
     const labelled = ring.segments.filter((segment) => segment.showLabel).map((segment) => segment.emotionId)
-    expect(labelled).toHaveLength(3)
-    expect(labelled).toEqual(expect.arrayContaining(['forty', 'twenty-five', 'nineteen']))
+    expect(labelled).toHaveLength(5)
+    expect(labelled).toEqual(expect.arrayContaining(['forty', 'twenty-five', 'nineteen', 'eleven', 'five']))
   })
 
   it('gives perceptually similar neighbors a wider blend transition', () => {

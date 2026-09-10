@@ -3,7 +3,7 @@ import { clearReferenceCache } from '../../checkin/services/referenceRepository'
 import { clearRuntimeConfigCache } from '../../../services/runtimeConfig'
 import { updateUiContentSnapshot } from '../../../services/uiContent'
 import { getAdminEntity } from '../registry'
-import type { AdminAsset, AdminAuditLog, AdminConfigVersion, AdminEntityKey, AdminModuleCount, AdminReferenceRow, AdminRuntimeConfig, AdminUiContent } from '../types'
+import type { AdminAsset, AdminAuditLog, AdminConfigVersion, AdminEntityKey, AdminExportDataset, AdminExportSelection, AdminModuleCount, AdminReferenceRow, AdminRuntimeConfig, AdminUiContent } from '../types'
 
 const safeMessage = (reason: unknown): string => {
   const message = reason instanceof Error ? reason.message : typeof reason === 'object' && reason !== null && 'message' in reason && typeof reason.message === 'string' ? reason.message : ''
@@ -282,6 +282,35 @@ export const listAdminAuditLogs = async (): Promise<AdminAuditLog[]> => {
   const { data, error } = await supabase.from('admin_audit_logs').select('id, created_at, domain, action, entity_type, target_id, before_json, after_json, version').order('created_at', { ascending: false }).limit(120)
   if (error) throw new Error(safeMessage(error))
   return ((data ?? []) as Record<string, unknown>[]).map(mapAudit)
+}
+
+export const exportAdminData = async (selection: readonly AdminExportSelection[]): Promise<AdminExportDataset[]> => {
+  await claimAdminOwner()
+  const uniqueSelection = [...new Set(selection)]
+  if (!uniqueSelection.length) throw new Error('Hãy chọn ít nhất một dataset để export.')
+  const datasets = await Promise.all(uniqueSelection.map(async (key): Promise<AdminExportDataset> => {
+    if (key === 'audit_logs') {
+      const { data, error } = await supabase.from('admin_audit_logs').select('*').order('created_at', { ascending: true }).limit(10000)
+      if (error) throw new Error(safeMessage(error))
+      return {
+        key,
+        label: 'Audit Log',
+        table: 'admin_audit_logs',
+        columns: ['id', 'created_at', 'domain', 'action', 'entity_type', 'target_id', 'before_json', 'after_json', 'version', 'user_id'],
+        rows: (data ?? []) as AdminReferenceRow[],
+      }
+    }
+    const definition = getAdminEntity(key)
+    return {
+      key,
+      label: definition.label,
+      table: definition.table,
+      columns: [definition.idField, ...definition.fields.map((field) => field.key)],
+      rows: await listReferenceRows(key),
+    }
+  }))
+  await writeAudit('data', 'export', 'admin_data', null, null, { datasets: datasets.map(({ key, label, table, rows }) => ({ key, label, table, rowCount: rows.length })) }, null)
+  return datasets
 }
 
 export const exportUserData = async (): Promise<Record<string, unknown>> => {

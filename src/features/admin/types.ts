@@ -37,6 +37,16 @@ export type AdminEntityDefinition = {
 
 export type AdminReferenceRow = Record<string, unknown>
 
+export type AdminExportSelection = AdminEntityKey | 'audit_logs'
+
+export type AdminExportDataset = {
+  key: AdminExportSelection
+  label: string
+  table: string
+  columns: string[]
+  rows: AdminReferenceRow[]
+}
+
 export type AdminRuntimeConfig = {
   configKey: string
   module: string
