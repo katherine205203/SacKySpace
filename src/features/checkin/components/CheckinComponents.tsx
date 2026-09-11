@@ -28,31 +28,31 @@ export function StepProgress({ active }: { active: 'emotion' | 'secondary' | 'ne
 
 export function EmotionCard({ emotion, selected, disabled, onClick, multi = false, showTooltip = false }: { emotion: Emotion; selected: boolean; disabled?: boolean; onClick: () => void; multi?: boolean; showTooltip?: boolean }) {
   const style = { '--semantic-color': emotion.color_hex } as CSSProperties
-  const cardRef = useRef<HTMLButtonElement>(null)
+  const infoRef = useRef<HTMLButtonElement>(null)
   const tooltipRef = useRef<HTMLDivElement>(null)
-  const [isHovered, setIsHovered] = useState(false)
-  const [isFocused, setIsFocused] = useState(false)
+  const [isInfoHovered, setIsInfoHovered] = useState(false)
+  const [isInfoFocused, setIsInfoFocused] = useState(false)
   const [tooltipStyle, setTooltipStyle] = useState<CSSProperties>({})
-  const tooltipVisible = showTooltip && (isHovered || isFocused)
+  const tooltipVisible = showTooltip && (isInfoHovered || isInfoFocused)
   const tooltipId = `emotion-card-tooltip-${emotion.emotion_id}`
 
   useEffect(() => {
     if (!tooltipVisible) return
 
     const reposition = () => {
-      const card = cardRef.current
+      const info = infoRef.current
       const tooltip = tooltipRef.current
-      if (!card || !tooltip) return
+      if (!info || !tooltip) return
 
-      const cardRect = card.getBoundingClientRect()
+      const infoRect = info.getBoundingClientRect()
       const tooltipRect = tooltip.getBoundingClientRect()
       const edgeGap = 12
       const gap = 10
-      const left = Math.max(edgeGap, Math.min(cardRect.left + (cardRect.width - tooltipRect.width) / 2, window.innerWidth - tooltipRect.width - edgeGap))
-      const fitsBelow = cardRect.bottom + gap + tooltipRect.height <= window.innerHeight - edgeGap
-      const top = fitsBelow ? cardRect.bottom + gap : Math.max(edgeGap, cardRect.top - tooltipRect.height - gap)
+      const left = Math.max(edgeGap, Math.min(infoRect.left + (infoRect.width - tooltipRect.width) / 2, window.innerWidth - tooltipRect.width - edgeGap))
+      const fitsBelow = infoRect.bottom + gap + tooltipRect.height <= window.innerHeight - edgeGap
+      const top = fitsBelow ? infoRect.bottom + gap : Math.max(edgeGap, infoRect.top - tooltipRect.height - gap)
 
-      setTooltipStyle({ left, top, width: tooltipRect.width })
+      setTooltipStyle({ left, top })
     }
 
     reposition()
@@ -66,10 +66,10 @@ export function EmotionCard({ emotion, selected, disabled, onClick, multi = fals
     }
   }, [emotion.emotion_id, tooltipVisible])
 
-  const card = <button ref={showTooltip ? cardRef : undefined} className={`inventory-card selection-tile ${selected ? 'is-selected' : ''} ${disabled ? 'is-disabled' : ''}`} style={style} title={showTooltip ? undefined : emotion.description_vn} type="button" disabled={disabled} aria-pressed={selected} aria-describedby={tooltipVisible ? tooltipId : undefined} onFocus={() => setIsFocused(true)} onBlur={() => { setIsFocused(false); if (!isHovered) setTooltipStyle({}) }} onClick={onClick}><span className="inventory-card__emoji" aria-hidden="true">{emotion.emoji}</span><strong>{emotion.emotion_name_vn}</strong><span>{emotion.emotion_name_en}</span>{selected && <span className="selection-check" aria-label={multi ? 'Đã chọn cảm xúc phụ' : 'Đã chọn cảm xúc chính'}>✓</span>}</button>
+  const card = <button className={`inventory-card selection-tile ${selected ? 'is-selected' : ''} ${disabled ? 'is-disabled' : ''}`} style={style} title={showTooltip ? undefined : emotion.description_vn} type="button" disabled={disabled} aria-pressed={selected} onClick={onClick}><span className="inventory-card__emoji" aria-hidden="true">{emotion.emoji}</span><strong>{emotion.emotion_name_vn}</strong><span>{emotion.emotion_name_en}</span>{selected && <span className="selection-check" aria-label={multi ? 'Đã chọn cảm xúc phụ' : 'Đã chọn cảm xúc chính'}>✓</span>}</button>
 
   if (!showTooltip) return card
-  return <div className="inventory-card-wrap emotion-card-wrap" onMouseEnter={() => setIsHovered(true)} onMouseLeave={() => { setIsHovered(false); if (!isFocused) setTooltipStyle({}) }}>{card}{tooltipVisible && typeof document !== 'undefined' && createPortal(<div ref={tooltipRef} id={tooltipId} className="emotion-card-tooltip" style={tooltipStyle} data-positioned={tooltipStyle.left !== undefined ? 'true' : undefined} role="tooltip"><span className="emotion-card-tooltip__emoji" style={{ background: `color-mix(in srgb, ${emotion.color_hex} 18%, white)` }} aria-hidden="true">{emotion.emoji}</span><div><strong>{emotion.emotion_name_vn}</strong><small>{emotion.emotion_name_en}</small><p>{emotion.description_vn}</p>{emotion.description_en && <p lang="en">{emotion.description_en}</p>}</div></div>, document.body)}</div>
+  return <div className="inventory-card-wrap emotion-card-wrap">{card}<button ref={infoRef} className="inventory-info emotion-card-info" type="button" aria-label={`Xem mô tả: ${emotion.emotion_name_vn}`} aria-describedby={tooltipVisible ? tooltipId : undefined} onMouseEnter={() => setIsInfoHovered(true)} onMouseLeave={() => { setIsInfoHovered(false); if (!isInfoFocused) setTooltipStyle({}) }} onFocus={() => setIsInfoFocused(true)} onBlur={() => { setIsInfoFocused(false); if (!isInfoHovered) setTooltipStyle({}) }} onClick={(event) => event.preventDefault()}>ⓘ</button>{tooltipVisible && typeof document !== 'undefined' && createPortal(<div ref={tooltipRef} id={tooltipId} className="emotion-card-tooltip" style={tooltipStyle} data-positioned={tooltipStyle.left !== undefined ? 'true' : undefined} role="tooltip"><span className="emotion-card-tooltip__emoji" style={{ background: `color-mix(in srgb, ${emotion.color_hex} 18%, white)` }} aria-hidden="true">{emotion.emoji}</span><div><strong>{emotion.emotion_name_vn}</strong><small>{emotion.emotion_name_en}</small><p>{emotion.description_vn}</p>{emotion.description_en && <p lang="en">{emotion.description_en}</p>}</div></div>, document.body)}</div>
 }
 
 export function NeedCard({ need, selected, disabled, onClick, onInfo }: { need: Need; selected: boolean; disabled?: boolean; onClick: () => void; onInfo?: () => void }) {
