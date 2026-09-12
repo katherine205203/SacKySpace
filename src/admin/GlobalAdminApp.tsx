@@ -5,6 +5,9 @@ import { ADMIN_ENTITY_REGISTRY, getAdminEntity } from '../features/admin/registr
 import type { AdminEntityKey, AdminField, AdminReferenceRow } from '../features/admin/types'
 import {
   adminErrorMessage,
+  createCanonicalRow,
+  deactivateCanonicalRow,
+  deleteCanonicalRow,
   executeGlobalAdminOperation,
   getGlobalAdminIdentity,
   getGlobalAdminOverview,
@@ -51,6 +54,14 @@ const dateFormatter = new Intl.DateTimeFormat('vi-VN', { dateStyle: 'medium', ti
 const formatDate = (value: string | null) => value ? dateFormatter.format(new Date(value)) : 'Chưa hoạt động'
 const compactNumber = (value: number) => new Intl.NumberFormat('vi-VN', { notation: value >= 1_000 ? 'compact' : 'standard', maximumFractionDigits: 1 }).format(value)
 const initials = (email: string) => email.split('@')[0].slice(0, 2).toUpperCase() || 'SK'
+const createBlankCanonicalRow = (entityKey: AdminEntityKey): AdminReferenceRow => {
+  const definition = getAdminEntity(entityKey)
+  const values = definition.fields.map((field) => [
+    field.key,
+    field.type === 'boolean' ? true : field.type === 'number' ? 0 : field.key === 'palette' ? '[]' : field.key === 'config' ? '{}' : field.type === 'color' ? '#743cff' : '',
+  ])
+  return Object.fromEntries([[definition.idField, `${entityKey.replace(/_/g, '-')}-${Date.now().toString(36)}`], ...values])
+}
 
 export function GlobalAdminApp() {
   const [session, setSession] = useState<Session | null>(null)
@@ -232,11 +243,14 @@ function CanonicalView({ onNotice, onError }: { onNotice: (message: string | nul
   const [entityKey, setEntityKey] = useState<AdminEntityKey>('emotion_families')
   const [rows, setRows] = useState<AdminReferenceRow[]>([])
   const [selectedId, setSelectedId] = useState<string | null>(null)
+  const [creating, setCreating] = useState(false)
+  const [newRow, setNewRow] = useState<AdminReferenceRow | null>(null)
   const [loading, setLoading] = useState(true)
   const [search, setSearch] = useState('')
   const [saving, setSaving] = useState(false)
   const definition = getAdminEntity(entityKey)
   const selected = rows.find((row) => String(row[definition.idField]) === selectedId) ?? rows[0] ?? null
+  const editorRow = creating ? newRow : selected
 
   const load = useCallback(async (nextKey: AdminEntityKey) => {
     setLoading(true)
@@ -246,6 +260,8 @@ function CanonicalView({ onNotice, onError }: { onNotice: (message: string | nul
       const nextDefinition = getAdminEntity(nextKey)
       setRows(nextRows)
       setSelectedId(nextRows.length ? String(nextRows[0][nextDefinition.idField]) : null)
+      setCreating(false)
+      setNewRow(null)
     } catch (reason) {
       onError(adminErrorMessage(reason))
     } finally {
@@ -258,13 +274,60 @@ function CanonicalView({ onNotice, onError }: { onNotice: (message: string | nul
     return () => window.clearTimeout(request)
   }, [entityKey, load])
   const filteredRows = rows.filter((row) => String(row[definition.displayField] ?? '').toLocaleLowerCase().includes(search.toLocaleLowerCase()) || String(row[definition.idField]).toLocaleLowerCase().includes(search.toLocaleLowerCase()))
+  const startCreate = () => {
+    setCreating(true)
+    setNewRow(createBlankCanonicalRow(entityKey))
+    setSelectedId(null)
+    onError(null)
+    onNotice(null)
+  }
+  const cancelCreate = () => {
+    setCreating(false)
+    setNewRow(null)
+    setSelectedId(rows.length ? String(rows[0][definition.idField]) : null)
+  }
   const save = async (patch: AdminReferenceRow) => {
-    if (!selected) return
+    if (!creating && !selected) return
     setSaving(true)
     onError(null)
     try {
-      await saveCanonicalRow(entityKey, String(selected[definition.idField]), patch)
-      onNotice('Đã lưu thay đổi canonical. User chưa override sẽ nhận dữ liệu chuẩn mới.')
+      if (creating) {
+        await createCanonicalRow(entityKey, patch)
+        onNotice(`Đã thêm ${definition.label.toLocaleLowerCase()}. User chưa override sẽ nhận dữ liệu chuẩn mới.`)
+      } else {
+        await saveCanonicalRow(entityKey, String(selected?.[definition.idField]), patch)
+        onNotice('Đã lưu thay đổi canonical. User chưa override sẽ nhận dữ liệu chuẩn mới.')
+      }
+      setCreating(false)
+      setNewRow(null)
+      await load(entityKey)
+    } catch (reason) {
+      onError(adminErrorMessage(reason))
+    } finally {
+      setSaving(false)
+    }
+  }
+  const deactivate = async () => {
+    if (!selected || !window.confirm(`Deactivate ${String(selected[definition.displayField])}? Item sẽ ngừng xuất hiện trong lựa chọn mới nhưng giữ nguyên lịch sử.`)) return
+    setSaving(true)
+    onError(null)
+    try {
+      await deactivateCanonicalRow(entityKey, String(selected[definition.idField]))
+      onNotice('Đã deactivate canonical. Lịch sử cũ vẫn được bảo toàn.')
+      await load(entityKey)
+    } catch (reason) {
+      onError(adminErrorMessage(reason))
+    } finally {
+      setSaving(false)
+    }
+  }
+  const remove = async () => {
+    if (!selected || !window.confirm(`Xoá vĩnh viễn ${String(selected[definition.displayField])}? Chỉ được xoá khi chưa có record tham chiếu.`)) return
+    setSaving(true)
+    onError(null)
+    try {
+      await deleteCanonicalRow(entityKey, String(selected[definition.idField]))
+      onNotice('Đã xoá canonical.')
       await load(entityKey)
     } catch (reason) {
       onError(adminErrorMessage(reason))
@@ -274,10 +337,10 @@ function CanonicalView({ onNotice, onError }: { onNotice: (message: string | nul
   }
 
   return <div className="global-admin-page-stack">
-    <section className="global-admin-catalog-tabs">{ADMIN_ENTITY_REGISTRY.map((entity) => <button key={entity.key} className={entity.key === entityKey ? 'is-active' : ''} type="button" onClick={() => { setLoading(true); setEntityKey(entity.key) }}><span>{catalogIcon(entity.key)}</span><strong>{entity.label}</strong><small>{entity.module}</small></button>)}</section>
+    <section className="global-admin-catalog-tabs">{ADMIN_ENTITY_REGISTRY.map((entity) => <button key={entity.key} className={entity.key === entityKey ? 'is-active' : ''} type="button" onClick={() => { setLoading(true); setCreating(false); setNewRow(null); setEntityKey(entity.key) }}><span>{catalogIcon(entity.key)}</span><strong>{entity.label}</strong><small>{entity.module}</small></button>)}</section>
     <section className="global-admin-canonical-layout">
-      <article className="global-admin-panel global-admin-canonical-table"><div className="global-admin-filter-inline"><label className="global-admin-search"><span>⌕</span><input value={search} onChange={(event) => setSearch(event.target.value)} placeholder={`Tìm trong ${definition.label.toLocaleLowerCase()}…`} /></label><span>{filteredRows.length} records</span></div>{loading ? <p className="global-admin-empty">Đang tải canonical data…</p> : <div className="global-admin-table-scroll"><table><thead><tr><th>Tên</th><th>ID</th><th>Trạng thái</th><th>Thứ tự</th></tr></thead><tbody>{filteredRows.map((row) => { const id = String(row[definition.idField]); return <tr key={id} className={id === String(selected?.[definition.idField] ?? '') ? 'is-selected' : ''} onClick={() => setSelectedId(id)}><td><span className="global-admin-canonical-name"><i>{String(row.emoji ?? catalogIcon(entityKey))}</i><strong>{String(row[definition.displayField] ?? id)}</strong></span></td><td><code>{id}</code></td><td><StatusPill status={row[definition.activeField] === false ? 'inactive' : 'active'} /></td><td>{String(row[definition.sortField] ?? '—')}</td></tr> })}</tbody></table></div>}</article>
-      <CanonicalEditor key={selected ? `${entityKey}:${String(selected[definition.idField])}` : `${entityKey}:empty`} definition={definition} row={selected} saving={saving} onSave={save} />
+      <article className="global-admin-panel global-admin-canonical-table"><div className="global-admin-filter-inline"><label className="global-admin-search"><span>⌕</span><input value={search} onChange={(event) => setSearch(event.target.value)} placeholder={`Tìm trong ${definition.label.toLocaleLowerCase()}…`} /></label><span>{filteredRows.length} records</span><button className="global-admin-add-button" type="button" onClick={startCreate}>＋ Thêm</button></div>{loading ? <p className="global-admin-empty">Đang tải canonical data…</p> : <div className="global-admin-table-scroll"><table><thead><tr><th>Tên</th><th>ID</th><th>Trạng thái</th><th>Thứ tự</th></tr></thead><tbody>{filteredRows.map((row) => { const id = String(row[definition.idField]); return <tr key={id} className={!creating && id === String(selected?.[definition.idField] ?? '') ? 'is-selected' : ''} onClick={() => { setCreating(false); setNewRow(null); setSelectedId(id) }}><td><span className="global-admin-canonical-name"><i>{String(row.emoji ?? catalogIcon(entityKey))}</i><strong>{String(row[definition.displayField] ?? id)}</strong></span></td><td><code>{id}</code></td><td><StatusPill status={row[definition.activeField] === false ? 'inactive' : 'active'} /></td><td>{String(row[definition.sortField] ?? '—')}</td></tr> })}</tbody></table></div>}</article>
+      <CanonicalEditor key={creating ? `${entityKey}:new` : editorRow ? `${entityKey}:${String(editorRow[definition.idField])}` : `${entityKey}:empty`} definition={definition} row={editorRow} isNew={creating} saving={saving} onSave={save} onCancel={creating ? cancelCreate : undefined} onDeactivate={deactivate} onDelete={remove} />
     </section>
     <section className="global-admin-bottom-grid"><article className="global-admin-panel global-admin-propagation"><h3>Quy tắc lan truyền & ghi đè</h3><div><span>♙</span><strong>Người dùng mặc định</strong><small>Nhận canonical hiện hành khi chưa có personal override.</small></div><div><span>✎</span><strong>Override được giữ lại</strong><small>Global update không tự ghi đè tùy chỉnh cá nhân.</small></div><div><span>◫</span><strong>Lịch sử bảo toàn snapshot</strong><small>Deactivate/delete loại item khỏi active catalog, không phá record lịch sử.</small></div></article><article className="global-admin-panel global-admin-impact-panel"><h3>Force write & Phạm vi áp dụng</h3><p>Force write qua Scope + Impact Preview sẽ được mở sau khi personal override registry được rollout. Canonical editor hiện chỉ cập nhật default toàn hệ thống.</p><button type="button" disabled>Chọn scope để Force Write</button></article><article className="global-admin-panel global-admin-impact-panel"><h3>Xem trước ảnh hưởng</h3><p>Usage và snapshot được hiển thị trước thao tác destructive. Không có direct edit nội dung Diary hoặc Check-in.</p><button type="button" disabled>Impact Preview</button></article></section>
   </div>
@@ -306,11 +369,11 @@ function UserDetail({ user, onOperation }: { user: GlobalAdminUser | null; onOpe
   return <aside className="global-admin-panel global-admin-user-detail"><div className="global-admin-user-detail__title"><h2>Chi tiết người dùng</h2><StatusPill status={user.accountStatus} /></div><div className="global-admin-profile"><i>{initials(user.email)}</i><div><strong>{user.email.split('@')[0]}</strong><small>{user.email}</small><code>{user.userId}</code></div></div><dl><div><dt>Ngày tạo</dt><dd>{formatDate(user.createdAt)}</dd></div><div><dt>Hoạt động cuối</dt><dd>{formatDate(user.lastActiveAt)}</dd></div><div><dt>Data version</dt><dd>{user.dataVersion}</dd></div></dl><div className="global-admin-user-stats"><span><b>{user.checkinCount}</b>Check-in</span><span><b>{user.diaryCount}</b>Diary entries</span><span><b>{user.customCount}</b>Custom items</span><span><b>{user.overrideCount}</b>Overrides</span></div><div className="global-admin-user-privacy"><b>▣ Không thể chỉnh sửa nội dung cá nhân</b><p>Do boundary quyền riêng tư, Global Admin không mở text Check-in, Diary hoặc ghi chú của user.</p></div><h3>Hành động cho người dùng này</h3><div className="global-admin-detail-actions"><button type="button" onClick={() => onOperation('repair_references')}>⟳ Repair references</button><button type="button" onClick={() => onOperation('migrate_occurred_at')}>▷ Run migration</button><button type="button" onClick={() => onOperation('export_account_package')}>⇩ Export account package</button><button type="button" className="is-danger" onClick={() => onOperation('full_factory_reset')}>⌫ Full factory reset</button></div></aside>
 }
 
-function CanonicalEditor({ definition, row, saving, onSave }: { definition: ReturnType<typeof getAdminEntity>; row: AdminReferenceRow | null; saving: boolean; onSave: (patch: AdminReferenceRow) => Promise<void> }) {
+function CanonicalEditor({ definition, row, isNew, saving, onSave, onCancel, onDeactivate, onDelete }: { definition: ReturnType<typeof getAdminEntity>; row: AdminReferenceRow | null; isNew: boolean; saving: boolean; onSave: (patch: AdminReferenceRow) => Promise<void>; onCancel?: () => void; onDeactivate: () => Promise<void>; onDelete: () => Promise<void> }) {
   const [draft, setDraft] = useState<AdminReferenceRow>(() => row ?? {})
   if (!row) return <aside className="global-admin-panel global-admin-editor global-admin-editor--empty"><span>◫</span><h2>Chọn một canonical item</h2><p>Editor chỉ sửa định nghĩa chuẩn; record lịch sử sử dụng snapshot riêng.</p></aside>
   const update = (field: AdminField, value: unknown) => setDraft((current) => ({ ...current, [field.key]: value }))
-  return <aside className="global-admin-panel global-admin-editor"><div className="global-admin-editor__head"><div><p>{definition.label}</p><h2>{String(row[definition.displayField])}</h2><code>{String(row[definition.idField])}</code></div><StatusPill status={row[definition.activeField] === false ? 'inactive' : 'active'} /></div><div className="global-admin-editor__fields">{definition.fields.map((field) => <CanonicalField key={field.key} field={field} value={draft[field.key]} onChange={(value) => update(field, value)} />)}</div><div className="global-admin-editor__metrics"><span><b>Inherited</b>Canonical default</span><span><b>Protected</b>History snapshots</span><span><b>v2.1</b>Current version</span></div><div className="global-admin-editor__actions"><button type="button" onClick={() => setDraft(row)}>Huỷ</button><button type="button" className="is-primary" disabled={saving} onClick={() => void onSave(draft)}>{saving ? 'Đang lưu…' : 'Lưu canonical'}</button></div></aside>
+  return <aside className="global-admin-panel global-admin-editor"><div className="global-admin-editor__head"><div><p>{isNew ? 'Tạo canonical mới' : definition.label}</p><h2>{isNew ? `Thêm ${definition.label}` : String(row[definition.displayField])}</h2>{!isNew && <code>{String(row[definition.idField])}</code>}</div>{!isNew && <StatusPill status={row[definition.activeField] === false ? 'inactive' : 'active'} />}</div><div className="global-admin-editor__fields">{isNew && <label className="global-admin-form-field"><span>ID / mã kỹ thuật<b>*</b></span><input value={String(draft[definition.idField] ?? '')} onChange={(event) => setDraft((current) => ({ ...current, [definition.idField]: event.target.value }))} /></label>}{definition.fields.map((field) => <CanonicalField key={field.key} field={field} value={draft[field.key]} onChange={(value) => update(field, value)} />)}</div><div className="global-admin-editor__metrics"><span><b>{isNew ? 'New' : 'Inherited'}</b>{isNew ? 'Canonical draft' : 'Canonical default'}</span><span><b>Protected</b>History snapshots</span><span><b>v2.1</b>Current version</span></div><div className="global-admin-editor__actions"><button type="button" onClick={onCancel ?? (() => setDraft(row))}>Huỷ</button>{!isNew && <><button type="button" disabled={saving} onClick={() => void onDeactivate()}>Deactivate</button><button type="button" className="is-danger" disabled={saving} onClick={() => void onDelete()}>Xoá</button></>}<button type="button" className="is-primary" disabled={saving} onClick={() => void onSave(draft)}>{saving ? 'Đang lưu…' : isNew ? 'Tạo canonical' : 'Lưu canonical'}</button></div>{!isNew && <small className="global-admin-editor__hint">Xoá cứng chỉ thực hiện được khi item chưa có record tham chiếu. Nếu đã dùng, hãy Deactivate.</small>}</aside>
 }
 
 function CanonicalField({ field, value, onChange }: { field: AdminField; value: unknown; onChange: (value: unknown) => void }) {

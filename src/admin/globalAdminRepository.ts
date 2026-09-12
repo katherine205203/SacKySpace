@@ -1,5 +1,7 @@
 import { supabase } from '../services/supabase/client'
 import { getAdminEntity } from '../features/admin/registry'
+import { clearReferenceCache } from '../features/checkin/services/referenceRepository'
+import { getReferenceUsageCount, writeAudit } from '../features/admin/services/adminRepository'
 import type { AdminEntityKey, AdminReferenceRow } from '../features/admin/types'
 
 export type GlobalAdminIdentity = {
@@ -171,12 +173,76 @@ export const listCanonicalRows = async (entityKey: AdminEntityKey): Promise<Admi
   return (data ?? []) as AdminReferenceRow[]
 }
 
-export const saveCanonicalRow = async (entityKey: AdminEntityKey, id: string, patch: AdminReferenceRow): Promise<void> => {
+const normalizeCanonicalPayload = (entityKey: AdminEntityKey, row: AdminReferenceRow, includeId = false): AdminReferenceRow => {
   const definition = getAdminEntity(entityKey)
   const allowed = new Set(definition.fields.map((field) => field.key))
-  const payload = Object.fromEntries(Object.entries(patch).filter(([key]) => allowed.has(key)))
+  const payload = Object.fromEntries(Object.entries(row).filter(([key]) => allowed.has(key) || (includeId && key === definition.idField)))
+  for (const key of ['palette', 'config']) {
+    if (typeof payload[key] !== 'string') continue
+    try {
+      payload[key] = JSON.parse(payload[key] as string)
+    } catch {
+      throw new Error(`${key} phải là JSON hợp lệ.`)
+    }
+  }
+  return payload
+}
+
+const validateCanonicalRow = (entityKey: AdminEntityKey, row: AdminReferenceRow): string => {
+  const definition = getAdminEntity(entityKey)
+  const id = String(row[definition.idField] ?? '').trim()
+  if (!id) throw new Error(`Thiếu khóa ${definition.idField}.`)
+  for (const field of definition.fields) {
+    if (!field.required) continue
+    const value = row[field.key]
+    if (value === null || value === undefined || (typeof value === 'string' && !value.trim())) {
+      throw new Error(`Trường ${field.label} không được để trống.`)
+    }
+  }
+  return id
+}
+
+export const saveCanonicalRow = async (entityKey: AdminEntityKey, id: string, patch: AdminReferenceRow): Promise<void> => {
+  const definition = getAdminEntity(entityKey)
+  const before = await getCanonicalRow(entityKey, id)
+  const payload = normalizeCanonicalPayload(entityKey, patch)
   const { error } = await supabase.from(definition.table).update(payload).eq(definition.idField, id)
   if (error) throw new Error(safeMessage(error))
+  clearReferenceCache()
+  await writeAudit('data', 'update', definition.table, id, before, { ...before, ...payload }, null)
+}
+
+export const createCanonicalRow = async (entityKey: AdminEntityKey, row: AdminReferenceRow): Promise<void> => {
+  const definition = getAdminEntity(entityKey)
+  const id = validateCanonicalRow(entityKey, row)
+  const payload = normalizeCanonicalPayload(entityKey, { ...row, [definition.idField]: id }, true)
+  const { error } = await supabase.from(definition.table).insert(payload)
+  if (error) throw new Error(safeMessage(error))
+  clearReferenceCache()
+  await writeAudit('data', 'create', definition.table, id, null, payload, null)
+}
+
+export const deactivateCanonicalRow = async (entityKey: AdminEntityKey, id: string): Promise<void> => {
+  const definition = getAdminEntity(entityKey)
+  await saveCanonicalRow(entityKey, id, { [definition.activeField]: false })
+}
+
+export const deleteCanonicalRow = async (entityKey: AdminEntityKey, id: string): Promise<void> => {
+  const definition = getAdminEntity(entityKey)
+  const usageCount = await getReferenceUsageCount(entityKey, id)
+  if (usageCount > 0) throw new Error(`Không thể xoá: canonical này đang được ${usageCount} record tham chiếu. Hãy Deactivate để giữ lịch sử.`)
+  const before = await getCanonicalRow(entityKey, id)
+  const { error } = await supabase.from(definition.table).delete().eq(definition.idField, id)
+  if (error) throw new Error(safeMessage(error))
+  clearReferenceCache()
+  await writeAudit('data', 'delete', definition.table, id, before, null, null)
+}
+
+export const getCanonicalRow = async (entityKey: AdminEntityKey, id: string): Promise<AdminReferenceRow | null> => {
+  const definition = getAdminEntity(entityKey)
+  const { data, error } = await supabase.from(definition.table).select('*').eq(definition.idField, id).maybeSingle()
+  if (error) throw new Error(safeMessage(error))
+  return (data as AdminReferenceRow | null) ?? null
 }
 
 export const adminErrorMessage = safeMessage
