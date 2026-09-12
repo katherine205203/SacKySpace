@@ -48,9 +48,6 @@ export function AppSidebar() {
       </nav>
 
       <div className="sidebar-footer">
-        <NavLink className="admin-link" to="/admin-studio">
-          <span>Admin Studio</span>
-        </NavLink>
         <button className="sidebar-signout" type="button" onClick={() => void signOut()}>
           Đăng xuất
         </button>

@@ -6,7 +6,6 @@ import './more.css'
 const destinations = [
   { to: '/future-letter', icon: '✉', title: 'Future Letter', copy: 'Gửi một điều cho mình của những ngày khác.' },
   { to: '/gift-for-tmr', icon: '🎁', title: 'Gift for Tomorrow', copy: 'Chuẩn bị một món quà nhỏ cho ngày mai.' },
-  { to: '/admin-studio', icon: '⚙', title: 'Admin Studio', copy: 'Quản lý reference data và vận hành workspace.' },
 ]
 
 export function MorePage() {

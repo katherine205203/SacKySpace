@@ -7,7 +7,6 @@ const routeLabels: Array<{ match: (pathname: string) => boolean; label: string }
   { match: (pathname) => pathname.startsWith('/action-space') || pathname.startsWith('/reminder'), label: 'Action Space' },
   { match: (pathname) => pathname.startsWith('/future-letter'), label: 'Future Letter' },
   { match: (pathname) => pathname.startsWith('/gift-for-tmr'), label: 'Gift for Tomorrow' },
-  { match: (pathname) => pathname.startsWith('/admin-studio'), label: 'Admin Studio' },
   { match: (pathname) => pathname.startsWith('/more'), label: 'Thêm' },
 ]
 

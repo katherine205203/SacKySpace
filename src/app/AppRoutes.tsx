@@ -12,7 +12,6 @@ import { DiaryPage } from '../features/diary/DiaryPage'
 import { JourneyPage } from '../features/diary/JourneyPage'
 import { FutureLetterPage } from '../features/futureletter/FutureLetterPage'
 import { GiftPage } from '../features/gift/GiftPage'
-import { AdminStudioPage } from '../features/admin/AdminStudioPage'
 import { MorePage } from '../features/more/MorePage'
 
 const PlaceholderScreen = ({ title }: { title: string }) => (
@@ -46,7 +45,6 @@ export function AppRoutes() {
         <Route path="/reminder" element={<ActionSpacePage />} />
         <Route path="/future-letter" element={<FutureLetterPage />} />
         <Route path="/gift-for-tmr" element={<GiftPage />} />
-        <Route path="/admin-studio" element={<AdminStudioPage />} />
         <Route path="/more" element={<MorePage />} />
         <Route path="*" element={<PlaceholderScreen title="Page not found" />} />
       </Routes>
