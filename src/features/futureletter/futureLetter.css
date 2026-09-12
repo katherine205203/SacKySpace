@@ -262,7 +262,7 @@
 .future-letter-preview > .future-envelope { width: 5.5rem; height: 3.6rem; margin: 1.3rem 0 1.5rem; }
 .future-letter-preview > .future-envelope .future-envelope__seal { width: .8rem; height: .8rem; font-size: .3rem; }
 .future-letter-preview__meta, .future-read-meta { display: flex; justify-content: space-between; gap: 1rem; color: var(--color-text-soft); font-size: .63rem; }
-.future-letter-preview h2 { max-width: 40rem; margin-bottom: 1.2rem; font-size: clamp(1.6rem, 3vw, 2.35rem); line-height: 1.1; letter-spacing: -.06em; }
+.future-letter-preview h2 { max-width: 40rem; margin-bottom: 1.2rem; font-size: clamp(1.35rem, 3vw, 2.1rem); line-height: 1.1; letter-spacing: -.06em; }
 .future-letter-preview__body, .future-read-body { max-width: 42rem; color: var(--color-text); font-size: .88rem; line-height: 1.9; white-space: pre-wrap; }
 .future-letter-preview__body p, .future-read-body p { margin-bottom: .85rem; }
 .future-placeholder-copy { color: var(--color-text-soft); }
