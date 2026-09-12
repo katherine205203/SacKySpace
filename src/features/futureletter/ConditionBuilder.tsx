@@ -1,4 +1,5 @@
-import { Fragment, useState } from 'react'
+import { Fragment, useEffect, useId, useRef, useState } from 'react'
+import { createPortal } from 'react-dom'
 import type { FutureLetterDraft, FutureLetterRule, FutureLetterRuleConfig, GroupOperator, Comparator } from './types'
 import { getFutureLetterLocalDate } from './utils'
 
@@ -50,6 +51,119 @@ const createRule = (type: FutureLetterRule['type'], groupId: string, position: n
 
 const comparatorOptions = ['>', '>=', '=', '<=', '<'] as const
 
+function EmotionCombobox({ emotions, value, onChange }: { emotions: EmotionOption[]; value: string; onChange: (value: string) => void }) {
+  const triggerRef = useRef<HTMLButtonElement>(null)
+  const menuRef = useRef<HTMLDivElement>(null)
+  const searchRef = useRef<HTMLInputElement>(null)
+  const listboxId = useId()
+  const [isOpen, setIsOpen] = useState(false)
+  const [query, setQuery] = useState('')
+  const [activeIndex, setActiveIndex] = useState(0)
+  const [position, setPosition] = useState({ top: 0, left: 0, width: 280, maxHeight: 320 })
+  const selectedEmotion = emotions.find((emotion) => emotion.emotion_id === value)
+  const normalizedQuery = query.trim().toLocaleLowerCase('vi-VN')
+  const filteredEmotions = emotions.filter((emotion) => `${emotion.emoji ?? ''} ${emotion.emotion_name_vn} ${emotion.emotion_id}`.toLocaleLowerCase('vi-VN').includes(normalizedQuery))
+  const safeActiveIndex = Math.min(activeIndex, filteredEmotions.length)
+
+  useEffect(() => {
+    if (!isOpen) return
+    const updatePosition = () => {
+      const trigger = triggerRef.current
+      if (!trigger) return
+      const rect = trigger.getBoundingClientRect()
+      const viewportWidth = window.innerWidth
+      const viewportHeight = window.innerHeight
+      const width = Math.min(360, Math.max(rect.width, Math.min(320, Math.max(0, viewportWidth - 24))))
+      const maxHeight = Math.min(320, Math.max(140, viewportHeight - 24))
+      const opensUp = rect.bottom + maxHeight + 8 > viewportHeight && rect.top > maxHeight + 8
+      const top = opensUp ? Math.max(12, rect.top - maxHeight - 8) : Math.min(Math.max(12, viewportHeight - maxHeight - 12), rect.bottom + 8)
+      const left = Math.min(Math.max(12, rect.left), Math.max(12, viewportWidth - width - 12))
+      setPosition({ top, left, width, maxHeight })
+    }
+    updatePosition()
+    const focusSearch = window.setTimeout(() => searchRef.current?.focus(), 0)
+    const handlePointerDown = (event: PointerEvent) => {
+      const target = event.target
+      if (!(target instanceof Node)) return
+      if (!triggerRef.current?.contains(target) && !menuRef.current?.contains(target)) {
+        setIsOpen(false)
+      }
+    }
+    window.addEventListener('resize', updatePosition)
+    window.addEventListener('scroll', updatePosition, true)
+    document.addEventListener('pointerdown', handlePointerDown, true)
+    return () => {
+      window.clearTimeout(focusSearch)
+      window.removeEventListener('resize', updatePosition)
+      window.removeEventListener('scroll', updatePosition, true)
+      document.removeEventListener('pointerdown', handlePointerDown, true)
+    }
+  }, [isOpen])
+
+  const closeMenu = () => {
+    setIsOpen(false)
+    setQuery('')
+    setActiveIndex(0)
+  }
+  const openMenu = () => {
+    const selectedIndex = value ? emotions.findIndex((emotion) => emotion.emotion_id === value) : -1
+    setActiveIndex(selectedIndex >= 0 ? selectedIndex + 1 : 0)
+    setIsOpen(true)
+  }
+  const selectEmotion = (emotionId: string) => {
+    onChange(emotionId)
+    closeMenu()
+    triggerRef.current?.focus()
+  }
+  const handleTriggerKeyDown = (event: React.KeyboardEvent<HTMLButtonElement>) => {
+    if (event.key === 'Enter' || event.key === ' ' || event.key === 'ArrowDown') {
+      event.preventDefault()
+      if (!isOpen) openMenu()
+    }
+    if (event.key === 'Escape' && isOpen) {
+      event.preventDefault()
+      closeMenu()
+    }
+  }
+  const handleSearchKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
+    if (event.key === 'ArrowDown') {
+      event.preventDefault()
+      setActiveIndex((index) => Math.min(index + 1, filteredEmotions.length))
+    } else if (event.key === 'ArrowUp') {
+      event.preventDefault()
+      setActiveIndex((index) => Math.max(index - 1, 0))
+    } else if (event.key === 'Home') {
+      event.preventDefault()
+      setActiveIndex(0)
+    } else if (event.key === 'End') {
+      event.preventDefault()
+      setActiveIndex(filteredEmotions.length)
+    } else if (event.key === 'Enter') {
+      event.preventDefault()
+      const emotion = safeActiveIndex === 0 ? undefined : filteredEmotions[safeActiveIndex - 1]
+      selectEmotion(emotion?.emotion_id ?? '')
+    } else if (event.key === 'Escape') {
+      event.preventDefault()
+      closeMenu()
+      triggerRef.current?.focus()
+    }
+  }
+
+  const menu = isOpen && typeof document !== 'undefined' ? createPortal(
+    <div className="future-emotion-combobox__menu" ref={menuRef} role="dialog" aria-label="Chọn cảm xúc" style={{ top: position.top, left: position.left, width: position.width, maxHeight: position.maxHeight }}>
+      <input ref={searchRef} className="future-emotion-combobox__search" type="search" value={query} onChange={(event) => setQuery(event.target.value)} onKeyDown={handleSearchKeyDown} placeholder="Tìm theo tên hoặc emoji..." aria-label="Tìm cảm xúc" autoComplete="off" />
+      <div className="future-emotion-combobox__options" id={listboxId} role="listbox" aria-label="Danh sách cảm xúc">
+        <button className={safeActiveIndex === 0 ? 'is-active' : undefined} type="button" role="option" aria-selected={!value} onMouseEnter={() => setActiveIndex(0)} onClick={() => selectEmotion('')}>Chọn cảm xúc</button>
+        {filteredEmotions.map((emotion, index) => <button className={`${safeActiveIndex === index + 1 ? 'is-active ' : ''}${value === emotion.emotion_id ? 'is-selected' : ''}`} type="button" role="option" aria-selected={value === emotion.emotion_id} key={emotion.emotion_id} onMouseEnter={() => setActiveIndex(index + 1)} onClick={() => selectEmotion(emotion.emotion_id)}>{emotion.emoji ?? '◌'} {emotion.emotion_name_vn}</button>)}
+        {!filteredEmotions.length && <p className="future-emotion-combobox__empty">Không tìm thấy cảm xúc.</p>}
+      </div>
+    </div>,
+    document.body,
+  ) : null
+
+  return <div className="future-emotion-combobox"><button ref={triggerRef} className="future-emotion-combobox__trigger" type="button" aria-haspopup="listbox" aria-expanded={isOpen} aria-controls={listboxId} onClick={() => (isOpen ? closeMenu() : openMenu())} onKeyDown={handleTriggerKeyDown}><span>{selectedEmotion ? `${selectedEmotion.emoji ?? '◌'} ${selectedEmotion.emotion_name_vn}` : 'Chọn cảm xúc'}</span><span aria-hidden="true">⌄</span></button>{menu}</div>
+}
+
 function NumericRuleFields({ rule, onChange, label = 'Giá trị' }: { rule: FutureLetterRule; onChange: (update: Partial<FutureLetterRule> & { config?: FutureLetterRuleConfig }) => void; label?: string }) {
   return <div className="future-condition-form__grid"><label className="future-control"><span>So sánh</span><select value={rule.comparator ?? '>='} onChange={(event) => onChange({ comparator: event.target.value as Comparator })}>{comparatorOptions.map((value) => <option key={value} value={value}>{value}</option>)}</select></label><label className="future-control"><span>{label}</span><input type="number" min="1" value={rule.threshold ?? 1} onChange={(event) => onChange({ threshold: Number(event.target.value) })} /></label></div>
 }
@@ -63,8 +177,8 @@ function RuleForm({ rule, emotions, onChange }: { rule: FutureLetterRule; emotio
   if (rule.type === 'checkin_frequency') return <div className="future-condition-form__grid"><label className="future-control"><span>Số ngày tối thiểu</span><input type="number" min="1" value={config.minimumOccurrences ?? 4} onChange={(event) => onChange({ threshold: Number(event.target.value), config: { minimumOccurrences: Number(event.target.value) } })} /></label><label className="future-control"><span>Đơn vị</span><select value={config.period ?? 'week'} onChange={(event) => patchConfig({ period: event.target.value as FutureLetterRuleConfig['period'] })}><option value="week">mỗi tuần</option><option value="month">mỗi tháng</option><option value="day">mỗi ngày</option></select></label><label className="future-control"><span>Số chu kỳ</span><input type="number" min="1" value={config.periodCount ?? 4} onChange={(event) => patchConfig({ periodCount: Number(event.target.value) })} /></label></div>
   if (rule.type === 'checkin_return_after_inactivity') return <label className="future-control"><span>Không Check-in ít nhất</span><input type="number" min="1" value={config.inactiveDays ?? 30} onChange={(event) => patchConfig({ inactiveDays: Number(event.target.value) })} /></label>
   if (rule.type === 'checkin_streak' || rule.type === 'checkin_total' || rule.type === 'diary_streak' || rule.type === 'diary_total' || rule.type === 'journey_total') return <NumericRuleFields rule={rule} onChange={onChange} label={rule.type.includes('streak') ? 'Ngày liên tiếp' : 'Số lượng'} />
-  if (rule.type === 'emotion_frequency') return <div className="future-condition-form__grid"><label className="future-control"><span>Cảm xúc</span><select value={config.emotionId ?? ''} onChange={(event) => patchConfig({ emotionId: event.target.value })}><option value="">Chọn cảm xúc</option>{emotions.map((emotion) => <option key={emotion.emotion_id} value={emotion.emotion_id}>{emotion.emoji ?? '◌'} {emotion.emotion_name_vn}</option>)}</select></label><NumericRuleFields rule={rule} onChange={onChange} label="Số lần" /><label className="future-control"><span>Phạm vi</span><select value={config.scope ?? 'primary'} onChange={(event) => patchConfig({ scope: event.target.value as FutureLetterRuleConfig['scope'] })}><option value="primary">Cảm xúc chính</option><option value="primary_secondary">Cảm xúc chính và phụ</option></select></label></div>
-  if (rule.type === 'emotion_condition') return <div className="future-condition-form__stack"><div className="future-condition-form__grid"><label className="future-control"><span>Cảm xúc</span><select value={config.emotionId ?? ''} onChange={(event) => patchConfig({ emotionId: event.target.value })}><option value="">Chọn cảm xúc</option>{emotions.map((emotion) => <option key={emotion.emotion_id} value={emotion.emotion_id}>{emotion.emoji ?? '◌'} {emotion.emotion_name_vn}</option>)}</select></label><label className="future-control"><span>Điều kiện</span><select value={config.emotionOperator ?? 'exists'} onChange={(event) => patchConfig({ emotionOperator: event.target.value as FutureLetterRuleConfig['emotionOperator'] })}><option value="exists">Xuất hiện</option><option value="count_gte">Xuất hiện ít nhất</option><option value="absent">Không xuất hiện</option></select></label>{config.emotionOperator === 'count_gte' && <label className="future-control"><span>Số lần</span><input type="number" min="1" value={config.count ?? 5} onChange={(event) => patchConfig({ count: Number(event.target.value) })} /></label>}</div><div className="future-condition-form__grid"><label className="future-control"><span>Cửa sổ thời gian</span><select value={config.windowType ?? 'since_sent'} onChange={(event) => patchConfig({ windowType: event.target.value as FutureLetterRuleConfig['windowType'] })}><option value="since_sent">Từ khi gửi</option><option value="last_days">X ngày gần nhất</option><option value="consecutive_days">X ngày liên tiếp</option><option value="custom_range">Khoảng tùy chọn</option></select></label>{(config.windowType === 'last_days' || config.windowType === 'consecutive_days') && <label className="future-control"><span>Số ngày</span><input type="number" min="1" value={config.windowValue ?? 30} onChange={(event) => patchConfig({ windowValue: Number(event.target.value) })} /></label>}{config.windowType === 'custom_range' && <><label className="future-control"><span>Từ ngày</span><input type="date" value={config.customWindowStart ?? ''} onChange={(event) => patchConfig({ customWindowStart: event.target.value })} /></label><label className="future-control"><span>Đến ngày</span><input type="date" value={config.customWindowEnd ?? ''} onChange={(event) => patchConfig({ customWindowEnd: event.target.value })} /></label></>}</div></div>
+  if (rule.type === 'emotion_frequency') return <div className="future-condition-form__grid"><label className="future-control"><span>Cảm xúc</span><EmotionCombobox emotions={emotions} value={config.emotionId ?? ''} onChange={(emotionId) => patchConfig({ emotionId })} /></label><NumericRuleFields rule={rule} onChange={onChange} label="Số lần" /><label className="future-control"><span>Phạm vi</span><select value={config.scope ?? 'primary'} onChange={(event) => patchConfig({ scope: event.target.value as FutureLetterRuleConfig['scope'] })}><option value="primary">Cảm xúc chính</option><option value="primary_secondary">Cảm xúc chính và phụ</option></select></label></div>
+  if (rule.type === 'emotion_condition') return <div className="future-condition-form__stack"><div className="future-condition-form__grid"><label className="future-control"><span>Cảm xúc</span><EmotionCombobox emotions={emotions} value={config.emotionId ?? ''} onChange={(emotionId) => patchConfig({ emotionId })} /></label><label className="future-control"><span>Điều kiện</span><select value={config.emotionOperator ?? 'exists'} onChange={(event) => patchConfig({ emotionOperator: event.target.value as FutureLetterRuleConfig['emotionOperator'] })}><option value="exists">Xuất hiện</option><option value="count_gte">Xuất hiện ít nhất</option><option value="absent">Không xuất hiện</option></select></label>{config.emotionOperator === 'count_gte' && <label className="future-control"><span>Số lần</span><input type="number" min="1" value={config.count ?? 5} onChange={(event) => patchConfig({ count: Number(event.target.value) })} /></label>}</div><div className="future-condition-form__grid"><label className="future-control"><span>Cửa sổ thời gian</span><select value={config.windowType ?? 'since_sent'} onChange={(event) => patchConfig({ windowType: event.target.value as FutureLetterRuleConfig['windowType'] })}><option value="since_sent">Từ khi gửi</option><option value="last_days">X ngày gần nhất</option><option value="consecutive_days">X ngày liên tiếp</option><option value="custom_range">Khoảng tùy chọn</option></select></label>{(config.windowType === 'last_days' || config.windowType === 'consecutive_days') && <label className="future-control"><span>Số ngày</span><input type="number" min="1" value={config.windowValue ?? 30} onChange={(event) => patchConfig({ windowValue: Number(event.target.value) })} /></label>}{config.windowType === 'custom_range' && <><label className="future-control"><span>Từ ngày</span><input type="date" value={config.customWindowStart ?? ''} onChange={(event) => patchConfig({ customWindowStart: event.target.value })} /></label><label className="future-control"><span>Đến ngày</span><input type="date" value={config.customWindowEnd ?? ''} onChange={(event) => patchConfig({ customWindowEnd: event.target.value })} /></label></>}</div></div>
   if (rule.type === 'random_condition') return <div className="future-condition-form__grid"><label className="future-control"><span>Xác suất mỗi lần kiểm tra (%)</span><input type="number" min="1" max="100" value={Math.round((config.probability ?? .2) * 100)} onChange={(event) => patchConfig({ probability: Number(event.target.value) / 100 })} /></label><label className="future-control"><span>Tần suất kiểm tra</span><select value={config.evaluationPeriod ?? 'daily'} onChange={(event) => patchConfig({ evaluationPeriod: event.target.value as FutureLetterRuleConfig['evaluationPeriod'] })}><option value="daily">Mỗi ngày</option><option value="weekly">Mỗi tuần</option></select></label><label className="future-control"><span>Bắt đầu khi</span><select value={config.randomMode ?? 'after_prerequisites'} onChange={(event) => patchConfig({ randomMode: event.target.value as FutureLetterRuleConfig['randomMode'] })}><option value="always">Luôn có thể xảy ra</option><option value="after_prerequisites">Đủ các điều kiện khác</option><option value="window">Trong cửa sổ thời gian</option></select></label>{config.randomMode === 'window' && <><label className="future-control"><span>Từ ngày</span><input type="date" value={config.windowStart ?? ''} onChange={(event) => patchConfig({ windowStart: event.target.value })} /></label><label className="future-control"><span>Đến ngày</span><input type="date" value={config.windowEnd ?? ''} onChange={(event) => patchConfig({ windowEnd: event.target.value })} /></label></>}</div>
   if (rule.type === 'random_date') return <div className="future-condition-form__grid"><label className="future-control"><span>Xác suất mỗi ngày (%)</span><input type="number" min="1" max="100" value={Math.round((config.dailyChance ?? .3) * 100)} onChange={(event) => patchConfig({ dailyChance: Number(event.target.value) / 100 })} /></label><p className="future-condition-form__hint">Một lần kiểm tra mỗi ngày. Nếu có nhiều thư cùng đủ điều kiện, hệ thống sẽ chọn một lá thư.</p></div>
   return <div className="future-condition-form__grid"><label className="future-control"><span>Cách tính</span><select value={config.mode ?? 'window'} onChange={(event) => patchConfig({ mode: event.target.value as FutureLetterRuleConfig['mode'] })}><option value="window">Trong một khoảng thời gian</option><option value="lifetime">Từ trước đến nay</option></select></label><NumericRuleFields rule={rule} onChange={onChange} label="Số lần hoàn thành" />{config.mode !== 'lifetime' && <label className="future-control"><span>Khoảng thời gian</span><select value={config.window ?? 'last_30_days'} onChange={(event) => patchConfig({ window: event.target.value as FutureLetterRuleConfig['window'] })}><option value="last_7_days">7 ngày gần nhất</option><option value="last_30_days">30 ngày gần nhất</option></select></label>}</div>

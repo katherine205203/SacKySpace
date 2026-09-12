@@ -55,6 +55,22 @@ const writeLocalLetters = (userId: string, letters: FutureLetter[]): void => {
   try { storage.setItem(`${LOCAL_STORAGE_KEY}${userId}`, JSON.stringify(letters)) } catch { /* Remote remains authoritative. */ }
 }
 
+const describeRemoteError = (reason: unknown): string | null => {
+  if (reason instanceof Error && reason.message) return reason.message
+  if (!reason || typeof reason !== 'object') return null
+  const error = reason as { message?: unknown; details?: unknown; hint?: unknown; code?: unknown }
+  const parts = [error.message, error.details, error.hint].filter((value): value is string => typeof value === 'string' && value.trim().length > 0)
+  const code = typeof error.code === 'string' && error.code ? ` [${error.code}]` : ''
+  return parts.length ? `${parts.join(' — ')}${code}` : null
+}
+
+const remotePersistenceError = (operation: string, reason: unknown): Error => {
+  const detail = describeRemoteError(reason)
+  const error = new Error(`${operation}${detail ? `: ${detail}` : ''}`)
+  Object.assign(error, { cause: reason })
+  return error
+}
+
 type FutureLetterRow = {
   id: string
   user_id: string
@@ -190,7 +206,7 @@ const toEventRow = (event: FutureLetterTriggerEvent) => ({
 
 const persistRemoteLetter = async (letter: FutureLetter): Promise<FutureLetter> => {
   const { data, error } = await supabase.from('future_letters').upsert({ id: letter.id, user_id: letter.userId, title: letter.title, body: letter.body, lifecycle_state: letter.state, group_operator: letter.groupOperator, envelope_asset_id: letter.envelopeAssetId, seal_asset_id: letter.sealAssetId, decoration_snapshot: letter.decorationSnapshot, opened_count: letter.openedCount, sealed_at: letter.sealedAt, first_opened_at: letter.firstOpenedAt, last_opened_at: letter.lastOpenedAt, archived_at: letter.archivedAt }).select('id, user_id, title, body, lifecycle_state, group_operator, envelope_asset_id, seal_asset_id, decoration_snapshot, opened_count, created_at, updated_at, sealed_at, first_opened_at, last_opened_at, archived_at').single()
-  if (error) throw error
+  if (error) throw remotePersistenceError('Không thể lưu thông tin lá thư', error)
   const row = data as FutureLetterRow
   const letterId = row.id
   const deleteChildren = await Promise.all([
@@ -198,23 +214,23 @@ const persistRemoteLetter = async (letter: FutureLetter): Promise<FutureLetter> 
     supabase.from('future_letter_rule_groups').delete().eq('letter_id', letterId),
     supabase.from('future_letter_trigger_events').delete().eq('letter_id', letterId),
   ])
-  for (const result of deleteChildren) if (result.error) throw result.error
+  for (const result of deleteChildren) if (result.error) throw remotePersistenceError('Không thể làm mới điều kiện của lá thư', result.error)
   if (letter.attachments.length) {
     const { error: attachmentError } = await supabase.from('future_letter_context_attachments').insert(letter.attachments.map((attachment) => ({ id: attachment.id, letter_id: letterId, attachment_type: attachment.attachmentType, ref_id: attachment.refId, snapshot: attachment.snapshot, position: attachment.position })))
-    if (attachmentError) throw attachmentError
+    if (attachmentError) throw remotePersistenceError('Không thể lưu ký ức đi cùng lá thư', attachmentError)
   }
   if (letter.groups.length) {
     const { error: groupError } = await supabase.from('future_letter_rule_groups').insert(letter.groups.map((group) => ({ id: group.id, letter_id: letterId, group_operator: group.operator, position: group.position })))
-    if (groupError) throw groupError
+    if (groupError) throw remotePersistenceError('Không thể lưu nhóm điều kiện của lá thư', groupError)
     const rules = letter.groups.flatMap((group) => group.rules.map((rule) => ({ id: rule.id, group_id: group.id, rule_type: rule.type, comparator: rule.comparator, threshold: rule.threshold, config_json: rule.config, position: rule.position })))
     if (rules.length) {
       const { error: ruleError } = await supabase.from('future_letter_rules').insert(rules)
-      if (ruleError) throw ruleError
+      if (ruleError) throw remotePersistenceError('Không thể lưu điều kiện của lá thư', ruleError)
     }
   }
   if (letter.triggerEvents.length) {
     const { error: eventError } = await supabase.from('future_letter_trigger_events').insert(letter.triggerEvents.map(toEventRow))
-    if (eventError) throw eventError
+    if (eventError) throw remotePersistenceError('Không thể lưu lịch sử trở về của lá thư', eventError)
   }
   return { ...letter, id: letterId, createdAt: row.created_at, updatedAt: row.updated_at, sealedAt: row.sealed_at, firstOpenedAt: row.first_opened_at, lastOpenedAt: row.last_opened_at, openedCount: row.opened_count, archivedAt: row.archived_at }
 }
@@ -267,8 +283,15 @@ export const sealFutureLetter = async (draft: FutureLetterDraft): Promise<Future
   const seal = SEAL_ASSETS.find((asset) => asset.id === draft.sealAssetId)
   const letter = normalizeDraft({ ...draft, state: 'sealed_waiting', sealedAt: now, decorationSnapshot: { envelopeAssetId: draft.envelopeAssetId ?? '', sealAssetId: draft.sealAssetId ?? '', envelopeLabel: envelope?.label ?? 'Phong bì', sealLabel: seal?.label ?? 'Ấn niêm phong', capturedAt: now } }, userId, existing)
   validateSeal(letter)
-  const saved = await persistRemoteLetter(letter)
-  return persistLocalLetter(saved)
+  try {
+    const saved = await persistRemoteLetter(letter)
+    return persistLocalLetter(saved)
+  } catch (reason) {
+    console.warn('[Future Letter] Remote seal sync failed; keeping the sealed letter locally and retrying.', reason)
+    persistLocalLetter(letter)
+    enqueueRemoteDraft(letter)
+    return letter
+  }
 }
 
 export const openFutureLetter = async (id: string): Promise<FutureLetter> => {

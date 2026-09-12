@@ -189,8 +189,8 @@
 .future-condition-row__actions button:disabled { cursor: not-allowed; opacity: .35; }
 .future-empty-condition { width: 100%; margin-top: .55rem; padding: .75rem; border: 1px dashed #bca7eb; border-radius: .75rem; background: rgba(255,255,255,.65); color: var(--color-violet-dark); font-size: .68rem; font-weight: 750; text-align: left; }
 .future-empty-condition:hover { background: var(--color-surface-violet); }
-.future-condition-modal { display: grid; position: fixed; z-index: 40; inset: 0; place-items: center; padding: 1rem; background: rgba(42,25,67,.34); backdrop-filter: blur(8px); animation: future-condition-modal-in .18s ease both; }
-.future-condition-modal__panel { position: relative; width: min(100%, 38rem); max-height: min(90dvh, 46rem); overflow: auto; padding: 1.35rem; border: 1px solid #dfd1f4; border-radius: 1.15rem; background: #fff; box-shadow: 0 1.5rem 4rem rgba(51,28,84,.18); animation: future-condition-panel-in .22s cubic-bezier(.2,.8,.2,1) both; }
+.future-condition-modal { display: grid; position: fixed; z-index: 40; inset: 0; place-items: start center; overflow-y: auto; overscroll-behavior: contain; padding: 1rem; background: rgba(42,25,67,.34); backdrop-filter: blur(8px); animation: future-condition-modal-in .18s ease both; }
+.future-condition-modal__panel { position: relative; width: min(100%, 38rem); max-height: min(90dvh, 46rem); min-height: 0; overflow-y: auto; overscroll-behavior: contain; padding: 1.35rem; margin: auto 0; border: 1px solid #dfd1f4; border-radius: 1.15rem; background: #fff; box-shadow: 0 1.5rem 4rem rgba(51,28,84,.18); animation: future-condition-panel-in .22s cubic-bezier(.2,.8,.2,1) both; }
 .future-condition-modal__panel h3 { margin: .25rem 0 1rem; font-size: 1.25rem; letter-spacing: -.04em; }
 .future-condition-modal__close { position: absolute; top: 1rem; right: 1rem; }
 .future-condition-category-list { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .55rem; }
@@ -220,6 +220,20 @@
 .future-control { display: grid; gap: .32rem; min-width: 0; color: var(--color-text); font-size: .65rem; font-weight: 750; }
 .future-control input, .future-control select { padding: .52rem .55rem; font-size: .68rem; }
 .future-control-pair { display: grid; grid-template-columns: 3.5rem minmax(0, 1fr); gap: .3rem; }
+.future-emotion-combobox { min-width: 0; }
+.future-emotion-combobox__trigger { display: flex; width: 100%; min-width: 0; align-items: center; justify-content: space-between; gap: .55rem; padding: .52rem .55rem; border: 1px solid var(--color-border); border-radius: .65rem; outline: 0; background: #fff; color: var(--color-text); font: inherit; font-size: .68rem; font-weight: 400; text-align: left; }
+.future-emotion-combobox__trigger:hover { border-color: #bca7eb; }
+.future-emotion-combobox__trigger:focus-visible { border-color: var(--color-violet); box-shadow: 0 0 0 3px var(--color-surface-violet); }
+.future-emotion-combobox__trigger > span:first-child { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.future-emotion-combobox__trigger > span:last-child { flex: 0 0 auto; color: var(--color-text-soft); font-size: .85rem; line-height: 1; }
+.future-emotion-combobox__menu { display: grid; position: fixed; z-index: 80; grid-template-rows: auto minmax(0, 1fr); gap: .35rem; min-height: 0; padding: .45rem; overflow: hidden; border: 1px solid #d9c9f2; border-radius: .75rem; background: #fff; box-shadow: 0 1rem 2.5rem rgba(51,28,84,.22); }
+.future-emotion-combobox__search { width: 100%; min-width: 0; padding: .55rem .6rem; border: 1px solid var(--color-border); border-radius: .55rem; outline: 0; background: #fff; color: var(--color-text); font: inherit; font-size: .7rem; }
+.future-emotion-combobox__search:focus { border-color: var(--color-violet); box-shadow: 0 0 0 3px var(--color-surface-violet); }
+.future-emotion-combobox__options { min-height: 0; overflow-y: auto; overscroll-behavior: contain; padding: .1rem 0; scrollbar-color: #c8b9f4 transparent; scrollbar-width: thin; }
+.future-emotion-combobox__options button { display: block; width: 100%; padding: .45rem .55rem; border: 0; border-radius: .45rem; background: transparent; color: var(--color-text); font: inherit; font-size: .7rem; text-align: left; }
+.future-emotion-combobox__options button:hover, .future-emotion-combobox__options button.is-active { background: var(--color-surface-violet); color: var(--color-violet-dark); }
+.future-emotion-combobox__options button.is-selected { font-weight: 750; }
+.future-emotion-combobox__empty { padding: .7rem .55rem; margin: 0; color: var(--color-text-muted); font-size: .68rem; }
 .future-add-group { margin-top: .75rem; padding: .5rem .7rem; border: 1px dashed #bca7eb; border-radius: .6rem; background: transparent; color: var(--color-violet-dark); font-size: .68rem; font-weight: 750; }
 .future-add-group:hover { background: var(--color-surface-violet); }
 .future-trigger-aside { display: grid; }
