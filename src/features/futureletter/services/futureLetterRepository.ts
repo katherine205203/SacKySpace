@@ -3,10 +3,10 @@ import { getPublishedRuntimeValue } from '../../../services/runtimeConfig'
 import { listActions } from '../../actionspace/actionService'
 import { listCheckins } from '../../checkin/services/checkinRepository'
 import { getReferenceData } from '../../checkin/services/referenceRepository'
-import { listDiaryEntries } from '../../diary/services/diaryRepository'
+import { listDiaryEntries, listJourneyEntries } from '../../diary/services/diaryRepository'
 import type { CheckinRecord, Emotion, ReferenceData } from '../../checkin/types'
 import type { FutureLetter, FutureLetterDraft, FutureLetterRule, FutureLetterRuleGroup, FutureLetterTriggerEvent, FutureLetterEvaluationContext } from '../types'
-import { ENVELOPE_ASSETS, RANDOM_DAILY_CHANCE, SEAL_ASSETS, evaluateGroup, evaluateRule, evaluateTriggerGroups, getFutureLetterLocalDate, getLocalDateKey, getEmotionChainEvidence, isHomeAvailable, isTriggerTypeLatched, selectRandomPoolLetter } from '../utils'
+import { ENVELOPE_ASSETS, RANDOM_DAILY_CHANCE, SEAL_ASSETS, evaluateGroup, evaluateRule, evaluateTriggerGroups, getFutureLetterLocalDate, getFutureLetterRuleValidationError, getEmotionChainEvidence, isHomeAvailable, isTriggerTypeLatched, selectRandomPoolLetter } from '../utils'
 import { isRichTextEmpty } from '../../../components/richText'
 
 const LOCAL_STORAGE_KEY = 'sacky:future-letter:v2:'
@@ -246,13 +246,9 @@ export const saveFutureLetterDraft = async (draft: FutureLetterDraft): Promise<F
 const validateSeal = (letter: FutureLetter): void => {
   if (!letter.title.trim()) throw new Error('Hãy đặt tiêu đề cho lá thư.')
   if (isRichTextEmpty(letter.body)) throw new Error('Hãy viết nội dung trước khi niêm phong.')
-  if (!letter.groups.some((group) => group.rules.length)) throw new Error('Hãy thêm ít nhất một cách để lá thư trở lại với mình.')
+  const ruleError = getFutureLetterRuleValidationError(letter.groups)
+  if (ruleError) throw new Error(ruleError)
   if (!letter.envelopeAssetId || !letter.sealAssetId) throw new Error('Hãy chọn phong bì và ấn niêm phong.')
-  for (const rule of letter.groups.flatMap((group) => group.rules)) {
-    if (rule.type === 'specific_date' && !rule.config.date) throw new Error('Hãy chọn ngày trở về cho điều kiện ngày cụ thể.')
-    if (rule.type === 'emotion_frequency' && !rule.config.emotionId) throw new Error('Hãy chọn cảm xúc cho điều kiện tần suất.')
-    if (rule.type !== 'random_date' && rule.type !== 'specific_date' && (rule.comparator === null || rule.threshold === null)) throw new Error('Mỗi điều kiện cần có comparator và giá trị.')
-  }
 }
 
 export const sealFutureLetter = async (draft: FutureLetterDraft): Promise<FutureLetter> => {
@@ -313,6 +309,24 @@ const getFirstQualifyingRule = (letter: FutureLetter, context: FutureLetterEvalu
   return null
 }
 
+const isRandomRule = (rule: FutureLetterRule): boolean => rule.type === 'random_date' || rule.type === 'random_condition'
+
+const getEligibleRandomRule = (letter: FutureLetter, context: FutureLetterEvaluationContext): FutureLetterRule | null => {
+  for (const group of letter.groups) {
+    const prerequisites = group.rules.filter((rule) => !isRandomRule(rule))
+    const prerequisitesMet = prerequisites.length === 0 || evaluateGroup({ ...group, rules: prerequisites }, context)
+    if (!prerequisitesMet) continue
+    for (const rule of group.rules.filter(isRandomRule)) {
+      if (rule.type === 'random_date') return rule
+      const mode = rule.config.randomMode ?? 'after_prerequisites'
+      if (mode === 'always') return rule
+      if (mode === 'window' && rule.config.windowStart && rule.config.windowEnd && context.today >= rule.config.windowStart && context.today <= rule.config.windowEnd) return rule
+      if (mode === 'after_prerequisites') return rule
+    }
+  }
+  return null
+}
+
 const localRollKey = (userId: string, date: string): string => `${LOCAL_STORAGE_KEY}roll:${userId}:${date}`
 
 const hasLocalRoll = (userId: string, date: string): boolean => {
@@ -326,14 +340,15 @@ export const reconcileFutureLetters = async (requestedUserId?: string): Promise<
   const userId = requestedUserId ?? await currentUserId()
   const letters = await listFutureLetters(userId)
   const today = getFutureLetterLocalDate()
-  const [reference, contextOptions, diaryEntries, actions] = await Promise.all([
+  const [reference, contextOptions, diaryEntries, journeys, actions] = await Promise.all([
     getReferenceData().catch(() => null as ReferenceData | null),
     getContextOptions(userId),
     listDiaryEntries().catch(() => []),
+    listJourneyEntries().catch(() => []),
     listActions(userId).catch(() => []),
   ])
   const checkins = reference ? contextOptions.checkins : []
-  const context: FutureLetterEvaluationContext = { today, checkins, diaryEntries, actions }
+  const baseContext: FutureLetterEvaluationContext = { today, checkins, diaryEntries, journeys, actions }
   const randomDailyChance = await getPublishedRuntimeValue('future_letter.random_daily_chance', RANDOM_DAILY_CHANCE)
   let nextLetters = [...letters]
   const updateLetter = async (letter: FutureLetter): Promise<void> => {
@@ -343,9 +358,11 @@ export const reconcileFutureLetters = async (requestedUserId?: string): Promise<
 
   for (const letter of nextLetters) {
     if (letter.state !== 'sealed_waiting') continue
+    const context: FutureLetterEvaluationContext = { ...baseContext, letterSentAt: letter.sealedAt ?? letter.createdAt }
+    if (letter.groups.some((group) => group.rules.some(isRandomRule))) continue
     if (!evaluateTriggerGroups(letter.groups, letter.groupOperator, context)) continue
     const qualifying = getFirstQualifyingRule(letter, context)
-    if (!qualifying || qualifying.rule.type === 'random_date') continue
+    if (!qualifying || qualifying.rule.type === 'random_date' || qualifying.rule.type === 'random_condition') continue
     if (isTriggerTypeLatched(letter.triggerEvents, qualifying.rule.type)) continue
     const event = createTriggerEvent(letter, qualifying.rule.type, qualifying.observedValues, qualifying.windowStart, qualifying.windowEnd, qualifying.rule.config.emotionId ? [qualifying.rule.config.emotionId] : [])
     await updateLetter({ ...letter, state: 'available_unopened', updatedAt: new Date().toISOString(), triggerEvents: [event, ...letter.triggerEvents] })
@@ -359,16 +376,20 @@ export const reconcileFutureLetters = async (requestedUserId?: string): Promise<
     } catch { shouldRoll = true }
     if (shouldRoll) {
       saveLocalRoll(userId, today)
-      const pool = nextLetters.filter((letter) => (letter.state === 'sealed_waiting' || letter.state === 'opened') && !letter.triggerEvents.some((event) => event.triggerType === 'random_date' && getLocalDateKey(event.triggeredAt) === today))
-      const selected = selectRandomPoolLetter(pool, Math.random(), Math.random(), randomDailyChance)
+      const eligible = nextLetters.map((letter) => ({ letter, rule: getEligibleRandomRule(letter, { ...baseContext, letterSentAt: letter.sealedAt ?? letter.createdAt }) })).filter((item): item is { letter: FutureLetter; rule: FutureLetterRule } => Boolean(item.rule) && item.letter.state === 'sealed_waiting' && !item.letter.triggerEvents.some((event) => event.triggerType === 'random_date' || event.triggerType === 'random_condition'))
+      const pool = eligible.map((item) => item.letter)
+      const poolChance = eligible.some((item) => item.rule.type === 'random_date') ? randomDailyChance : Math.max(...eligible.map((item) => item.rule.config.probability ?? item.rule.config.dailyChance ?? randomDailyChance), 0)
+      const selected = selectRandomPoolLetter(pool, Math.random(), Math.random(), poolChance)
       let canApplySelection = true
       try {
-        const result = await supabase.from('future_letter_random_rolls').insert({ user_id: userId, local_date: today, daily_chance: randomDailyChance, rolled: true, selected_letter_id: selected?.id ?? null })
+        const result = await supabase.from('future_letter_random_rolls').insert({ user_id: userId, local_date: today, daily_chance: poolChance, rolled: true, selected_letter_id: selected?.id ?? null })
         // A concurrent device may win the unique (user, local day) roll.
         if (result.error?.code === '23505') canApplySelection = false
       } catch { /* Local roll remains idempotent when the migration is not live. */ }
       if (selected && canApplySelection) {
-        const event = createTriggerEvent(selected, 'random_date', { daily_chance: randomDailyChance, pool_size: pool.length, selected_letter_id: selected.id }, null, null, [])
+        const selectedRule = eligible.find((item) => item.letter.id === selected.id)?.rule
+        const eventType = selectedRule?.type ?? 'random_date'
+        const event = createTriggerEvent(selected, eventType, { daily_chance: selectedRule?.config.probability ?? selectedRule?.config.dailyChance ?? poolChance, pool_size: pool.length, selected_letter_id: selected.id }, selectedRule?.config.windowStart ?? null, selectedRule?.config.windowEnd ?? null, [])
         await updateLetter({ ...selected, state: 'available_unopened', updatedAt: new Date().toISOString(), triggerEvents: [event, ...selected.triggerEvents] })
       }
     }

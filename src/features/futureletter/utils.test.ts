@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest'
 import type { CheckinRecord } from '../checkin/types'
 import type { ActionRecord } from '../actionspace/types'
 import type { FutureLetterRuleGroup } from './types'
-import { compareValues, evaluateTriggerGroups, getCompletedActionCount, getEmotionChainEvidence, isHomeAvailable, isTriggerTypeLatched, selectRandomPoolLetter, TRIGGER_OPTIONS } from './utils'
+import { compareValues, evaluateRule, evaluateTriggerGroups, getCompletedActionCount, getEmotionChainEvidence, getFutureLetterRuleValidationError, isHomeAvailable, isTriggerTypeLatched, selectRandomPoolLetter, TRIGGER_OPTIONS } from './utils'
 
 const checkin = (date: string, primaryEmotionId = 'calm', secondaryEmotionIds: string[] = []): CheckinRecord => ({
   id: date,
@@ -87,5 +87,17 @@ describe('FutureMe trigger semantics', () => {
     const copy = TRIGGER_OPTIONS.map((option) => `${option.label} ${option.description}`).join(' ')
     expect(copy).not.toMatch(/latch|pool|snapshot|immutable|comparator|condition group/i)
     expect(copy).toContain('Một ngày bất chợt')
+  })
+
+  it('evaluates minimum wait and emotion presence without a technical rule summary', () => {
+    const context = { today: '2026-09-12', checkins: [checkin('2026-09-10')], diaryEntries: [], actions: [], letterSentAt: '2026-08-01T08:00:00+07:00' }
+    expect(evaluateRule({ id: 'wait', groupId: 'g', type: 'minimum_wait', comparator: '>=', threshold: 30, config: { amount: 30, unit: 'day' }, position: 1 }, context).qualifies).toBe(true)
+    expect(evaluateRule({ id: 'emotion', groupId: 'g', type: 'emotion_condition', comparator: null, threshold: null, config: { emotionId: 'calm', emotionOperator: 'exists', windowType: 'last_days', windowValue: 7 }, position: 2 }, context).qualifies).toBe(true)
+  })
+
+  it('rejects empty groups, invalid probability and invalid date windows', () => {
+    expect(getFutureLetterRuleValidationError([{ id: 'empty', operator: 'AND', position: 1, rules: [] }])).toContain('ít nhất một điều kiện')
+    expect(getFutureLetterRuleValidationError([{ id: 'random', operator: 'AND', position: 1, rules: [{ id: 'r', groupId: 'random', type: 'random_condition', comparator: null, threshold: null, config: { probability: 1.2 }, position: 1 }] }])).toContain('Xác suất')
+    expect(getFutureLetterRuleValidationError([{ id: 'window', operator: 'AND', position: 1, rules: [{ id: 'r', groupId: 'window', type: 'time_window', comparator: '>=', threshold: 1, config: { timeWindowMode: 'date_range', startDate: '2026-09-20', endDate: '2026-09-19' }, position: 1 }] }])).toContain('Khoảng ngày')
   })
 })
