@@ -17,8 +17,15 @@ let contextOptionsUserId: string | null = null
 
 const createId = (): string => {
   if (typeof crypto !== 'undefined' && 'randomUUID' in crypto) return crypto.randomUUID()
-  return `future-letter-${Date.now()}-${Math.random().toString(16).slice(2)}`
+  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, (character) => {
+    const random = Math.random() * 16 | 0
+    const value = character === 'x' ? random : random & 0x3 | 0x8
+    return value.toString(16)
+  })
 }
+
+const UUID_PATTERN = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i
+const isUuid = (value: string | undefined): value is string => Boolean(value && UUID_PATTERN.test(value))
 
 const currentUserId = async (): Promise<string> => {
   const { data, error } = await supabase.auth.getUser()
@@ -135,23 +142,23 @@ export const listFutureLetters = async (requestedUserId?: string): Promise<Futur
 const normalizeDraft = (draft: FutureLetterDraft, userId: string, existing: FutureLetter | null): FutureLetter => {
   const now = new Date().toISOString()
   const groups = draft.groups.map((group, groupIndex) => {
-    const groupId = group.id || createId()
+    const groupId = isUuid(group.id) ? group.id : createId()
     return {
       id: groupId,
       operator: group.operator,
       position: groupIndex + 1,
-      rules: group.rules.map((rule, ruleIndex) => ({ ...rule, id: rule.id || createId(), groupId, position: ruleIndex + 1 })),
+      rules: group.rules.map((rule, ruleIndex) => ({ ...rule, id: isUuid(rule.id) ? rule.id : createId(), groupId, position: ruleIndex + 1 })),
     }
   })
   return {
-    id: draft.id ?? existing?.id ?? createId(),
+    id: isUuid(draft.id) ? draft.id : isUuid(existing?.id) ? existing.id : createId(),
     userId,
     title: draft.title,
     body: draft.body,
     state: draft.state,
     groupOperator: draft.groupOperator,
     groups,
-    attachments: draft.attachments.map((attachment, index) => ({ ...attachment, id: attachment.id || createId(), position: index + 1 })),
+    attachments: draft.attachments.map((attachment, index) => ({ ...attachment, id: isUuid(attachment.id) ? attachment.id : createId(), position: index + 1 })),
     envelopeAssetId: draft.envelopeAssetId,
     sealAssetId: draft.sealAssetId,
     decorationSnapshot: draft.decorationSnapshot,
