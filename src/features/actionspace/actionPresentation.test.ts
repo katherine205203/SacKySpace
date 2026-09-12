@@ -34,6 +34,7 @@ const checkin = (id: string, color: string): CheckinRecord => ({
   needs: [],
   contexts: [],
   actions: [],
+  occurredAt: '2026-08-30T01:00:00.000Z',
   createdAt: '2026-08-30T01:00:00.000Z',
   updatedAt: '2026-08-30T01:00:00.000Z',
 })

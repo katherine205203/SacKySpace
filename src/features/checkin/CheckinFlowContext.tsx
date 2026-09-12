@@ -13,7 +13,7 @@ const readStoredDraft = (): CheckinDraft | null => {
     if (!stored) return null
     const parsed = JSON.parse(stored) as CheckinDraft
     if (!parsed || (parsed.checkinType !== 'emotion' && parsed.checkinType !== 'unknown')) return null
-    return parsed
+    return { ...parsed, occurredAt: parsed.occurredAt ?? (parsed.id ? undefined : new Date().toISOString()) }
   } catch {
     return null
   }
@@ -49,7 +49,7 @@ export function CheckinFlowProvider({ children }: { children: ReactNode }) {
         const result = nextDraft.id
           ? await updateCheckin({ ...nextDraft, id: nextDraft.id })
           : await createCheckin(nextDraft)
-        const savedDraft = { ...nextDraft, id: result.id, createdAt: result.createdAt }
+        const savedDraft = { ...nextDraft, id: result.id, occurredAt: result.occurredAt, createdAt: result.createdAt }
         skipDraftPersistence.current = true
         setDraft(createEmptyDraft(nextDraft.checkinType))
         window.localStorage.removeItem(DRAFT_STORAGE_KEY)

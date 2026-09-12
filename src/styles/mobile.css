@@ -40,7 +40,8 @@
   .mobile-bottom-sheet, .mobile-fullscreen-sheet { position: relative; width: 100%; max-height: 92dvh; overflow-y: auto; padding: 1.2rem calc(.95rem + env(safe-area-inset-right)) calc(1rem + env(safe-area-inset-bottom)) calc(.95rem + env(safe-area-inset-left)); border: 1px solid rgba(116,60,255,.16); border-radius: 1.25rem 1.25rem 0 0; background: linear-gradient(145deg, #fff, #fbf8ff); box-shadow: var(--shadow-floating); }
   .mobile-fullscreen-sheet-backdrop { place-items: stretch; }
   .mobile-fullscreen-sheet { max-height: none; height: 100dvh; overflow-y: auto; padding-top: calc(1.2rem + env(safe-area-inset-top)); border: 0; border-radius: 0; }
-  .mobile-sheet__close { display: grid; position: absolute; z-index: 2; top: .7rem; right: .7rem; width: 2.75rem; height: 2.75rem; place-items: center; border: 0; border-radius: 50%; color: var(--color-text-muted); background: var(--color-surface-soft); font-size: 1.2rem; }
+  .mobile-sheet__close { display: grid; position: absolute; z-index: 10; top: .55rem; right: .6rem; width: 2.75rem; min-width: 2.75rem; height: 2.75rem; min-height: 2.75rem; place-items: center; padding: 0; border: 0; border-radius: 50%; color: var(--color-text-muted); background: var(--color-surface-soft); font-size: 1.4rem; line-height: 1; cursor: pointer; touch-action: manipulation; transition: background .16s ease, color .16s ease, box-shadow .16s ease; }
+  .mobile-sheet__close:hover, .mobile-sheet__close:focus-visible { background: var(--color-surface-violet); color: var(--color-violet-dark); box-shadow: 0 0 0 .18rem rgba(116,60,255,.12); outline: none; }
 
   .button { min-height: 2.75rem; }
   .button--small { min-height: 2.5rem; }

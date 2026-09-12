@@ -18,6 +18,7 @@ const emotionCheckin = (id: string, createdAt: string, note = 'Một ghi chú', 
   needs: [],
   contexts: [],
   actions: [],
+  occurredAt: createdAt,
   createdAt,
   updatedAt,
 })

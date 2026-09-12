@@ -70,7 +70,8 @@
 .gift-modal__header { display: flex; align-items: start; justify-content: space-between; gap: 1rem; padding: 1.25rem 1.4rem 1rem; border-bottom: 1px solid var(--color-divider); }
 .gift-modal__header h2 { margin: 0 0 .25rem; font-size: 1.35rem; letter-spacing: -.045em; }
 .gift-modal__header p:not(.eyebrow) { margin: 0; color: var(--color-text-muted); font-size: .72rem; }
-.gift-modal__close { position: absolute; z-index: 2; top: .75rem; right: .8rem; width: 2rem; height: 2rem; border: 0; border-radius: 50%; background: var(--color-surface-soft); color: var(--color-text-muted); font-size: 1.2rem; }
+.gift-modal__close { display: grid; position: absolute; z-index: 10; top: .55rem; right: .6rem; width: 2.75rem; min-width: 2.75rem; height: 2.75rem; min-height: 2.75rem; place-items: center; padding: 0; border: 0; border-radius: 50%; background: var(--color-surface-soft); color: var(--color-text-muted); font-size: 1.4rem; line-height: 1; cursor: pointer; touch-action: manipulation; transition: background .16s ease, color .16s ease, box-shadow .16s ease; }
+.gift-modal__close:hover, .gift-modal__close:focus-visible { background: var(--color-surface-violet); color: var(--color-violet-dark); box-shadow: 0 0 0 .18rem rgba(116,60,255,.12); outline: none; }
 .gift-stepper { display: flex; gap: .3rem; padding: .25rem; margin-right: 2.2rem; border-radius: 999px; background: var(--color-surface-soft); }
 .gift-stepper span { padding: .38rem .55rem; border-radius: 999px; color: var(--color-text-soft); font-size: .62rem; font-weight: 750; }
 .gift-stepper span.is-active { color: #fff; background: var(--color-violet); }

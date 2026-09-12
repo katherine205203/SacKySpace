@@ -1,6 +1,6 @@
 import { supabase } from '../../../services/supabase/client'
 import type { ActionDraft, CheckinDraft, CheckinRecord, ReferenceData } from '../types'
-import { getCurrentStreakFromCreatedAt, getHistoryDateRange, getLocalDateKey } from '../utils/history'
+import { getCurrentStreakFromOccurredAt, getHistoryDateRange, getLocalDateKey } from '../utils/history'
 import { isRichTextEmpty } from '../../../components/richText'
 
 type CheckinRow = {
@@ -11,6 +11,14 @@ type CheckinRow = {
   intensity: number | null
   note: string | null
   unknown_prompt_id: string | null
+  occurred_at?: string | null
+  created_at: string
+  updated_at: string
+}
+
+type CheckinTimeRow = {
+  id: string
+  occurred_at?: string | null
   created_at: string
   updated_at: string
 }
@@ -32,6 +40,19 @@ const currentUserId = async (): Promise<string> => {
   if (error) throw error
   if (!data.user) throw new Error('You must be signed in to use Check-in.')
   return data.user.id
+}
+
+const CHECKIN_SELECT = 'id, user_id, checkin_type, primary_emotion_id, intensity, note, unknown_prompt_id, occurred_at, created_at, updated_at'
+const CHECKIN_LEGACY_SELECT = 'id, user_id, checkin_type, primary_emotion_id, intensity, note, unknown_prompt_id, created_at, updated_at'
+const isMissingOccurredAtError = (error: { message?: string } | null | undefined): boolean => Boolean(error && /occurred_at|column .* does not exist|schema cache/i.test(error.message ?? ''))
+
+const getOccurredAt = (row: Pick<CheckinRow, 'occurred_at' | 'created_at'>): string => row.occurred_at ?? row.created_at
+
+export const normalizeOccurredAt = (occurredAt?: string): string => {
+  const value = occurredAt ? new Date(occurredAt) : new Date()
+  if (Number.isNaN(value.getTime())) throw new Error('Thời điểm trải nghiệm không hợp lệ.')
+  if (value.getTime() > Date.now()) throw new Error('Không thể chọn thời gian trong tương lai.')
+  return value.toISOString()
 }
 
 const insertRelations = async (draft: CheckinDraft): Promise<void> => {
@@ -96,44 +117,52 @@ const saveRelationsAndActions = async (draft: CheckinDraft, userId: string): Pro
 
 export const createCheckin = async (
   draft: CheckinDraft,
-): Promise<Pick<CheckinRecord, 'id' | 'createdAt' | 'updatedAt'>> => {
+): Promise<Pick<CheckinRecord, 'id' | 'occurredAt' | 'createdAt' | 'updatedAt'>> => {
   const userId = await currentUserId()
-  const { data, error } = await supabase
+  const occurredAt = normalizeOccurredAt(draft.occurredAt)
+  const basePayload = {
+    user_id: userId,
+    checkin_type: draft.checkinType,
+    primary_emotion_id: draft.primaryEmotionId,
+    intensity: draft.intensity,
+    note: isRichTextEmpty(draft.note) ? null : draft.note,
+    unknown_prompt_id: draft.unknownPromptId,
+  }
+  const { data: rawData, error } = await supabase
     .from('checkins')
-    .insert({
-      user_id: userId,
-      checkin_type: draft.checkinType,
-      primary_emotion_id: draft.primaryEmotionId,
-      intensity: draft.intensity,
-      note: isRichTextEmpty(draft.note) ? null : draft.note,
-      unknown_prompt_id: draft.unknownPromptId,
-    })
-    .select('id, created_at, updated_at')
+    .insert({ ...basePayload, occurred_at: occurredAt })
+    .select('id, occurred_at, created_at, updated_at')
     .single()
+  if (isMissingOccurredAtError(error)) throw new Error('Database Check-in chưa được cập nhật migration thời điểm trải nghiệm.')
   if (error) throw error
+  const data = rawData as CheckinTimeRow
 
   const persistedDraft = { ...draft, id: data.id }
   await saveRelationsAndActions(persistedDraft, userId)
-  return { id: data.id, createdAt: data.created_at, updatedAt: data.updated_at }
+  return { id: data.id, occurredAt: getOccurredAt(data), createdAt: data.created_at, updatedAt: data.updated_at }
 }
 
 export const updateCheckin = async (
   draft: CheckinDraft & { id: string },
-): Promise<Pick<CheckinRecord, 'id' | 'createdAt' | 'updatedAt'>> => {
+): Promise<Pick<CheckinRecord, 'id' | 'occurredAt' | 'createdAt' | 'updatedAt'>> => {
   const userId = await currentUserId()
-  const { data, error } = await supabase
+  const occurredAt = normalizeOccurredAt(draft.occurredAt)
+  const basePayload = {
+    checkin_type: draft.checkinType,
+    primary_emotion_id: draft.primaryEmotionId,
+    intensity: draft.intensity,
+    note: isRichTextEmpty(draft.note) ? null : draft.note,
+    unknown_prompt_id: draft.unknownPromptId,
+  }
+  const { data: rawData, error } = await supabase
     .from('checkins')
-    .update({
-      checkin_type: draft.checkinType,
-      primary_emotion_id: draft.primaryEmotionId,
-      intensity: draft.intensity,
-      note: isRichTextEmpty(draft.note) ? null : draft.note,
-      unknown_prompt_id: draft.unknownPromptId,
-    })
+    .update({ ...basePayload, occurred_at: occurredAt })
     .eq('id', draft.id)
-    .select('id, created_at, updated_at')
+    .select('id, occurred_at, created_at, updated_at')
     .single()
+  if (isMissingOccurredAtError(error)) throw new Error('Database Check-in chưa được cập nhật migration thời điểm trải nghiệm.')
   if (error) throw error
+  const data = rawData as CheckinTimeRow
 
   const relationTables = ['checkin_secondary_emotions', 'checkin_needs', 'checkin_contexts'] as const
   for (const table of relationTables) {
@@ -148,7 +177,7 @@ export const updateCheckin = async (
   if (actionDeleteError) throw actionDeleteError
 
   await saveRelationsAndActions(draft, userId)
-  return { id: data.id, createdAt: data.created_at, updatedAt: data.updated_at }
+  return { id: data.id, occurredAt: getOccurredAt(data), createdAt: data.created_at, updatedAt: data.updated_at }
 }
 
 const loadRelations = async (ids: string[]) => {
@@ -216,6 +245,7 @@ const mapRecord = (
         status: action.status,
         completedAt: action.completed_at,
       })),
+    occurredAt: getOccurredAt(row),
     createdAt: row.created_at,
     updatedAt: row.updated_at,
   }
@@ -230,7 +260,8 @@ export type CheckinLandingSummary = {
 }
 
 const LANDING_TIME_ZONE = 'Asia/Ho_Chi_Minh'
-const LANDING_SELECT = 'id, user_id, checkin_type, primary_emotion_id, intensity, note, unknown_prompt_id, created_at, updated_at'
+const LANDING_SELECT = CHECKIN_SELECT
+const LANDING_LEGACY_SELECT = CHECKIN_LEGACY_SELECT
 
 const getLocalDayStart = (dateKey: string): Date => new Date(`${dateKey}T00:00:00+07:00`)
 
@@ -248,32 +279,43 @@ export const getCheckinLandingSummary = async (reference: ReferenceData): Promis
   const monthStartIso = monthStart ? getLocalDayStart(monthStart).toISOString() : undefined
   const todayStartIso = getLocalDayStart(today).toISOString()
   const tomorrowStartIso = tomorrow.toISOString()
-  const scoped = () => supabase.from('checkins').select('id', { count: 'exact', head: true }).eq('user_id', userId)
+  const load = async (dateColumn: 'occurred_at' | 'created_at') => {
+    const select = dateColumn === 'occurred_at' ? LANDING_SELECT : LANDING_LEGACY_SELECT
+    const scoped = () => supabase.from('checkins').select('id', { count: 'exact', head: true }).eq('user_id', userId)
+    const [recentResult, totalResult, periodResult, todayResult, streakResult] = await Promise.all([
+      supabase.from('checkins').select(select).eq('user_id', userId).order(dateColumn, { ascending: false }).limit(3),
+      scoped(),
+      monthStartIso ? scoped().gte(dateColumn, monthStartIso) : scoped(),
+      scoped().gte(dateColumn, todayStartIso).lt(dateColumn, tomorrowStartIso),
+      supabase.from('checkins').select(dateColumn).eq('user_id', userId).order(dateColumn, { ascending: false }).limit(370),
+    ])
+    return { dateColumn, recentResult, totalResult, periodResult, todayResult, streakResult }
+  }
 
-  const [recentResult, totalResult, periodResult, todayResult, streakResult] = await Promise.all([
-    supabase.from('checkins').select(LANDING_SELECT).eq('user_id', userId).order('created_at', { ascending: false }).limit(3),
-    scoped(),
-    monthStartIso ? scoped().gte('created_at', monthStartIso) : scoped(),
-    scoped().gte('created_at', todayStartIso).lt('created_at', tomorrowStartIso),
-    supabase.from('checkins').select('created_at').eq('user_id', userId).order('created_at', { ascending: false }).limit(370),
-  ])
-  for (const result of [recentResult, totalResult, periodResult, todayResult, streakResult]) if (result.error) throw result.error
+  let loaded = await load('occurred_at')
+  const results = [loaded.recentResult, loaded.totalResult, loaded.periodResult, loaded.todayResult, loaded.streakResult]
+  if (results.some((result) => isMissingOccurredAtError(result.error))) loaded = await load('created_at')
+  for (const result of [loaded.recentResult, loaded.totalResult, loaded.periodResult, loaded.todayResult, loaded.streakResult]) if (result.error) throw result.error
 
   const emptyRelations = { secondary: [], needs: [], contexts: [], actions: [] as ActionRow[] }
-  const recent = ((recentResult.data ?? []) as CheckinRow[]).map((row) => mapRecord(row, emptyRelations, reference))
-  const createdAts = ((streakResult.data ?? []) as Array<{ created_at: string }>).map((row) => row.created_at)
-  return { recent, todayCount: todayResult.count ?? 0, periodCount: periodResult.count ?? 0, totalCount: totalResult.count ?? 0, currentStreak: getCurrentStreakFromCreatedAt(createdAts, now, LANDING_TIME_ZONE) }
+  const recent = ((loaded.recentResult.data ?? []) as unknown as CheckinRow[]).map((row) => mapRecord(row, emptyRelations, reference))
+  const occurredAts = (loaded.streakResult.data ?? [])
+    .map((row) => String((row as Record<string, unknown>)[loaded.dateColumn] ?? ''))
+    .filter(Boolean)
+  return { recent, todayCount: loaded.todayResult.count ?? 0, periodCount: loaded.periodResult.count ?? 0, totalCount: loaded.totalResult.count ?? 0, currentStreak: getCurrentStreakFromOccurredAt(occurredAts, now, LANDING_TIME_ZONE) }
 }
 
 export const listCheckins = async (reference: ReferenceData, userId?: string): Promise<CheckinRecord[]> => {
-  let query = supabase
-    .from('checkins')
-    .select('id, user_id, checkin_type, primary_emotion_id, intensity, note, unknown_prompt_id, created_at, updated_at')
-    .order('created_at', { ascending: false })
-  if (userId) query = query.eq('user_id', userId)
-  const { data, error } = await query
+  const run = (select: string, orderColumn: 'occurred_at' | 'created_at') => {
+    let query = supabase.from('checkins').select(select).order(orderColumn, { ascending: false })
+    if (userId) query = query.eq('user_id', userId)
+    return query
+  }
+  let result = await run(CHECKIN_SELECT, 'occurred_at')
+  if (isMissingOccurredAtError(result.error)) result = await run(CHECKIN_LEGACY_SELECT, 'created_at')
+  const { data, error } = result
   if (error) throw error
-  const rows = (data ?? []) as CheckinRow[]
+  const rows = (data ?? []) as unknown as CheckinRow[]
   const relations = await loadRelations(rows.map((row) => row.id))
   return rows.map((row) => mapRecord(row, relations, reference))
 }
@@ -282,11 +324,9 @@ export const getCheckin = async (
   id: string,
   reference: ReferenceData,
 ): Promise<CheckinRecord> => {
-  const { data, error } = await supabase
-    .from('checkins')
-    .select('id, user_id, checkin_type, primary_emotion_id, intensity, note, unknown_prompt_id, created_at, updated_at')
-    .eq('id', id)
-    .single()
+  let result = await supabase.from('checkins').select(CHECKIN_SELECT).eq('id', id).single()
+  if (isMissingOccurredAtError(result.error)) result = await supabase.from('checkins').select(CHECKIN_LEGACY_SELECT).eq('id', id).single()
+  const { data, error } = result
   if (error) throw error
   const relations = await loadRelations([id])
   return mapRecord(data as CheckinRow, relations, reference)
@@ -322,6 +362,7 @@ export const detachLinkedActions = async (id: string): Promise<void> => {
 export const draftFromRecord = (record: CheckinRecord): CheckinDraft => ({
   id: record.id,
   createdAt: record.createdAt,
+  occurredAt: record.occurredAt,
   checkinType: record.checkinType,
   primaryEmotionId: record.primaryEmotionId,
   intensity: record.intensity,

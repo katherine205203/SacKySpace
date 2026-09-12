@@ -1,4 +1,4 @@
-import { filterByDateRange, getCurrentStreakFromCreatedAt, getHistoryDateRange, getLocalDateKey, type DateRange, type HistoryPreset } from '../../checkin/utils/history'
+import { filterByDateRange, getCurrentStreakFromOccurredAt, getHistoryDateRange, getLocalDateKey, type DateRange, type HistoryPreset } from '../../checkin/utils/history'
 import type { CheckinRecord } from '../../checkin/types'
 import { intensityToPresenceWeight, type ColorOrbEntry } from '../../checkin/utils/colorOrb'
 import type { HomeRange, HomeReminder } from '../types'
@@ -53,7 +53,7 @@ export const getHomeOrbEntries = (records: readonly CheckinRecord[]): ColorEntry
   })
 
 export const getCurrentStreak = (records: readonly CheckinRecord[], now = new Date()): number => {
-  return getCurrentStreakFromCreatedAt(records.map((record) => record.createdAt), now, HOME_TIME_ZONE)
+  return getCurrentStreakFromOccurredAt(records.map((record) => record.occurredAt), now, HOME_TIME_ZONE)
 }
 
 export const getRecentJourneyCheckins = (
@@ -63,8 +63,8 @@ export const getRecentJourneyCheckins = (
   const today = getLocalDateKey(now.toISOString(), HOME_TIME_ZONE)
   const recentDays = new Set([today, addDays(today, -1), addDays(today, -2)])
   return records
-    .filter((record) => recentDays.has(getLocalDateKey(record.createdAt, HOME_TIME_ZONE)))
-    .sort((left, right) => right.createdAt.localeCompare(left.createdAt))
+    .filter((record) => recentDays.has(getLocalDateKey(record.occurredAt, HOME_TIME_ZONE)))
+    .sort((left, right) => right.occurredAt.localeCompare(left.occurredAt))
 }
 
 export const getCheckinPresentation = (record: CheckinRecord): { title: string; emoji: string; color: string } => {
@@ -139,29 +139,29 @@ export const getHomeActionSummary = (
 
 export const isReminderCompleted = isCompleted
 
-export const formatCheckinTime = (createdAt: string): string =>
+export const formatCheckinTime = (occurredAt: string): string =>
   new Intl.DateTimeFormat('vi-VN', {
     timeZone: HOME_TIME_ZONE,
     hour: '2-digit',
     minute: '2-digit',
     hour12: false,
-  }).format(new Date(createdAt))
+  }).format(new Date(occurredAt))
 
-export const formatCheckinDate = (createdAt: string): string =>
+export const formatCheckinDate = (occurredAt: string): string =>
   new Intl.DateTimeFormat('vi-VN', {
     timeZone: HOME_TIME_ZONE,
     day: 'numeric',
     month: 'short',
     year: 'numeric',
-  }).format(new Date(createdAt))
+  }).format(new Date(occurredAt))
 
-export const formatCheckinDateShort = (createdAt: string): string =>
+export const formatCheckinDateShort = (occurredAt: string): string =>
   new Intl.DateTimeFormat('en-GB', {
     timeZone: HOME_TIME_ZONE,
     day: '2-digit',
     month: '2-digit',
     year: '2-digit',
-  }).format(new Date(createdAt))
+  }).format(new Date(occurredAt))
 
 export const formatReminderSchedule = (reminder: HomeReminder, now = new Date()): string => {
   if (!reminder.plannedDate) return 'Chưa lên lịch'

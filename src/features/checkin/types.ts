@@ -100,6 +100,7 @@ export type ReferenceData = {
 export type CheckinDraft = {
   id?: string
   createdAt?: string
+  occurredAt?: string
   checkinType: CheckinType
   primaryEmotionId: string | null
   intensity: number | null
@@ -125,6 +126,7 @@ export type CheckinRecord = {
   needs: Need[]
   contexts: Context[]
   actions: ActionDraft[]
+  occurredAt: string
   createdAt: string
   updatedAt: string
 }

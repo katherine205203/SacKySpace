@@ -106,7 +106,7 @@ export const getEmotionChainEvidence = (
   scope: 'primary' | 'primary_secondary' = 'primary',
   today: string,
 ): EmotionChainEvidence => {
-  const dates = sortedDates(records.filter((record) => emotionMatches(record, emotionId, scope)).map((record) => getLocalDateKey(record.createdAt))).filter((date) => date <= today)
+  const dates = sortedDates(records.filter((record) => emotionMatches(record, emotionId, scope)).map((record) => getLocalDateKey(record.occurredAt))).filter((date) => date <= today)
   if (!dates.length) return { count: 0, windowStart: null, windowEnd: null }
 
   let chainStart = dates[0]

@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { isRichTextEmpty, parseRichText, RICH_TEXT_PREFIX, richTextToPlainText, serializeRichText, type RichTextDocument } from './richText'
+import { isRichTextEmpty, parseRichText, RICH_TEXT_PREFIX, richTextToPlainText, richTextWordCount, serializeRichText, type RichTextDocument } from './richText'
 
 describe('rich text document compatibility', () => {
   it('treats legacy plain text as one normal paragraph', () => {
@@ -34,5 +34,11 @@ describe('rich text document compatibility', () => {
     expect(isRichTextEmpty(empty)).toBe(true)
     expect(isRichTextEmpty('')).toBe(true)
     expect(isRichTextEmpty('Nội dung')).toBe(false)
+  })
+
+  it('counts words from plain and structured rich text', () => {
+    expect(richTextWordCount('Một   ngày\nnhẹ nhàng')).toBe(4)
+    expect(richTextWordCount(serializeRichText({ type: 'doc', version: 1, lineSpacing: 'normal', paragraphSpacing: 'normal', blocks: [{ type: 'paragraph', children: [{ text: 'Viết điều này' }] }, { type: 'quote', children: [{ text: 'cho mình' }] }] }))).toBe(5)
+    expect(richTextWordCount('   ')).toBe(0)
   })
 })

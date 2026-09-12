@@ -21,6 +21,6 @@ export const getJourneyDays = (rangeStart: string, rangeEnd: string): string[] =
 export const getJourneyCoverage = (rangeStart: string, rangeEnd: string, dailyEntries: readonly DiaryEntry[], checkins: readonly CheckinRecord[], actions: readonly ActionRecord[]): JourneyCoverage => ({
   dayCount: getJourneyDays(rangeStart, rangeEnd).length,
   dailyDiaryCount: dailyEntries.filter((entry) => journeyDateInRange(entry.localDate, rangeStart, rangeEnd)).length,
-  checkinCount: checkins.filter((record) => journeyDateInRange(journeyDateFor(record.createdAt), rangeStart, rangeEnd)).length,
+  checkinCount: checkins.filter((record) => journeyDateInRange(journeyDateFor(record.occurredAt), rangeStart, rangeEnd)).length,
   completedActionCount: actions.filter((action) => action.status === 'completed' && action.completedAt && journeyDateInRange(journeyDateFor(action.completedAt), rangeStart, rangeEnd)).length,
 })

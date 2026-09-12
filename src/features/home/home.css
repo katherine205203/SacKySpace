@@ -347,22 +347,29 @@
 
 .home-v2__modal-close {
   position: absolute;
-  z-index: 4;
-  top: .7rem;
-  right: .7rem;
+  z-index: 10;
+  top: .55rem;
+  right: .6rem;
   display: grid;
-  width: 2rem;
-  height: 2rem;
+  width: 2.75rem;
+  min-width: 2.75rem;
+  height: 2.75rem;
+  min-height: 2.75rem;
   place-items: center;
+  padding: 0;
   border: 1px solid rgba(113,88,180,.12);
   border-radius: 50%;
   background: rgba(255,255,255,.92);
   color: var(--color-text-muted);
-  font-size: 1.15rem;
+  font-size: 1.4rem;
+  line-height: 1;
+  cursor: pointer;
+  touch-action: manipulation;
   box-shadow: 0 5px 14px rgba(60,35,95,.1);
+  transition: background .16s ease, color .16s ease, box-shadow .16s ease;
 }
 
-.home-v2__modal-close:hover { background: var(--color-surface-violet); color: var(--color-violet-dark); }
+.home-v2__modal-close:hover, .home-v2__modal-close:focus-visible { background: var(--color-surface-violet); color: var(--color-violet-dark); box-shadow: 0 0 0 .18rem rgba(116,60,255,.12); outline: none; }
 .home-v2__detail-layout { display: grid; grid-template-columns: minmax(0, 1.42fr) minmax(15rem, .78fr); gap: 1.1rem; }
 .home-v2__detail-summary { align-self: start; min-width: 0; padding: .9rem; border: 1px solid rgba(113,88,180,.1); border-radius: 1rem; background: linear-gradient(145deg, #f0eaff, #fff3f7 62%, #eef9ff); }
 .home-v2__detail-summary-heading { display: flex; align-items: center; justify-content: space-between; padding-bottom: .65rem; border-bottom: 1px solid rgba(113,88,180,.12); }
@@ -403,6 +410,9 @@
 .home-v2__detail-section:last-of-type { border-bottom: 0; }
 .home-v2__detail-section > p { margin: 0; color: var(--color-text-muted); font-size: .76rem; line-height: 1.45; white-space: pre-wrap; }
 .home-v2__detail-label { color: var(--color-text-muted); font-size: .63rem; font-weight: 800; letter-spacing: .09em; text-transform: uppercase; }
+.home-v2__detail-metadata { display: grid; gap: .55rem; }
+.home-v2__detail-metadata span { display: grid; gap: .12rem; color: var(--color-text-muted); font-size: .72rem; }
+.home-v2__detail-metadata b { color: var(--color-text); font-size: .75rem; font-weight: 700; }
 .home-v2__detail-emotion { display: grid; grid-template-columns: .7rem 1fr; align-items: center; column-gap: .55rem; }
 .home-v2__detail-emotion > span { width: .7rem; height: .7rem; border-radius: 50%; }
 .home-v2__detail-emotion strong { font-size: .82rem; }

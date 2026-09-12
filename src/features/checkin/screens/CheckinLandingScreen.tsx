@@ -266,7 +266,7 @@ function RecentActivityItem({ record }: { record: CheckinLandingSummary['recent'
       </span>
       <div className="landing-recent__item-copy">
         <small>
-          {formatRecentDate(record.createdAt)} <span aria-hidden="true">•</span> {activityLabel}
+          {formatRecentDate(record.occurredAt)} <span aria-hidden="true">•</span> {activityLabel}
         </small>
         <strong>{detail}</strong>
         <p>{richTextToPlainText(record.note).trim() || (isUnknown ? 'Một khoảng dừng để viết ra điều đang hiện diện.' : 'Bạn đã dành thời gian lắng nghe mình.')}</p>
@@ -276,12 +276,12 @@ function RecentActivityItem({ record }: { record: CheckinLandingSummary['recent'
   )
 }
 
-function formatRecentDate(createdAt: string) {
+function formatRecentDate(occurredAt: string) {
   const today = getLocalDateKey(new Date().toISOString(), LANDING_TIME_ZONE)
-  const recordDay = getLocalDateKey(createdAt, LANDING_TIME_ZONE)
+  const recordDay = getLocalDateKey(occurredAt, LANDING_TIME_ZONE)
   const dayDifference = Math.round((Date.parse(`${today}T00:00:00Z`) - Date.parse(`${recordDay}T00:00:00Z`)) / 86_400_000)
   if (dayDifference === 0) return 'Hôm nay'
   if (dayDifference === 1) return 'Hôm qua'
   if (dayDifference > 1 && dayDifference < 7) return `${dayDifference} ngày trước`
-  return new Intl.DateTimeFormat('vi-VN', { day: 'numeric', month: 'short' }).format(new Date(createdAt))
+  return new Intl.DateTimeFormat('vi-VN', { day: 'numeric', month: 'short' }).format(new Date(occurredAt))
 }

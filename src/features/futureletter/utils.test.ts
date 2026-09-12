@@ -18,6 +18,7 @@ const checkin = (date: string, primaryEmotionId = 'calm', secondaryEmotionIds: s
   needs: [],
   contexts: [],
   actions: [],
+  occurredAt: `${date}T08:00:00+07:00`,
   createdAt: `${date}T08:00:00+07:00`,
   updatedAt: `${date}T08:00:00+07:00`,
 })

@@ -19,7 +19,7 @@ const checkinFact = (record: CheckinRecord): DayRecordFact => {
     return {
       kind: 'checkin',
       sourceId: record.id,
-      occurredAt: record.createdAt,
+      occurredAt: record.occurredAt,
       updatedAt: record.updatedAt,
       color: UNKNOWN_COLOR,
       emoji: record.unknownPrompt?.emoji ?? '◌',
@@ -31,7 +31,7 @@ const checkinFact = (record: CheckinRecord): DayRecordFact => {
   return {
     kind: 'checkin',
     sourceId: record.id,
-    occurredAt: record.createdAt,
+    occurredAt: record.occurredAt,
     updatedAt: record.updatedAt,
     color: record.primaryEmotion?.color_hex ?? UNKNOWN_COLOR,
     emoji: record.primaryEmotion?.emoji ?? '◉',
@@ -102,7 +102,7 @@ export const buildDayRecord = ({ localDate, checkins, actions, reflections, snap
   snapshots?: readonly DayRecordSnapshot[]
   lockedAt?: string | null
 }): DayRecord => {
-  const dayCheckins = checkins.filter((record) => dayFor(record.createdAt) === localDate)
+  const dayCheckins = checkins.filter((record) => dayFor(record.occurredAt) === localDate)
   const checkinById = new Map(checkins.map((record) => [record.id, record]))
   const currentFacts: DayRecordFact[] = [
     ...dayCheckins.map(checkinFact),

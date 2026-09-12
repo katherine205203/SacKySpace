@@ -17,6 +17,7 @@ const record = (createdAt: string, checkinType: 'emotion' | 'unknown' = 'emotion
   needs: [],
   contexts: [],
   actions: [],
+  occurredAt: createdAt,
   createdAt,
   updatedAt: createdAt,
 })

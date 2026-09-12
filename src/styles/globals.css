@@ -294,7 +294,8 @@ h1, h2, h3, p { margin-top: 0; }
 .reference-detail-modal__group strong { font-size: .85rem; }
 .reference-detail-modal__description p { margin: 0; color: var(--color-text-muted); font-size: .85rem; line-height: 1.6; }
 .reference-detail-modal__description--en { padding-top: .75rem; margin-top: .25rem !important; border-top: 1px solid var(--color-border); font-style: italic; }
-.modal-close { position: absolute; top: .8rem; right: .8rem; width: 2rem; height: 2rem; border: 0; border-radius: 50%; background: var(--color-surface-soft); color: var(--color-text-muted); font-size: 1.2rem; }
+.modal-close { position: absolute; z-index: 10; top: .8rem; right: .8rem; display: grid; width: 2.75rem; min-width: 2.75rem; height: 2.75rem; min-height: 2.75rem; place-items: center; padding: 0; border: 0; border-radius: 50%; background: var(--color-surface-soft); color: var(--color-text-muted); font-size: 1.35rem; line-height: 1; cursor: pointer; touch-action: manipulation; transition: background .16s ease, color .16s ease, box-shadow .16s ease; }
+.modal-close:hover, .modal-close:focus-visible { background: var(--color-surface-violet); color: var(--color-violet-dark); box-shadow: 0 0 0 .18rem rgba(116,60,255,.12); outline: none; }
 .modal-copy { color: var(--color-text-muted); font-size: .85rem; }
 .modal-summary { display: flex; gap: 1.5rem; padding: .9rem; margin: 1rem 0; border-radius: .7rem; background: var(--color-surface-soft); }
 .modal-summary div { display: grid; gap: .2rem; }

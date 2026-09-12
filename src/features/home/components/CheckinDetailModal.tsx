@@ -124,11 +124,11 @@ export function CheckinDetailModal({ record, linkedActions, onClose, onEdit, onD
             <div className="home-v2__detail-content">
               <header className="home-v2__detail-header">
                 <div>
-                  <p className="home-v2__eyebrow">{formatCheckinDate(record.createdAt)}</p>
+                  <p className="home-v2__eyebrow">{formatCheckinDate(record.occurredAt)}</p>
                   <h2 id="home-checkin-detail-title">{presentation.emoji} {presentation.title}</h2>
                   {!isUnknown && record.primaryEmotion && <p className="home-v2__detail-header-language">{record.primaryEmotion.emotion_name_en}</p>}
                 </div>
-                <time dateTime={record.createdAt}>{formatCheckinTime(record.createdAt)}</time>
+                <time dateTime={record.occurredAt}>{formatCheckinTime(record.occurredAt)}</time>
               </header>
 
               <div className="home-v2__detail-overview">
@@ -150,6 +150,7 @@ export function CheckinDetailModal({ record, linkedActions, onClose, onEdit, onD
               {!isUnknown && record.needs.length > 0 && <DetailSection label="Nhu cầu"><TagList items={record.needs.map((item) => `${item.emoji} ${item.need_name_vn}`)} /></DetailSection>}
               {!isUnknown && record.contexts.length > 0 && <DetailSection label="Bối cảnh"><TagList items={record.contexts.map((item) => `${item.emoji} ${item.context_name_vn}`)} /></DetailSection>}
               <DetailSection label="Ghi chú">{isRichTextEmpty(record.note) ? <p className="home-v2__detail-note">Không có ghi chú.</p> : <RichTextRenderer value={record.note} className="home-v2__detail-note" />}</DetailSection>
+              <DetailSection label="Metadata thời gian"><div className="home-v2__detail-metadata"><span><b>Thời điểm trải nghiệm</b>{formatCheckinDate(record.occurredAt)} · {formatCheckinTime(record.occurredAt)}</span><span><b>Đã check-in lúc</b>{formatCheckinDate(record.createdAt)} · {formatCheckinTime(record.createdAt)}</span><span><b>Chỉnh sửa lần cuối</b>{formatCheckinDate(record.updatedAt)} · {formatCheckinTime(record.updatedAt)}</span></div></DetailSection>
             </div>
 
             <aside className="home-v2__detail-summary">

@@ -52,8 +52,8 @@ export const getHistoryDateRange = (
   return { start: monthStart, end: monthEndDate.toISOString().slice(0, 10) }
 }
 
-export const getLocalDateKey = (createdAt: string, timeZone = 'Asia/Ho_Chi_Minh'): string =>
-  toDateKey(new Date(createdAt), timeZone)
+export const getLocalDateKey = (occurredAt: string, timeZone = 'Asia/Ho_Chi_Minh'): string =>
+  toDateKey(new Date(occurredAt), timeZone)
 
 export const filterByDateRange = (
   records: readonly CheckinRecord[],
@@ -61,19 +61,19 @@ export const filterByDateRange = (
   timeZone = 'Asia/Ho_Chi_Minh',
 ): CheckinRecord[] =>
   records.filter((record) => {
-    const dateKey = getLocalDateKey(record.createdAt, timeZone)
+    const dateKey = getLocalDateKey(record.occurredAt, timeZone)
     return (!range.start || dateKey >= range.start) && (!range.end || dateKey <= range.end)
   })
 
-export const sortByCreatedAtDesc = (records: readonly CheckinRecord[]): CheckinRecord[] =>
-  [...records].sort((left, right) => right.createdAt.localeCompare(left.createdAt))
+export const sortByOccurredAtDesc = (records: readonly CheckinRecord[]): CheckinRecord[] =>
+  [...records].sort((left, right) => right.occurredAt.localeCompare(left.occurredAt))
 
-export const getCurrentStreakFromCreatedAt = (
-  createdAts: readonly string[],
+export const getCurrentStreakFromOccurredAt = (
+  occurredAts: readonly string[],
   now = new Date(),
   timeZone = 'Asia/Ho_Chi_Minh',
 ): number => {
-  const days = new Set(createdAts.map((createdAt) => getLocalDateKey(createdAt, timeZone)))
+  const days = new Set(occurredAts.map((occurredAt) => getLocalDateKey(occurredAt, timeZone)))
   let streak = 0
   let cursor = getLocalDateKey(now.toISOString(), timeZone)
 
@@ -99,7 +99,7 @@ export const getHistoryMetrics = (
   now = new Date(),
   timeZone = 'Asia/Ho_Chi_Minh',
 ): HistoryMetrics => {
-  const days = new Set(records.map((record) => getLocalDateKey(record.createdAt, timeZone)))
+  const days = new Set(records.map((record) => getLocalDateKey(record.occurredAt, timeZone)))
   const today = getLocalDateKey(now.toISOString(), timeZone)
   let currentStreak = 0
   let cursor = today

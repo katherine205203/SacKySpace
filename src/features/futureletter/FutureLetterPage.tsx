@@ -50,7 +50,7 @@ const makeRule = (type: FutureLetterRule['type'], groupId: string, position: num
 }
 
 const contextLabel = (record: CheckinRecord): string => {
-  const date = formatFutureLetterDate(record.createdAt)
+  const date = formatFutureLetterDate(record.occurredAt)
   return `${record.primaryEmotion?.emoji ?? record.unknownPrompt?.emoji ?? '◌'} ${record.primaryEmotion?.emotion_name_vn ?? 'Mình còn đang mơ hồ'} · ${date}`
 }
 
@@ -197,7 +197,7 @@ function WriteView({ draft, checkins, onChange, onSave, onDelete }: { draft: Fut
     else {
       const checkin = attachmentType === 'checkin' ? checkins.find((record) => record.id === refId) : null
       const emotion = attachmentType === 'emotion' ? emotions.find((item) => item.emotion_id === refId) : null
-      const snapshot = checkin ? { id: checkin.id, created_at: checkin.createdAt, emoji: checkin.primaryEmotion?.emoji ?? checkin.unknownPrompt?.emoji ?? '◌', emotion_name_vn: checkin.primaryEmotion?.emotion_name_vn ?? 'Mình còn đang mơ hồ' } : emotion ? { emotion_id: emotion.emotion_id, emotion_name_vn: emotion.emotion_name_vn, emoji: emotion.emoji, color_hex: emotion.color_hex } : null
+      const snapshot = checkin ? { id: checkin.id, occurred_at: checkin.occurredAt, created_at: checkin.createdAt, emoji: checkin.primaryEmotion?.emoji ?? checkin.unknownPrompt?.emoji ?? '◌', emotion_name_vn: checkin.primaryEmotion?.emotion_name_vn ?? 'Mình còn đang mơ hồ' } : emotion ? { emotion_id: emotion.emotion_id, emotion_name_vn: emotion.emotion_name_vn, emoji: emotion.emoji, color_hex: emotion.color_hex } : null
       onChange({ ...draft, attachments: [...draft.attachments, { id: '', attachmentType, refId, snapshot, position: draft.attachments.length + 1 }] })
     }
   }

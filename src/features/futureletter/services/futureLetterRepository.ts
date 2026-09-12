@@ -434,6 +434,6 @@ export const getContextOptions = async (requestedUserId?: string): Promise<{ che
 }
 
 export const getEmotionAttachmentSnapshot = (emotion: Emotion): Record<string, unknown> => ({ emotion_id: emotion.emotion_id, emotion_name_vn: emotion.emotion_name_vn, emoji: emotion.emoji, color_hex: emotion.color_hex })
-export const getCheckinAttachmentSnapshot = (record: CheckinRecord): Record<string, unknown> => ({ id: record.id, created_at: record.createdAt, checkin_type: record.checkinType, primary_emotion_id: record.primaryEmotionId, emotion_name_vn: record.primaryEmotion?.emotion_name_vn ?? null, emoji: record.primaryEmotion?.emoji ?? record.unknownPrompt?.emoji ?? '◌' })
+export const getCheckinAttachmentSnapshot = (record: CheckinRecord): Record<string, unknown> => ({ id: record.id, occurred_at: record.occurredAt, created_at: record.createdAt, checkin_type: record.checkinType, primary_emotion_id: record.primaryEmotionId, emotion_name_vn: record.primaryEmotion?.emotion_name_vn ?? null, emoji: record.primaryEmotion?.emoji ?? record.unknownPrompt?.emoji ?? '◌' })
 
 export const findEmotionChainEvidence = getEmotionChainEvidence

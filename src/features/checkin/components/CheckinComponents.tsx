@@ -4,7 +4,7 @@ import { NavLink } from 'react-router-dom'
 import type { CheckinDraft, Context, Emotion, EmotionFamily, Need, NeedGroup, ReferenceData } from '../types'
 import { ColorOrb } from './BlendedColorOrb'
 import { PageHeading } from '../../../components/PageHeading'
-import { isRichTextEmpty, richTextToPlainText, RichTextEditor, RichTextRenderer } from '../../../components/richText'
+import { isRichTextEmpty, richTextWordCount, RichTextEditor, RichTextRenderer } from '../../../components/richText'
 
 export { ColorOrb } from './BlendedColorOrb'
 
@@ -102,8 +102,9 @@ export function ReferenceDetailModal({ detail, onClose }: { detail: ReferenceDet
   return <div className="modal-backdrop" role="presentation" onClick={onClose}><section className="reference-detail-modal" role="dialog" aria-modal="true" aria-labelledby="reference-detail-title" onClick={(event) => event.stopPropagation()}><button ref={closeRef} className="modal-close" type="button" aria-label="Đóng" onClick={onClose}>×</button><div className="reference-detail-modal__icon" style={{ background: detail.color ? `${detail.color}22` : undefined }}>{detail.emoji}</div><span className="eyebrow">{detail.typeLabel}</span><h2 id="reference-detail-title">{detail.nameVn}</h2>{detail.nameEn && <p className="reference-detail-modal__english">{detail.nameEn}</p>}{(detail.groupVn || detail.groupEn) && <div className="reference-detail-modal__group"><span className="section-label">Nhóm</span><strong>{detail.groupVn}{detail.groupEn ? ` · ${detail.groupEn}` : ''}</strong></div>}<div className="reference-detail-modal__description"><span className="section-label">Mô tả</span>{detail.descriptionVn && <p>{detail.descriptionVn}</p>}{detail.descriptionEn && <p className="reference-detail-modal__description--en">{detail.descriptionEn}</p>}</div></section></div>
 }
 
-export function NoteField({ value, onChange, maxLength = 2000, required = false }: { value: string; onChange: (value: string) => void; maxLength?: number; required?: boolean }) {
-  return <div className={`note-field ${required ? 'note-field--required' : 'note-field--optional'}`}><span>Ghi chú <small>({required ? 'bắt buộc' : 'tuỳ chọn'})</small></span><RichTextEditor value={value} onChange={onChange} maxLength={maxLength} ariaLabel="Ghi chú check-in" placeholder={required ? 'Viết ra điều đang có mặt, dù chưa gọi tên được.' : 'Điều gì đang hiện diện trong bạn?'} minHeight={required ? 150 : 225} /><small className="note-field__count">{richTextToPlainText(value).length}/{maxLength}</small></div>
+export function NoteField({ value, onChange, maxLength, required = false }: { value: string; onChange: (value: string) => void; maxLength?: number; required?: boolean }) {
+  const effectiveMaxLength = required ? maxLength ?? 2000 : maxLength
+  return <div className={`note-field ${required ? 'note-field--required' : 'note-field--optional'}`}><span>Ghi chú <small>({required ? 'bắt buộc' : 'tuỳ chọn'})</small></span><RichTextEditor value={value} onChange={onChange} maxLength={effectiveMaxLength} ariaLabel="Ghi chú check-in" placeholder={required ? 'Viết ra điều đang có mặt, dù chưa gọi tên được.' : 'Điều gì đang hiện diện trong bạn?'} minHeight={required ? 150 : 225} /><small className="note-field__count">{richTextWordCount(value)} từ{effectiveMaxLength ? ` · tối đa ${effectiveMaxLength} ký tự` : ''}</small></div>
 }
 
 const MemoizedColorOrb = memo(ColorOrb)

@@ -100,6 +100,11 @@ export const richTextToPlainText = (value: string | null | undefined): string =>
   return documentToPlainText(parseRichText(value))
 }
 
+export const richTextWordCount = (value: string | null | undefined): number => {
+  const plainText = richTextToPlainText(value).trim()
+  return plainText ? plainText.split(/\s+/u).length : 0
+}
+
 export const isRichTextEmpty = (value: string | null | undefined): boolean => !richTextToPlainText(value).trim()
 
 const truncateDocument = (document: RichTextDocument, maxLength: number): RichTextDocument => {

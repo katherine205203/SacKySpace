@@ -6,6 +6,8 @@ import { useCheckinFlow } from '../useCheckinFlow'
 import { useReferenceData } from '../hooks/useReferenceData'
 import { ReferenceState } from '../hooks/ReferenceState'
 import { isRichTextEmpty, RichTextRenderer } from '../../../components/richText'
+import { normalizeOccurredAt } from '../services/checkinRepository'
+import { dateTimeLocalToIso, isoToDateTimeLocal, nowAsDateTimeLocal } from '../utils/occurredAt'
 
 export function ReviewScreen() {
   const navigate = useNavigate()
@@ -17,6 +19,9 @@ export function ReviewScreen() {
   useEffect(() => {
     if (locationId && draft.id !== locationId) void loadExistingDraft(locationId).catch(() => undefined)
   }, [draft.id, loadExistingDraft, locationId])
+  useEffect(() => {
+    if (!draft.id && !draft.occurredAt) updateDraft({ occurredAt: new Date().toISOString() })
+  }, [draft.id, draft.occurredAt, updateDraft])
   if (!reference) return <div className="page-stack checkin-page"><ReferenceState error={referenceError} /></div>
 
   const primary = reference.emotions.find((emotion) => emotion.emotion_id === draft.primaryEmotionId)
@@ -24,9 +29,20 @@ export function ReviewScreen() {
   const needs = reference.needs.filter((need) => draft.needIds.includes(need.need_id))
   const contexts = reference.contexts.filter((context) => draft.contextIds.includes(context.context_id))
   const finish = async (nextDraft = draft) => { try { await completeCheckin(nextDraft); navigate('/') } catch { /* surfaced by context */ } }
+  const occurredAt = draft.occurredAt ?? new Date().toISOString()
+  const maxOccurredAt = nowAsDateTimeLocal()
+  const changeOccurredAt = (value: string) => {
+    try {
+      updateDraft({ occurredAt: normalizeOccurredAt(dateTimeLocalToIso(value)) })
+      setFormError(null)
+    } catch (reason: unknown) {
+      setFormError(reason instanceof Error ? reason.message : 'Không thể chọn thời điểm trải nghiệm.')
+    }
+  }
   const openSave = async () => {
     const valid = draft.checkinType === 'unknown' ? Boolean(draft.unknownPromptId && !isRichTextEmpty(draft.note)) : Boolean(draft.primaryEmotionId && draft.intensity)
     if (!valid) { setFormError(draft.checkinType === 'unknown' ? 'Unknown Check-in cần prompt và ghi chú.' : 'Check-in cảm xúc cần cảm xúc chính và cường độ.'); return }
+    try { normalizeOccurredAt(occurredAt) } catch (reason: unknown) { setFormError(reason instanceof Error ? reason.message : 'Không thể chọn thời điểm trải nghiệm.'); return }
     await saveDraft()
     setFormError(null)
     setModal('save')
@@ -42,6 +58,7 @@ export function ReviewScreen() {
         <ReviewSection number="4" label="Nhu cầu" value={needs.length ? <TagList items={needs.map((item) => `${item.emoji} ${item.need_name_vn}`)} /> : <span className="muted-text">Không có</span>} onEdit={() => navigate(draft.id ? `/checkin/${draft.id}/needs` : '/checkin/needs', { state: { returnToReview: true } })} />
         <ReviewSection number="5" label="Bối cảnh" value={contexts.length ? <TagList items={contexts.map((item) => `${item.emoji} ${item.context_name_vn}`)} /> : <span className="muted-text">Không có</span>} onEdit={() => navigate(draft.id ? `/checkin/${draft.id}/contexts` : '/checkin/contexts', { state: { returnToReview: true } })} />
         <ReviewSection number="6" label="Ghi chú" value={isRichTextEmpty(draft.note) ? <p className="review-note">Không có ghi chú.</p> : <RichTextRenderer value={draft.note} className="review-note" />} onEdit={() => navigate('/checkin/emotion', { state: { returnToReview: true } })} />
+        <ReviewSection number="7" label="Thời điểm trải nghiệm" value={<div className="occurred-at-field"><input aria-label="Thời điểm trải nghiệm" type="datetime-local" step="60" max={maxOccurredAt} value={isoToDateTimeLocal(occurredAt)} onChange={(event) => changeOccurredAt(event.target.value)} /><small>Mặc định là hiện tại. Chỉ có thể chọn hiện tại hoặc một thời điểm trong quá khứ.</small></div>} />
       </main><SummaryRail draft={draft} reference={reference} title="Tóm tắt check-in" showPrimaryDetails />
       </div>
       {(formError || error) && <p className="form-error" role="alert">{formError ?? error}</p>}
@@ -52,6 +69,6 @@ export function ReviewScreen() {
   )
 }
 
-function ReviewSection({ number, label, value, onEdit }: { number: string; label: string; value: ReactNode; onEdit: () => void }) {
-  return <section className="review-section"><div className="review-section__icon" aria-hidden="true">{number}</div><div className="review-section__label"><span>{label}</span>{value}</div><button className="text-button" type="button" onClick={onEdit}>✎ &nbsp;Chỉnh sửa</button></section>
+function ReviewSection({ number, label, value, onEdit }: { number: string; label: string; value: ReactNode; onEdit?: () => void }) {
+  return <section className="review-section"><div className="review-section__icon" aria-hidden="true">{number}</div><div className="review-section__label"><span>{label}</span>{value}</div>{onEdit && <button className="text-button" type="button" onClick={onEdit}>✎ &nbsp;Chỉnh sửa</button>}</section>
 }
