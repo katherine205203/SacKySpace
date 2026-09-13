@@ -2,7 +2,6 @@ import type { ReactNode } from 'react'
 import { useLocation } from 'react-router-dom'
 import { AppSidebar } from '../components/AppSidebar'
 import { MobileAppShell } from '../components/mobile/MobileAppShell'
-import '../styles/mobile.css'
 
 type AppShellProps = { children: ReactNode }
 

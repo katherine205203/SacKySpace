@@ -72,3 +72,367 @@
 @media (prefers-reduced-motion: reduce) {
   .mobile-topbar, .mobile-bottom-nav, .mobile-bottom-sheet, .mobile-fullscreen-sheet { scroll-behavior: auto; transition: none; }
 }
+
+/*
+ * System-wide mobile contract.
+ *
+ * This block intentionally lives in the final mobile stylesheet import so it
+ * can normalize legacy module CSS without duplicating responsive rules in
+ * every feature. Desktop stays on the existing feature styles above.
+ */
+@media (max-width: 58rem) {
+  :root {
+    --mobilePagePadding: clamp(.75rem, 4vw, 1rem);
+    --mobileSectionGap: clamp(.9rem, 4vw, 1.25rem);
+    --mobileCardGap: .75rem;
+    --mobileCardPadding: clamp(.8rem, 4vw, 1.1rem);
+    --mobileCardRadius: 1rem;
+    --mobileHeaderGap: .7rem;
+    --mobileControlHeight: 2.75rem;
+    --mobileTouchTarget: 2.75rem;
+    --mobileBottomSafeArea: calc(var(--mobile-nav-height) + env(safe-area-inset-bottom));
+    --mobileContentMaxWidth: 100%;
+    --mobileModalPadding: var(--mobilePagePadding);
+  }
+
+  html, body, #root { max-width: 100%; }
+  body { overflow-x: hidden; overscroll-behavior-x: none; }
+  img, video, canvas, svg { max-width: 100%; }
+  button, a, input, select, textarea { touch-action: manipulation; }
+  button, input, select, textarea { min-width: 0; }
+  input:not([type='checkbox']):not([type='radio']):not([type='range']),
+  select { min-height: var(--mobileControlHeight); }
+  textarea { min-height: 7rem; }
+
+  .app-content,
+  .app-content--admin {
+    width: 100%;
+    max-width: var(--mobileContentMaxWidth);
+    padding-right: var(--mobilePagePadding);
+    padding-left: var(--mobilePagePadding);
+  }
+
+  .app-content > *,
+  .app-content article,
+  .app-content section,
+  .app-content main,
+  .app-content aside,
+  .app-content form,
+  .app-content header,
+  .app-content footer { min-width: 0; }
+
+  .app-content p,
+  .app-content h1,
+  .app-content h2,
+  .app-content h3,
+  .app-content h4,
+  .app-content strong,
+  .app-content small,
+  .app-content label,
+  .app-content time,
+  .app-content button,
+  .app-content a { overflow-wrap: anywhere; }
+
+  .app-shell--focused .app-content {
+    padding-bottom: calc(1rem + env(safe-area-inset-bottom));
+  }
+
+  .mobile-topbar {
+    padding-right: env(safe-area-inset-right);
+    padding-left: env(safe-area-inset-left);
+  }
+
+  .mobile-topbar__inner { padding-right: var(--mobilePagePadding); padding-left: var(--mobilePagePadding); }
+  .mobile-topbar__title { flex: 1 1 auto; }
+  .mobile-topbar__title strong { font-size: .9rem; }
+  .mobile-topbar__title span { font-size: .65rem; }
+  .mobile-topbar__back,
+  .mobile-topbar__profile { min-width: var(--mobileTouchTarget); min-height: var(--mobileTouchTarget); }
+
+  .mobile-bottom-nav {
+    min-width: 0;
+    padding-right: max(.25rem, env(safe-area-inset-right));
+    padding-left: max(.25rem, env(safe-area-inset-left));
+  }
+
+  .mobile-bottom-nav a {
+    min-height: var(--mobileTouchTarget);
+    padding-right: .25rem;
+    padding-left: .25rem;
+    overflow-wrap: normal;
+    white-space: nowrap;
+  }
+
+  .button,
+  .button--small,
+  .text-button,
+  .filter-chip,
+  .future-text-link,
+  .diary-show-more {
+    min-height: var(--mobileTouchTarget);
+  }
+
+  .checkin-tabs a,
+  .gift-page__tab,
+  .home-v2__range-tabs button,
+  .home-v2__action-tabs button,
+  .diary-history-type-tabs button,
+  .journey-modal-tabs button,
+  .action-history__lenses button,
+  .action-history__outcomes button {
+    display: inline-flex;
+    min-height: var(--mobileTouchTarget);
+    align-items: center;
+  }
+
+  .home-v2__section-header > a,
+  .home-v2__diary-copy .text-link,
+  .landing-recent__link,
+  .diary-back-link,
+  .day-record-context__link,
+  .action-empty > a,
+  .action-history__empty > a {
+    display: inline-flex;
+    min-height: var(--mobileTouchTarget);
+    align-items: center;
+  }
+
+  .button--small { padding-top: .55rem; padding-bottom: .55rem; }
+
+  .page-heading,
+  .diary-page-header,
+  .diary-editor-heading,
+  .future-page-header,
+  .action-space__header,
+  .gift-page__header,
+  .more-page__header { gap: var(--mobileHeaderGap); }
+
+  .page-heading__actions,
+  .diary-header-actions,
+  .diary-editor-actions,
+  .future-page-header .button,
+  .action-space__header .page-heading__actions,
+  .gift-page__header-actions { max-width: 100%; }
+
+  .flow-footer,
+  .diary-editor-footer,
+  .future-flow-footer,
+  .future-writing-footer {
+    padding-right: var(--mobilePagePadding);
+    padding-left: var(--mobilePagePadding);
+    margin-right: 0;
+    margin-left: 0;
+  }
+
+  .modal-backdrop,
+  .drawer-backdrop,
+  .home-v2__modal-backdrop,
+  .home-v2__reflection-backdrop,
+  .action-modal-backdrop,
+  .action-drawer-backdrop,
+  .diary-modal-backdrop,
+  .gift-modal-backdrop,
+  .gift-read-backdrop,
+  .checkin-action-modal-backdrop,
+  .future-condition-modal {
+    overscroll-behavior: contain;
+  }
+
+  .modal-backdrop,
+  .drawer-backdrop,
+  .home-v2__modal-backdrop,
+  .home-v2__reflection-backdrop,
+  .action-modal-backdrop,
+  .action-drawer-backdrop,
+  .diary-modal-backdrop,
+  .gift-modal-backdrop,
+  .gift-read-backdrop,
+  .future-condition-modal {
+    z-index: 80;
+  }
+
+  .modal-card,
+  .reference-detail-modal,
+  .home-v2__detail-modal,
+  .home-v2__reflection-modal,
+  .reflection-modal,
+  .action-modal,
+  .diary-modal,
+  .gift-read-panel,
+  .future-condition-modal__panel {
+    min-width: 0;
+    max-width: 100%;
+  }
+
+  .history-drawer,
+  .action-detail-rail {
+    max-width: 100%;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+  }
+
+  .history-drawer {
+    width: 100%;
+    height: min(92dvh, 42rem);
+    padding-right: var(--mobilePagePadding);
+    padding-left: var(--mobilePagePadding);
+    border-radius: 1.25rem 1.25rem 0 0;
+  }
+
+  .rich-text-editor,
+  .rich-text-content,
+  .rich-text-renderer,
+  .rich-text-toolbar { min-width: 0; max-width: 100%; }
+  .rich-text-editor .rich-text-toolbar { overflow-x: auto; overscroll-behavior-x: contain; }
+  .rich-text-toolbar__group { flex: 0 0 auto; }
+  .rich-text-toolbar button { min-width: var(--mobileTouchTarget); min-height: var(--mobileTouchTarget); flex: 0 0 auto; }
+  .rich-text-slash-menu,
+  .rich-text-inline-popover,
+  .rich-text-spacing-popover { max-width: calc(100vw - 1.5rem); }
+  .rich-text-content { min-height: 10rem; overflow-wrap: anywhere; }
+
+  .diary-editor-layout,
+  .diary-history-layout,
+  .journey-setup-layout,
+  .journey-editor-layout,
+  .journey-read-layout,
+  .journey-landing-layout {
+    grid-template-columns: minmax(0, 1fr) !important;
+  }
+
+  .diary-editor-main { min-width: 0; }
+
+  .home-v2,
+  .checkin-page,
+  .diary-page,
+  .action-space,
+  .future-page,
+  .gift-page,
+  .more-page,
+  .reminder-workspace { width: 100%; max-width: 100%; min-width: 0; }
+
+  .home-v2__grid,
+  .action-space__layout,
+  .diary-editor-layout,
+  .diary-history-layout,
+  .future-writing-layout,
+  .future-preview-workspace,
+  .future-decorate-workspace,
+  .future-trigger-workspace,
+  .future-read-layout,
+  .gift-compose-grid,
+  .gift-decorate-grid,
+  .gift-preview-grid { min-width: 0; }
+
+  .home-v2__action-list,
+  .action-list__items,
+  .diary-response-list,
+  .future-letter-list,
+  .gift-history-grid { min-width: 0; }
+
+  .diary-image-card__hover-actions,
+  .diary-image-card:focus-within .diary-image-card__hover-actions {
+    opacity: 1;
+    transform: none;
+  }
+
+  .diary-image-card__hover-actions button { min-height: 2.5rem; }
+  .diary-response-card__actions button,
+  .diary-image-card figcaption button,
+  .diary-calendar__header button { min-width: 2.75rem; min-height: 2.75rem; }
+
+  .action-space__tabs { max-width: 100%; overflow-x: auto; overscroll-behavior-x: contain; }
+  .action-space__tabs button { min-height: var(--mobileTouchTarget); flex: 0 0 auto; }
+  .home-v2__range-tabs button,
+  .home-v2__action-tabs button { min-height: var(--mobileTouchTarget); }
+  .future-stage-nav { max-width: 100%; }
+  .future-stage-nav button { min-height: var(--mobileTouchTarget); }
+  .future-condition-category-list button,
+  .future-condition-type-tabs button { min-height: var(--mobileTouchTarget); }
+  .future-condition-row__actions button,
+  .future-empty-condition,
+  .future-add-group {
+    min-height: var(--mobileTouchTarget);
+  }
+  .future-condition-row__actions button:not(.future-danger-link) {
+    display: inline-flex;
+    min-width: var(--mobileTouchTarget);
+    min-height: var(--mobileTouchTarget);
+    align-items: center;
+    justify-content: center;
+    padding: .4rem;
+  }
+  .future-condition-row__actions .future-danger-link {
+    display: inline-flex;
+    min-width: var(--mobileTouchTarget);
+    min-height: var(--mobileTouchTarget);
+    align-items: center;
+    justify-content: center;
+    padding: .4rem;
+  }
+
+  .gift-modal__scroll,
+  .gift-read-panel,
+  .diary-modal,
+  .future-condition-modal__panel { overscroll-behavior: contain; }
+}
+
+@media (max-width: 30rem) {
+  .app-content { padding-right: .75rem; padding-left: .75rem; }
+
+  .mobile-topbar__inner { padding-right: .75rem; padding-left: .75rem; }
+  .mobile-topbar__title strong { font-size: .85rem; }
+  .mobile-topbar__title span { display: none; }
+
+  .checkin-choice-grid,
+  .inventory-grid,
+  .inventory-grid--needs,
+  .inventory-grid--contexts { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+
+  .landing-mode-grid { grid-template-columns: 1fr; }
+  .landing-mode-card {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto auto auto;
+    justify-items: center;
+    min-width: 0;
+    text-align: center;
+  }
+  .landing-mode-card__visual,
+  .landing-mode-card__copy,
+  .landing-mode-card__cta { grid-column: 1; grid-row: auto; }
+  .landing-mode-card__copy { width: 100%; text-align: center; }
+
+  .selection-context-strip { grid-template-columns: 1fr; }
+  .selection-context-strip > div { border-right: 0; border-bottom: 1px solid var(--checkin-divider, var(--color-divider)); }
+  .selection-context-strip > div:last-child { border-bottom: 0; }
+
+  .intensity-grid { grid-template-columns: repeat(5, minmax(0, 1fr)); overflow: visible; }
+  .intensity-card { min-width: 0; padding-right: .15rem; padding-left: .15rem; }
+  .intensity-card strong { font-size: .6rem; line-height: 1.2; overflow-wrap: anywhere; }
+
+  .home-v2__diary { grid-template-columns: 1fr; }
+  .diary-metrics { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .diary-metric-card { min-height: 5.5rem; }
+  .future-condition-form__grid,
+  .future-condition-library__grid,
+  .future-trigger-types > div,
+  .future-asset-grid,
+  .future-seal-grid { grid-template-columns: 1fr; }
+
+  .gift-style-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .gift-history-card { grid-template-columns: 4.5rem minmax(0, 1fr); }
+}
+
+@supports selector(body:has(*)) {
+  @media (max-width: 58rem) {
+    body:has(.modal-backdrop),
+    body:has(.drawer-backdrop),
+    body:has(.home-v2__modal-backdrop),
+    body:has(.action-modal-backdrop),
+    body:has(.diary-modal-backdrop),
+    body:has(.gift-modal-backdrop),
+    body:has(.gift-read-backdrop),
+    body:has(.checkin-action-modal-backdrop),
+    body:has(.future-condition-modal) { overflow: hidden; }
+  }
+}

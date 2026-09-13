@@ -40,6 +40,19 @@
   --radius-lg: 1.375rem;
   --layout-sidebar-width: 13.25rem;
   --layout-content-max-width: 91rem;
+  /* Shared mobile contract. Feature CSS can consume these tokens instead of
+     inventing a new breakpoint-specific spacing scale. */
+  --mobilePagePadding: .9rem;
+  --mobileSectionGap: 1.1rem;
+  --mobileCardGap: .75rem;
+  --mobileCardPadding: 1rem;
+  --mobileCardRadius: 1rem;
+  --mobileHeaderGap: .7rem;
+  --mobileControlHeight: 2.75rem;
+  --mobileTouchTarget: 2.75rem;
+  --mobileBottomSafeArea: 0px;
+  --mobileContentMaxWidth: var(--layout-content-max-width);
+  --mobileModalPadding: .95rem;
   font-family: var(--font-family-base);
   font-size: var(--font-size-base);
   line-height: var(--line-height-base);

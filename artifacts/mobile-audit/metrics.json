@@ -1,0 +1,5545 @@
+[
+  {
+    "name": "home",
+    "width": 320,
+    "screenshot": "artifacts/mobile-audit/home/320.png",
+    "route": "/",
+    "height": 760,
+    "documentScrollWidth": 320,
+    "bodyScrollWidth": 320,
+    "horizontalOverflow": false,
+    "overflows": [],
+    "undersizedControls": [],
+    "horizontallyOffscreenControls": [],
+    "belowViewportControls": [
+      {
+        "tag": "A",
+        "label": "Xem lịch sử",
+        "width": 59,
+        "height": 44,
+        "horizontallyOffscreen": false,
+        "belowViewport": true
+      },
+      {
+        "tag": "A",
+        "label": "Xem tất cả",
+        "width": 59,
+        "height": 44,
+        "horizontallyOffscreen": false,
+        "belowViewport": true
+      },
+      {
+        "tag": "BUTTON",
+        "label": "Hôm nay",
+        "width": 62,
+        "height": 44,
+        "horizontallyOffscreen": false,
+        "belowViewport": true
+      },
+      {
+        "tag": "BUTTON",
+        "label": "Sắp tới",
+        "width": 62,
+        "height": 44,
+        "horizontallyOffscreen": false,
+        "belowViewport": true
+      },
+      {
+        "tag": "BUTTON",
+        "label": "Quá hạn",
+        "width": 62,
+        "height": 44,
+        "horizontallyOffscreen": false,
+        "belowViewport": true
+      },
+      {
+        "tag": "BUTTON",
+        "label": "Chưa lên lịch",
+        "width": 62,
+        "height": 44,
+        "horizontallyOffscreen": false,
+        "belowViewport": true
+      },
+      {
+        "tag": "A",
+        "label": "Bắt đầu viết →",
+        "width": 88,
+        "height": 44,
+        "horizontallyOffscreen": false,
+        "belowViewport": true
+      },
+      {
+        "tag": "A",
+        "label": "Thư cho mìnhChưa có thư đang chờ mởS→",
+        "width": 126,
+        "height": 128,
+        "horizontallyOffscreen": false,
+        "belowViewport": true
+      },
+      {
+        "tag": "A",
+        "label": "A Gift for MyselfChưa có quà đang chờ mở🎁→",
+        "width": 126,
+        "height": 128,
+        "horizontallyOffscreen": false,
+        "belowViewport": true
+      }
+    ],
+    "bodyText": "S\nSacKy\n•••\n⌂\nHome\n◉\nCheck-in\n▤\nDiary\n↗\nAction\n•••\nMore\n\nSẮC KÝ · HOME\n\nChào buổi sáng, Mobile 🌿\n\nHôm nay là một ngày mới, hãy lắng nghe mình nhé.\n\n🔥\n0\nngày liên tiếp\n\nKHOẢNG MÀU HIỆN TẠI\n\nHôm nay\n\n0 Check-ins đã ghi nhận\n\nHôm nay\nTuần nà"
+  },
+  {
+    "name": "home",
+    "width": 360,
+    "screenshot": "artifacts/mobile-audit/home/360.png",
+    "route": "/",
+    "height": 760,
+    "documentScrollWidth": 360,
+    "bodyScrollWidth": 360,
+    "horizontalOverflow": false,
+    "overflows": [],
+    "undersizedControls": [],
+    "horizontallyOffscreenControls": [],
+    "belowViewportControls": [
+      {
+        "tag": "A",
+        "label": "Xem lịch sử",
+        "width": 59,
+        "height": 44,
+        "horizontallyOffscreen": false,
+        "belowViewport": true
+      },
+      {
+        "tag": "A",
+        "label": "Xem tất cả",
+        "width": 59,
+        "height": 44,
+        "horizontallyOffscreen": false,
+        "belowViewport": true
+      },
+      {
+        "tag": "BUTTON",
+        "label": "Hôm nay",
+        "width": 72,
+        "height": 44,
+        "horizontallyOffscreen": false,
+        "belowViewport": true
+      },
+      {
+        "tag": "BUTTON",
+        "label": "Sắp tới",
+        "width": 72,
+        "height": 44,
+        "horizontallyOffscreen": false,
+        "belowViewport": true
+      },
+      {
+        "tag": "BUTTON",
+        "label": "Quá hạn",
+        "width": 72,
+        "height": 44,
+        "horizontallyOffscreen": false,
+        "belowViewport": true
+      },
+      {
+        "tag": "BUTTON",
+        "label": "Chưa lên lịch",
+        "width": 72,
+        "height": 44,
+        "horizontallyOffscreen": false,
+        "belowViewport": true
+      },
+      {
+        "tag": "A",
+        "label": "Bắt đầu viết →",
+        "width": 88,
+        "height": 44,
+        "horizontallyOffscreen": false,
+        "belowViewport": true
+      },
+      {
+        "tag": "A",
+        "label": "Thư cho mìnhChưa có thư đang chờ mởS→",
+        "width": 146,
+        "height": 128,
+        "horizontallyOffscreen": false,
+        "belowViewport": true
+      },
+      {
+        "tag": "A",
+        "label": "A Gift for MyselfChưa có quà đang chờ mở🎁→",
+        "width": 146,
+        "height": 128,
+        "horizontallyOffscreen": false,
+        "belowViewport": true
+      }
+    ],
+    "bodyText": "S\nSacKy\n•••\n⌂\nHome\n◉\nCheck-in\n▤\nDiary\n↗\nAction\n•••\nMore\n\nSẮC KÝ · HOME\n\nChào buổi sáng, Mobile 🌿\n\nHôm nay là một ngày mới, hãy lắng nghe mình nhé.\n\n🔥\n0\nngày liên tiếp\n\nKHOẢNG MÀU HIỆN TẠI\n\nHôm nay\n\n0 Check-ins đã ghi nhận\n\nHôm nay\nTuần nà"
+  },
+  {
+    "name": "home",
+    "width": 390,
+    "screenshot": "artifacts/mobile-audit/home/390.png",
+    "route": "/",
+    "height": 844,
+    "documentScrollWidth": 390,
+    "bodyScrollWidth": 390,
+    "horizontalOverflow": false,
+    "overflows": [],
+    "undersizedControls": [],
+    "horizontallyOffscreenControls": [],
+    "belowViewportControls": [
+      {
+        "tag": "A",
+        "label": "Xem lịch sử",
+        "width": 59,
+        "height": 44,
+        "horizontallyOffscreen": false,
+        "belowViewport": true
+      },
+      {
+        "tag": "A",
+        "label": "Xem tất cả",
+        "width": 59,
+        "height": 44,
+        "horizontallyOffscreen": false,
+        "belowViewport": true
+      },
+      {
+        "tag": "BUTTON",
+        "label": "Hôm nay",
+        "width": 79,
+        "height": 44,
+        "horizontallyOffscreen": false,
+        "belowViewport": true
+      },
+      {
+        "tag": "BUTTON",
+        "label": "Sắp tới",
+        "width": 79,
+        "height": 44,
+        "horizontallyOffscreen": false,
+        "belowViewport": true
+      },
+      {
+        "tag": "BUTTON",
+        "label": "Quá hạn",
+        "width": 79,
+        "height": 44,
+        "horizontallyOffscreen": false,
+        "belowViewport": true
+      },
+      {
+        "tag": "BUTTON",
+        "label": "Chưa lên lịch",
+        "width": 79,
+        "height": 44,
+        "horizontallyOffscreen": false,
+        "belowViewport": true
+      },
+      {
+        "tag": "A",
+        "label": "Bắt đầu viết →",
+        "width": 88,
+        "height": 44,
+        "horizontallyOffscreen": false,
+        "belowViewport": true
+      },
+      {
+        "tag": "A",
+        "label": "Thư cho mìnhChưa có thư đang chờ mởS→",
+        "width": 161,
+        "height": 128,
+        "horizontallyOffscreen": false,
+        "belowViewport": true
+      },
+      {
+        "tag": "A",
+        "label": "A Gift for MyselfChưa có quà đang chờ mở🎁→",
+        "width": 161,
+        "height": 128,
+        "horizontallyOffscreen": false,
+        "belowViewport": true
+      }
+    ],
+    "bodyText": "S\nSacKy\n•••\n⌂\nHome\n◉\nCheck-in\n▤\nDiary\n↗\nAction\n•••\nMore\n\nSẮC KÝ · HOME\n\nChào buổi sáng, Mobile 🌿\n\nHôm nay là một ngày mới, hãy lắng nghe mình nhé.\n\n🔥\n0\nngày liên tiếp\n\nKHOẢNG MÀU HIỆN TẠI\n\nHôm nay\n\n0 Check-ins đã ghi nhận\n\nHôm nay\nTuần nà"
+  },
+  {
+    "name": "home",
+    "width": 430,
+    "screenshot": "artifacts/mobile-audit/home/430.png",
+    "route": "/",
+    "height": 932,
+    "documentScrollWidth": 430,
+    "bodyScrollWidth": 430,
+    "horizontalOverflow": false,
+    "overflows": [],
+    "undersizedControls": [],
+    "horizontallyOffscreenControls": [],
+    "belowViewportControls": [
+      {
+        "tag": "A",
+        "label": "Xem tất cả",
+        "width": 59,
+        "height": 44,
+        "horizontallyOffscreen": false,
+        "belowViewport": true
+      },
+      {
+        "tag": "BUTTON",
+        "label": "Hôm nay",
+        "width": 89,
+        "height": 44,
+        "horizontallyOffscreen": false,
+        "belowViewport": true
+      },
+      {
+        "tag": "BUTTON",
+        "label": "Sắp tới",
+        "width": 89,
+        "height": 44,
+        "horizontallyOffscreen": false,
+        "belowViewport": true
+      },
+      {
+        "tag": "BUTTON",
+        "label": "Quá hạn",
+        "width": 89,
+        "height": 44,
+        "horizontallyOffscreen": false,
+        "belowViewport": true
+      },
+      {
+        "tag": "BUTTON",
+        "label": "Chưa lên lịch",
+        "width": 89,
+        "height": 44,
+        "horizontallyOffscreen": false,
+        "belowViewport": true
+      },
+      {
+        "tag": "A",
+        "label": "Bắt đầu viết →",
+        "width": 88,
+        "height": 44,
+        "horizontallyOffscreen": false,
+        "belowViewport": true
+      },
+      {
+        "tag": "A",
+        "label": "Thư cho mìnhChưa có thư đang chờ mởS→",
+        "width": 181,
+        "height": 128,
+        "horizontallyOffscreen": false,
+        "belowViewport": true
+      },
+      {
+        "tag": "A",
+        "label": "A Gift for MyselfChưa có quà đang chờ mở🎁→",
+        "width": 181,
+        "height": 128,
+        "horizontallyOffscreen": false,
+        "belowViewport": true
+      }
+    ],
+    "bodyText": "S\nSacKy\n•••\n⌂\nHome\n◉\nCheck-in\n▤\nDiary\n↗\nAction\n•••\nMore\n\nSẮC KÝ · HOME\n\nChào buổi sáng, Mobile 🌿\n\nHôm nay là một ngày mới, hãy lắng nghe mình nhé.\n\n🔥\n0\nngày liên tiếp\n\nKHOẢNG MÀU HIỆN TẠI\n\nHôm nay\n\n0 Check-ins đã ghi nhận\n\nHôm nay\nTuần nà"
+  },
+  {
+    "name": "checkin",
+    "width": 320,
+    "screenshot": "artifacts/mobile-audit/checkin/320.png",
+    "route": "/checkin",
+    "height": 760,
+    "documentScrollWidth": 320,
+    "bodyScrollWidth": 320,
+    "horizontalOverflow": false,
+    "overflows": [],
+    "undersizedControls": [],
+    "horizontallyOffscreenControls": [],
+    "belowViewportControls": [
+      {
+        "tag": "BUTTON",
+        "label": "Hiểu cảm xúcEmotion Check-inHiểu cảm xúc hiện tại và chăm sóc bản thân tốt hơn m",
+        "width": 296,
+        "height": 256,
+        "horizontallyOffscreen": false,
+        "belowViewport": true
+      },
+      {
+        "tag": "BUTTON",
+        "label": "Viết ra trướcUnknown Check-inChưa gọi tên được cảm xúc? Viết ra những gì đang hi",
+        "width": 296,
+        "height": 256,
+        "horizontallyOffscreen": false,
+        "belowViewport": true
+      },
+      {
+        "tag": "A",
+        "label": "Xem tất cả →",
+        "width": 77,
+        "height": 44,
+        "horizontallyOffscreen": false,
+        "belowViewport": true
+      }
+    ],
+    "bodyText": "S\nSacKy\n•••\n⌂\nHome\n◉\nCheck-in\n▤\nDiary\n↗\nAction\n•••\nMore\n\nSẮC KÝ · CHECK-IN\n\nCheck-in\n\nDành vài phút lắng nghe và hiểu mình hơn mỗi ngày.\n\nLịch sử check-in\n→\nCHUỖI HIỆN TẠI\n0\nngày\n\nMỗi lần dừng lại đều là một bước lắng nghe bản thân.\n\nHÔM NA"
+  },
+  {
+    "name": "checkin",
+    "width": 360,
+    "screenshot": "artifacts/mobile-audit/checkin/360.png",
+    "route": "/checkin",
+    "height": 760,
+    "documentScrollWidth": 360,
+    "bodyScrollWidth": 360,
+    "horizontalOverflow": false,
+    "overflows": [],
+    "undersizedControls": [],
+    "horizontallyOffscreenControls": [],
+    "belowViewportControls": [
+      {
+        "tag": "BUTTON",
+        "label": "Hiểu cảm xúcEmotion Check-inHiểu cảm xúc hiện tại và chăm sóc bản thân tốt hơn m",
+        "width": 336,
+        "height": 256,
+        "horizontallyOffscreen": false,
+        "belowViewport": true
+      },
+      {
+        "tag": "BUTTON",
+        "label": "Viết ra trướcUnknown Check-inChưa gọi tên được cảm xúc? Viết ra những gì đang hi",
+        "width": 336,
+        "height": 256,
+        "horizontallyOffscreen": false,
+        "belowViewport": true
+      },
+      {
+        "tag": "A",
+        "label": "Xem tất cả →",
+        "width": 77,
+        "height": 44,
+        "horizontallyOffscreen": false,
+        "belowViewport": true
+      }
+    ],
+    "bodyText": "S\nSacKy\n•••\n⌂\nHome\n◉\nCheck-in\n▤\nDiary\n↗\nAction\n•••\nMore\n\nSẮC KÝ · CHECK-IN\n\nCheck-in\n\nDành vài phút lắng nghe và hiểu mình hơn mỗi ngày.\n\nLịch sử check-in\n→\nCHUỖI HIỆN TẠI\n0\nngày\n\nMỗi lần dừng lại đều là một bước lắng nghe bản thân.\n\nHÔM NA"
+  },
+  {
+    "name": "checkin",
+    "width": 390,
+    "screenshot": "artifacts/mobile-audit/checkin/390.png",
+    "route": "/checkin",
+    "height": 844,
+    "documentScrollWidth": 390,
+    "bodyScrollWidth": 390,
+    "horizontalOverflow": false,
+    "overflows": [],
+    "undersizedControls": [],
+    "horizontallyOffscreenControls": [],
+    "belowViewportControls": [
+      {
+        "tag": "BUTTON",
+        "label": "Viết ra trướcUnknown Check-inChưa gọi tên được cảm xúc? Viết ra những gì đang hi",
+        "width": 366,
+        "height": 256,
+        "horizontallyOffscreen": false,
+        "belowViewport": true
+      },
+      {
+        "tag": "A",
+        "label": "Xem tất cả →",
+        "width": 77,
+        "height": 44,
+        "horizontallyOffscreen": false,
+        "belowViewport": true
+      }
+    ],
+    "bodyText": "S\nSacKy\n•••\n⌂\nHome\n◉\nCheck-in\n▤\nDiary\n↗\nAction\n•••\nMore\n\nSẮC KÝ · CHECK-IN\n\nCheck-in\n\nDành vài phút lắng nghe và hiểu mình hơn mỗi ngày.\n\nLịch sử check-in\n→\nCHUỖI HIỆN TẠI\n0\nngày\n\nMỗi lần dừng lại đều là một bước lắng nghe bản thân.\n\nHÔM NA"
+  },
+  {
+    "name": "checkin",
+    "width": 430,
+    "screenshot": "artifacts/mobile-audit/checkin/430.png",
+    "route": "/checkin",
+    "height": 932,
+    "documentScrollWidth": 430,
+    "bodyScrollWidth": 430,
+    "horizontalOverflow": false,
+    "overflows": [],
+    "undersizedControls": [],
+    "horizontallyOffscreenControls": [],
+    "belowViewportControls": [
+      {
+        "tag": "BUTTON",
+        "label": "Viết ra trướcUnknown Check-inChưa gọi tên được cảm xúc? Viết ra những gì đang hi",
+        "width": 406,
+        "height": 240,
+        "horizontallyOffscreen": false,
+        "belowViewport": true
+      },
+      {
+        "tag": "A",
+        "label": "Xem tất cả →",
+        "width": 77,
+        "height": 44,
+        "horizontallyOffscreen": false,
+        "belowViewport": true
+      }
+    ],
+    "bodyText": "S\nSacKy\n•••\n⌂\nHome\n◉\nCheck-in\n▤\nDiary\n↗\nAction\n•••\nMore\n\nSẮC KÝ · CHECK-IN\n\nCheck-in\n\nDành vài phút lắng nghe và hiểu mình hơn mỗi ngày.\n\nLịch sử check-in\n→\nCHUỖI HIỆN TẠI\n0\nngày\n\nMỗi lần dừng lại đều là một bước lắng nghe bản thân.\n\nHÔM NA"
+  },
+  {
+    "name": "checkin-emotion",
+    "width": 320,
+    "screenshot": "artifacts/mobile-audit/checkin-emotion/320.png",
+    "route": "/checkin/emotion",
+    "height": 760,
+    "documentScrollWidth": 320,
+    "bodyScrollWidth": 320,
+    "horizontalOverflow": false,
+    "overflows": [],
+    "undersizedControls": [],
+    "horizontallyOffscreenControls": [],
+    "belowViewportControls": [
+      {
+        "tag": "BUTTON",
+        "label": "Khoảng cách",
+        "width": 63,
+        "height": 44,
+        "horizontallyOffscreen": false,
+        "belowViewport": true
+      },
+      {
+        "tag": "BUTTON",
+        "label": "Hoàn tác",
+        "width": 44,
+        "height": 44,
+        "horizontallyOffscreen": false,
+        "belowViewport": true
+      },
+      {
+        "tag": "BUTTON",
+        "label": "Làm lại",
+        "width": 44,
+        "height": 44,
+        "horizontallyOffscreen": false,
+        "belowViewport": true
+      },
+      {
+        "tag": "BUTTON",
+        "label": "← Quay lại",
+        "width": 270,
+        "height": 44,
+        "horizontallyOffscreen": false,
+        "belowViewport": true
+      },
+      {
+        "tag": "BUTTON",
+        "label": "Lưu",
+        "width": 42,
+        "height": 44,
+        "horizontallyOffscreen": false,
+        "belowViewport": true
+      }
+    ],
+    "bodyText": "←\nCheck-in\n✦\n\nĐANG Ở ĐÂY · 1/5\n\nCảm xúc chính đang hiện diện là gì?\n\nChọn một cảm xúc đang rõ nhất với bạn lúc này.\n\n⌕\nTất cả\nCHỌN MỘT CẢM XÚC\n\n0/1 cảm xúc chính đã chọn\n\nKhông tìm thấy cảm xúc phù hợp.\n\n2. CƯỜNG ĐỘ\nChọn mức gần nhất với bạ"
+  },
+  {
+    "name": "checkin-emotion",
+    "width": 360,
+    "screenshot": "artifacts/mobile-audit/checkin-emotion/360.png",
+    "route": "/checkin/emotion",
+    "height": 760,
+    "documentScrollWidth": 360,
+    "bodyScrollWidth": 360,
+    "horizontalOverflow": false,
+    "overflows": [],
+    "undersizedControls": [],
+    "horizontallyOffscreenControls": [],
+    "belowViewportControls": [
+      {
+        "tag": "BUTTON",
+        "label": "Hoàn tác",
+        "width": 44,
+        "height": 44,
+        "horizontallyOffscreen": false,
+        "belowViewport": true
+      },
+      {
+        "tag": "BUTTON",
+        "label": "Làm lại",
+        "width": 44,
+        "height": 44,
+        "horizontallyOffscreen": false,
+        "belowViewport": true
+      },
+      {
+        "tag": "BUTTON",
+        "label": "← Quay lại",
+        "width": 307,
+        "height": 44,
+        "horizontallyOffscreen": false,
+        "belowViewport": true
+      },
+      {
+        "tag": "BUTTON",
+        "label": "Lưu",
+        "width": 42,
+        "height": 44,
+        "horizontallyOffscreen": false,
+        "belowViewport": true
+      }
+    ],
+    "bodyText": "←\nCheck-in\n✦\n\nĐANG Ở ĐÂY · 1/5\n\nCảm xúc chính đang hiện diện là gì?\n\nChọn một cảm xúc đang rõ nhất với bạn lúc này.\n\n⌕\nTất cả\nCHỌN MỘT CẢM XÚC\n\n0/1 cảm xúc chính đã chọn\n\nKhông tìm thấy cảm xúc phù hợp.\n\n2. CƯỜNG ĐỘ\nChọn mức gần nhất với bạ"
+  },
+  {
+    "name": "checkin-emotion",
+    "width": 390,
+    "screenshot": "artifacts/mobile-audit/checkin-emotion/390.png",
+    "route": "/checkin/emotion",
+    "height": 844,
+    "documentScrollWidth": 390,
+    "bodyScrollWidth": 390,
+    "horizontalOverflow": false,
+    "overflows": [],
+    "undersizedControls": [],
+    "horizontallyOffscreenControls": [],
+    "belowViewportControls": [
+      {
+        "tag": "BUTTON",
+        "label": "← Quay lại",
+        "width": 335,
+        "height": 44,
+        "horizontallyOffscreen": false,
+        "belowViewport": true
+      },
+      {
+        "tag": "BUTTON",
+        "label": "Lưu",
+        "width": 42,
+        "height": 44,
+        "horizontallyOffscreen": false,
+        "belowViewport": true
+      }
+    ],
+    "bodyText": "←\nCheck-in\n✦\n\nĐANG Ở ĐÂY · 1/5\n\nCảm xúc chính đang hiện diện là gì?\n\nChọn một cảm xúc đang rõ nhất với bạn lúc này.\n\n⌕\nTất cả\nCHỌN MỘT CẢM XÚC\n\n0/1 cảm xúc chính đã chọn\n\nKhông tìm thấy cảm xúc phù hợp.\n\n2. CƯỜNG ĐỘ\nChọn mức gần nhất với bạ"
+  },
+  {
+    "name": "checkin-emotion",
+    "width": 430,
+    "screenshot": "artifacts/mobile-audit/checkin-emotion/430.png",
+    "route": "/checkin/emotion",
+    "height": 932,
+    "documentScrollWidth": 430,
+    "bodyScrollWidth": 430,
+    "horizontalOverflow": false,
+    "overflows": [],
+    "undersizedControls": [],
+    "horizontallyOffscreenControls": [],
+    "belowViewportControls": [
+      {
+        "tag": "BUTTON",
+        "label": "← Quay lại",
+        "width": 374,
+        "height": 44,
+        "horizontallyOffscreen": false,
+        "belowViewport": true
+      },
+      {
+        "tag": "BUTTON",
+        "label": "Lưu",
+        "width": 42,
+        "height": 44,
+        "horizontallyOffscreen": false,
+        "belowViewport": true
+      }
+    ],
+    "bodyText": "←\nCheck-in\n✦\n\nĐANG Ở ĐÂY · 1/5\n\nCảm xúc chính đang hiện diện là gì?\n\nChọn một cảm xúc đang rõ nhất với bạn lúc này.\n\n⌕\nTất cả\nCHỌN MỘT CẢM XÚC\n\n0/1 cảm xúc chính đã chọn\n\nKhông tìm thấy cảm xúc phù hợp.\n\n2. CƯỜNG ĐỘ\nChọn mức gần nhất với bạ"
+  },
+  {
+    "name": "checkin-unknown",
+    "width": 320,
+    "screenshot": "artifacts/mobile-audit/checkin-unknown/320.png",
+    "route": "/checkin/unknown",
+    "height": 760,
+    "documentScrollWidth": 320,
+    "bodyScrollWidth": 320,
+    "horizontalOverflow": false,
+    "overflows": [],
+    "undersizedControls": [],
+    "horizontallyOffscreenControls": [],
+    "belowViewportControls": [],
+    "bodyText": "←\nCheck-in\n✦\n\nSẮC KÝ\n\nMình chưa rõ điều gì đang có mặt.\n\nHãy chọn một prompt và viết ra trước, rồi mình có thể dừng tại đây hoặc đi sâu hơn sau đó.\n\nGHI CHÚ (bắt buộc)\nB\nI\n• List\n1. List\nQuote\nSpacing\n↶\n↷\n\n\n\n\n0 từ · tối đa 2000 ký tự\n\nChọn "
+  },
+  {
+    "name": "checkin-unknown",
+    "width": 360,
+    "screenshot": "artifacts/mobile-audit/checkin-unknown/360.png",
+    "route": "/checkin/unknown",
+    "height": 760,
+    "documentScrollWidth": 360,
+    "bodyScrollWidth": 360,
+    "horizontalOverflow": false,
+    "overflows": [],
+    "undersizedControls": [],
+    "horizontallyOffscreenControls": [],
+    "belowViewportControls": [],
+    "bodyText": "←\nCheck-in\n✦\n\nSẮC KÝ\n\nMình chưa rõ điều gì đang có mặt.\n\nHãy chọn một prompt và viết ra trước, rồi mình có thể dừng tại đây hoặc đi sâu hơn sau đó.\n\nGHI CHÚ (bắt buộc)\nB\nI\n• List\n1. List\nQuote\nSpacing\n↶\n↷\n\n\n\n\n0 từ · tối đa 2000 ký tự\n\nChọn "
+  },
+  {
+    "name": "checkin-unknown",
+    "width": 390,
+    "screenshot": "artifacts/mobile-audit/checkin-unknown/390.png",
+    "route": "/checkin/unknown",
+    "height": 844,
+    "documentScrollWidth": 390,
+    "bodyScrollWidth": 390,
+    "horizontalOverflow": false,
+    "overflows": [],
+    "undersizedControls": [],
+    "horizontallyOffscreenControls": [],
+    "belowViewportControls": [],
+    "bodyText": "←\nCheck-in\n✦\n\nSẮC KÝ\n\nMình chưa rõ điều gì đang có mặt.\n\nHãy chọn một prompt và viết ra trước, rồi mình có thể dừng tại đây hoặc đi sâu hơn sau đó.\n\nGHI CHÚ (bắt buộc)\nB\nI\n• List\n1. List\nQuote\nSpacing\n↶\n↷\n\n\n\n\n0 từ · tối đa 2000 ký tự\n\nChọn "
+  },
+  {
+    "name": "checkin-unknown",
+    "width": 430,
+    "screenshot": "artifacts/mobile-audit/checkin-unknown/430.png",
+    "route": "/checkin/unknown",
+    "height": 932,
+    "documentScrollWidth": 430,
+    "bodyScrollWidth": 430,
+    "horizontalOverflow": false,
+    "overflows": [],
+    "undersizedControls": [],
+    "horizontallyOffscreenControls": [],
+    "belowViewportControls": [],
+    "bodyText": "←\nCheck-in\n✦\n\nSẮC KÝ\n\nMình chưa rõ điều gì đang có mặt.\n\nHãy chọn một prompt và viết ra trước, rồi mình có thể dừng tại đây hoặc đi sâu hơn sau đó.\n\nGHI CHÚ (bắt buộc)\nB\nI\n• List\n1. List\nQuote\nSpacing\n↶\n↷\n\n\n\n\n0 từ · tối đa 2000 ký tự\n\nChọn "
+  },
+  {
+    "name": "checkin-secondary",
+    "width": 320,
+    "screenshot": "artifacts/mobile-audit/checkin-secondary/320.png",
+    "route": "/checkin/secondary-emotions",
+    "height": 760,
+    "documentScrollWidth": 320,
+    "bodyScrollWidth": 320,
+    "horizontalOverflow": false,
+    "overflows": [],
+    "undersizedControls": [],
+    "horizontallyOffscreenControls": [],
+    "belowViewportControls": [
+      {
+        "tag": "BUTTON",
+        "label": "Đậm",
+        "width": 44,
+        "height": 44,
+        "horizontallyOffscreen": false,
+        "belowViewport": true
+      },
+      {
+        "tag": "BUTTON",
+        "label": "Nghiêng",
+        "width": 44,
+        "height": 44,
+        "horizontallyOffscreen": false,
+        "belowViewport": true
+      },
+      {
+        "tag": "BUTTON",
+        "label": "Danh sách bullet",
+        "width": 51,
+        "height": 44,
+        "horizontallyOffscreen": false,
+        "belowViewport": true
+      },
+      {
+        "tag": "BUTTON",
+        "label": "Danh sách đánh số",
+        "width": 54,
+        "height": 44,
+        "horizontallyOffscreen": false,
+        "belowViewport": true
+      },
+      {
+        "tag": "BUTTON",
+        "label": "Trích dẫn",
+        "width": 51,
+        "height": 44,
+        "horizontallyOffscreen": false,
+        "belowViewport": true
+      },
+      {
+        "tag": "BUTTON",
+        "label": "Khoảng cách",
+        "width": 63,
+        "height": 44,
+        "horizontallyOffscreen": false,
+        "belowViewport": true
+      },
+      {
+        "tag": "BUTTON",
+        "label": "Hoàn tác",
+        "width": 44,
+        "height": 44,
+        "horizontallyOffscreen": false,
+        "belowViewport": true
+      },
+      {
+        "tag": "BUTTON",
+        "label": "Làm lại",
+        "width": 44,
+        "height": 44,
+        "horizontallyOffscreen": false,
+        "belowViewport": true
+      },
+      {
+        "tag": "BUTTON",
+        "label": "← Quay lại",
+        "width": 270,
+        "height": 44,
+        "horizontallyOffscreen": false,
+        "belowViewport": true
+      },
+      {
+        "tag": "BUTTON",
+        "label": "▣ Lưu nhanh",
+        "width": 130,
+        "height": 44,
+        "horizontallyOffscreen": false,
+        "belowViewport": true
+      },
+      {
+        "tag": "BUTTON",
+        "label": "Tiếp tục →",
+        "width": 130,
+        "height": 44,
+        "horizontallyOffscreen": false,
+        "belowViewport": true
+      }
+    ],
+    "bodyText": "←\nCheck-in\n✦\n\nĐÀO SÂU HƠN · 2/5\n\nCảm xúc phụ nào đang hiện diện?\n\nChọn tối đa 2 cảm xúc phụ, hoặc tiếp tục nếu chưa cần.\n\n⌕\nTất cả\nCẢM XÚC CHÍNH\nChưa chọn\nCƯỜNG ĐỘ\nChưa chọn\nGHI CHÚ CỦA BẠN\nChưa có ghi chú\nCẢM XÚC PHỤ\n\n0/2 cảm xúc phụ đã ch"
+  },
+  {
+    "name": "checkin-secondary",
+    "width": 360,
+    "screenshot": "artifacts/mobile-audit/checkin-secondary/360.png",
+    "route": "/checkin/secondary-emotions",
+    "height": 760,
+    "documentScrollWidth": 360,
+    "bodyScrollWidth": 360,
+    "horizontalOverflow": false,
+    "overflows": [],
+    "undersizedControls": [],
+    "horizontallyOffscreenControls": [],
+    "belowViewportControls": [
+      {
+        "tag": "BUTTON",
+        "label": "Đậm",
+        "width": 44,
+        "height": 44,
+        "horizontallyOffscreen": false,
+        "belowViewport": true
+      },
+      {
+        "tag": "BUTTON",
+        "label": "Nghiêng",
+        "width": 44,
+        "height": 44,
+        "horizontallyOffscreen": false,
+        "belowViewport": true
+      },
+      {
+        "tag": "BUTTON",
+        "label": "Danh sách bullet",
+        "width": 51,
+        "height": 44,
+        "horizontallyOffscreen": false,
+        "belowViewport": true
+      },
+      {
+        "tag": "BUTTON",
+        "label": "Danh sách đánh số",
+        "width": 54,
+        "height": 44,
+        "horizontallyOffscreen": false,
+        "belowViewport": true
+      },
+      {
+        "tag": "BUTTON",
+        "label": "Trích dẫn",
+        "width": 51,
+        "height": 44,
+        "horizontallyOffscreen": false,
+        "belowViewport": true
+      },
+      {
+        "tag": "BUTTON",
+        "label": "Khoảng cách",
+        "width": 63,
+        "height": 44,
+        "horizontallyOffscreen": false,
+        "belowViewport": true
+      },
+      {
+        "tag": "BUTTON",
+        "label": "Hoàn tác",
+        "width": 44,
+        "height": 44,
+        "horizontallyOffscreen": false,
+        "belowViewport": true
+      },
+      {
+        "tag": "BUTTON",
+        "label": "Làm lại",
+        "width": 44,
+        "height": 44,
+        "horizontallyOffscreen": false,
+        "belowViewport": true
+      },
+      {
+        "tag": "BUTTON",
+        "label": "← Quay lại",
+        "width": 307,
+        "height": 44,
+        "horizontallyOffscreen": false,
+        "belowViewport": true
+      },
+      {
+        "tag": "BUTTON",
+        "label": "▣ Lưu nhanh",
+        "width": 148,
+        "height": 44,
+        "horizontallyOffscreen": false,
+        "belowViewport": true
+      },
+      {
+        "tag": "BUTTON",
+        "label": "Tiếp tục →",
+        "width": 148,
+        "height": 44,
+        "horizontallyOffscreen": false,
+        "belowViewport": true
+      }
+    ],
+    "bodyText": "←\nCheck-in\n✦\n\nĐÀO SÂU HƠN · 2/5\n\nCảm xúc phụ nào đang hiện diện?\n\nChọn tối đa 2 cảm xúc phụ, hoặc tiếp tục nếu chưa cần.\n\n⌕\nTất cả\nCẢM XÚC CHÍNH\nChưa chọn\nCƯỜNG ĐỘ\nChưa chọn\nGHI CHÚ CỦA BẠN\nChưa có ghi chú\nCẢM XÚC PHỤ\n\n0/2 cảm xúc phụ đã ch"
+  },
+  {
+    "name": "checkin-secondary",
+    "width": 390,
+    "screenshot": "artifacts/mobile-audit/checkin-secondary/390.png",
+    "route": "/checkin/secondary-emotions",
+    "height": 844,
+    "documentScrollWidth": 390,
+    "bodyScrollWidth": 390,
+    "horizontalOverflow": false,
+    "overflows": [],
+    "undersizedControls": [],
+    "horizontallyOffscreenControls": [],
+    "belowViewportControls": [
+      {
+        "tag": "BUTTON",
+        "label": "Hoàn tác",
+        "width": 44,
+        "height": 44,
+        "horizontallyOffscreen": false,
+        "belowViewport": true
+      },
+      {
+        "tag": "BUTTON",
+        "label": "Làm lại",
+        "width": 44,
+        "height": 44,
+        "horizontallyOffscreen": false,
+        "belowViewport": true
+      },
+      {
+        "tag": "BUTTON",
+        "label": "← Quay lại",
+        "width": 335,
+        "height": 44,
+        "horizontallyOffscreen": false,
+        "belowViewport": true
+      },
+      {
+        "tag": "BUTTON",
+        "label": "▣ Lưu nhanh",
+        "width": 162,
+        "height": 44,
+        "horizontallyOffscreen": false,
+        "belowViewport": true
+      },
+      {
+        "tag": "BUTTON",
+        "label": "Tiếp tục →",
+        "width": 162,
+        "height": 44,
+        "horizontallyOffscreen": false,
+        "belowViewport": true
+      }
+    ],
+    "bodyText": "←\nCheck-in\n✦\n\nĐÀO SÂU HƠN · 2/5\n\nCảm xúc phụ nào đang hiện diện?\n\nChọn tối đa 2 cảm xúc phụ, hoặc tiếp tục nếu chưa cần.\n\n⌕\nTất cả\nCẢM XÚC CHÍNH\nChưa chọn\nCƯỜNG ĐỘ\nChưa chọn\nGHI CHÚ CỦA BẠN\nChưa có ghi chú\nCẢM XÚC PHỤ\n\n0/2 cảm xúc phụ đã ch"
+  },
+  {
+    "name": "checkin-secondary",
+    "width": 430,
+    "screenshot": "artifacts/mobile-audit/checkin-secondary/430.png",
+    "route": "/checkin/secondary-emotions",
+    "height": 932,
+    "documentScrollWidth": 430,
+    "bodyScrollWidth": 430,
+    "horizontalOverflow": false,
+    "overflows": [],
+    "undersizedControls": [],
+    "horizontallyOffscreenControls": [],
+    "belowViewportControls": [
+      {
+        "tag": "BUTTON",
+        "label": "← Quay lại",
+        "width": 374,
+        "height": 44,
+        "horizontallyOffscreen": false,
+        "belowViewport": true
+      },
+      {
+        "tag": "BUTTON",
+        "label": "▣ Lưu nhanh",
+        "width": 182,
+        "height": 44,
+        "horizontallyOffscreen": false,
+        "belowViewport": true
+      },
+      {
+        "tag": "BUTTON",
+        "label": "Tiếp tục →",
+        "width": 182,
+        "height": 44,
+        "horizontallyOffscreen": false,
+        "belowViewport": true
+      }
+    ],
+    "bodyText": "←\nCheck-in\n✦\n\nĐÀO SÂU HƠN · 2/5\n\nCảm xúc phụ nào đang hiện diện?\n\nChọn tối đa 2 cảm xúc phụ, hoặc tiếp tục nếu chưa cần.\n\n⌕\nTất cả\nCẢM XÚC CHÍNH\nChưa chọn\nCƯỜNG ĐỘ\nChưa chọn\nGHI CHÚ CỦA BẠN\nChưa có ghi chú\nCẢM XÚC PHỤ\n\n0/2 cảm xúc phụ đã ch"
+  },
+  {
+    "name": "checkin-needs",
+    "width": 320,
+    "screenshot": "artifacts/mobile-audit/checkin-needs/320.png",
+    "route": "/checkin/needs",
+    "height": 760,
+    "documentScrollWidth": 320,
+    "bodyScrollWidth": 320,
+    "horizontalOverflow": false,
+    "overflows": [],
+    "undersizedControls": [],
+    "horizontallyOffscreenControls": [],
+    "belowViewportControls": [
+      {
+        "tag": "BUTTON",
+        "label": "← Quay lại",
+        "width": 270,
+        "height": 44,
+        "horizontallyOffscreen": false,
+        "belowViewport": true
+      },
+      {
+        "tag": "BUTTON",
+        "label": "▣ Lưu nhanh",
+        "width": 130,
+        "height": 44,
+        "horizontallyOffscreen": false,
+        "belowViewport": true
+      },
+      {
+        "tag": "BUTTON",
+        "label": "Tiếp tục →",
+        "width": 130,
+        "height": 44,
+        "horizontallyOffscreen": false,
+        "belowViewport": true
+      }
+    ],
+    "bodyText": "←\nCheck-in\n✦\n\nĐÀO SÂU HƠN · 3/5\n\nĐiều mình đang cần là gì?\n\nChọn tối đa 3 nhu cầu, hoặc tiếp tục nếu chưa cần.\n\n⌕\nTất cả\nCẢM XÚC CHÍNH\nChưa chọn\nCƯỜNG ĐỘ\nChưa chọn\nGHI CHÚ CỦA BẠN\nChưa có ghi chú\nĐIỀU MÌNH ĐANG CẦN\n\n0/3 nhu cầu đã chọn\n\nBạn"
+  },
+  {
+    "name": "checkin-needs",
+    "width": 360,
+    "screenshot": "artifacts/mobile-audit/checkin-needs/360.png",
+    "route": "/checkin/needs",
+    "height": 760,
+    "documentScrollWidth": 360,
+    "bodyScrollWidth": 360,
+    "horizontalOverflow": false,
+    "overflows": [],
+    "undersizedControls": [],
+    "horizontallyOffscreenControls": [],
+    "belowViewportControls": [
+      {
+        "tag": "BUTTON",
+        "label": "← Quay lại",
+        "width": 307,
+        "height": 44,
+        "horizontallyOffscreen": false,
+        "belowViewport": true
+      },
+      {
+        "tag": "BUTTON",
+        "label": "▣ Lưu nhanh",
+        "width": 148,
+        "height": 44,
+        "horizontallyOffscreen": false,
+        "belowViewport": true
+      },
+      {
+        "tag": "BUTTON",
+        "label": "Tiếp tục →",
+        "width": 148,
+        "height": 44,
+        "horizontallyOffscreen": false,
+        "belowViewport": true
+      }
+    ],
+    "bodyText": "←\nCheck-in\n✦\n\nĐÀO SÂU HƠN · 3/5\n\nĐiều mình đang cần là gì?\n\nChọn tối đa 3 nhu cầu, hoặc tiếp tục nếu chưa cần.\n\n⌕\nTất cả\nCẢM XÚC CHÍNH\nChưa chọn\nCƯỜNG ĐỘ\nChưa chọn\nGHI CHÚ CỦA BẠN\nChưa có ghi chú\nĐIỀU MÌNH ĐANG CẦN\n\n0/3 nhu cầu đã chọn\n\nBạn"
+  },
+  {
+    "name": "checkin-needs",
+    "width": 390,
+    "screenshot": "artifacts/mobile-audit/checkin-needs/390.png",
+    "route": "/checkin/needs",
+    "height": 844,
+    "documentScrollWidth": 390,
+    "bodyScrollWidth": 390,
+    "horizontalOverflow": false,
+    "overflows": [],
+    "undersizedControls": [],
+    "horizontallyOffscreenControls": [],
+    "belowViewportControls": [
+      {
+        "tag": "BUTTON",
+        "label": "← Quay lại",
+        "width": 335,
+        "height": 44,
+        "horizontallyOffscreen": false,
+        "belowViewport": true
+      },
+      {
+        "tag": "BUTTON",
+        "label": "▣ Lưu nhanh",
+        "width": 162,
+        "height": 44,
+        "horizontallyOffscreen": false,
+        "belowViewport": true
+      },
+      {
+        "tag": "BUTTON",
+        "label": "Tiếp tục →",
+        "width": 162,
+        "height": 44,
+        "horizontallyOffscreen": false,
+        "belowViewport": true
+      }
+    ],
+    "bodyText": "←\nCheck-in\n✦\n\nĐÀO SÂU HƠN · 3/5\n\nĐiều mình đang cần là gì?\n\nChọn tối đa 3 nhu cầu, hoặc tiếp tục nếu chưa cần.\n\n⌕\nTất cả\nCẢM XÚC CHÍNH\nChưa chọn\nCƯỜNG ĐỘ\nChưa chọn\nGHI CHÚ CỦA BẠN\nChưa có ghi chú\nĐIỀU MÌNH ĐANG CẦN\n\n0/3 nhu cầu đã chọn\n\nBạn"
+  },
+  {
+    "name": "checkin-needs",
+    "width": 430,
+    "screenshot": "artifacts/mobile-audit/checkin-needs/430.png",
+    "route": "/checkin/needs",
+    "height": 932,
+    "documentScrollWidth": 430,
+    "bodyScrollWidth": 430,
+    "horizontalOverflow": false,
+    "overflows": [],
+    "undersizedControls": [],
+    "horizontallyOffscreenControls": [],
+    "belowViewportControls": [
+      {
+        "tag": "BUTTON",
+        "label": "← Quay lại",
+        "width": 374,
+        "height": 44,
+        "horizontallyOffscreen": false,
+        "belowViewport": true
+      },
+      {
+        "tag": "BUTTON",
+        "label": "▣ Lưu nhanh",
+        "width": 182,
+        "height": 44,
+        "horizontallyOffscreen": false,
+        "belowViewport": true
+      },
+      {
+        "tag": "BUTTON",
+        "label": "Tiếp tục →",
+        "width": 182,
+        "height": 44,
+        "horizontallyOffscreen": false,
+        "belowViewport": true
+      }
+    ],
+    "bodyText": "←\nCheck-in\n✦\n\nĐÀO SÂU HƠN · 3/5\n\nĐiều mình đang cần là gì?\n\nChọn tối đa 3 nhu cầu, hoặc tiếp tục nếu chưa cần.\n\n⌕\nTất cả\nCẢM XÚC CHÍNH\nChưa chọn\nCƯỜNG ĐỘ\nChưa chọn\nGHI CHÚ CỦA BẠN\nChưa có ghi chú\nĐIỀU MÌNH ĐANG CẦN\n\n0/3 nhu cầu đã chọn\n\nBạn"
+  },
+  {
+    "name": "checkin-contexts",
+    "width": 320,
+    "screenshot": "artifacts/mobile-audit/checkin-contexts/320.png",
+    "route": "/checkin/contexts",
+    "height": 760,
+    "documentScrollWidth": 320,
+    "bodyScrollWidth": 320,
+    "horizontalOverflow": false,
+    "overflows": [],
+    "undersizedControls": [],
+    "horizontallyOffscreenControls": [],
+    "belowViewportControls": [
+      {
+        "tag": "BUTTON",
+        "label": "← Quay lại",
+        "width": 270,
+        "height": 44,
+        "horizontallyOffscreen": false,
+        "belowViewport": true
+      },
+      {
+        "tag": "BUTTON",
+        "label": "▣ Lưu nhanh",
+        "width": 130,
+        "height": 44,
+        "horizontallyOffscreen": false,
+        "belowViewport": true
+      },
+      {
+        "tag": "BUTTON",
+        "label": "Xem lại →",
+        "width": 130,
+        "height": 44,
+        "horizontallyOffscreen": false,
+        "belowViewport": true
+      }
+    ],
+    "bodyText": "←\nCheck-in\n✦\n\nĐÀO SÂU HƠN · 4/5\n\nBối cảnh nào đang liên quan?\n\nChọn tối đa 2 bối cảnh, hoặc tiếp tục nếu chưa cần.\n\n⌕\nTất cả\nCẢM XÚC CHÍNH\nChưa chọn\nCƯỜNG ĐỘ\nChưa chọn\nGHI CHÚ CỦA BẠN\nChưa có ghi chú\nĐIỀU GÌ ĐANG LIÊN QUAN?\n\n0/2 bối cảnh đã"
+  },
+  {
+    "name": "checkin-contexts",
+    "width": 360,
+    "screenshot": "artifacts/mobile-audit/checkin-contexts/360.png",
+    "route": "/checkin/contexts",
+    "height": 760,
+    "documentScrollWidth": 360,
+    "bodyScrollWidth": 360,
+    "horizontalOverflow": false,
+    "overflows": [],
+    "undersizedControls": [],
+    "horizontallyOffscreenControls": [],
+    "belowViewportControls": [
+      {
+        "tag": "BUTTON",
+        "label": "← Quay lại",
+        "width": 307,
+        "height": 44,
+        "horizontallyOffscreen": false,
+        "belowViewport": true
+      },
+      {
+        "tag": "BUTTON",
+        "label": "▣ Lưu nhanh",
+        "width": 148,
+        "height": 44,
+        "horizontallyOffscreen": false,
+        "belowViewport": true
+      },
+      {
+        "tag": "BUTTON",
+        "label": "Xem lại →",
+        "width": 148,
+        "height": 44,
+        "horizontallyOffscreen": false,
+        "belowViewport": true
+      }
+    ],
+    "bodyText": "←\nCheck-in\n✦\n\nĐÀO SÂU HƠN · 4/5\n\nBối cảnh nào đang liên quan?\n\nChọn tối đa 2 bối cảnh, hoặc tiếp tục nếu chưa cần.\n\n⌕\nTất cả\nCẢM XÚC CHÍNH\nChưa chọn\nCƯỜNG ĐỘ\nChưa chọn\nGHI CHÚ CỦA BẠN\nChưa có ghi chú\nĐIỀU GÌ ĐANG LIÊN QUAN?\n\n0/2 bối cảnh đã"
+  },
+  {
+    "name": "checkin-contexts",
+    "width": 390,
+    "screenshot": "artifacts/mobile-audit/checkin-contexts/390.png",
+    "route": "/checkin/contexts",
+    "height": 844,
+    "documentScrollWidth": 390,
+    "bodyScrollWidth": 390,
+    "horizontalOverflow": false,
+    "overflows": [],
+    "undersizedControls": [],
+    "horizontallyOffscreenControls": [],
+    "belowViewportControls": [
+      {
+        "tag": "BUTTON",
+        "label": "← Quay lại",
+        "width": 335,
+        "height": 44,
+        "horizontallyOffscreen": false,
+        "belowViewport": true
+      },
+      {
+        "tag": "BUTTON",
+        "label": "▣ Lưu nhanh",
+        "width": 162,
+        "height": 44,
+        "horizontallyOffscreen": false,
+        "belowViewport": true
+      },
+      {
+        "tag": "BUTTON",
+        "label": "Xem lại →",
+        "width": 162,
+        "height": 44,
+        "horizontallyOffscreen": false,
+        "belowViewport": true
+      }
+    ],
+    "bodyText": "←\nCheck-in\n✦\n\nĐÀO SÂU HƠN · 4/5\n\nBối cảnh nào đang liên quan?\n\nChọn tối đa 2 bối cảnh, hoặc tiếp tục nếu chưa cần.\n\n⌕\nTất cả\nCẢM XÚC CHÍNH\nChưa chọn\nCƯỜNG ĐỘ\nChưa chọn\nGHI CHÚ CỦA BẠN\nChưa có ghi chú\nĐIỀU GÌ ĐANG LIÊN QUAN?\n\n0/2 bối cảnh đã"
+  },
+  {
+    "name": "checkin-contexts",
+    "width": 430,
+    "screenshot": "artifacts/mobile-audit/checkin-contexts/430.png",
+    "route": "/checkin/contexts",
+    "height": 932,
+    "documentScrollWidth": 430,
+    "bodyScrollWidth": 430,
+    "horizontalOverflow": false,
+    "overflows": [],
+    "undersizedControls": [],
+    "horizontallyOffscreenControls": [],
+    "belowViewportControls": [
+      {
+        "tag": "BUTTON",
+        "label": "← Quay lại",
+        "width": 374,
+        "height": 44,
+        "horizontallyOffscreen": false,
+        "belowViewport": true
+      },
+      {
+        "tag": "BUTTON",
+        "label": "▣ Lưu nhanh",
+        "width": 182,
+        "height": 44,
+        "horizontallyOffscreen": false,
+        "belowViewport": true
+      },
+      {
+        "tag": "BUTTON",
+        "label": "Xem lại →",
+        "width": 182,
+        "height": 44,
+        "horizontallyOffscreen": false,
+        "belowViewport": true
+      }
+    ],
+    "bodyText": "←\nCheck-in\n✦\n\nĐÀO SÂU HƠN · 4/5\n\nBối cảnh nào đang liên quan?\n\nChọn tối đa 2 bối cảnh, hoặc tiếp tục nếu chưa cần.\n\n⌕\nTất cả\nCẢM XÚC CHÍNH\nChưa chọn\nCƯỜNG ĐỘ\nChưa chọn\nGHI CHÚ CỦA BẠN\nChưa có ghi chú\nĐIỀU GÌ ĐANG LIÊN QUAN?\n\n0/2 bối cảnh đã"
+  },
+  {
+    "name": "checkin-review",
+    "width": 320,
+    "screenshot": "artifacts/mobile-audit/checkin-review/320.png",
+    "route": "/checkin/review",
+    "height": 760,
+    "documentScrollWidth": 320,
+    "bodyScrollWidth": 320,
+    "horizontalOverflow": false,
+    "overflows": [],
+    "undersizedControls": [],
+    "horizontallyOffscreenControls": [],
+    "belowViewportControls": [
+      {
+        "tag": "BUTTON",
+        "label": "✎  Chỉnh sửa",
+        "width": 74,
+        "height": 44,
+        "horizontallyOffscreen": false,
+        "belowViewport": true
+      },
+      {
+        "tag": "BUTTON",
+        "label": "✎  Chỉnh sửa",
+        "width": 74,
+        "height": 44,
+        "horizontallyOffscreen": false,
+        "belowViewport": true
+      },
+      {
+        "tag": "BUTTON",
+        "label": "✎  Chỉnh sửa",
+        "width": 74,
+        "height": 44,
+        "horizontallyOffscreen": false,
+        "belowViewport": true
+      },
+      {
+        "tag": "BUTTON",
+        "label": "✎  Chỉnh sửa",
+        "width": 74,
+        "height": 44,
+        "horizontallyOffscreen": false,
+        "belowViewport": true
+      },
+      {
+        "tag": "INPUT",
+        "label": "Thời điểm trải nghiệm",
+        "width": 213,
+        "height": 46,
+        "horizontallyOffscreen": false,
+        "belowViewport": true
+      },
+      {
+        "tag": "BUTTON",
+        "label": "← Quay lại",
+        "width": 270,
+        "height": 44,
+        "horizontallyOffscreen": false,
+        "belowViewport": true
+      },
+      {
+        "tag": "BUTTON",
+        "label": "Lưu check-in",
+        "width": 100,
+        "height": 44,
+        "horizontallyOffscreen": false,
+        "belowViewport": true
+      }
+    ],
+    "bodyText": "←\nCheck-in\n✦\n\nĐÀO SÂU HƠN · 5/5\n\nXem lại check-in của mình\n\nBạn có thể chỉnh lại từng phần trước khi hoàn tất.\n\n1\nCẢM XÚC CHÍNH\nChưa chọn\n✎  Chỉnh sửa\n2\nCƯỜNG ĐỘ\nChưa chọn\n✎  Chỉnh sửa\n3\nCẢM XÚC PHỤ\nKhông có\n✎  Chỉnh sửa\n4\nNHU CẦU\nKhông có\n"
+  },
+  {
+    "name": "checkin-review",
+    "width": 360,
+    "screenshot": "artifacts/mobile-audit/checkin-review/360.png",
+    "route": "/checkin/review",
+    "height": 760,
+    "documentScrollWidth": 360,
+    "bodyScrollWidth": 360,
+    "horizontalOverflow": false,
+    "overflows": [],
+    "undersizedControls": [],
+    "horizontallyOffscreenControls": [],
+    "belowViewportControls": [
+      {
+        "tag": "BUTTON",
+        "label": "✎  Chỉnh sửa",
+        "width": 74,
+        "height": 44,
+        "horizontallyOffscreen": false,
+        "belowViewport": true
+      },
+      {
+        "tag": "BUTTON",
+        "label": "✎  Chỉnh sửa",
+        "width": 74,
+        "height": 44,
+        "horizontallyOffscreen": false,
+        "belowViewport": true
+      },
+      {
+        "tag": "BUTTON",
+        "label": "✎  Chỉnh sửa",
+        "width": 74,
+        "height": 44,
+        "horizontallyOffscreen": false,
+        "belowViewport": true
+      },
+      {
+        "tag": "BUTTON",
+        "label": "✎  Chỉnh sửa",
+        "width": 74,
+        "height": 44,
+        "horizontallyOffscreen": false,
+        "belowViewport": true
+      },
+      {
+        "tag": "INPUT",
+        "label": "Thời điểm trải nghiệm",
+        "width": 253,
+        "height": 46,
+        "horizontallyOffscreen": false,
+        "belowViewport": true
+      },
+      {
+        "tag": "BUTTON",
+        "label": "← Quay lại",
+        "width": 307,
+        "height": 44,
+        "horizontallyOffscreen": false,
+        "belowViewport": true
+      },
+      {
+        "tag": "BUTTON",
+        "label": "Lưu check-in",
+        "width": 100,
+        "height": 44,
+        "horizontallyOffscreen": false,
+        "belowViewport": true
+      }
+    ],
+    "bodyText": "←\nCheck-in\n✦\n\nĐÀO SÂU HƠN · 5/5\n\nXem lại check-in của mình\n\nBạn có thể chỉnh lại từng phần trước khi hoàn tất.\n\n1\nCẢM XÚC CHÍNH\nChưa chọn\n✎  Chỉnh sửa\n2\nCƯỜNG ĐỘ\nChưa chọn\n✎  Chỉnh sửa\n3\nCẢM XÚC PHỤ\nKhông có\n✎  Chỉnh sửa\n4\nNHU CẦU\nKhông có\n"
+  },
+  {
+    "name": "checkin-review",
+    "width": 390,
+    "screenshot": "artifacts/mobile-audit/checkin-review/390.png",
+    "route": "/checkin/review",
+    "height": 844,
+    "documentScrollWidth": 390,
+    "bodyScrollWidth": 390,
+    "horizontalOverflow": false,
+    "overflows": [],
+    "undersizedControls": [],
+    "horizontallyOffscreenControls": [],
+    "belowViewportControls": [
+      {
+        "tag": "BUTTON",
+        "label": "✎  Chỉnh sửa",
+        "width": 74,
+        "height": 44,
+        "horizontallyOffscreen": false,
+        "belowViewport": true
+      },
+      {
+        "tag": "BUTTON",
+        "label": "✎  Chỉnh sửa",
+        "width": 74,
+        "height": 44,
+        "horizontallyOffscreen": false,
+        "belowViewport": true
+      },
+      {
+        "tag": "BUTTON",
+        "label": "✎  Chỉnh sửa",
+        "width": 74,
+        "height": 44,
+        "horizontallyOffscreen": false,
+        "belowViewport": true
+      },
+      {
+        "tag": "BUTTON",
+        "label": "✎  Chỉnh sửa",
+        "width": 74,
+        "height": 44,
+        "horizontallyOffscreen": false,
+        "belowViewport": true
+      },
+      {
+        "tag": "INPUT",
+        "label": "Thời điểm trải nghiệm",
+        "width": 283,
+        "height": 46,
+        "horizontallyOffscreen": false,
+        "belowViewport": true
+      },
+      {
+        "tag": "BUTTON",
+        "label": "← Quay lại",
+        "width": 335,
+        "height": 44,
+        "horizontallyOffscreen": false,
+        "belowViewport": true
+      },
+      {
+        "tag": "BUTTON",
+        "label": "Lưu check-in",
+        "width": 100,
+        "height": 44,
+        "horizontallyOffscreen": false,
+        "belowViewport": true
+      }
+    ],
+    "bodyText": "←\nCheck-in\n✦\n\nĐÀO SÂU HƠN · 5/5\n\nXem lại check-in của mình\n\nBạn có thể chỉnh lại từng phần trước khi hoàn tất.\n\n1\nCẢM XÚC CHÍNH\nChưa chọn\n✎  Chỉnh sửa\n2\nCƯỜNG ĐỘ\nChưa chọn\n✎  Chỉnh sửa\n3\nCẢM XÚC PHỤ\nKhông có\n✎  Chỉnh sửa\n4\nNHU CẦU\nKhông có\n"
+  },
+  {
+    "name": "checkin-review",
+    "width": 430,
+    "screenshot": "artifacts/mobile-audit/checkin-review/430.png",
+    "route": "/checkin/review",
+    "height": 932,
+    "documentScrollWidth": 430,
+    "bodyScrollWidth": 430,
+    "horizontalOverflow": false,
+    "overflows": [],
+    "undersizedControls": [],
+    "horizontallyOffscreenControls": [],
+    "belowViewportControls": [
+      {
+        "tag": "BUTTON",
+        "label": "✎  Chỉnh sửa",
+        "width": 74,
+        "height": 44,
+        "horizontallyOffscreen": false,
+        "belowViewport": true
+      },
+      {
+        "tag": "BUTTON",
+        "label": "✎  Chỉnh sửa",
+        "width": 74,
+        "height": 44,
+        "horizontallyOffscreen": false,
+        "belowViewport": true
+      },
+      {
+        "tag": "BUTTON",
+        "label": "✎  Chỉnh sửa",
+        "width": 74,
+        "height": 44,
+        "horizontallyOffscreen": false,
+        "belowViewport": true
+      },
+      {
+        "tag": "BUTTON",
+        "label": "✎  Chỉnh sửa",
+        "width": 74,
+        "height": 44,
+        "horizontallyOffscreen": false,
+        "belowViewport": true
+      },
+      {
+        "tag": "INPUT",
+        "label": "Thời điểm trải nghiệm",
+        "width": 323,
+        "height": 46,
+        "horizontallyOffscreen": false,
+        "belowViewport": true
+      },
+      {
+        "tag": "BUTTON",
+        "label": "← Quay lại",
+        "width": 374,
+        "height": 44,
+        "horizontallyOffscreen": false,
+        "belowViewport": true
+      },
+      {
+        "tag": "BUTTON",
+        "label": "Lưu check-in",
+        "width": 100,
+        "height": 44,
+        "horizontallyOffscreen": false,
+        "belowViewport": true
+      }
+    ],
+    "bodyText": "←\nCheck-in\n✦\n\nĐÀO SÂU HƠN · 5/5\n\nXem lại check-in của mình\n\nBạn có thể chỉnh lại từng phần trước khi hoàn tất.\n\n1\nCẢM XÚC CHÍNH\nChưa chọn\n✎  Chỉnh sửa\n2\nCƯỜNG ĐỘ\nChưa chọn\n✎  Chỉnh sửa\n3\nCẢM XÚC PHỤ\nKhông có\n✎  Chỉnh sửa\n4\nNHU CẦU\nKhông có\n"
+  },
+  {
+    "name": "checkin-history",
+    "width": 320,
+    "screenshot": "artifacts/mobile-audit/checkin-history/320.png",
+    "route": "/checkin/history",
+    "height": 760,
+    "documentScrollWidth": 320,
+    "bodyScrollWidth": 320,
+    "horizontalOverflow": false,
+    "overflows": [],
+    "undersizedControls": [],
+    "horizontallyOffscreenControls": [],
+    "belowViewportControls": [
+      {
+        "tag": "BUTTON",
+        "label": "Tạo check-in",
+        "width": 122,
+        "height": 44,
+        "horizontallyOffscreen": false,
+        "belowViewport": true
+      }
+    ],
+    "bodyText": "S\nSacKy\n•••\n⌂\nHome\n◉\nCheck-in\n▤\nDiary\n↗\nAction\n•••\nMore\n\nSẮC KÝ · CHECK-IN\n\nCheck-in\n\nNhìn lại những mảnh màu và những điều đã hiện diện.\n\nTạo check-in\nLịch sử\nTất cả\nHôm nay\nTuần này\nTháng này\nTuỳ chọn\n↻ Đặt lại bộ lọc\nMọi nhóm cảm xúc\nMọi"
+  },
+  {
+    "name": "checkin-history",
+    "width": 360,
+    "screenshot": "artifacts/mobile-audit/checkin-history/360.png",
+    "route": "/checkin/history",
+    "height": 760,
+    "documentScrollWidth": 360,
+    "bodyScrollWidth": 360,
+    "horizontalOverflow": false,
+    "overflows": [],
+    "undersizedControls": [],
+    "horizontallyOffscreenControls": [],
+    "belowViewportControls": [
+      {
+        "tag": "BUTTON",
+        "label": "Tạo check-in",
+        "width": 122,
+        "height": 44,
+        "horizontallyOffscreen": false,
+        "belowViewport": true
+      }
+    ],
+    "bodyText": "S\nSacKy\n•••\n⌂\nHome\n◉\nCheck-in\n▤\nDiary\n↗\nAction\n•••\nMore\n\nSẮC KÝ · CHECK-IN\n\nCheck-in\n\nNhìn lại những mảnh màu và những điều đã hiện diện.\n\nTạo check-in\nLịch sử\nTất cả\nHôm nay\nTuần này\nTháng này\nTuỳ chọn\n↻ Đặt lại bộ lọc\nMọi nhóm cảm xúc\nMọi"
+  },
+  {
+    "name": "checkin-history",
+    "width": 390,
+    "screenshot": "artifacts/mobile-audit/checkin-history/390.png",
+    "route": "/checkin/history",
+    "height": 844,
+    "documentScrollWidth": 390,
+    "bodyScrollWidth": 390,
+    "horizontalOverflow": false,
+    "overflows": [],
+    "undersizedControls": [],
+    "horizontallyOffscreenControls": [],
+    "belowViewportControls": [
+      {
+        "tag": "BUTTON",
+        "label": "Tạo check-in",
+        "width": 122,
+        "height": 44,
+        "horizontallyOffscreen": false,
+        "belowViewport": true
+      }
+    ],
+    "bodyText": "S\nSacKy\n•••\n⌂\nHome\n◉\nCheck-in\n▤\nDiary\n↗\nAction\n•••\nMore\n\nSẮC KÝ · CHECK-IN\n\nCheck-in\n\nNhìn lại những mảnh màu và những điều đã hiện diện.\n\nTạo check-in\nLịch sử\nTất cả\nHôm nay\nTuần này\nTháng này\nTuỳ chọn\n↻ Đặt lại bộ lọc\nMọi nhóm cảm xúc\nMọi"
+  },
+  {
+    "name": "checkin-history",
+    "width": 430,
+    "screenshot": "artifacts/mobile-audit/checkin-history/430.png",
+    "route": "/checkin/history",
+    "height": 932,
+    "documentScrollWidth": 430,
+    "bodyScrollWidth": 430,
+    "horizontalOverflow": false,
+    "overflows": [],
+    "undersizedControls": [],
+    "horizontallyOffscreenControls": [],
+    "belowViewportControls": [
+      {
+        "tag": "BUTTON",
+        "label": "Tạo check-in",
+        "width": 122,
+        "height": 44,
+        "horizontallyOffscreen": false,
+        "belowViewport": true
+      }
+    ],
+    "bodyText": "S\nSacKy\n•••\n⌂\nHome\n◉\nCheck-in\n▤\nDiary\n↗\nAction\n•••\nMore\n\nSẮC KÝ · CHECK-IN\n\nCheck-in\n\nNhìn lại những mảnh màu và những điều đã hiện diện.\n\nTạo check-in\nLịch sử\nTất cả\nHôm nay\nTuần này\nTháng này\nTuỳ chọn\n↻ Đặt lại bộ lọc\nMọi nhóm cảm xúc\nMọi"
+  },
+  {
+    "name": "diary",
+    "width": 320,
+    "screenshot": "artifacts/mobile-audit/diary/320.png",
+    "route": "/diary",
+    "height": 760,
+    "documentScrollWidth": 320,
+    "bodyScrollWidth": 320,
+    "horizontalOverflow": false,
+    "overflows": [],
+    "undersizedControls": [],
+    "horizontallyOffscreenControls": [],
+    "belowViewportControls": [],
+    "bodyText": "S\nSacKy\n•••\n⌂\nHome\n◉\nCheck-in\n▤\nDiary\n↗\nAction\n•••\nMore\n\nDIARY\n\nNhật ký hôm nay\n\nMột khoảng lặng để bạn ghi lại điều đang ở cùng mình.\n\nNhìn lại một chặng\nLịch sử nhật ký\n✦\n✦\n\nCHỦ NHẬT, 13 THÁNG 9, 2026\n\nHôm nay vẫn còn một khoảng trống.\n\nK"
+  },
+  {
+    "name": "diary",
+    "width": 360,
+    "screenshot": "artifacts/mobile-audit/diary/360.png",
+    "route": "/diary",
+    "height": 760,
+    "documentScrollWidth": 360,
+    "bodyScrollWidth": 360,
+    "horizontalOverflow": false,
+    "overflows": [],
+    "undersizedControls": [],
+    "horizontallyOffscreenControls": [],
+    "belowViewportControls": [],
+    "bodyText": "S\nSacKy\n•••\n⌂\nHome\n◉\nCheck-in\n▤\nDiary\n↗\nAction\n•••\nMore\n\nDIARY\n\nNhật ký hôm nay\n\nMột khoảng lặng để bạn ghi lại điều đang ở cùng mình.\n\nNhìn lại một chặng\nLịch sử nhật ký\n✦\n✦\n\nCHỦ NHẬT, 13 THÁNG 9, 2026\n\nHôm nay vẫn còn một khoảng trống.\n\nK"
+  },
+  {
+    "name": "diary",
+    "width": 390,
+    "screenshot": "artifacts/mobile-audit/diary/390.png",
+    "route": "/diary",
+    "height": 844,
+    "documentScrollWidth": 390,
+    "bodyScrollWidth": 390,
+    "horizontalOverflow": false,
+    "overflows": [],
+    "undersizedControls": [],
+    "horizontallyOffscreenControls": [],
+    "belowViewportControls": [],
+    "bodyText": "S\nSacKy\n•••\n⌂\nHome\n◉\nCheck-in\n▤\nDiary\n↗\nAction\n•••\nMore\n\nDIARY\n\nNhật ký hôm nay\n\nMột khoảng lặng để bạn ghi lại điều đang ở cùng mình.\n\nNhìn lại một chặng\nLịch sử nhật ký\n✦\n✦\n\nCHỦ NHẬT, 13 THÁNG 9, 2026\n\nHôm nay vẫn còn một khoảng trống.\n\nK"
+  },
+  {
+    "name": "diary",
+    "width": 430,
+    "screenshot": "artifacts/mobile-audit/diary/430.png",
+    "route": "/diary",
+    "height": 932,
+    "documentScrollWidth": 430,
+    "bodyScrollWidth": 430,
+    "horizontalOverflow": false,
+    "overflows": [],
+    "undersizedControls": [],
+    "horizontallyOffscreenControls": [],
+    "belowViewportControls": [],
+    "bodyText": "S\nSacKy\n•••\n⌂\nHome\n◉\nCheck-in\n▤\nDiary\n↗\nAction\n•••\nMore\n\nDIARY\n\nNhật ký hôm nay\n\nMột khoảng lặng để bạn ghi lại điều đang ở cùng mình.\n\nNhìn lại một chặng\nLịch sử nhật ký\n✦\n✦\n\nCHỦ NHẬT, 13 THÁNG 9, 2026\n\nHôm nay vẫn còn một khoảng trống.\n\nK"
+  },
+  {
+    "name": "diary-editor",
+    "width": 320,
+    "screenshot": "artifacts/mobile-audit/diary-editor/320.png",
+    "route": "/diary?view=editor",
+    "height": 760,
+    "documentScrollWidth": 320,
+    "bodyScrollWidth": 320,
+    "horizontalOverflow": false,
+    "overflows": [],
+    "undersizedControls": [],
+    "horizontallyOffscreenControls": [],
+    "belowViewportControls": [
+      {
+        "tag": "A",
+        "label": "Xem chi tiết →",
+        "width": 80,
+        "height": 44,
+        "horizontallyOffscreen": false,
+        "belowViewport": true
+      },
+      {
+        "tag": "BUTTON",
+        "label": "＋ Chọn prompt",
+        "width": 110,
+        "height": 44,
+        "horizontallyOffscreen": false,
+        "belowViewport": true
+      },
+      {
+        "tag": "BUTTON",
+        "label": "＋Chọn cảm xúc chính0 cảm xúc để bạn chọn khi sẵn sàng→",
+        "width": 257,
+        "height": 74,
+        "horizontallyOffscreen": false,
+        "belowViewport": true
+      },
+      {
+        "tag": "BUTTON",
+        "label": "＋ Chọn từ Check-in",
+        "width": 134,
+        "height": 44,
+        "horizontallyOffscreen": false,
+        "belowViewport": true
+      },
+      {
+        "tag": "BUTTON",
+        "label": "＋ Thêm ảnh",
+        "width": 91,
+        "height": 44,
+        "horizontallyOffscreen": false,
+        "belowViewport": true
+      },
+      {
+        "tag": "BUTTON",
+        "label": "＋Thêm ảnhVị trí 1",
+        "width": 124,
+        "height": 144,
+        "horizontallyOffscreen": false,
+        "belowViewport": true
+      },
+      {
+        "tag": "BUTTON",
+        "label": "＋Thêm ảnhVị trí 2",
+        "width": 124,
+        "height": 144,
+        "horizontallyOffscreen": false,
+        "belowViewport": true
+      },
+      {
+        "tag": "BUTTON",
+        "label": "＋Thêm ảnhVị trí 3",
+        "width": 124,
+        "height": 144,
+        "horizontallyOffscreen": false,
+        "belowViewport": true
+      },
+      {
+        "tag": "BUTTON",
+        "label": "＋Thêm ảnhVị trí 4",
+        "width": 124,
+        "height": 144,
+        "horizontallyOffscreen": false,
+        "belowViewport": true
+      },
+      {
+        "tag": "A",
+        "label": "← Quay lại",
+        "width": 270,
+        "height": 44,
+        "horizontallyOffscreen": false,
+        "belowViewport": true
+      },
+      {
+        "tag": "BUTTON",
+        "label": "Lưu nháp",
+        "width": 131,
+        "height": 57,
+        "horizontallyOffscreen": false,
+        "belowViewport": true
+      },
+      {
+        "tag": "BUTTON",
+        "label": "✓ Hoàn tất nhật ký",
+        "width": 131,
+        "height": 57,
+        "horizontallyOffscreen": false,
+        "belowViewport": true
+      }
+    ],
+    "bodyText": "←\nDiary\n✦\n← Quay lại\n\nDIARY HÔM NAY\n\nViết nhật ký\n\nChủ Nhật, 13 tháng 9, 2026\n\n●\nĐã lưu an toàn trên thiết bị\nFocus\nLưu nháp\n✓ Hoàn tất\nTiêu đề tuỳ chọn\n0/120\nTổng quan tuỳ chọn\nB\nI\n• List\n1. List\nQuote\nSpacing\n↶\n↷\n\n\n\n\n0 từ\n◷\nNGÀY NÀY ĐÃ DI"
+  },
+  {
+    "name": "diary-editor",
+    "width": 360,
+    "screenshot": "artifacts/mobile-audit/diary-editor/360.png",
+    "route": "/diary?view=editor",
+    "height": 760,
+    "documentScrollWidth": 360,
+    "bodyScrollWidth": 360,
+    "horizontalOverflow": false,
+    "overflows": [],
+    "undersizedControls": [],
+    "horizontallyOffscreenControls": [],
+    "belowViewportControls": [
+      {
+        "tag": "A",
+        "label": "Xem chi tiết →",
+        "width": 80,
+        "height": 44,
+        "horizontallyOffscreen": false,
+        "belowViewport": true
+      },
+      {
+        "tag": "BUTTON",
+        "label": "＋ Chọn prompt",
+        "width": 110,
+        "height": 44,
+        "horizontallyOffscreen": false,
+        "belowViewport": true
+      },
+      {
+        "tag": "BUTTON",
+        "label": "＋Chọn cảm xúc chính0 cảm xúc để bạn chọn khi sẵn sàng→",
+        "width": 297,
+        "height": 64,
+        "horizontallyOffscreen": false,
+        "belowViewport": true
+      },
+      {
+        "tag": "BUTTON",
+        "label": "＋ Chọn từ Check-in",
+        "width": 134,
+        "height": 44,
+        "horizontallyOffscreen": false,
+        "belowViewport": true
+      },
+      {
+        "tag": "BUTTON",
+        "label": "＋ Thêm ảnh",
+        "width": 91,
+        "height": 44,
+        "horizontallyOffscreen": false,
+        "belowViewport": true
+      },
+      {
+        "tag": "BUTTON",
+        "label": "＋Thêm ảnhVị trí 1",
+        "width": 144,
+        "height": 144,
+        "horizontallyOffscreen": false,
+        "belowViewport": true
+      },
+      {
+        "tag": "BUTTON",
+        "label": "＋Thêm ảnhVị trí 2",
+        "width": 144,
+        "height": 144,
+        "horizontallyOffscreen": false,
+        "belowViewport": true
+      },
+      {
+        "tag": "BUTTON",
+        "label": "＋Thêm ảnhVị trí 3",
+        "width": 144,
+        "height": 144,
+        "horizontallyOffscreen": false,
+        "belowViewport": true
+      },
+      {
+        "tag": "BUTTON",
+        "label": "＋Thêm ảnhVị trí 4",
+        "width": 144,
+        "height": 144,
+        "horizontallyOffscreen": false,
+        "belowViewport": true
+      },
+      {
+        "tag": "A",
+        "label": "← Quay lại",
+        "width": 307,
+        "height": 44,
+        "horizontallyOffscreen": false,
+        "belowViewport": true
+      },
+      {
+        "tag": "BUTTON",
+        "label": "Lưu nháp",
+        "width": 150,
+        "height": 57,
+        "horizontallyOffscreen": false,
+        "belowViewport": true
+      },
+      {
+        "tag": "BUTTON",
+        "label": "✓ Hoàn tất nhật ký",
+        "width": 150,
+        "height": 57,
+        "horizontallyOffscreen": false,
+        "belowViewport": true
+      }
+    ],
+    "bodyText": "←\nDiary\n✦\n← Quay lại\n\nDIARY HÔM NAY\n\nViết nhật ký\n\nChủ Nhật, 13 tháng 9, 2026\n\n●\nĐã lưu an toàn trên thiết bị\nFocus\nLưu nháp\n✓ Hoàn tất\nTiêu đề tuỳ chọn\n0/120\nTổng quan tuỳ chọn\nB\nI\n• List\n1. List\nQuote\nSpacing\n↶\n↷\n\n\n\n\n0 từ\n◷\nNGÀY NÀY ĐÃ DI"
+  },
+  {
+    "name": "diary-editor",
+    "width": 390,
+    "screenshot": "artifacts/mobile-audit/diary-editor/390.png",
+    "route": "/diary?view=editor",
+    "height": 844,
+    "documentScrollWidth": 390,
+    "bodyScrollWidth": 390,
+    "horizontalOverflow": false,
+    "overflows": [],
+    "undersizedControls": [],
+    "horizontallyOffscreenControls": [],
+    "belowViewportControls": [
+      {
+        "tag": "A",
+        "label": "Xem chi tiết →",
+        "width": 80,
+        "height": 44,
+        "horizontallyOffscreen": false,
+        "belowViewport": true
+      },
+      {
+        "tag": "BUTTON",
+        "label": "＋ Chọn prompt",
+        "width": 110,
+        "height": 44,
+        "horizontallyOffscreen": false,
+        "belowViewport": true
+      },
+      {
+        "tag": "BUTTON",
+        "label": "＋Chọn cảm xúc chính0 cảm xúc để bạn chọn khi sẵn sàng→",
+        "width": 327,
+        "height": 64,
+        "horizontallyOffscreen": false,
+        "belowViewport": true
+      },
+      {
+        "tag": "BUTTON",
+        "label": "＋ Chọn từ Check-in",
+        "width": 134,
+        "height": 44,
+        "horizontallyOffscreen": false,
+        "belowViewport": true
+      },
+      {
+        "tag": "BUTTON",
+        "label": "＋ Thêm ảnh",
+        "width": 91,
+        "height": 44,
+        "horizontallyOffscreen": false,
+        "belowViewport": true
+      },
+      {
+        "tag": "BUTTON",
+        "label": "＋Thêm ảnhVị trí 1",
+        "width": 159,
+        "height": 144,
+        "horizontallyOffscreen": false,
+        "belowViewport": true
+      },
+      {
+        "tag": "BUTTON",
+        "label": "＋Thêm ảnhVị trí 2",
+        "width": 159,
+        "height": 144,
+        "horizontallyOffscreen": false,
+        "belowViewport": true
+      },
+      {
+        "tag": "BUTTON",
+        "label": "＋Thêm ảnhVị trí 3",
+        "width": 159,
+        "height": 144,
+        "horizontallyOffscreen": false,
+        "belowViewport": true
+      },
+      {
+        "tag": "BUTTON",
+        "label": "＋Thêm ảnhVị trí 4",
+        "width": 159,
+        "height": 144,
+        "horizontallyOffscreen": false,
+        "belowViewport": true
+      },
+      {
+        "tag": "A",
+        "label": "← Quay lại",
+        "width": 335,
+        "height": 44,
+        "horizontallyOffscreen": false,
+        "belowViewport": true
+      },
+      {
+        "tag": "BUTTON",
+        "label": "Lưu nháp",
+        "width": 163,
+        "height": 44,
+        "horizontallyOffscreen": false,
+        "belowViewport": true
+      },
+      {
+        "tag": "BUTTON",
+        "label": "✓ Hoàn tất nhật ký",
+        "width": 163,
+        "height": 44,
+        "horizontallyOffscreen": false,
+        "belowViewport": true
+      }
+    ],
+    "bodyText": "←\nDiary\n✦\n← Quay lại\n\nDIARY HÔM NAY\n\nViết nhật ký\n\nChủ Nhật, 13 tháng 9, 2026\n\n●\nĐã lưu an toàn trên thiết bị\nFocus\nLưu nháp\n✓ Hoàn tất\nTiêu đề tuỳ chọn\n0/120\nTổng quan tuỳ chọn\nB\nI\n• List\n1. List\nQuote\nSpacing\n↶\n↷\n\n\n\n\n0 từ\n◷\nNGÀY NÀY ĐÃ DI"
+  },
+  {
+    "name": "diary-editor",
+    "width": 430,
+    "screenshot": "artifacts/mobile-audit/diary-editor/430.png",
+    "route": "/diary?view=editor",
+    "height": 932,
+    "documentScrollWidth": 430,
+    "bodyScrollWidth": 430,
+    "horizontalOverflow": false,
+    "overflows": [],
+    "undersizedControls": [],
+    "horizontallyOffscreenControls": [],
+    "belowViewportControls": [
+      {
+        "tag": "A",
+        "label": "Xem chi tiết →",
+        "width": 80,
+        "height": 44,
+        "horizontallyOffscreen": false,
+        "belowViewport": true
+      },
+      {
+        "tag": "BUTTON",
+        "label": "＋ Chọn prompt",
+        "width": 110,
+        "height": 44,
+        "horizontallyOffscreen": false,
+        "belowViewport": true
+      },
+      {
+        "tag": "BUTTON",
+        "label": "＋Chọn cảm xúc chính0 cảm xúc để bạn chọn khi sẵn sàng→",
+        "width": 367,
+        "height": 64,
+        "horizontallyOffscreen": false,
+        "belowViewport": true
+      },
+      {
+        "tag": "BUTTON",
+        "label": "＋ Chọn từ Check-in",
+        "width": 134,
+        "height": 44,
+        "horizontallyOffscreen": false,
+        "belowViewport": true
+      },
+      {
+        "tag": "BUTTON",
+        "label": "＋ Thêm ảnh",
+        "width": 91,
+        "height": 44,
+        "horizontallyOffscreen": false,
+        "belowViewport": true
+      },
+      {
+        "tag": "BUTTON",
+        "label": "＋Thêm ảnhVị trí 1",
+        "width": 179,
+        "height": 144,
+        "horizontallyOffscreen": false,
+        "belowViewport": true
+      },
+      {
+        "tag": "BUTTON",
+        "label": "＋Thêm ảnhVị trí 2",
+        "width": 179,
+        "height": 144,
+        "horizontallyOffscreen": false,
+        "belowViewport": true
+      },
+      {
+        "tag": "BUTTON",
+        "label": "＋Thêm ảnhVị trí 3",
+        "width": 179,
+        "height": 144,
+        "horizontallyOffscreen": false,
+        "belowViewport": true
+      },
+      {
+        "tag": "BUTTON",
+        "label": "＋Thêm ảnhVị trí 4",
+        "width": 179,
+        "height": 144,
+        "horizontallyOffscreen": false,
+        "belowViewport": true
+      },
+      {
+        "tag": "A",
+        "label": "← Quay lại",
+        "width": 374,
+        "height": 44,
+        "horizontallyOffscreen": false,
+        "belowViewport": true
+      },
+      {
+        "tag": "BUTTON",
+        "label": "Lưu nháp",
+        "width": 183,
+        "height": 44,
+        "horizontallyOffscreen": false,
+        "belowViewport": true
+      },
+      {
+        "tag": "BUTTON",
+        "label": "✓ Hoàn tất nhật ký",
+        "width": 183,
+        "height": 44,
+        "horizontallyOffscreen": false,
+        "belowViewport": true
+      }
+    ],
+    "bodyText": "←\nDiary\n✦\n← Quay lại\n\nDIARY HÔM NAY\n\nViết nhật ký\n\nChủ Nhật, 13 tháng 9, 2026\n\n●\nĐã lưu an toàn trên thiết bị\nFocus\nLưu nháp\n✓ Hoàn tất\nTiêu đề tuỳ chọn\n0/120\nTổng quan tuỳ chọn\nB\nI\n• List\n1. List\nQuote\nSpacing\n↶\n↷\n\n\n\n\n0 từ\n◷\nNGÀY NÀY ĐÃ DI"
+  },
+  {
+    "name": "diary-read",
+    "width": 320,
+    "screenshot": "artifacts/mobile-audit/diary-read/320.png",
+    "route": "/diary?view=read",
+    "height": 760,
+    "documentScrollWidth": 320,
+    "bodyScrollWidth": 320,
+    "horizontalOverflow": false,
+    "overflows": [],
+    "undersizedControls": [],
+    "horizontallyOffscreenControls": [],
+    "belowViewportControls": [],
+    "bodyText": "←\nDiary\n✦\n✦\n\nChưa có Nhật ký ngày cho ngày này.\n\nViết nhật ký"
+  },
+  {
+    "name": "diary-read",
+    "width": 360,
+    "screenshot": "artifacts/mobile-audit/diary-read/360.png",
+    "route": "/diary?view=read",
+    "height": 760,
+    "documentScrollWidth": 360,
+    "bodyScrollWidth": 360,
+    "horizontalOverflow": false,
+    "overflows": [],
+    "undersizedControls": [],
+    "horizontallyOffscreenControls": [],
+    "belowViewportControls": [],
+    "bodyText": "←\nDiary\n✦\n✦\n\nChưa có Nhật ký ngày cho ngày này.\n\nViết nhật ký"
+  },
+  {
+    "name": "diary-read",
+    "width": 390,
+    "screenshot": "artifacts/mobile-audit/diary-read/390.png",
+    "route": "/diary?view=read",
+    "height": 844,
+    "documentScrollWidth": 390,
+    "bodyScrollWidth": 390,
+    "horizontalOverflow": false,
+    "overflows": [],
+    "undersizedControls": [],
+    "horizontallyOffscreenControls": [],
+    "belowViewportControls": [],
+    "bodyText": "←\nDiary\n✦\n✦\n\nChưa có Nhật ký ngày cho ngày này.\n\nViết nhật ký"
+  },
+  {
+    "name": "diary-read",
+    "width": 430,
+    "screenshot": "artifacts/mobile-audit/diary-read/430.png",
+    "route": "/diary?view=read",
+    "height": 932,
+    "documentScrollWidth": 430,
+    "bodyScrollWidth": 430,
+    "horizontalOverflow": false,
+    "overflows": [],
+    "undersizedControls": [],
+    "horizontallyOffscreenControls": [],
+    "belowViewportControls": [],
+    "bodyText": "←\nDiary\n✦\n✦\n\nChưa có Nhật ký ngày cho ngày này.\n\nViết nhật ký"
+  },
+  {
+    "name": "diary-history",
+    "width": 320,
+    "screenshot": "artifacts/mobile-audit/diary-history/320.png",
+    "route": "/diary?view=history",
+    "height": 760,
+    "documentScrollWidth": 320,
+    "bodyScrollWidth": 320,
+    "horizontalOverflow": false,
+    "overflows": [],
+    "undersizedControls": [
+      {
+        "tag": "BUTTON",
+        "label": "31",
+        "width": 33,
+        "height": 45,
+        "horizontallyOffscreen": false,
+        "belowViewport": false
+      },
+      {
+        "tag": "BUTTON",
+        "label": "1",
+        "width": 33,
+        "height": 45,
+        "horizontallyOffscreen": false,
+        "belowViewport": false
+      },
+      {
+        "tag": "BUTTON",
+        "label": "2",
+        "width": 33,
+        "height": 45,
+        "horizontallyOffscreen": false,
+        "belowViewport": false
+      },
+      {
+        "tag": "BUTTON",
+        "label": "3",
+        "width": 33,
+        "height": 45,
+        "horizontallyOffscreen": false,
+        "belowViewport": false
+      },
+      {
+        "tag": "BUTTON",
+        "label": "4",
+        "width": 33,
+        "height": 45,
+        "horizontallyOffscreen": false,
+        "belowViewport": false
+      },
+      {
+        "tag": "BUTTON",
+        "label": "5",
+        "width": 33,
+        "height": 45,
+        "horizontallyOffscreen": false,
+        "belowViewport": false
+      },
+      {
+        "tag": "BUTTON",
+        "label": "6",
+        "width": 33,
+        "height": 45,
+        "horizontallyOffscreen": false,
+        "belowViewport": false
+      },
+      {
+        "tag": "BUTTON",
+        "label": "7",
+        "width": 33,
+        "height": 45,
+        "horizontallyOffscreen": false,
+        "belowViewport": false
+      },
+      {
+        "tag": "BUTTON",
+        "label": "8",
+        "width": 33,
+        "height": 45,
+        "horizontallyOffscreen": false,
+        "belowViewport": false
+      },
+      {
+        "tag": "BUTTON",
+        "label": "9",
+        "width": 33,
+        "height": 45,
+        "horizontallyOffscreen": false,
+        "belowViewport": false
+      },
+      {
+        "tag": "BUTTON",
+        "label": "10",
+        "width": 33,
+        "height": 45,
+        "horizontallyOffscreen": false,
+        "belowViewport": false
+      },
+      {
+        "tag": "BUTTON",
+        "label": "11",
+        "width": 33,
+        "height": 45,
+        "horizontallyOffscreen": false,
+        "belowViewport": false
+      },
+      {
+        "tag": "BUTTON",
+        "label": "12",
+        "width": 33,
+        "height": 45,
+        "horizontallyOffscreen": false,
+        "belowViewport": false
+      },
+      {
+        "tag": "BUTTON",
+        "label": "13",
+        "width": 33,
+        "height": 45,
+        "horizontallyOffscreen": false,
+        "belowViewport": false
+      },
+      {
+        "tag": "BUTTON",
+        "label": "14",
+        "width": 33,
+        "height": 45,
+        "horizontallyOffscreen": false,
+        "belowViewport": false
+      },
+      {
+        "tag": "BUTTON",
+        "label": "15",
+        "width": 33,
+        "height": 45,
+        "horizontallyOffscreen": false,
+        "belowViewport": false
+      },
+      {
+        "tag": "BUTTON",
+        "label": "16",
+        "width": 33,
+        "height": 45,
+        "horizontallyOffscreen": false,
+        "belowViewport": false
+      },
+      {
+        "tag": "BUTTON",
+        "label": "17",
+        "width": 33,
+        "height": 45,
+        "horizontallyOffscreen": false,
+        "belowViewport": false
+      },
+      {
+        "tag": "BUTTON",
+        "label": "18",
+        "width": 33,
+        "height": 45,
+        "horizontallyOffscreen": false,
+        "belowViewport": false
+      },
+      {
+        "tag": "BUTTON",
+        "label": "19",
+        "width": 33,
+        "height": 45,
+        "horizontallyOffscreen": false,
+        "belowViewport": false
+      },
+      {
+        "tag": "BUTTON",
+        "label": "20",
+        "width": 33,
+        "height": 45,
+        "horizontallyOffscreen": false,
+        "belowViewport": false
+      },
+      {
+        "tag": "BUTTON",
+        "label": "21",
+        "width": 33,
+        "height": 45,
+        "horizontallyOffscreen": false,
+        "belowViewport": false
+      },
+      {
+        "tag": "BUTTON",
+        "label": "22",
+        "width": 33,
+        "height": 45,
+        "horizontallyOffscreen": false,
+        "belowViewport": false
+      },
+      {
+        "tag": "BUTTON",
+        "label": "23",
+        "width": 33,
+        "height": 45,
+        "horizontallyOffscreen": false,
+        "belowViewport": false
+      },
+      {
+        "tag": "BUTTON",
+        "label": "24",
+        "width": 33,
+        "height": 45,
+        "horizontallyOffscreen": false,
+        "belowViewport": false
+      },
+      {
+        "tag": "BUTTON",
+        "label": "25",
+        "width": 33,
+        "height": 45,
+        "horizontallyOffscreen": false,
+        "belowViewport": false
+      },
+      {
+        "tag": "BUTTON",
+        "label": "26",
+        "width": 33,
+        "height": 45,
+        "horizontallyOffscreen": false,
+        "belowViewport": false
+      },
+      {
+        "tag": "BUTTON",
+        "label": "27",
+        "width": 33,
+        "height": 45,
+        "horizontallyOffscreen": false,
+        "belowViewport": false
+      },
+      {
+        "tag": "BUTTON",
+        "label": "28",
+        "width": 33,
+        "height": 45,
+        "horizontallyOffscreen": false,
+        "belowViewport": false
+      },
+      {
+        "tag": "BUTTON",
+        "label": "29",
+        "width": 33,
+        "height": 45,
+        "horizontallyOffscreen": false,
+        "belowViewport": false
+      },
+      {
+        "tag": "BUTTON",
+        "label": "30",
+        "width": 33,
+        "height": 45,
+        "horizontallyOffscreen": false,
+        "belowViewport": false
+      },
+      {
+        "tag": "BUTTON",
+        "label": "1",
+        "width": 33,
+        "height": 45,
+        "horizontallyOffscreen": false,
+        "belowViewport": false
+      },
+      {
+        "tag": "BUTTON",
+        "label": "2",
+        "width": 33,
+        "height": 45,
+        "horizontallyOffscreen": false,
+        "belowViewport": false
+      },
+      {
+        "tag": "BUTTON",
+        "label": "3",
+        "width": 33,
+        "height": 45,
+        "horizontallyOffscreen": false,
+        "belowViewport": false
+      },
+      {
+        "tag": "BUTTON",
+        "label": "4",
+        "width": 33,
+        "height": 45,
+        "horizontallyOffscreen": false,
+        "belowViewport": false
+      },
+      {
+        "tag": "BUTTON",
+        "label": "5",
+        "width": 33,
+        "height": 45,
+        "horizontallyOffscreen": false,
+        "belowViewport": false
+      },
+      {
+        "tag": "BUTTON",
+        "label": "6",
+        "width": 33,
+        "height": 45,
+        "horizontallyOffscreen": false,
+        "belowViewport": false
+      },
+      {
+        "tag": "BUTTON",
+        "label": "7",
+        "width": 33,
+        "height": 45,
+        "horizontallyOffscreen": false,
+        "belowViewport": false
+      },
+      {
+        "tag": "BUTTON",
+        "label": "8",
+        "width": 33,
+        "height": 45,
+        "horizontallyOffscreen": false,
+        "belowViewport": false
+      },
+      {
+        "tag": "BUTTON",
+        "label": "9",
+        "width": 33,
+        "height": 45,
+        "horizontallyOffscreen": false,
+        "belowViewport": false
+      },
+      {
+        "tag": "BUTTON",
+        "label": "10",
+        "width": 33,
+        "height": 45,
+        "horizontallyOffscreen": false,
+        "belowViewport": false
+      },
+      {
+        "tag": "BUTTON",
+        "label": "11",
+        "width": 33,
+        "height": 45,
+        "horizontallyOffscreen": false,
+        "belowViewport": false
+      }
+    ],
+    "horizontallyOffscreenControls": [],
+    "belowViewportControls": [
+      {
+        "tag": "BUTTON",
+        "label": "✎ Viết bù",
+        "width": 95,
+        "height": 44,
+        "horizontallyOffscreen": false,
+        "belowViewport": true
+      }
+    ],
+    "bodyText": "S\nSacKy\n•••\n⌂\nHome\n◉\nCheck-in\n▤\nDiary\n↗\nAction\n•••\nMore\n\nDIARY\n\nLịch sử nhật ký\n\nNhìn lại những điều bạn đã viết cho từng ngày.\n\nNhìn lại một chặng\nViết nhật ký hôm nay\nTất cả\nBản nháp\nĐã hoàn tất\nLỊCH VIẾT\ntháng 9 năm 2026\n‹\n›\nT2\nT3\nT4\nT5\n"
+  },
+  {
+    "name": "diary-history",
+    "width": 360,
+    "screenshot": "artifacts/mobile-audit/diary-history/360.png",
+    "route": "/diary?view=history",
+    "height": 760,
+    "documentScrollWidth": 360,
+    "bodyScrollWidth": 360,
+    "horizontalOverflow": false,
+    "overflows": [],
+    "undersizedControls": [
+      {
+        "tag": "BUTTON",
+        "label": "31",
+        "width": 39,
+        "height": 45,
+        "horizontallyOffscreen": false,
+        "belowViewport": false
+      },
+      {
+        "tag": "BUTTON",
+        "label": "1",
+        "width": 39,
+        "height": 45,
+        "horizontallyOffscreen": false,
+        "belowViewport": false
+      },
+      {
+        "tag": "BUTTON",
+        "label": "2",
+        "width": 39,
+        "height": 45,
+        "horizontallyOffscreen": false,
+        "belowViewport": false
+      },
+      {
+        "tag": "BUTTON",
+        "label": "3",
+        "width": 39,
+        "height": 45,
+        "horizontallyOffscreen": false,
+        "belowViewport": false
+      },
+      {
+        "tag": "BUTTON",
+        "label": "4",
+        "width": 39,
+        "height": 45,
+        "horizontallyOffscreen": false,
+        "belowViewport": false
+      },
+      {
+        "tag": "BUTTON",
+        "label": "5",
+        "width": 39,
+        "height": 45,
+        "horizontallyOffscreen": false,
+        "belowViewport": false
+      },
+      {
+        "tag": "BUTTON",
+        "label": "6",
+        "width": 39,
+        "height": 45,
+        "horizontallyOffscreen": false,
+        "belowViewport": false
+      },
+      {
+        "tag": "BUTTON",
+        "label": "7",
+        "width": 39,
+        "height": 45,
+        "horizontallyOffscreen": false,
+        "belowViewport": false
+      },
+      {
+        "tag": "BUTTON",
+        "label": "8",
+        "width": 39,
+        "height": 45,
+        "horizontallyOffscreen": false,
+        "belowViewport": false
+      },
+      {
+        "tag": "BUTTON",
+        "label": "9",
+        "width": 39,
+        "height": 45,
+        "horizontallyOffscreen": false,
+        "belowViewport": false
+      },
+      {
+        "tag": "BUTTON",
+        "label": "10",
+        "width": 39,
+        "height": 45,
+        "horizontallyOffscreen": false,
+        "belowViewport": false
+      },
+      {
+        "tag": "BUTTON",
+        "label": "11",
+        "width": 39,
+        "height": 45,
+        "horizontallyOffscreen": false,
+        "belowViewport": false
+      },
+      {
+        "tag": "BUTTON",
+        "label": "12",
+        "width": 39,
+        "height": 45,
+        "horizontallyOffscreen": false,
+        "belowViewport": false
+      },
+      {
+        "tag": "BUTTON",
+        "label": "13",
+        "width": 39,
+        "height": 45,
+        "horizontallyOffscreen": false,
+        "belowViewport": false
+      },
+      {
+        "tag": "BUTTON",
+        "label": "14",
+        "width": 39,
+        "height": 45,
+        "horizontallyOffscreen": false,
+        "belowViewport": false
+      },
+      {
+        "tag": "BUTTON",
+        "label": "15",
+        "width": 39,
+        "height": 45,
+        "horizontallyOffscreen": false,
+        "belowViewport": false
+      },
+      {
+        "tag": "BUTTON",
+        "label": "16",
+        "width": 39,
+        "height": 45,
+        "horizontallyOffscreen": false,
+        "belowViewport": false
+      },
+      {
+        "tag": "BUTTON",
+        "label": "17",
+        "width": 39,
+        "height": 45,
+        "horizontallyOffscreen": false,
+        "belowViewport": false
+      },
+      {
+        "tag": "BUTTON",
+        "label": "18",
+        "width": 39,
+        "height": 45,
+        "horizontallyOffscreen": false,
+        "belowViewport": false
+      },
+      {
+        "tag": "BUTTON",
+        "label": "19",
+        "width": 39,
+        "height": 45,
+        "horizontallyOffscreen": false,
+        "belowViewport": false
+      },
+      {
+        "tag": "BUTTON",
+        "label": "20",
+        "width": 39,
+        "height": 45,
+        "horizontallyOffscreen": false,
+        "belowViewport": false
+      },
+      {
+        "tag": "BUTTON",
+        "label": "21",
+        "width": 39,
+        "height": 45,
+        "horizontallyOffscreen": false,
+        "belowViewport": false
+      },
+      {
+        "tag": "BUTTON",
+        "label": "22",
+        "width": 39,
+        "height": 45,
+        "horizontallyOffscreen": false,
+        "belowViewport": false
+      },
+      {
+        "tag": "BUTTON",
+        "label": "23",
+        "width": 39,
+        "height": 45,
+        "horizontallyOffscreen": false,
+        "belowViewport": false
+      },
+      {
+        "tag": "BUTTON",
+        "label": "24",
+        "width": 39,
+        "height": 45,
+        "horizontallyOffscreen": false,
+        "belowViewport": false
+      },
+      {
+        "tag": "BUTTON",
+        "label": "25",
+        "width": 39,
+        "height": 45,
+        "horizontallyOffscreen": false,
+        "belowViewport": false
+      },
+      {
+        "tag": "BUTTON",
+        "label": "26",
+        "width": 39,
+        "height": 45,
+        "horizontallyOffscreen": false,
+        "belowViewport": false
+      },
+      {
+        "tag": "BUTTON",
+        "label": "27",
+        "width": 39,
+        "height": 45,
+        "horizontallyOffscreen": false,
+        "belowViewport": false
+      },
+      {
+        "tag": "BUTTON",
+        "label": "28",
+        "width": 39,
+        "height": 45,
+        "horizontallyOffscreen": false,
+        "belowViewport": false
+      },
+      {
+        "tag": "BUTTON",
+        "label": "29",
+        "width": 39,
+        "height": 45,
+        "horizontallyOffscreen": false,
+        "belowViewport": false
+      },
+      {
+        "tag": "BUTTON",
+        "label": "30",
+        "width": 39,
+        "height": 45,
+        "horizontallyOffscreen": false,
+        "belowViewport": false
+      },
+      {
+        "tag": "BUTTON",
+        "label": "1",
+        "width": 39,
+        "height": 45,
+        "horizontallyOffscreen": false,
+        "belowViewport": false
+      },
+      {
+        "tag": "BUTTON",
+        "label": "2",
+        "width": 39,
+        "height": 45,
+        "horizontallyOffscreen": false,
+        "belowViewport": false
+      },
+      {
+        "tag": "BUTTON",
+        "label": "3",
+        "width": 39,
+        "height": 45,
+        "horizontallyOffscreen": false,
+        "belowViewport": false
+      },
+      {
+        "tag": "BUTTON",
+        "label": "4",
+        "width": 39,
+        "height": 45,
+        "horizontallyOffscreen": false,
+        "belowViewport": false
+      },
+      {
+        "tag": "BUTTON",
+        "label": "5",
+        "width": 39,
+        "height": 45,
+        "horizontallyOffscreen": false,
+        "belowViewport": false
+      },
+      {
+        "tag": "BUTTON",
+        "label": "6",
+        "width": 39,
+        "height": 45,
+        "horizontallyOffscreen": false,
+        "belowViewport": false
+      },
+      {
+        "tag": "BUTTON",
+        "label": "7",
+        "width": 39,
+        "height": 45,
+        "horizontallyOffscreen": false,
+        "belowViewport": false
+      },
+      {
+        "tag": "BUTTON",
+        "label": "8",
+        "width": 39,
+        "height": 45,
+        "horizontallyOffscreen": false,
+        "belowViewport": false
+      },
+      {
+        "tag": "BUTTON",
+        "label": "9",
+        "width": 39,
+        "height": 45,
+        "horizontallyOffscreen": false,
+        "belowViewport": false
+      },
+      {
+        "tag": "BUTTON",
+        "label": "10",
+        "width": 39,
+        "height": 45,
+        "horizontallyOffscreen": false,
+        "belowViewport": false
+      },
+      {
+        "tag": "BUTTON",
+        "label": "11",
+        "width": 39,
+        "height": 45,
+        "horizontallyOffscreen": false,
+        "belowViewport": false
+      }
+    ],
+    "horizontallyOffscreenControls": [],
+    "belowViewportControls": [
+      {
+        "tag": "BUTTON",
+        "label": "✎ Viết bù",
+        "width": 95,
+        "height": 44,
+        "horizontallyOffscreen": false,
+        "belowViewport": true
+      }
+    ],
+    "bodyText": "S\nSacKy\n•••\n⌂\nHome\n◉\nCheck-in\n▤\nDiary\n↗\nAction\n•••\nMore\n\nDIARY\n\nLịch sử nhật ký\n\nNhìn lại những điều bạn đã viết cho từng ngày.\n\nNhìn lại một chặng\nViết nhật ký hôm nay\nTất cả\nBản nháp\nĐã hoàn tất\nLỊCH VIẾT\ntháng 9 năm 2026\n‹\n›\nT2\nT3\nT4\nT5\n"
+  },
+  {
+    "name": "diary-history",
+    "width": 390,
+    "screenshot": "artifacts/mobile-audit/diary-history/390.png",
+    "route": "/diary?view=history",
+    "height": 844,
+    "documentScrollWidth": 390,
+    "bodyScrollWidth": 390,
+    "horizontalOverflow": false,
+    "overflows": [],
+    "undersizedControls": [],
+    "horizontallyOffscreenControls": [],
+    "belowViewportControls": [
+      {
+        "tag": "BUTTON",
+        "label": "✎ Viết bù",
+        "width": 95,
+        "height": 44,
+        "horizontallyOffscreen": false,
+        "belowViewport": true
+      }
+    ],
+    "bodyText": "S\nSacKy\n•••\n⌂\nHome\n◉\nCheck-in\n▤\nDiary\n↗\nAction\n•••\nMore\n\nDIARY\n\nLịch sử nhật ký\n\nNhìn lại những điều bạn đã viết cho từng ngày.\n\nNhìn lại một chặng\nViết nhật ký hôm nay\nTất cả\nBản nháp\nĐã hoàn tất\nLỊCH VIẾT\ntháng 9 năm 2026\n‹\n›\nT2\nT3\nT4\nT5\n"
+  },
+  {
+    "name": "diary-history",
+    "width": 430,
+    "screenshot": "artifacts/mobile-audit/diary-history/430.png",
+    "route": "/diary?view=history",
+    "height": 932,
+    "documentScrollWidth": 430,
+    "bodyScrollWidth": 430,
+    "horizontalOverflow": false,
+    "overflows": [],
+    "undersizedControls": [],
+    "horizontallyOffscreenControls": [],
+    "belowViewportControls": [
+      {
+        "tag": "BUTTON",
+        "label": "✎ Viết bù",
+        "width": 95,
+        "height": 44,
+        "horizontallyOffscreen": false,
+        "belowViewport": true
+      }
+    ],
+    "bodyText": "S\nSacKy\n•••\n⌂\nHome\n◉\nCheck-in\n▤\nDiary\n↗\nAction\n•••\nMore\n\nDIARY\n\nLịch sử nhật ký\n\nNhìn lại những điều bạn đã viết cho từng ngày.\n\nNhìn lại một chặng\nViết nhật ký hôm nay\nTất cả\nBản nháp\nĐã hoàn tất\nLỊCH VIẾT\ntháng 9 năm 2026\n‹\n›\nT2\nT3\nT4\nT5\n"
+  },
+  {
+    "name": "journey",
+    "width": 320,
+    "screenshot": "artifacts/mobile-audit/journey/320.png",
+    "route": "/journey",
+    "height": 760,
+    "documentScrollWidth": 320,
+    "bodyScrollWidth": 320,
+    "horizontalOverflow": false,
+    "overflows": [],
+    "undersizedControls": [],
+    "horizontallyOffscreenControls": [],
+    "belowViewportControls": [
+      {
+        "tag": "A",
+        "label": "Bắt đầu từ một khoảng ngày →",
+        "width": 81,
+        "height": 54,
+        "horizontallyOffscreen": false,
+        "belowViewport": true
+      },
+      {
+        "tag": "A",
+        "label": "Xem tất cả →",
+        "width": 76,
+        "height": 44,
+        "horizontallyOffscreen": false,
+        "belowViewport": true
+      },
+      {
+        "tag": "A",
+        "label": "Mở lịch sử Journey →",
+        "width": 124,
+        "height": 44,
+        "horizontallyOffscreen": false,
+        "belowViewport": true
+      }
+    ],
+    "bodyText": "S\nSacKy\n•••\n⌂\nHome\n◉\nCheck-in\n▤\nDiary\n↗\nAction\n•••\nMore\n\nJOURNEY\n\nNhìn lại một chặng\n\nCó những đoạn đường chỉ cần một khoảng lặng để mình nhận ra đã đi xa đến đâu.\n\nNhìn lại một chặng\n→\n✦\n◌\nMỘT KHOẢNG ĐỂ NGOẢNH LẠI\nKhông cần đi nhanh. Chỉ c"
+  },
+  {
+    "name": "journey",
+    "width": 360,
+    "screenshot": "artifacts/mobile-audit/journey/360.png",
+    "route": "/journey",
+    "height": 760,
+    "documentScrollWidth": 360,
+    "bodyScrollWidth": 360,
+    "horizontalOverflow": false,
+    "overflows": [],
+    "undersizedControls": [],
+    "horizontallyOffscreenControls": [],
+    "belowViewportControls": [
+      {
+        "tag": "A",
+        "label": "Xem tất cả →",
+        "width": 81,
+        "height": 44,
+        "horizontallyOffscreen": false,
+        "belowViewport": true
+      },
+      {
+        "tag": "A",
+        "label": "Mở lịch sử Journey →",
+        "width": 124,
+        "height": 44,
+        "horizontallyOffscreen": false,
+        "belowViewport": true
+      }
+    ],
+    "bodyText": "S\nSacKy\n•••\n⌂\nHome\n◉\nCheck-in\n▤\nDiary\n↗\nAction\n•••\nMore\n\nJOURNEY\n\nNhìn lại một chặng\n\nCó những đoạn đường chỉ cần một khoảng lặng để mình nhận ra đã đi xa đến đâu.\n\nNhìn lại một chặng\n→\n✦\n◌\nMỘT KHOẢNG ĐỂ NGOẢNH LẠI\nKhông cần đi nhanh. Chỉ c"
+  },
+  {
+    "name": "journey",
+    "width": 390,
+    "screenshot": "artifacts/mobile-audit/journey/390.png",
+    "route": "/journey",
+    "height": 844,
+    "documentScrollWidth": 390,
+    "bodyScrollWidth": 390,
+    "horizontalOverflow": false,
+    "overflows": [],
+    "undersizedControls": [],
+    "horizontallyOffscreenControls": [],
+    "belowViewportControls": [
+      {
+        "tag": "A",
+        "label": "Mở lịch sử Journey →",
+        "width": 124,
+        "height": 44,
+        "horizontallyOffscreen": false,
+        "belowViewport": true
+      }
+    ],
+    "bodyText": "S\nSacKy\n•••\n⌂\nHome\n◉\nCheck-in\n▤\nDiary\n↗\nAction\n•••\nMore\n\nJOURNEY\n\nNhìn lại một chặng\n\nCó những đoạn đường chỉ cần một khoảng lặng để mình nhận ra đã đi xa đến đâu.\n\nNhìn lại một chặng\n→\n✦\n◌\nMỘT KHOẢNG ĐỂ NGOẢNH LẠI\nKhông cần đi nhanh. Chỉ c"
+  },
+  {
+    "name": "journey",
+    "width": 430,
+    "screenshot": "artifacts/mobile-audit/journey/430.png",
+    "route": "/journey",
+    "height": 932,
+    "documentScrollWidth": 430,
+    "bodyScrollWidth": 430,
+    "horizontalOverflow": false,
+    "overflows": [],
+    "undersizedControls": [],
+    "horizontallyOffscreenControls": [],
+    "belowViewportControls": [],
+    "bodyText": "S\nSacKy\n•••\n⌂\nHome\n◉\nCheck-in\n▤\nDiary\n↗\nAction\n•••\nMore\n\nJOURNEY\n\nNhìn lại một chặng\n\nCó những đoạn đường chỉ cần một khoảng lặng để mình nhận ra đã đi xa đến đâu.\n\nNhìn lại một chặng\n→\n✦\n◌\nMỘT KHOẢNG ĐỂ NGOẢNH LẠI\nKhông cần đi nhanh. Chỉ c"
+  },
+  {
+    "name": "journey-setup",
+    "width": 320,
+    "screenshot": "artifacts/mobile-audit/journey-setup/320.png",
+    "route": "/journey?view=setup",
+    "height": 760,
+    "documentScrollWidth": 320,
+    "bodyScrollWidth": 320,
+    "horizontalOverflow": false,
+    "overflows": [],
+    "undersizedControls": [],
+    "horizontallyOffscreenControls": [],
+    "belowViewportControls": [
+      {
+        "tag": "A",
+        "label": "Hủy",
+        "width": 296,
+        "height": 44,
+        "horizontallyOffscreen": false,
+        "belowViewport": true
+      },
+      {
+        "tag": "BUTTON",
+        "label": "Bắt đầu viết →",
+        "width": 296,
+        "height": 44,
+        "horizontallyOffscreen": false,
+        "belowViewport": true
+      }
+    ],
+    "bodyText": "←\nJourney\n✦\n\nNHẬT KÝ CHẶNG\n\nNhìn lại một chặng\n\nChọn bất kỳ khoảng thời gian nào bạn muốn để nhìn lại hành trình của mình một cách trọn vẹn và ý nghĩa. Bạn có thể chọn ví dụ 5, 10 hoặc 20 ngày.\n\n← Quay lại Journey\nCHỌN KHOẢNG THỜI GIAN\nTừ n"
+  },
+  {
+    "name": "journey-setup",
+    "width": 360,
+    "screenshot": "artifacts/mobile-audit/journey-setup/360.png",
+    "route": "/journey?view=setup",
+    "height": 760,
+    "documentScrollWidth": 360,
+    "bodyScrollWidth": 360,
+    "horizontalOverflow": false,
+    "overflows": [],
+    "undersizedControls": [],
+    "horizontallyOffscreenControls": [],
+    "belowViewportControls": [
+      {
+        "tag": "A",
+        "label": "Hủy",
+        "width": 336,
+        "height": 44,
+        "horizontallyOffscreen": false,
+        "belowViewport": true
+      },
+      {
+        "tag": "BUTTON",
+        "label": "Bắt đầu viết →",
+        "width": 336,
+        "height": 44,
+        "horizontallyOffscreen": false,
+        "belowViewport": true
+      }
+    ],
+    "bodyText": "←\nJourney\n✦\n\nNHẬT KÝ CHẶNG\n\nNhìn lại một chặng\n\nChọn bất kỳ khoảng thời gian nào bạn muốn để nhìn lại hành trình của mình một cách trọn vẹn và ý nghĩa. Bạn có thể chọn ví dụ 5, 10 hoặc 20 ngày.\n\n← Quay lại Journey\nCHỌN KHOẢNG THỜI GIAN\nTừ n"
+  },
+  {
+    "name": "journey-setup",
+    "width": 390,
+    "screenshot": "artifacts/mobile-audit/journey-setup/390.png",
+    "route": "/journey?view=setup",
+    "height": 844,
+    "documentScrollWidth": 390,
+    "bodyScrollWidth": 390,
+    "horizontalOverflow": false,
+    "overflows": [],
+    "undersizedControls": [],
+    "horizontallyOffscreenControls": [],
+    "belowViewportControls": [
+      {
+        "tag": "A",
+        "label": "Hủy",
+        "width": 366,
+        "height": 44,
+        "horizontallyOffscreen": false,
+        "belowViewport": true
+      },
+      {
+        "tag": "BUTTON",
+        "label": "Bắt đầu viết →",
+        "width": 366,
+        "height": 44,
+        "horizontallyOffscreen": false,
+        "belowViewport": true
+      }
+    ],
+    "bodyText": "←\nJourney\n✦\n\nNHẬT KÝ CHẶNG\n\nNhìn lại một chặng\n\nChọn bất kỳ khoảng thời gian nào bạn muốn để nhìn lại hành trình của mình một cách trọn vẹn và ý nghĩa. Bạn có thể chọn ví dụ 5, 10 hoặc 20 ngày.\n\n← Quay lại Journey\nCHỌN KHOẢNG THỜI GIAN\nTừ n"
+  },
+  {
+    "name": "journey-setup",
+    "width": 430,
+    "screenshot": "artifacts/mobile-audit/journey-setup/430.png",
+    "route": "/journey?view=setup",
+    "height": 932,
+    "documentScrollWidth": 430,
+    "bodyScrollWidth": 430,
+    "horizontalOverflow": false,
+    "overflows": [],
+    "undersizedControls": [],
+    "horizontallyOffscreenControls": [],
+    "belowViewportControls": [
+      {
+        "tag": "A",
+        "label": "Hủy",
+        "width": 406,
+        "height": 44,
+        "horizontallyOffscreen": false,
+        "belowViewport": true
+      },
+      {
+        "tag": "BUTTON",
+        "label": "Bắt đầu viết →",
+        "width": 406,
+        "height": 44,
+        "horizontallyOffscreen": false,
+        "belowViewport": true
+      }
+    ],
+    "bodyText": "←\nJourney\n✦\n\nNHẬT KÝ CHẶNG\n\nNhìn lại một chặng\n\nChọn bất kỳ khoảng thời gian nào bạn muốn để nhìn lại hành trình của mình một cách trọn vẹn và ý nghĩa. Bạn có thể chọn ví dụ 5, 10 hoặc 20 ngày.\n\n← Quay lại Journey\nCHỌN KHOẢNG THỜI GIAN\nTừ n"
+  },
+  {
+    "name": "action-space",
+    "width": 320,
+    "screenshot": "artifacts/mobile-audit/action-space/320.png",
+    "route": "/action-space",
+    "height": 760,
+    "documentScrollWidth": 320,
+    "bodyScrollWidth": 320,
+    "horizontalOverflow": false,
+    "overflows": [],
+    "undersizedControls": [],
+    "horizontallyOffscreenControls": [],
+    "belowViewportControls": [
+      {
+        "tag": "A",
+        "label": "Tạo một Check-in để bắt đầu từ điều đang hiện diện.",
+        "width": 238,
+        "height": 44,
+        "horizontallyOffscreen": false,
+        "belowViewport": true
+      }
+    ],
+    "bodyText": "S\nSacKy\n•••\n⌂\nHome\n◉\nCheck-in\n▤\nDiary\n↗\nAction\n•••\nMore\n\nSẮC KÝ · CAPTURE → PLAN → REFLECT\n\nAction Space\n\nNhững bước nhỏ đang chờ bạn — có thể lên lịch, hoặc để dành cho lúc sẵn sàng.\n\n＋ Viết action\nLịch sử\nHôm nay\n0\nSắp tới\n0\nQuá hạn\n0\nChư"
+  },
+  {
+    "name": "action-space",
+    "width": 360,
+    "screenshot": "artifacts/mobile-audit/action-space/360.png",
+    "route": "/action-space",
+    "height": 760,
+    "documentScrollWidth": 360,
+    "bodyScrollWidth": 360,
+    "horizontalOverflow": false,
+    "overflows": [],
+    "undersizedControls": [],
+    "horizontallyOffscreenControls": [],
+    "belowViewportControls": [],
+    "bodyText": "S\nSacKy\n•••\n⌂\nHome\n◉\nCheck-in\n▤\nDiary\n↗\nAction\n•••\nMore\n\nSẮC KÝ · CAPTURE → PLAN → REFLECT\n\nAction Space\n\nNhững bước nhỏ đang chờ bạn — có thể lên lịch, hoặc để dành cho lúc sẵn sàng.\n\n＋ Viết action\nLịch sử\nHôm nay\n0\nSắp tới\n0\nQuá hạn\n0\nChư"
+  },
+  {
+    "name": "action-space",
+    "width": 390,
+    "screenshot": "artifacts/mobile-audit/action-space/390.png",
+    "route": "/action-space",
+    "height": 844,
+    "documentScrollWidth": 390,
+    "bodyScrollWidth": 390,
+    "horizontalOverflow": false,
+    "overflows": [],
+    "undersizedControls": [],
+    "horizontallyOffscreenControls": [],
+    "belowViewportControls": [],
+    "bodyText": "S\nSacKy\n•••\n⌂\nHome\n◉\nCheck-in\n▤\nDiary\n↗\nAction\n•••\nMore\n\nSẮC KÝ · CAPTURE → PLAN → REFLECT\n\nAction Space\n\nNhững bước nhỏ đang chờ bạn — có thể lên lịch, hoặc để dành cho lúc sẵn sàng.\n\n＋ Viết action\nLịch sử\nHôm nay\n0\nSắp tới\n0\nQuá hạn\n0\nChư"
+  },
+  {
+    "name": "action-space",
+    "width": 430,
+    "screenshot": "artifacts/mobile-audit/action-space/430.png",
+    "route": "/action-space",
+    "height": 932,
+    "documentScrollWidth": 430,
+    "bodyScrollWidth": 430,
+    "horizontalOverflow": false,
+    "overflows": [],
+    "undersizedControls": [],
+    "horizontallyOffscreenControls": [],
+    "belowViewportControls": [],
+    "bodyText": "S\nSacKy\n•••\n⌂\nHome\n◉\nCheck-in\n▤\nDiary\n↗\nAction\n•••\nMore\n\nSẮC KÝ · CAPTURE → PLAN → REFLECT\n\nAction Space\n\nNhững bước nhỏ đang chờ bạn — có thể lên lịch, hoặc để dành cho lúc sẵn sàng.\n\n＋ Viết action\nLịch sử\nHôm nay\n0\nSắp tới\n0\nQuá hạn\n0\nChư"
+  },
+  {
+    "name": "action-history",
+    "width": 320,
+    "screenshot": "artifacts/mobile-audit/action-history/320.png",
+    "route": "/action-space?view=history&lens=timeline",
+    "height": 760,
+    "documentScrollWidth": 320,
+    "bodyScrollWidth": 320,
+    "horizontalOverflow": false,
+    "overflows": [],
+    "undersizedControls": [],
+    "horizontallyOffscreenControls": [],
+    "belowViewportControls": [
+      {
+        "tag": "A",
+        "label": "Về Action Space để viết một bước mới.",
+        "width": 213,
+        "height": 44,
+        "horizontallyOffscreen": false,
+        "belowViewport": true
+      }
+    ],
+    "bodyText": "S\nSacKy\n•••\n⌂\nHome\n◉\nCheck-in\n▤\nDiary\n↗\nAction\n•••\nMore\n\nSẮC KÝ · ACTION HISTORY\n\nLịch sử Action\n\nĐọc lại những gì mình đã làm theo thời gian, từng ngày, hoặc qua Reflection.\n\n← Action Space\n＋ Viết action\nTimeline\nTheo ngày\nReflection Lens\n"
+  },
+  {
+    "name": "action-history",
+    "width": 360,
+    "screenshot": "artifacts/mobile-audit/action-history/360.png",
+    "route": "/action-space?view=history&lens=timeline",
+    "height": 760,
+    "documentScrollWidth": 360,
+    "bodyScrollWidth": 360,
+    "horizontalOverflow": false,
+    "overflows": [],
+    "undersizedControls": [],
+    "horizontallyOffscreenControls": [],
+    "belowViewportControls": [
+      {
+        "tag": "A",
+        "label": "Về Action Space để viết một bước mới.",
+        "width": 213,
+        "height": 44,
+        "horizontallyOffscreen": false,
+        "belowViewport": true
+      }
+    ],
+    "bodyText": "S\nSacKy\n•••\n⌂\nHome\n◉\nCheck-in\n▤\nDiary\n↗\nAction\n•••\nMore\n\nSẮC KÝ · ACTION HISTORY\n\nLịch sử Action\n\nĐọc lại những gì mình đã làm theo thời gian, từng ngày, hoặc qua Reflection.\n\n← Action Space\n＋ Viết action\nTimeline\nTheo ngày\nReflection Lens\n"
+  },
+  {
+    "name": "action-history",
+    "width": 390,
+    "screenshot": "artifacts/mobile-audit/action-history/390.png",
+    "route": "/action-space?view=history&lens=timeline",
+    "height": 844,
+    "documentScrollWidth": 390,
+    "bodyScrollWidth": 390,
+    "horizontalOverflow": false,
+    "overflows": [],
+    "undersizedControls": [],
+    "horizontallyOffscreenControls": [],
+    "belowViewportControls": [
+      {
+        "tag": "A",
+        "label": "Về Action Space để viết một bước mới.",
+        "width": 213,
+        "height": 44,
+        "horizontallyOffscreen": false,
+        "belowViewport": true
+      }
+    ],
+    "bodyText": "S\nSacKy\n•••\n⌂\nHome\n◉\nCheck-in\n▤\nDiary\n↗\nAction\n•••\nMore\n\nSẮC KÝ · ACTION HISTORY\n\nLịch sử Action\n\nĐọc lại những gì mình đã làm theo thời gian, từng ngày, hoặc qua Reflection.\n\n← Action Space\n＋ Viết action\nTimeline\nTheo ngày\nReflection Lens\n"
+  },
+  {
+    "name": "action-history",
+    "width": 430,
+    "screenshot": "artifacts/mobile-audit/action-history/430.png",
+    "route": "/action-space?view=history&lens=timeline",
+    "height": 932,
+    "documentScrollWidth": 430,
+    "bodyScrollWidth": 430,
+    "horizontalOverflow": false,
+    "overflows": [],
+    "undersizedControls": [],
+    "horizontallyOffscreenControls": [],
+    "belowViewportControls": [],
+    "bodyText": "S\nSacKy\n•••\n⌂\nHome\n◉\nCheck-in\n▤\nDiary\n↗\nAction\n•••\nMore\n\nSẮC KÝ · ACTION HISTORY\n\nLịch sử Action\n\nĐọc lại những gì mình đã làm theo thời gian, từng ngày, hoặc qua Reflection.\n\n← Action Space\n＋ Viết action\nTimeline\nTheo ngày\nReflection Lens\n"
+  },
+  {
+    "name": "future-letter",
+    "width": 320,
+    "screenshot": "artifacts/mobile-audit/future-letter/320.png",
+    "route": "/future-letter",
+    "height": 760,
+    "documentScrollWidth": 320,
+    "bodyScrollWidth": 320,
+    "horizontalOverflow": false,
+    "overflows": [
+      {
+        "tag": "DIV",
+        "className": "future-empty__landscape",
+        "left": -11,
+        "right": 371,
+        "width": 382
+      },
+      {
+        "tag": "svg",
+        "className": "[object SVGAnimatedString]",
+        "left": -11,
+        "right": 371,
+        "width": 382
+      },
+      {
+        "tag": "circle",
+        "className": "[object SVGAnimatedString]",
+        "left": 277,
+        "right": 341,
+        "width": 64
+      },
+      {
+        "tag": "path",
+        "className": "[object SVGAnimatedString]",
+        "left": -11,
+        "right": 371,
+        "width": 382
+      },
+      {
+        "tag": "path",
+        "className": "[object SVGAnimatedString]",
+        "left": -11,
+        "right": 371,
+        "width": 382
+      },
+      {
+        "tag": "path",
+        "className": "[object SVGAnimatedString]",
+        "left": -11,
+        "right": 371,
+        "width": 382
+      },
+      {
+        "tag": "path",
+        "className": "[object SVGAnimatedString]",
+        "left": 256,
+        "right": 338,
+        "width": 81
+      },
+      {
+        "tag": "path",
+        "className": "[object SVGAnimatedString]",
+        "left": 256,
+        "right": 338,
+        "width": 81
+      },
+      {
+        "tag": "path",
+        "className": "[object SVGAnimatedString]",
+        "left": 337,
+        "right": 349,
+        "width": 12
+      },
+      {
+        "tag": "path",
+        "className": "[object SVGAnimatedString]",
+        "left": 346,
+        "right": 357,
+        "width": 10
+      }
+    ],
+    "undersizedControls": [],
+    "horizontallyOffscreenControls": [],
+    "belowViewportControls": [
+      {
+        "tag": "BUTTON",
+        "label": "Viết lá thư đầu tiên",
+        "width": 154,
+        "height": 45,
+        "horizontallyOffscreen": false,
+        "belowViewport": true
+      }
+    ],
+    "bodyText": "S\nSacKy\n•••\n⌂\nHome\n◉\nCheck-in\n▤\nDiary\n↗\nAction\n•••\nMore\n\nFUTUREME / FUTURE LETTER\n\nNhững điều mình gửi về sau\n\nViết từ hôm nay, để một phiên bản tương lai của mình gặp được những lời này.\n\n＋ Viết thư mới\n✦\n✦\nS\n\nVIẾT → TRANG TRÍ → XEM LẠI → "
+  },
+  {
+    "name": "future-letter",
+    "width": 360,
+    "screenshot": "artifacts/mobile-audit/future-letter/360.png",
+    "route": "/future-letter",
+    "height": 760,
+    "documentScrollWidth": 360,
+    "bodyScrollWidth": 360,
+    "horizontalOverflow": false,
+    "overflows": [
+      {
+        "tag": "DIV",
+        "className": "future-empty__landscape",
+        "left": -23,
+        "right": 411,
+        "width": 434
+      },
+      {
+        "tag": "svg",
+        "className": "[object SVGAnimatedString]",
+        "left": -23,
+        "right": 411,
+        "width": 434
+      },
+      {
+        "tag": "circle",
+        "className": "[object SVGAnimatedString]",
+        "left": 305,
+        "right": 377,
+        "width": 72
+      },
+      {
+        "tag": "path",
+        "className": "[object SVGAnimatedString]",
+        "left": -23,
+        "right": 411,
+        "width": 434
+      },
+      {
+        "tag": "path",
+        "className": "[object SVGAnimatedString]",
+        "left": -23,
+        "right": 411,
+        "width": 434
+      },
+      {
+        "tag": "path",
+        "className": "[object SVGAnimatedString]",
+        "left": -23,
+        "right": 411,
+        "width": 434
+      },
+      {
+        "tag": "path",
+        "className": "[object SVGAnimatedString]",
+        "left": 281,
+        "right": 373,
+        "width": 92
+      },
+      {
+        "tag": "path",
+        "className": "[object SVGAnimatedString]",
+        "left": 281,
+        "right": 373,
+        "width": 92
+      },
+      {
+        "tag": "path",
+        "className": "[object SVGAnimatedString]",
+        "left": 372,
+        "right": 386,
+        "width": 14
+      },
+      {
+        "tag": "path",
+        "className": "[object SVGAnimatedString]",
+        "left": 383,
+        "right": 395,
+        "width": 12
+      }
+    ],
+    "undersizedControls": [],
+    "horizontallyOffscreenControls": [],
+    "belowViewportControls": [
+      {
+        "tag": "BUTTON",
+        "label": "Viết lá thư đầu tiên",
+        "width": 154,
+        "height": 45,
+        "horizontallyOffscreen": false,
+        "belowViewport": true
+      }
+    ],
+    "bodyText": "S\nSacKy\n•••\n⌂\nHome\n◉\nCheck-in\n▤\nDiary\n↗\nAction\n•••\nMore\n\nFUTUREME / FUTURE LETTER\n\nNhững điều mình gửi về sau\n\nViết từ hôm nay, để một phiên bản tương lai của mình gặp được những lời này.\n\n＋ Viết thư mới\n✦\n✦\nS\n\nVIẾT → TRANG TRÍ → XEM LẠI → "
+  },
+  {
+    "name": "future-letter",
+    "width": 390,
+    "screenshot": "artifacts/mobile-audit/future-letter/390.png",
+    "route": "/future-letter",
+    "height": 844,
+    "documentScrollWidth": 390,
+    "bodyScrollWidth": 390,
+    "horizontalOverflow": false,
+    "overflows": [
+      {
+        "tag": "DIV",
+        "className": "future-empty__landscape",
+        "left": -32,
+        "right": 441,
+        "width": 473
+      },
+      {
+        "tag": "svg",
+        "className": "[object SVGAnimatedString]",
+        "left": -32,
+        "right": 441,
+        "width": 473
+      },
+      {
+        "tag": "circle",
+        "className": "[object SVGAnimatedString]",
+        "left": 325,
+        "right": 404,
+        "width": 79
+      },
+      {
+        "tag": "path",
+        "className": "[object SVGAnimatedString]",
+        "left": -32,
+        "right": 441,
+        "width": 473
+      },
+      {
+        "tag": "path",
+        "className": "[object SVGAnimatedString]",
+        "left": -32,
+        "right": 441,
+        "width": 473
+      },
+      {
+        "tag": "path",
+        "className": "[object SVGAnimatedString]",
+        "left": -32,
+        "right": 441,
+        "width": 473
+      },
+      {
+        "tag": "path",
+        "className": "[object SVGAnimatedString]",
+        "left": 299,
+        "right": 400,
+        "width": 101
+      },
+      {
+        "tag": "path",
+        "className": "[object SVGAnimatedString]",
+        "left": 299,
+        "right": 400,
+        "width": 101
+      },
+      {
+        "tag": "path",
+        "className": "[object SVGAnimatedString]",
+        "left": 399,
+        "right": 414,
+        "width": 15
+      },
+      {
+        "tag": "path",
+        "className": "[object SVGAnimatedString]",
+        "left": 411,
+        "right": 424,
+        "width": 13
+      }
+    ],
+    "undersizedControls": [],
+    "horizontallyOffscreenControls": [],
+    "belowViewportControls": [],
+    "bodyText": "S\nSacKy\n•••\n⌂\nHome\n◉\nCheck-in\n▤\nDiary\n↗\nAction\n•••\nMore\n\nFUTUREME / FUTURE LETTER\n\nNhững điều mình gửi về sau\n\nViết từ hôm nay, để một phiên bản tương lai của mình gặp được những lời này.\n\n＋ Viết thư mới\n✦\n✦\nS\n\nVIẾT → TRANG TRÍ → XEM LẠI → "
+  },
+  {
+    "name": "future-letter",
+    "width": 430,
+    "screenshot": "artifacts/mobile-audit/future-letter/430.png",
+    "route": "/future-letter",
+    "height": 932,
+    "documentScrollWidth": 430,
+    "bodyScrollWidth": 430,
+    "horizontalOverflow": false,
+    "overflows": [
+      {
+        "tag": "DIV",
+        "className": "future-empty__landscape",
+        "left": -44,
+        "right": 481,
+        "width": 525
+      },
+      {
+        "tag": "svg",
+        "className": "[object SVGAnimatedString]",
+        "left": -44,
+        "right": 481,
+        "width": 525
+      },
+      {
+        "tag": "circle",
+        "className": "[object SVGAnimatedString]",
+        "left": 352,
+        "right": 440,
+        "width": 88
+      },
+      {
+        "tag": "path",
+        "className": "[object SVGAnimatedString]",
+        "left": -44,
+        "right": 481,
+        "width": 525
+      },
+      {
+        "tag": "path",
+        "className": "[object SVGAnimatedString]",
+        "left": -44,
+        "right": 481,
+        "width": 525
+      },
+      {
+        "tag": "path",
+        "className": "[object SVGAnimatedString]",
+        "left": -44,
+        "right": 481,
+        "width": 525
+      },
+      {
+        "tag": "path",
+        "className": "[object SVGAnimatedString]",
+        "left": 323,
+        "right": 435,
+        "width": 112
+      },
+      {
+        "tag": "path",
+        "className": "[object SVGAnimatedString]",
+        "left": 323,
+        "right": 435,
+        "width": 112
+      },
+      {
+        "tag": "path",
+        "className": "[object SVGAnimatedString]",
+        "left": 434,
+        "right": 451,
+        "width": 17
+      },
+      {
+        "tag": "path",
+        "className": "[object SVGAnimatedString]",
+        "left": 447,
+        "right": 462,
+        "width": 14
+      }
+    ],
+    "undersizedControls": [],
+    "horizontallyOffscreenControls": [],
+    "belowViewportControls": [],
+    "bodyText": "S\nSacKy\n•••\n⌂\nHome\n◉\nCheck-in\n▤\nDiary\n↗\nAction\n•••\nMore\n\nFUTUREME / FUTURE LETTER\n\nNhững điều mình gửi về sau\n\nViết từ hôm nay, để một phiên bản tương lai của mình gặp được những lời này.\n\n＋ Viết thư mới\n✦\n✦\nS\n\nVIẾT → TRANG TRÍ → XEM LẠI → "
+  },
+  {
+    "name": "future-letter-write",
+    "width": 320,
+    "screenshot": "artifacts/mobile-audit/future-letter-write/320.png",
+    "route": "/future-letter?view=write",
+    "height": 760,
+    "documentScrollWidth": 320,
+    "bodyScrollWidth": 320,
+    "horizontalOverflow": false,
+    "overflows": [
+      {
+        "tag": "DIV",
+        "className": "future-empty__landscape",
+        "left": -11,
+        "right": 371,
+        "width": 382
+      },
+      {
+        "tag": "svg",
+        "className": "[object SVGAnimatedString]",
+        "left": -11,
+        "right": 371,
+        "width": 382
+      },
+      {
+        "tag": "circle",
+        "className": "[object SVGAnimatedString]",
+        "left": 277,
+        "right": 341,
+        "width": 64
+      },
+      {
+        "tag": "path",
+        "className": "[object SVGAnimatedString]",
+        "left": -11,
+        "right": 371,
+        "width": 382
+      },
+      {
+        "tag": "path",
+        "className": "[object SVGAnimatedString]",
+        "left": -11,
+        "right": 371,
+        "width": 382
+      },
+      {
+        "tag": "path",
+        "className": "[object SVGAnimatedString]",
+        "left": -11,
+        "right": 371,
+        "width": 382
+      },
+      {
+        "tag": "path",
+        "className": "[object SVGAnimatedString]",
+        "left": 256,
+        "right": 338,
+        "width": 81
+      },
+      {
+        "tag": "path",
+        "className": "[object SVGAnimatedString]",
+        "left": 256,
+        "right": 338,
+        "width": 81
+      },
+      {
+        "tag": "path",
+        "className": "[object SVGAnimatedString]",
+        "left": 337,
+        "right": 349,
+        "width": 12
+      },
+      {
+        "tag": "path",
+        "className": "[object SVGAnimatedString]",
+        "left": 346,
+        "right": 357,
+        "width": 10
+      }
+    ],
+    "undersizedControls": [],
+    "horizontallyOffscreenControls": [],
+    "belowViewportControls": [
+      {
+        "tag": "BUTTON",
+        "label": "Viết lá thư đầu tiên",
+        "width": 154,
+        "height": 45,
+        "horizontallyOffscreen": false,
+        "belowViewport": true
+      }
+    ],
+    "bodyText": "←\nFuture Letter\n✦\n\nFUTUREME / FUTURE LETTER\n\nNhững điều mình gửi về sau\n\nViết từ hôm nay, để một phiên bản tương lai của mình gặp được những lời này.\n\n＋ Viết thư mới\n✦\n✦\nS\n\nVIẾT → TRANG TRÍ → XEM LẠI → NIÊM PHONG\n\nChưa có lá thư nào ở đây\n\n"
+  },
+  {
+    "name": "future-letter-write",
+    "width": 360,
+    "screenshot": "artifacts/mobile-audit/future-letter-write/360.png",
+    "route": "/future-letter?view=write",
+    "height": 760,
+    "documentScrollWidth": 360,
+    "bodyScrollWidth": 360,
+    "horizontalOverflow": false,
+    "overflows": [
+      {
+        "tag": "DIV",
+        "className": "future-empty__landscape",
+        "left": -23,
+        "right": 411,
+        "width": 434
+      },
+      {
+        "tag": "svg",
+        "className": "[object SVGAnimatedString]",
+        "left": -23,
+        "right": 411,
+        "width": 434
+      },
+      {
+        "tag": "circle",
+        "className": "[object SVGAnimatedString]",
+        "left": 305,
+        "right": 377,
+        "width": 72
+      },
+      {
+        "tag": "path",
+        "className": "[object SVGAnimatedString]",
+        "left": -23,
+        "right": 411,
+        "width": 434
+      },
+      {
+        "tag": "path",
+        "className": "[object SVGAnimatedString]",
+        "left": -23,
+        "right": 411,
+        "width": 434
+      },
+      {
+        "tag": "path",
+        "className": "[object SVGAnimatedString]",
+        "left": -23,
+        "right": 411,
+        "width": 434
+      },
+      {
+        "tag": "path",
+        "className": "[object SVGAnimatedString]",
+        "left": 281,
+        "right": 373,
+        "width": 92
+      },
+      {
+        "tag": "path",
+        "className": "[object SVGAnimatedString]",
+        "left": 281,
+        "right": 373,
+        "width": 92
+      },
+      {
+        "tag": "path",
+        "className": "[object SVGAnimatedString]",
+        "left": 372,
+        "right": 386,
+        "width": 14
+      },
+      {
+        "tag": "path",
+        "className": "[object SVGAnimatedString]",
+        "left": 383,
+        "right": 395,
+        "width": 12
+      }
+    ],
+    "undersizedControls": [],
+    "horizontallyOffscreenControls": [],
+    "belowViewportControls": [
+      {
+        "tag": "BUTTON",
+        "label": "Viết lá thư đầu tiên",
+        "width": 154,
+        "height": 45,
+        "horizontallyOffscreen": false,
+        "belowViewport": true
+      }
+    ],
+    "bodyText": "←\nFuture Letter\n✦\n\nFUTUREME / FUTURE LETTER\n\nNhững điều mình gửi về sau\n\nViết từ hôm nay, để một phiên bản tương lai của mình gặp được những lời này.\n\n＋ Viết thư mới\n✦\n✦\nS\n\nVIẾT → TRANG TRÍ → XEM LẠI → NIÊM PHONG\n\nChưa có lá thư nào ở đây\n\n"
+  },
+  {
+    "name": "future-letter-write",
+    "width": 390,
+    "screenshot": "artifacts/mobile-audit/future-letter-write/390.png",
+    "route": "/future-letter?view=write",
+    "height": 844,
+    "documentScrollWidth": 390,
+    "bodyScrollWidth": 390,
+    "horizontalOverflow": false,
+    "overflows": [
+      {
+        "tag": "DIV",
+        "className": "future-empty__landscape",
+        "left": -32,
+        "right": 441,
+        "width": 473
+      },
+      {
+        "tag": "svg",
+        "className": "[object SVGAnimatedString]",
+        "left": -32,
+        "right": 441,
+        "width": 473
+      },
+      {
+        "tag": "circle",
+        "className": "[object SVGAnimatedString]",
+        "left": 325,
+        "right": 404,
+        "width": 79
+      },
+      {
+        "tag": "path",
+        "className": "[object SVGAnimatedString]",
+        "left": -32,
+        "right": 441,
+        "width": 473
+      },
+      {
+        "tag": "path",
+        "className": "[object SVGAnimatedString]",
+        "left": -32,
+        "right": 441,
+        "width": 473
+      },
+      {
+        "tag": "path",
+        "className": "[object SVGAnimatedString]",
+        "left": -32,
+        "right": 441,
+        "width": 473
+      },
+      {
+        "tag": "path",
+        "className": "[object SVGAnimatedString]",
+        "left": 299,
+        "right": 400,
+        "width": 101
+      },
+      {
+        "tag": "path",
+        "className": "[object SVGAnimatedString]",
+        "left": 299,
+        "right": 400,
+        "width": 101
+      },
+      {
+        "tag": "path",
+        "className": "[object SVGAnimatedString]",
+        "left": 399,
+        "right": 414,
+        "width": 15
+      },
+      {
+        "tag": "path",
+        "className": "[object SVGAnimatedString]",
+        "left": 411,
+        "right": 424,
+        "width": 13
+      }
+    ],
+    "undersizedControls": [],
+    "horizontallyOffscreenControls": [],
+    "belowViewportControls": [],
+    "bodyText": "←\nFuture Letter\n✦\n\nFUTUREME / FUTURE LETTER\n\nNhững điều mình gửi về sau\n\nViết từ hôm nay, để một phiên bản tương lai của mình gặp được những lời này.\n\n＋ Viết thư mới\n✦\n✦\nS\n\nVIẾT → TRANG TRÍ → XEM LẠI → NIÊM PHONG\n\nChưa có lá thư nào ở đây\n\n"
+  },
+  {
+    "name": "future-letter-write",
+    "width": 430,
+    "screenshot": "artifacts/mobile-audit/future-letter-write/430.png",
+    "route": "/future-letter?view=write",
+    "height": 932,
+    "documentScrollWidth": 430,
+    "bodyScrollWidth": 430,
+    "horizontalOverflow": false,
+    "overflows": [
+      {
+        "tag": "DIV",
+        "className": "future-empty__landscape",
+        "left": -44,
+        "right": 481,
+        "width": 525
+      },
+      {
+        "tag": "svg",
+        "className": "[object SVGAnimatedString]",
+        "left": -44,
+        "right": 481,
+        "width": 525
+      },
+      {
+        "tag": "circle",
+        "className": "[object SVGAnimatedString]",
+        "left": 352,
+        "right": 440,
+        "width": 88
+      },
+      {
+        "tag": "path",
+        "className": "[object SVGAnimatedString]",
+        "left": -44,
+        "right": 481,
+        "width": 525
+      },
+      {
+        "tag": "path",
+        "className": "[object SVGAnimatedString]",
+        "left": -44,
+        "right": 481,
+        "width": 525
+      },
+      {
+        "tag": "path",
+        "className": "[object SVGAnimatedString]",
+        "left": -44,
+        "right": 481,
+        "width": 525
+      },
+      {
+        "tag": "path",
+        "className": "[object SVGAnimatedString]",
+        "left": 323,
+        "right": 435,
+        "width": 112
+      },
+      {
+        "tag": "path",
+        "className": "[object SVGAnimatedString]",
+        "left": 323,
+        "right": 435,
+        "width": 112
+      },
+      {
+        "tag": "path",
+        "className": "[object SVGAnimatedString]",
+        "left": 434,
+        "right": 451,
+        "width": 17
+      },
+      {
+        "tag": "path",
+        "className": "[object SVGAnimatedString]",
+        "left": 447,
+        "right": 462,
+        "width": 14
+      }
+    ],
+    "undersizedControls": [],
+    "horizontallyOffscreenControls": [],
+    "belowViewportControls": [],
+    "bodyText": "←\nFuture Letter\n✦\n\nFUTUREME / FUTURE LETTER\n\nNhững điều mình gửi về sau\n\nViết từ hôm nay, để một phiên bản tương lai của mình gặp được những lời này.\n\n＋ Viết thư mới\n✦\n✦\nS\n\nVIẾT → TRANG TRÍ → XEM LẠI → NIÊM PHONG\n\nChưa có lá thư nào ở đây\n\n"
+  },
+  {
+    "name": "future-letter-trigger",
+    "width": 320,
+    "screenshot": "artifacts/mobile-audit/future-letter-trigger/320.png",
+    "route": "/future-letter?view=trigger",
+    "height": 760,
+    "documentScrollWidth": 320,
+    "bodyScrollWidth": 320,
+    "horizontalOverflow": false,
+    "overflows": [
+      {
+        "tag": "DIV",
+        "className": "future-empty__landscape",
+        "left": -11,
+        "right": 371,
+        "width": 382
+      },
+      {
+        "tag": "svg",
+        "className": "[object SVGAnimatedString]",
+        "left": -11,
+        "right": 371,
+        "width": 382
+      },
+      {
+        "tag": "circle",
+        "className": "[object SVGAnimatedString]",
+        "left": 277,
+        "right": 341,
+        "width": 64
+      },
+      {
+        "tag": "path",
+        "className": "[object SVGAnimatedString]",
+        "left": -11,
+        "right": 371,
+        "width": 382
+      },
+      {
+        "tag": "path",
+        "className": "[object SVGAnimatedString]",
+        "left": -11,
+        "right": 371,
+        "width": 382
+      },
+      {
+        "tag": "path",
+        "className": "[object SVGAnimatedString]",
+        "left": -11,
+        "right": 371,
+        "width": 382
+      },
+      {
+        "tag": "path",
+        "className": "[object SVGAnimatedString]",
+        "left": 256,
+        "right": 338,
+        "width": 81
+      },
+      {
+        "tag": "path",
+        "className": "[object SVGAnimatedString]",
+        "left": 256,
+        "right": 338,
+        "width": 81
+      },
+      {
+        "tag": "path",
+        "className": "[object SVGAnimatedString]",
+        "left": 337,
+        "right": 349,
+        "width": 12
+      },
+      {
+        "tag": "path",
+        "className": "[object SVGAnimatedString]",
+        "left": 346,
+        "right": 357,
+        "width": 10
+      }
+    ],
+    "undersizedControls": [],
+    "horizontallyOffscreenControls": [],
+    "belowViewportControls": [
+      {
+        "tag": "BUTTON",
+        "label": "Viết lá thư đầu tiên",
+        "width": 154,
+        "height": 45,
+        "horizontallyOffscreen": false,
+        "belowViewport": true
+      }
+    ],
+    "bodyText": "←\nFuture Letter\n✦\n\nFUTUREME / FUTURE LETTER\n\nNhững điều mình gửi về sau\n\nViết từ hôm nay, để một phiên bản tương lai của mình gặp được những lời này.\n\n＋ Viết thư mới\n✦\n✦\nS\n\nVIẾT → TRANG TRÍ → XEM LẠI → NIÊM PHONG\n\nChưa có lá thư nào ở đây\n\n"
+  },
+  {
+    "name": "future-letter-trigger",
+    "width": 360,
+    "screenshot": "artifacts/mobile-audit/future-letter-trigger/360.png",
+    "route": "/future-letter?view=trigger",
+    "height": 760,
+    "documentScrollWidth": 360,
+    "bodyScrollWidth": 360,
+    "horizontalOverflow": false,
+    "overflows": [
+      {
+        "tag": "DIV",
+        "className": "future-empty__landscape",
+        "left": -23,
+        "right": 411,
+        "width": 434
+      },
+      {
+        "tag": "svg",
+        "className": "[object SVGAnimatedString]",
+        "left": -23,
+        "right": 411,
+        "width": 434
+      },
+      {
+        "tag": "circle",
+        "className": "[object SVGAnimatedString]",
+        "left": 305,
+        "right": 377,
+        "width": 72
+      },
+      {
+        "tag": "path",
+        "className": "[object SVGAnimatedString]",
+        "left": -23,
+        "right": 411,
+        "width": 434
+      },
+      {
+        "tag": "path",
+        "className": "[object SVGAnimatedString]",
+        "left": -23,
+        "right": 411,
+        "width": 434
+      },
+      {
+        "tag": "path",
+        "className": "[object SVGAnimatedString]",
+        "left": -23,
+        "right": 411,
+        "width": 434
+      },
+      {
+        "tag": "path",
+        "className": "[object SVGAnimatedString]",
+        "left": 281,
+        "right": 373,
+        "width": 92
+      },
+      {
+        "tag": "path",
+        "className": "[object SVGAnimatedString]",
+        "left": 281,
+        "right": 373,
+        "width": 92
+      },
+      {
+        "tag": "path",
+        "className": "[object SVGAnimatedString]",
+        "left": 372,
+        "right": 386,
+        "width": 14
+      },
+      {
+        "tag": "path",
+        "className": "[object SVGAnimatedString]",
+        "left": 383,
+        "right": 395,
+        "width": 12
+      }
+    ],
+    "undersizedControls": [],
+    "horizontallyOffscreenControls": [],
+    "belowViewportControls": [
+      {
+        "tag": "BUTTON",
+        "label": "Viết lá thư đầu tiên",
+        "width": 154,
+        "height": 45,
+        "horizontallyOffscreen": false,
+        "belowViewport": true
+      }
+    ],
+    "bodyText": "←\nFuture Letter\n✦\n\nFUTUREME / FUTURE LETTER\n\nNhững điều mình gửi về sau\n\nViết từ hôm nay, để một phiên bản tương lai của mình gặp được những lời này.\n\n＋ Viết thư mới\n✦\n✦\nS\n\nVIẾT → TRANG TRÍ → XEM LẠI → NIÊM PHONG\n\nChưa có lá thư nào ở đây\n\n"
+  },
+  {
+    "name": "future-letter-trigger",
+    "width": 390,
+    "screenshot": "artifacts/mobile-audit/future-letter-trigger/390.png",
+    "route": "/future-letter?view=trigger",
+    "height": 844,
+    "documentScrollWidth": 390,
+    "bodyScrollWidth": 390,
+    "horizontalOverflow": false,
+    "overflows": [
+      {
+        "tag": "DIV",
+        "className": "future-empty__landscape",
+        "left": -32,
+        "right": 441,
+        "width": 473
+      },
+      {
+        "tag": "svg",
+        "className": "[object SVGAnimatedString]",
+        "left": -32,
+        "right": 441,
+        "width": 473
+      },
+      {
+        "tag": "circle",
+        "className": "[object SVGAnimatedString]",
+        "left": 325,
+        "right": 404,
+        "width": 79
+      },
+      {
+        "tag": "path",
+        "className": "[object SVGAnimatedString]",
+        "left": -32,
+        "right": 441,
+        "width": 473
+      },
+      {
+        "tag": "path",
+        "className": "[object SVGAnimatedString]",
+        "left": -32,
+        "right": 441,
+        "width": 473
+      },
+      {
+        "tag": "path",
+        "className": "[object SVGAnimatedString]",
+        "left": -32,
+        "right": 441,
+        "width": 473
+      },
+      {
+        "tag": "path",
+        "className": "[object SVGAnimatedString]",
+        "left": 299,
+        "right": 400,
+        "width": 101
+      },
+      {
+        "tag": "path",
+        "className": "[object SVGAnimatedString]",
+        "left": 299,
+        "right": 400,
+        "width": 101
+      },
+      {
+        "tag": "path",
+        "className": "[object SVGAnimatedString]",
+        "left": 399,
+        "right": 414,
+        "width": 15
+      },
+      {
+        "tag": "path",
+        "className": "[object SVGAnimatedString]",
+        "left": 411,
+        "right": 424,
+        "width": 13
+      }
+    ],
+    "undersizedControls": [],
+    "horizontallyOffscreenControls": [],
+    "belowViewportControls": [],
+    "bodyText": "←\nFuture Letter\n✦\n\nFUTUREME / FUTURE LETTER\n\nNhững điều mình gửi về sau\n\nViết từ hôm nay, để một phiên bản tương lai của mình gặp được những lời này.\n\n＋ Viết thư mới\n✦\n✦\nS\n\nVIẾT → TRANG TRÍ → XEM LẠI → NIÊM PHONG\n\nChưa có lá thư nào ở đây\n\n"
+  },
+  {
+    "name": "future-letter-trigger",
+    "width": 430,
+    "screenshot": "artifacts/mobile-audit/future-letter-trigger/430.png",
+    "route": "/future-letter?view=trigger",
+    "height": 932,
+    "documentScrollWidth": 430,
+    "bodyScrollWidth": 430,
+    "horizontalOverflow": false,
+    "overflows": [
+      {
+        "tag": "DIV",
+        "className": "future-empty__landscape",
+        "left": -44,
+        "right": 481,
+        "width": 525
+      },
+      {
+        "tag": "svg",
+        "className": "[object SVGAnimatedString]",
+        "left": -44,
+        "right": 481,
+        "width": 525
+      },
+      {
+        "tag": "circle",
+        "className": "[object SVGAnimatedString]",
+        "left": 352,
+        "right": 440,
+        "width": 88
+      },
+      {
+        "tag": "path",
+        "className": "[object SVGAnimatedString]",
+        "left": -44,
+        "right": 481,
+        "width": 525
+      },
+      {
+        "tag": "path",
+        "className": "[object SVGAnimatedString]",
+        "left": -44,
+        "right": 481,
+        "width": 525
+      },
+      {
+        "tag": "path",
+        "className": "[object SVGAnimatedString]",
+        "left": -44,
+        "right": 481,
+        "width": 525
+      },
+      {
+        "tag": "path",
+        "className": "[object SVGAnimatedString]",
+        "left": 323,
+        "right": 435,
+        "width": 112
+      },
+      {
+        "tag": "path",
+        "className": "[object SVGAnimatedString]",
+        "left": 323,
+        "right": 435,
+        "width": 112
+      },
+      {
+        "tag": "path",
+        "className": "[object SVGAnimatedString]",
+        "left": 434,
+        "right": 451,
+        "width": 17
+      },
+      {
+        "tag": "path",
+        "className": "[object SVGAnimatedString]",
+        "left": 447,
+        "right": 462,
+        "width": 14
+      }
+    ],
+    "undersizedControls": [],
+    "horizontallyOffscreenControls": [],
+    "belowViewportControls": [],
+    "bodyText": "←\nFuture Letter\n✦\n\nFUTUREME / FUTURE LETTER\n\nNhững điều mình gửi về sau\n\nViết từ hôm nay, để một phiên bản tương lai của mình gặp được những lời này.\n\n＋ Viết thư mới\n✦\n✦\nS\n\nVIẾT → TRANG TRÍ → XEM LẠI → NIÊM PHONG\n\nChưa có lá thư nào ở đây\n\n"
+  },
+  {
+    "name": "future-letter-decorate",
+    "width": 320,
+    "screenshot": "artifacts/mobile-audit/future-letter-decorate/320.png",
+    "route": "/future-letter?view=decorate",
+    "height": 760,
+    "documentScrollWidth": 320,
+    "bodyScrollWidth": 320,
+    "horizontalOverflow": false,
+    "overflows": [
+      {
+        "tag": "DIV",
+        "className": "future-empty__landscape",
+        "left": -11,
+        "right": 371,
+        "width": 382
+      },
+      {
+        "tag": "svg",
+        "className": "[object SVGAnimatedString]",
+        "left": -11,
+        "right": 371,
+        "width": 382
+      },
+      {
+        "tag": "circle",
+        "className": "[object SVGAnimatedString]",
+        "left": 277,
+        "right": 341,
+        "width": 64
+      },
+      {
+        "tag": "path",
+        "className": "[object SVGAnimatedString]",
+        "left": -11,
+        "right": 371,
+        "width": 382
+      },
+      {
+        "tag": "path",
+        "className": "[object SVGAnimatedString]",
+        "left": -11,
+        "right": 371,
+        "width": 382
+      },
+      {
+        "tag": "path",
+        "className": "[object SVGAnimatedString]",
+        "left": -11,
+        "right": 371,
+        "width": 382
+      },
+      {
+        "tag": "path",
+        "className": "[object SVGAnimatedString]",
+        "left": 256,
+        "right": 338,
+        "width": 81
+      },
+      {
+        "tag": "path",
+        "className": "[object SVGAnimatedString]",
+        "left": 256,
+        "right": 338,
+        "width": 81
+      },
+      {
+        "tag": "path",
+        "className": "[object SVGAnimatedString]",
+        "left": 337,
+        "right": 349,
+        "width": 12
+      },
+      {
+        "tag": "path",
+        "className": "[object SVGAnimatedString]",
+        "left": 346,
+        "right": 357,
+        "width": 10
+      }
+    ],
+    "undersizedControls": [],
+    "horizontallyOffscreenControls": [],
+    "belowViewportControls": [
+      {
+        "tag": "BUTTON",
+        "label": "Viết lá thư đầu tiên",
+        "width": 154,
+        "height": 45,
+        "horizontallyOffscreen": false,
+        "belowViewport": true
+      }
+    ],
+    "bodyText": "←\nFuture Letter\n✦\n\nFUTUREME / FUTURE LETTER\n\nNhững điều mình gửi về sau\n\nViết từ hôm nay, để một phiên bản tương lai của mình gặp được những lời này.\n\n＋ Viết thư mới\n✦\n✦\nS\n\nVIẾT → TRANG TRÍ → XEM LẠI → NIÊM PHONG\n\nChưa có lá thư nào ở đây\n\n"
+  },
+  {
+    "name": "future-letter-decorate",
+    "width": 360,
+    "screenshot": "artifacts/mobile-audit/future-letter-decorate/360.png",
+    "route": "/future-letter?view=decorate",
+    "height": 760,
+    "documentScrollWidth": 360,
+    "bodyScrollWidth": 360,
+    "horizontalOverflow": false,
+    "overflows": [
+      {
+        "tag": "DIV",
+        "className": "future-empty__landscape",
+        "left": -23,
+        "right": 411,
+        "width": 434
+      },
+      {
+        "tag": "svg",
+        "className": "[object SVGAnimatedString]",
+        "left": -23,
+        "right": 411,
+        "width": 434
+      },
+      {
+        "tag": "circle",
+        "className": "[object SVGAnimatedString]",
+        "left": 305,
+        "right": 377,
+        "width": 72
+      },
+      {
+        "tag": "path",
+        "className": "[object SVGAnimatedString]",
+        "left": -23,
+        "right": 411,
+        "width": 434
+      },
+      {
+        "tag": "path",
+        "className": "[object SVGAnimatedString]",
+        "left": -23,
+        "right": 411,
+        "width": 434
+      },
+      {
+        "tag": "path",
+        "className": "[object SVGAnimatedString]",
+        "left": -23,
+        "right": 411,
+        "width": 434
+      },
+      {
+        "tag": "path",
+        "className": "[object SVGAnimatedString]",
+        "left": 281,
+        "right": 373,
+        "width": 92
+      },
+      {
+        "tag": "path",
+        "className": "[object SVGAnimatedString]",
+        "left": 281,
+        "right": 373,
+        "width": 92
+      },
+      {
+        "tag": "path",
+        "className": "[object SVGAnimatedString]",
+        "left": 372,
+        "right": 386,
+        "width": 14
+      },
+      {
+        "tag": "path",
+        "className": "[object SVGAnimatedString]",
+        "left": 383,
+        "right": 395,
+        "width": 12
+      }
+    ],
+    "undersizedControls": [],
+    "horizontallyOffscreenControls": [],
+    "belowViewportControls": [
+      {
+        "tag": "BUTTON",
+        "label": "Viết lá thư đầu tiên",
+        "width": 154,
+        "height": 45,
+        "horizontallyOffscreen": false,
+        "belowViewport": true
+      }
+    ],
+    "bodyText": "←\nFuture Letter\n✦\n\nFUTUREME / FUTURE LETTER\n\nNhững điều mình gửi về sau\n\nViết từ hôm nay, để một phiên bản tương lai của mình gặp được những lời này.\n\n＋ Viết thư mới\n✦\n✦\nS\n\nVIẾT → TRANG TRÍ → XEM LẠI → NIÊM PHONG\n\nChưa có lá thư nào ở đây\n\n"
+  },
+  {
+    "name": "future-letter-decorate",
+    "width": 390,
+    "screenshot": "artifacts/mobile-audit/future-letter-decorate/390.png",
+    "route": "/future-letter?view=decorate",
+    "height": 844,
+    "documentScrollWidth": 390,
+    "bodyScrollWidth": 390,
+    "horizontalOverflow": false,
+    "overflows": [
+      {
+        "tag": "DIV",
+        "className": "future-empty__landscape",
+        "left": -32,
+        "right": 441,
+        "width": 473
+      },
+      {
+        "tag": "svg",
+        "className": "[object SVGAnimatedString]",
+        "left": -32,
+        "right": 441,
+        "width": 473
+      },
+      {
+        "tag": "circle",
+        "className": "[object SVGAnimatedString]",
+        "left": 325,
+        "right": 404,
+        "width": 79
+      },
+      {
+        "tag": "path",
+        "className": "[object SVGAnimatedString]",
+        "left": -32,
+        "right": 441,
+        "width": 473
+      },
+      {
+        "tag": "path",
+        "className": "[object SVGAnimatedString]",
+        "left": -32,
+        "right": 441,
+        "width": 473
+      },
+      {
+        "tag": "path",
+        "className": "[object SVGAnimatedString]",
+        "left": -32,
+        "right": 441,
+        "width": 473
+      },
+      {
+        "tag": "path",
+        "className": "[object SVGAnimatedString]",
+        "left": 299,
+        "right": 400,
+        "width": 101
+      },
+      {
+        "tag": "path",
+        "className": "[object SVGAnimatedString]",
+        "left": 299,
+        "right": 400,
+        "width": 101
+      },
+      {
+        "tag": "path",
+        "className": "[object SVGAnimatedString]",
+        "left": 399,
+        "right": 414,
+        "width": 15
+      },
+      {
+        "tag": "path",
+        "className": "[object SVGAnimatedString]",
+        "left": 411,
+        "right": 424,
+        "width": 13
+      }
+    ],
+    "undersizedControls": [],
+    "horizontallyOffscreenControls": [],
+    "belowViewportControls": [],
+    "bodyText": "←\nFuture Letter\n✦\n\nFUTUREME / FUTURE LETTER\n\nNhững điều mình gửi về sau\n\nViết từ hôm nay, để một phiên bản tương lai của mình gặp được những lời này.\n\n＋ Viết thư mới\n✦\n✦\nS\n\nVIẾT → TRANG TRÍ → XEM LẠI → NIÊM PHONG\n\nChưa có lá thư nào ở đây\n\n"
+  },
+  {
+    "name": "future-letter-decorate",
+    "width": 430,
+    "screenshot": "artifacts/mobile-audit/future-letter-decorate/430.png",
+    "route": "/future-letter?view=decorate",
+    "height": 932,
+    "documentScrollWidth": 430,
+    "bodyScrollWidth": 430,
+    "horizontalOverflow": false,
+    "overflows": [
+      {
+        "tag": "DIV",
+        "className": "future-empty__landscape",
+        "left": -44,
+        "right": 481,
+        "width": 525
+      },
+      {
+        "tag": "svg",
+        "className": "[object SVGAnimatedString]",
+        "left": -44,
+        "right": 481,
+        "width": 525
+      },
+      {
+        "tag": "circle",
+        "className": "[object SVGAnimatedString]",
+        "left": 352,
+        "right": 440,
+        "width": 88
+      },
+      {
+        "tag": "path",
+        "className": "[object SVGAnimatedString]",
+        "left": -44,
+        "right": 481,
+        "width": 525
+      },
+      {
+        "tag": "path",
+        "className": "[object SVGAnimatedString]",
+        "left": -44,
+        "right": 481,
+        "width": 525
+      },
+      {
+        "tag": "path",
+        "className": "[object SVGAnimatedString]",
+        "left": -44,
+        "right": 481,
+        "width": 525
+      },
+      {
+        "tag": "path",
+        "className": "[object SVGAnimatedString]",
+        "left": 323,
+        "right": 435,
+        "width": 112
+      },
+      {
+        "tag": "path",
+        "className": "[object SVGAnimatedString]",
+        "left": 323,
+        "right": 435,
+        "width": 112
+      },
+      {
+        "tag": "path",
+        "className": "[object SVGAnimatedString]",
+        "left": 434,
+        "right": 451,
+        "width": 17
+      },
+      {
+        "tag": "path",
+        "className": "[object SVGAnimatedString]",
+        "left": 447,
+        "right": 462,
+        "width": 14
+      }
+    ],
+    "undersizedControls": [],
+    "horizontallyOffscreenControls": [],
+    "belowViewportControls": [],
+    "bodyText": "←\nFuture Letter\n✦\n\nFUTUREME / FUTURE LETTER\n\nNhững điều mình gửi về sau\n\nViết từ hôm nay, để một phiên bản tương lai của mình gặp được những lời này.\n\n＋ Viết thư mới\n✦\n✦\nS\n\nVIẾT → TRANG TRÍ → XEM LẠI → NIÊM PHONG\n\nChưa có lá thư nào ở đây\n\n"
+  },
+  {
+    "name": "future-letter-preview",
+    "width": 320,
+    "screenshot": "artifacts/mobile-audit/future-letter-preview/320.png",
+    "route": "/future-letter?view=preview",
+    "height": 760,
+    "documentScrollWidth": 320,
+    "bodyScrollWidth": 320,
+    "horizontalOverflow": false,
+    "overflows": [
+      {
+        "tag": "DIV",
+        "className": "future-empty__landscape",
+        "left": -11,
+        "right": 371,
+        "width": 382
+      },
+      {
+        "tag": "svg",
+        "className": "[object SVGAnimatedString]",
+        "left": -11,
+        "right": 371,
+        "width": 382
+      },
+      {
+        "tag": "circle",
+        "className": "[object SVGAnimatedString]",
+        "left": 277,
+        "right": 341,
+        "width": 64
+      },
+      {
+        "tag": "path",
+        "className": "[object SVGAnimatedString]",
+        "left": -11,
+        "right": 371,
+        "width": 382
+      },
+      {
+        "tag": "path",
+        "className": "[object SVGAnimatedString]",
+        "left": -11,
+        "right": 371,
+        "width": 382
+      },
+      {
+        "tag": "path",
+        "className": "[object SVGAnimatedString]",
+        "left": -11,
+        "right": 371,
+        "width": 382
+      },
+      {
+        "tag": "path",
+        "className": "[object SVGAnimatedString]",
+        "left": 256,
+        "right": 338,
+        "width": 81
+      },
+      {
+        "tag": "path",
+        "className": "[object SVGAnimatedString]",
+        "left": 256,
+        "right": 338,
+        "width": 81
+      },
+      {
+        "tag": "path",
+        "className": "[object SVGAnimatedString]",
+        "left": 337,
+        "right": 349,
+        "width": 12
+      },
+      {
+        "tag": "path",
+        "className": "[object SVGAnimatedString]",
+        "left": 346,
+        "right": 357,
+        "width": 10
+      }
+    ],
+    "undersizedControls": [],
+    "horizontallyOffscreenControls": [],
+    "belowViewportControls": [
+      {
+        "tag": "BUTTON",
+        "label": "Viết lá thư đầu tiên",
+        "width": 154,
+        "height": 45,
+        "horizontallyOffscreen": false,
+        "belowViewport": true
+      }
+    ],
+    "bodyText": "←\nFuture Letter\n✦\n\nFUTUREME / FUTURE LETTER\n\nNhững điều mình gửi về sau\n\nViết từ hôm nay, để một phiên bản tương lai của mình gặp được những lời này.\n\n＋ Viết thư mới\n✦\n✦\nS\n\nVIẾT → TRANG TRÍ → XEM LẠI → NIÊM PHONG\n\nChưa có lá thư nào ở đây\n\n"
+  },
+  {
+    "name": "future-letter-preview",
+    "width": 360,
+    "screenshot": "artifacts/mobile-audit/future-letter-preview/360.png",
+    "route": "/future-letter?view=preview",
+    "height": 760,
+    "documentScrollWidth": 360,
+    "bodyScrollWidth": 360,
+    "horizontalOverflow": false,
+    "overflows": [
+      {
+        "tag": "DIV",
+        "className": "future-empty__landscape",
+        "left": -23,
+        "right": 411,
+        "width": 434
+      },
+      {
+        "tag": "svg",
+        "className": "[object SVGAnimatedString]",
+        "left": -23,
+        "right": 411,
+        "width": 434
+      },
+      {
+        "tag": "circle",
+        "className": "[object SVGAnimatedString]",
+        "left": 305,
+        "right": 377,
+        "width": 72
+      },
+      {
+        "tag": "path",
+        "className": "[object SVGAnimatedString]",
+        "left": -23,
+        "right": 411,
+        "width": 434
+      },
+      {
+        "tag": "path",
+        "className": "[object SVGAnimatedString]",
+        "left": -23,
+        "right": 411,
+        "width": 434
+      },
+      {
+        "tag": "path",
+        "className": "[object SVGAnimatedString]",
+        "left": -23,
+        "right": 411,
+        "width": 434
+      },
+      {
+        "tag": "path",
+        "className": "[object SVGAnimatedString]",
+        "left": 281,
+        "right": 373,
+        "width": 92
+      },
+      {
+        "tag": "path",
+        "className": "[object SVGAnimatedString]",
+        "left": 281,
+        "right": 373,
+        "width": 92
+      },
+      {
+        "tag": "path",
+        "className": "[object SVGAnimatedString]",
+        "left": 372,
+        "right": 386,
+        "width": 14
+      },
+      {
+        "tag": "path",
+        "className": "[object SVGAnimatedString]",
+        "left": 383,
+        "right": 395,
+        "width": 12
+      }
+    ],
+    "undersizedControls": [],
+    "horizontallyOffscreenControls": [],
+    "belowViewportControls": [
+      {
+        "tag": "BUTTON",
+        "label": "Viết lá thư đầu tiên",
+        "width": 154,
+        "height": 45,
+        "horizontallyOffscreen": false,
+        "belowViewport": true
+      }
+    ],
+    "bodyText": "←\nFuture Letter\n✦\n\nFUTUREME / FUTURE LETTER\n\nNhững điều mình gửi về sau\n\nViết từ hôm nay, để một phiên bản tương lai của mình gặp được những lời này.\n\n＋ Viết thư mới\n✦\n✦\nS\n\nVIẾT → TRANG TRÍ → XEM LẠI → NIÊM PHONG\n\nChưa có lá thư nào ở đây\n\n"
+  },
+  {
+    "name": "future-letter-preview",
+    "width": 390,
+    "screenshot": "artifacts/mobile-audit/future-letter-preview/390.png",
+    "route": "/future-letter?view=preview",
+    "height": 844,
+    "documentScrollWidth": 390,
+    "bodyScrollWidth": 390,
+    "horizontalOverflow": false,
+    "overflows": [
+      {
+        "tag": "DIV",
+        "className": "future-empty__landscape",
+        "left": -32,
+        "right": 441,
+        "width": 473
+      },
+      {
+        "tag": "svg",
+        "className": "[object SVGAnimatedString]",
+        "left": -32,
+        "right": 441,
+        "width": 473
+      },
+      {
+        "tag": "circle",
+        "className": "[object SVGAnimatedString]",
+        "left": 325,
+        "right": 404,
+        "width": 79
+      },
+      {
+        "tag": "path",
+        "className": "[object SVGAnimatedString]",
+        "left": -32,
+        "right": 441,
+        "width": 473
+      },
+      {
+        "tag": "path",
+        "className": "[object SVGAnimatedString]",
+        "left": -32,
+        "right": 441,
+        "width": 473
+      },
+      {
+        "tag": "path",
+        "className": "[object SVGAnimatedString]",
+        "left": -32,
+        "right": 441,
+        "width": 473
+      },
+      {
+        "tag": "path",
+        "className": "[object SVGAnimatedString]",
+        "left": 299,
+        "right": 400,
+        "width": 101
+      },
+      {
+        "tag": "path",
+        "className": "[object SVGAnimatedString]",
+        "left": 299,
+        "right": 400,
+        "width": 101
+      },
+      {
+        "tag": "path",
+        "className": "[object SVGAnimatedString]",
+        "left": 399,
+        "right": 414,
+        "width": 15
+      },
+      {
+        "tag": "path",
+        "className": "[object SVGAnimatedString]",
+        "left": 411,
+        "right": 424,
+        "width": 13
+      }
+    ],
+    "undersizedControls": [],
+    "horizontallyOffscreenControls": [],
+    "belowViewportControls": [],
+    "bodyText": "←\nFuture Letter\n✦\n\nFUTUREME / FUTURE LETTER\n\nNhững điều mình gửi về sau\n\nViết từ hôm nay, để một phiên bản tương lai của mình gặp được những lời này.\n\n＋ Viết thư mới\n✦\n✦\nS\n\nVIẾT → TRANG TRÍ → XEM LẠI → NIÊM PHONG\n\nChưa có lá thư nào ở đây\n\n"
+  },
+  {
+    "name": "future-letter-preview",
+    "width": 430,
+    "screenshot": "artifacts/mobile-audit/future-letter-preview/430.png",
+    "route": "/future-letter?view=preview",
+    "height": 932,
+    "documentScrollWidth": 430,
+    "bodyScrollWidth": 430,
+    "horizontalOverflow": false,
+    "overflows": [
+      {
+        "tag": "DIV",
+        "className": "future-empty__landscape",
+        "left": -44,
+        "right": 481,
+        "width": 525
+      },
+      {
+        "tag": "svg",
+        "className": "[object SVGAnimatedString]",
+        "left": -44,
+        "right": 481,
+        "width": 525
+      },
+      {
+        "tag": "circle",
+        "className": "[object SVGAnimatedString]",
+        "left": 352,
+        "right": 440,
+        "width": 88
+      },
+      {
+        "tag": "path",
+        "className": "[object SVGAnimatedString]",
+        "left": -44,
+        "right": 481,
+        "width": 525
+      },
+      {
+        "tag": "path",
+        "className": "[object SVGAnimatedString]",
+        "left": -44,
+        "right": 481,
+        "width": 525
+      },
+      {
+        "tag": "path",
+        "className": "[object SVGAnimatedString]",
+        "left": -44,
+        "right": 481,
+        "width": 525
+      },
+      {
+        "tag": "path",
+        "className": "[object SVGAnimatedString]",
+        "left": 323,
+        "right": 435,
+        "width": 112
+      },
+      {
+        "tag": "path",
+        "className": "[object SVGAnimatedString]",
+        "left": 323,
+        "right": 435,
+        "width": 112
+      },
+      {
+        "tag": "path",
+        "className": "[object SVGAnimatedString]",
+        "left": 434,
+        "right": 451,
+        "width": 17
+      },
+      {
+        "tag": "path",
+        "className": "[object SVGAnimatedString]",
+        "left": 447,
+        "right": 462,
+        "width": 14
+      }
+    ],
+    "undersizedControls": [],
+    "horizontallyOffscreenControls": [],
+    "belowViewportControls": [],
+    "bodyText": "←\nFuture Letter\n✦\n\nFUTUREME / FUTURE LETTER\n\nNhững điều mình gửi về sau\n\nViết từ hôm nay, để một phiên bản tương lai của mình gặp được những lời này.\n\n＋ Viết thư mới\n✦\n✦\nS\n\nVIẾT → TRANG TRÍ → XEM LẠI → NIÊM PHONG\n\nChưa có lá thư nào ở đây\n\n"
+  },
+  {
+    "name": "future-letter-history",
+    "width": 320,
+    "screenshot": "artifacts/mobile-audit/future-letter-history/320.png",
+    "route": "/future-letter?view=history",
+    "height": 760,
+    "documentScrollWidth": 320,
+    "bodyScrollWidth": 320,
+    "horizontalOverflow": false,
+    "overflows": [],
+    "undersizedControls": [],
+    "horizontallyOffscreenControls": [],
+    "belowViewportControls": [],
+    "bodyText": "S\nSacKy\n•••\n⌂\nHome\n◉\nCheck-in\n▤\nDiary\n↗\nAction\n•••\nMore\n\nFUTUREME / FUTURE LETTER\n\nLịch sử & lưu giữ\n\nNhững lá thư đã đọc vẫn có thể trở lại. Những lá thư đã lưu giữ sẽ nằm yên ở đây.\n\n← Thư viện\nĐã mở / Lưu giữ\n0\n\nChưa có lịch sử để xem.\n\n"
+  },
+  {
+    "name": "future-letter-history",
+    "width": 360,
+    "screenshot": "artifacts/mobile-audit/future-letter-history/360.png",
+    "route": "/future-letter?view=history",
+    "height": 760,
+    "documentScrollWidth": 360,
+    "bodyScrollWidth": 360,
+    "horizontalOverflow": false,
+    "overflows": [],
+    "undersizedControls": [],
+    "horizontallyOffscreenControls": [],
+    "belowViewportControls": [],
+    "bodyText": "S\nSacKy\n•••\n⌂\nHome\n◉\nCheck-in\n▤\nDiary\n↗\nAction\n•••\nMore\n\nFUTUREME / FUTURE LETTER\n\nLịch sử & lưu giữ\n\nNhững lá thư đã đọc vẫn có thể trở lại. Những lá thư đã lưu giữ sẽ nằm yên ở đây.\n\n← Thư viện\nĐã mở / Lưu giữ\n0\n\nChưa có lịch sử để xem.\n\n"
+  },
+  {
+    "name": "future-letter-history",
+    "width": 390,
+    "screenshot": "artifacts/mobile-audit/future-letter-history/390.png",
+    "route": "/future-letter?view=history",
+    "height": 844,
+    "documentScrollWidth": 390,
+    "bodyScrollWidth": 390,
+    "horizontalOverflow": false,
+    "overflows": [],
+    "undersizedControls": [],
+    "horizontallyOffscreenControls": [],
+    "belowViewportControls": [],
+    "bodyText": "S\nSacKy\n•••\n⌂\nHome\n◉\nCheck-in\n▤\nDiary\n↗\nAction\n•••\nMore\n\nFUTUREME / FUTURE LETTER\n\nLịch sử & lưu giữ\n\nNhững lá thư đã đọc vẫn có thể trở lại. Những lá thư đã lưu giữ sẽ nằm yên ở đây.\n\n← Thư viện\nĐã mở / Lưu giữ\n0\n\nChưa có lịch sử để xem.\n\n"
+  },
+  {
+    "name": "future-letter-history",
+    "width": 430,
+    "screenshot": "artifacts/mobile-audit/future-letter-history/430.png",
+    "route": "/future-letter?view=history",
+    "height": 932,
+    "documentScrollWidth": 430,
+    "bodyScrollWidth": 430,
+    "horizontalOverflow": false,
+    "overflows": [],
+    "undersizedControls": [],
+    "horizontallyOffscreenControls": [],
+    "belowViewportControls": [],
+    "bodyText": "S\nSacKy\n•••\n⌂\nHome\n◉\nCheck-in\n▤\nDiary\n↗\nAction\n•••\nMore\n\nFUTUREME / FUTURE LETTER\n\nLịch sử & lưu giữ\n\nNhững lá thư đã đọc vẫn có thể trở lại. Những lá thư đã lưu giữ sẽ nằm yên ở đây.\n\n← Thư viện\nĐã mở / Lưu giữ\n0\n\nChưa có lịch sử để xem.\n\n"
+  },
+  {
+    "name": "gift",
+    "width": 320,
+    "screenshot": "artifacts/mobile-audit/gift/320.png",
+    "route": "/gift-for-tmr",
+    "height": 760,
+    "documentScrollWidth": 320,
+    "bodyScrollWidth": 320,
+    "horizontalOverflow": false,
+    "overflows": [],
+    "undersizedControls": [],
+    "horizontallyOffscreenControls": [],
+    "belowViewportControls": [
+      {
+        "tag": "A",
+        "label": "Xem lịch sử →",
+        "width": 262,
+        "height": 44,
+        "horizontallyOffscreen": false,
+        "belowViewport": true
+      }
+    ],
+    "bodyText": "S\nSacKy\n•••\n⌂\nHome\n◉\nCheck-in\n▤\nDiary\n↗\nAction\n•••\nMore\n\nSẮC KÝ · GIFT FOR TOMORROW\n\nMột món quà cho ngày mai.\n\nGửi cho mình một điều nhỏ hôm nay. Ngày mai, mình sẽ nhận lại nó.\n\nHôm nay\nGift History\n\nMỖI NGÀY MỘT MÓN QUÀ\n\nHôm nay, bạn muốn"
+  },
+  {
+    "name": "gift",
+    "width": 360,
+    "screenshot": "artifacts/mobile-audit/gift/360.png",
+    "route": "/gift-for-tmr",
+    "height": 760,
+    "documentScrollWidth": 360,
+    "bodyScrollWidth": 360,
+    "horizontalOverflow": false,
+    "overflows": [],
+    "undersizedControls": [],
+    "horizontallyOffscreenControls": [],
+    "belowViewportControls": [
+      {
+        "tag": "A",
+        "label": "Xem lịch sử →",
+        "width": 302,
+        "height": 44,
+        "horizontallyOffscreen": false,
+        "belowViewport": true
+      }
+    ],
+    "bodyText": "S\nSacKy\n•••\n⌂\nHome\n◉\nCheck-in\n▤\nDiary\n↗\nAction\n•••\nMore\n\nSẮC KÝ · GIFT FOR TOMORROW\n\nMột món quà cho ngày mai.\n\nGửi cho mình một điều nhỏ hôm nay. Ngày mai, mình sẽ nhận lại nó.\n\nHôm nay\nGift History\n\nMỖI NGÀY MỘT MÓN QUÀ\n\nHôm nay, bạn muốn"
+  },
+  {
+    "name": "gift",
+    "width": 390,
+    "screenshot": "artifacts/mobile-audit/gift/390.png",
+    "route": "/gift-for-tmr",
+    "height": 844,
+    "documentScrollWidth": 390,
+    "bodyScrollWidth": 390,
+    "horizontalOverflow": false,
+    "overflows": [],
+    "undersizedControls": [],
+    "horizontallyOffscreenControls": [],
+    "belowViewportControls": [
+      {
+        "tag": "A",
+        "label": "Xem lịch sử →",
+        "width": 332,
+        "height": 44,
+        "horizontallyOffscreen": false,
+        "belowViewport": true
+      }
+    ],
+    "bodyText": "S\nSacKy\n•••\n⌂\nHome\n◉\nCheck-in\n▤\nDiary\n↗\nAction\n•••\nMore\n\nSẮC KÝ · GIFT FOR TOMORROW\n\nMột món quà cho ngày mai.\n\nGửi cho mình một điều nhỏ hôm nay. Ngày mai, mình sẽ nhận lại nó.\n\nHôm nay\nGift History\n\nMỖI NGÀY MỘT MÓN QUÀ\n\nHôm nay, bạn muốn"
+  },
+  {
+    "name": "gift",
+    "width": 430,
+    "screenshot": "artifacts/mobile-audit/gift/430.png",
+    "route": "/gift-for-tmr",
+    "height": 932,
+    "documentScrollWidth": 430,
+    "bodyScrollWidth": 430,
+    "horizontalOverflow": false,
+    "overflows": [],
+    "undersizedControls": [],
+    "horizontallyOffscreenControls": [],
+    "belowViewportControls": [
+      {
+        "tag": "A",
+        "label": "Xem lịch sử →",
+        "width": 372,
+        "height": 44,
+        "horizontallyOffscreen": false,
+        "belowViewport": true
+      }
+    ],
+    "bodyText": "S\nSacKy\n•••\n⌂\nHome\n◉\nCheck-in\n▤\nDiary\n↗\nAction\n•••\nMore\n\nSẮC KÝ · GIFT FOR TOMORROW\n\nMột món quà cho ngày mai.\n\nGửi cho mình một điều nhỏ hôm nay. Ngày mai, mình sẽ nhận lại nó.\n\nHôm nay\nGift History\n\nMỖI NGÀY MỘT MÓN QUÀ\n\nHôm nay, bạn muốn"
+  },
+  {
+    "name": "gift-history",
+    "width": 320,
+    "screenshot": "artifacts/mobile-audit/gift-history/320.png",
+    "route": "/gift-for-tmr?view=history",
+    "height": 760,
+    "documentScrollWidth": 320,
+    "bodyScrollWidth": 320,
+    "horizontalOverflow": false,
+    "overflows": [],
+    "undersizedControls": [],
+    "horizontallyOffscreenControls": [],
+    "belowViewportControls": [],
+    "bodyText": "S\nSacKy\n•••\n⌂\nHome\n◉\nCheck-in\n▤\nDiary\n↗\nAction\n•••\nMore\n\nSẮC KÝ · GIFT FOR TOMORROW\n\nMột món quà cho ngày mai.\n\nGửi cho mình một điều nhỏ hôm nay. Ngày mai, mình sẽ nhận lại nó.\n\nHôm nay\nGift History\n\nGIFT HISTORY\n\nNhững điều mình đã gửi ch"
+  },
+  {
+    "name": "gift-history",
+    "width": 360,
+    "screenshot": "artifacts/mobile-audit/gift-history/360.png",
+    "route": "/gift-for-tmr?view=history",
+    "height": 760,
+    "documentScrollWidth": 360,
+    "bodyScrollWidth": 360,
+    "horizontalOverflow": false,
+    "overflows": [],
+    "undersizedControls": [],
+    "horizontallyOffscreenControls": [],
+    "belowViewportControls": [],
+    "bodyText": "S\nSacKy\n•••\n⌂\nHome\n◉\nCheck-in\n▤\nDiary\n↗\nAction\n•••\nMore\n\nSẮC KÝ · GIFT FOR TOMORROW\n\nMột món quà cho ngày mai.\n\nGửi cho mình một điều nhỏ hôm nay. Ngày mai, mình sẽ nhận lại nó.\n\nHôm nay\nGift History\n\nGIFT HISTORY\n\nNhững điều mình đã gửi ch"
+  },
+  {
+    "name": "gift-history",
+    "width": 390,
+    "screenshot": "artifacts/mobile-audit/gift-history/390.png",
+    "route": "/gift-for-tmr?view=history",
+    "height": 844,
+    "documentScrollWidth": 390,
+    "bodyScrollWidth": 390,
+    "horizontalOverflow": false,
+    "overflows": [],
+    "undersizedControls": [],
+    "horizontallyOffscreenControls": [],
+    "belowViewportControls": [],
+    "bodyText": "S\nSacKy\n•••\n⌂\nHome\n◉\nCheck-in\n▤\nDiary\n↗\nAction\n•••\nMore\n\nSẮC KÝ · GIFT FOR TOMORROW\n\nMột món quà cho ngày mai.\n\nGửi cho mình một điều nhỏ hôm nay. Ngày mai, mình sẽ nhận lại nó.\n\nHôm nay\nGift History\n\nGIFT HISTORY\n\nNhững điều mình đã gửi ch"
+  },
+  {
+    "name": "gift-history",
+    "width": 430,
+    "screenshot": "artifacts/mobile-audit/gift-history/430.png",
+    "route": "/gift-for-tmr?view=history",
+    "height": 932,
+    "documentScrollWidth": 430,
+    "bodyScrollWidth": 430,
+    "horizontalOverflow": false,
+    "overflows": [],
+    "undersizedControls": [],
+    "horizontallyOffscreenControls": [],
+    "belowViewportControls": [],
+    "bodyText": "S\nSacKy\n•••\n⌂\nHome\n◉\nCheck-in\n▤\nDiary\n↗\nAction\n•••\nMore\n\nSẮC KÝ · GIFT FOR TOMORROW\n\nMột món quà cho ngày mai.\n\nGửi cho mình một điều nhỏ hôm nay. Ngày mai, mình sẽ nhận lại nó.\n\nHôm nay\nGift History\n\nGIFT HISTORY\n\nNhững điều mình đã gửi ch"
+  },
+  {
+    "name": "more",
+    "width": 320,
+    "screenshot": "artifacts/mobile-audit/more/320.png",
+    "route": "/more",
+    "height": 760,
+    "documentScrollWidth": 320,
+    "bodyScrollWidth": 320,
+    "horizontalOverflow": false,
+    "overflows": [],
+    "undersizedControls": [],
+    "horizontallyOffscreenControls": [],
+    "belowViewportControls": [],
+    "bodyText": "S\nSacKy\n•••\n⌂\nHome\n◉\nCheck-in\n▤\nDiary\n↗\nAction\n•••\nMore\n\nSACKY\n\nThêm\n\nNhững không gian còn lại của hành trình, gọn trong một chỗ.\n\n✉\nFuture Letter\nGửi một điều cho mình của những ngày khác.\n→\n🎁\nGift for Tomorrow\nChuẩn bị một món quà nhỏ ch"
+  },
+  {
+    "name": "more",
+    "width": 360,
+    "screenshot": "artifacts/mobile-audit/more/360.png",
+    "route": "/more",
+    "height": 760,
+    "documentScrollWidth": 360,
+    "bodyScrollWidth": 360,
+    "horizontalOverflow": false,
+    "overflows": [],
+    "undersizedControls": [],
+    "horizontallyOffscreenControls": [],
+    "belowViewportControls": [],
+    "bodyText": "S\nSacKy\n•••\n⌂\nHome\n◉\nCheck-in\n▤\nDiary\n↗\nAction\n•••\nMore\n\nSACKY\n\nThêm\n\nNhững không gian còn lại của hành trình, gọn trong một chỗ.\n\n✉\nFuture Letter\nGửi một điều cho mình của những ngày khác.\n→\n🎁\nGift for Tomorrow\nChuẩn bị một món quà nhỏ ch"
+  },
+  {
+    "name": "more",
+    "width": 390,
+    "screenshot": "artifacts/mobile-audit/more/390.png",
+    "route": "/more",
+    "height": 844,
+    "documentScrollWidth": 390,
+    "bodyScrollWidth": 390,
+    "horizontalOverflow": false,
+    "overflows": [],
+    "undersizedControls": [],
+    "horizontallyOffscreenControls": [],
+    "belowViewportControls": [],
+    "bodyText": "S\nSacKy\n•••\n⌂\nHome\n◉\nCheck-in\n▤\nDiary\n↗\nAction\n•••\nMore\n\nSACKY\n\nThêm\n\nNhững không gian còn lại của hành trình, gọn trong một chỗ.\n\n✉\nFuture Letter\nGửi một điều cho mình của những ngày khác.\n→\n🎁\nGift for Tomorrow\nChuẩn bị một món quà nhỏ ch"
+  },
+  {
+    "name": "more",
+    "width": 430,
+    "screenshot": "artifacts/mobile-audit/more/430.png",
+    "route": "/more",
+    "height": 932,
+    "documentScrollWidth": 430,
+    "bodyScrollWidth": 430,
+    "horizontalOverflow": false,
+    "overflows": [],
+    "undersizedControls": [],
+    "horizontallyOffscreenControls": [],
+    "belowViewportControls": [],
+    "bodyText": "S\nSacKy\n•••\n⌂\nHome\n◉\nCheck-in\n▤\nDiary\n↗\nAction\n•••\nMore\n\nSACKY\n\nThêm\n\nNhững không gian còn lại của hành trình, gọn trong một chỗ.\n\n✉\nFuture Letter\nGửi một điều cho mình của những ngày khác.\n→\n🎁\nGift for Tomorrow\nChuẩn bị một món quà nhỏ ch"
+  }
+]

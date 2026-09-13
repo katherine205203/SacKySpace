@@ -9,6 +9,7 @@
     "lint": "oxlint",
     "preview": "vite preview",
     "test": "vitest run",
+    "audit:mobile": "node scripts/mobile-audit.mjs",
     "generate:checkin-seed": "node scripts/generate-checkin-seed.mjs",
     "generate:emotion-reference-migration": "node scripts/generate-emotion-reference-migration.mjs"
   },
