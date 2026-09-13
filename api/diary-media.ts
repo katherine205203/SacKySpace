@@ -6,6 +6,8 @@ const MAX_SOURCE_BYTES = 15 * 1024 * 1024
 const MAX_LONG_EDGE = 2000
 const MAX_REDIRECTS = 3
 const SIGNED_URL_TTL_SECONDS = 60 * 60
+const GOOGLE_TOKEN_TIMEOUT_MS = 15_000
+const DRIVE_UPLOAD_TIMEOUT_MS = 45_000
 const DRIVE_UPLOAD_URL = 'https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart&supportsAllDrives=true'
 const DRIVE_FILES_URL = 'https://www.googleapis.com/drive/v3/files'
 const GOOGLE_TOKEN_URL = 'https://oauth2.googleapis.com/token'
@@ -39,6 +41,19 @@ const json = (body: unknown, status = 200, headers: Record<string, string> = {})
 })
 
 const errorMessage = (reason: unknown, fallback: string): string => reason instanceof Error ? reason.message : fallback
+
+const fetchWithTimeout = async (input: RequestInfo | URL, init: RequestInit, timeoutMs: number, timeoutMessage: string): Promise<Response> => {
+  const controller = new AbortController()
+  const timeout = setTimeout(() => controller.abort(), timeoutMs)
+  try {
+    return await fetch(input, { ...init, signal: controller.signal })
+  } catch (reason: unknown) {
+    if (controller.signal.aborted) throw new Error(timeoutMessage)
+    throw reason
+  } finally {
+    clearTimeout(timeout)
+  }
+}
 
 const env = (name: string): string => process.env[name]?.trim() ?? ''
 
@@ -87,7 +102,7 @@ const getGoogleAccessToken = async (): Promise<string> => {
     const unsigned = `${header}.${claim}`
     const key = await crypto.subtle.importKey('pkcs8', new Uint8Array(pemToDer(account.private_key)) as Uint8Array<ArrayBuffer>, { name: 'RSASSA-PKCS1-v1_5', hash: 'SHA-256' }, false, ['sign'])
     const signature = await crypto.subtle.sign('RSASSA-PKCS1-v1_5', key, new TextEncoder().encode(unsigned))
-    const response = await fetch(GOOGLE_TOKEN_URL, { method: 'POST', headers: { 'content-type': 'application/x-www-form-urlencoded' }, body: new URLSearchParams({ grant_type: 'urn:ietf:params:oauth:grant-type:jwt-bearer', assertion: `${unsigned}.${base64UrlEncode(new Uint8Array(signature))}` }) })
+    const response = await fetchWithTimeout(GOOGLE_TOKEN_URL, { method: 'POST', headers: { 'content-type': 'application/x-www-form-urlencoded' }, body: new URLSearchParams({ grant_type: 'urn:ietf:params:oauth:grant-type:jwt-bearer', assertion: `${unsigned}.${base64UrlEncode(new Uint8Array(signature))}` }) }, GOOGLE_TOKEN_TIMEOUT_MS, 'Google token exchange timed out.')
     if (!response.ok) throw new Error(`Google token exchange failed (${response.status}).`)
     const payload = await response.json() as { access_token?: string; expires_in?: number }
     if (!payload.access_token) throw new Error('Google token exchange did not return an access token.')
@@ -99,7 +114,7 @@ const getGoogleAccessToken = async (): Promise<string> => {
   const clientSecret = env('GOOGLE_DRIVE_CLIENT_SECRET')
   const refreshToken = env('GOOGLE_DRIVE_REFRESH_TOKEN')
   if (!clientId || !clientSecret || !refreshToken) throw new Error('Google Drive credentials are not configured on the server.')
-  const response = await fetch(GOOGLE_TOKEN_URL, { method: 'POST', headers: { 'content-type': 'application/x-www-form-urlencoded' }, body: new URLSearchParams({ client_id: clientId, client_secret: clientSecret, refresh_token: refreshToken, grant_type: 'refresh_token' }) })
+  const response = await fetchWithTimeout(GOOGLE_TOKEN_URL, { method: 'POST', headers: { 'content-type': 'application/x-www-form-urlencoded' }, body: new URLSearchParams({ client_id: clientId, client_secret: clientSecret, refresh_token: refreshToken, grant_type: 'refresh_token' }) }, GOOGLE_TOKEN_TIMEOUT_MS, 'Google token refresh timed out.')
   if (!response.ok) throw new Error(`Google token refresh failed (${response.status}).`)
   const payload = await response.json() as { access_token?: string; expires_in?: number }
   if (!payload.access_token) throw new Error('Google token refresh did not return an access token.')
@@ -193,7 +208,7 @@ const uploadToDrive = async (buffer: Buffer, name: string, mimeType: string, med
   const form = new FormData()
   form.append('metadata', new Blob([JSON.stringify(metadata)], { type: 'application/json' }))
   form.append('media', new Blob([new Uint8Array(buffer) as Uint8Array<ArrayBuffer>], { type: mimeType }), name)
-  const response = await fetch(DRIVE_UPLOAD_URL, { method: 'POST', headers: { authorization: `Bearer ${token}` }, body: form })
+  const response = await fetchWithTimeout(DRIVE_UPLOAD_URL, { method: 'POST', headers: { authorization: `Bearer ${token}` }, body: form }, DRIVE_UPLOAD_TIMEOUT_MS, 'Google Drive upload timed out.')
   if (!response.ok) throw new Error(`Google Drive upload failed (${response.status}).`)
   const payload = await response.json() as { id?: string }
   if (!payload.id) throw new Error('Google Drive did not return a file id.')
@@ -232,43 +247,62 @@ const toPublicMedia = (request: Request, row: SavedMedia, userId: string) => ({
 })
 
 const handleUpload = async (request: Request): Promise<Response> => {
-  const { admin, user } = await getUser(request)
-  const contentType = request.headers.get('content-type') ?? ''
-  let diaryId = ''
-  let slotOrder = 0
-  let caption = ''
-  let source: MediaSource
-  if (contentType.includes('multipart/form-data')) {
-    const form = await request.formData()
-    diaryId = String(form.get('diaryId') ?? '')
-    slotOrder = Number(form.get('slotOrder') ?? 0)
-    caption = String(form.get('caption') ?? '').trim().slice(0, 120)
-    const file = form.get('file')
-    if (!(file instanceof File)) throw new Error('Chưa chọn ảnh.')
-    source = { buffer: await readResponseBytes(new Response(file)), sourceType: 'local_upload', originalName: file.name }
-  } else {
-    const body = await request.json() as { action?: string; diaryId?: string; slotOrder?: number; caption?: string; sourceUrl?: string }
-    diaryId = body.diaryId ?? ''
-    slotOrder = Number(body.slotOrder ?? 0)
-    caption = (body.caption ?? '').trim().slice(0, 120)
-    if (body.action !== 'import_url' || !body.sourceUrl) throw new Error('Thiếu liên kết ảnh.')
-    source = { buffer: await fetchRemoteImage(body.sourceUrl), sourceType: 'url_import', originalSourceUrl: body.sourceUrl, originalName: 'url-image' }
+  const requestId = crypto.randomUUID()
+  const startedAt = Date.now()
+  let stage = 'authenticate'
+  const markStage = (nextStage: string) => {
+    stage = nextStage
+    console.info(JSON.stringify({ service: 'diary-media', event: 'stage', requestId, stage: nextStage, elapsedMs: Date.now() - startedAt }))
   }
-  if (!diaryId || !Number.isInteger(slotOrder) || slotOrder < 1 || slotOrder > 4) throw new Error('Vị trí ảnh không hợp lệ.')
-  if (!(await findOwnedDiary(admin, diaryId, user.id))) throw new Error('Không tìm thấy nhật ký hoặc bạn không có quyền truy cập.')
-  const optimized = await optimizeImage(source)
-  const id = crypto.randomUUID()
-  const mediaKey = `diary:${diaryId}:${id}`
-  const driveName = `sacky-${diaryId}-${slotOrder}-${id}.webp`
-  const driveFileId = await uploadToDrive(optimized.buffer, driveName, optimized.mimeType, mediaKey)
-  const { data: previous } = await admin.from('diary_media').select('id, drive_file_id').eq('diary_id', diaryId).eq('slot_order', slotOrder).maybeSingle()
-  const { data, error } = await admin.from('diary_media').upsert({ id, diary_id: diaryId, user_id: user.id, slot_order: slotOrder, source_type: source.sourceType, drive_file_id: driveFileId, media_key: mediaKey, original_source_url: source.originalSourceUrl ?? null, mime_type: optimized.mimeType, width: optimized.width, height: optimized.height, file_size_bytes: optimized.buffer.length, upload_status: 'saved', caption: caption || null }, { onConflict: 'diary_id,slot_order' }).select('*').single()
-  if (error || !data) {
-    await deleteFromDrive(driveFileId)
-    throw error ?? new Error('Không thể lưu metadata ảnh.')
+  try {
+    markStage('authenticate')
+    const { admin, user } = await getUser(request)
+    const contentType = request.headers.get('content-type') ?? ''
+    let diaryId = ''
+    let slotOrder = 0
+    let caption = ''
+    let source: MediaSource
+    markStage('read-source')
+    if (contentType.includes('multipart/form-data')) {
+      const form = await request.formData()
+      diaryId = String(form.get('diaryId') ?? '')
+      slotOrder = Number(form.get('slotOrder') ?? 0)
+      caption = String(form.get('caption') ?? '').trim().slice(0, 120)
+      const file = form.get('file')
+      if (!(file instanceof File)) throw new Error('Chưa chọn ảnh.')
+      source = { buffer: await readResponseBytes(new Response(file)), sourceType: 'local_upload', originalName: file.name }
+    } else {
+      const body = await request.json() as { action?: string; diaryId?: string; slotOrder?: number; caption?: string; sourceUrl?: string }
+      diaryId = body.diaryId ?? ''
+      slotOrder = Number(body.slotOrder ?? 0)
+      caption = (body.caption ?? '').trim().slice(0, 120)
+      if (body.action !== 'import_url' || !body.sourceUrl) throw new Error('Thiếu liên kết ảnh.')
+      source = { buffer: await fetchRemoteImage(body.sourceUrl), sourceType: 'url_import', originalSourceUrl: body.sourceUrl, originalName: 'url-image' }
+    }
+    if (!diaryId || !Number.isInteger(slotOrder) || slotOrder < 1 || slotOrder > 4) throw new Error('Vị trí ảnh không hợp lệ.')
+    markStage('verify-diary')
+    if (!(await findOwnedDiary(admin, diaryId, user.id))) throw new Error('Không tìm thấy nhật ký hoặc bạn không có quyền truy cập.')
+    markStage('optimize-image')
+    const optimized = await optimizeImage(source)
+    const id = crypto.randomUUID()
+    const mediaKey = `diary:${diaryId}:${id}`
+    const driveName = `sacky-${diaryId}-${slotOrder}-${id}.webp`
+    markStage('upload-drive')
+    const driveFileId = await uploadToDrive(optimized.buffer, driveName, optimized.mimeType, mediaKey)
+    markStage('save-metadata')
+    const { data: previous } = await admin.from('diary_media').select('id, drive_file_id').eq('diary_id', diaryId).eq('slot_order', slotOrder).maybeSingle()
+    const { data, error } = await admin.from('diary_media').upsert({ id, diary_id: diaryId, user_id: user.id, slot_order: slotOrder, source_type: source.sourceType, drive_file_id: driveFileId, media_key: mediaKey, original_source_url: source.originalSourceUrl ?? null, mime_type: optimized.mimeType, width: optimized.width, height: optimized.height, file_size_bytes: optimized.buffer.length, upload_status: 'saved', caption: caption || null }, { onConflict: 'diary_id,slot_order' }).select('*').single()
+    if (error || !data) {
+      await deleteFromDrive(driveFileId)
+      throw error ?? new Error('Không thể lưu metadata ảnh.')
+    }
+    if (previous?.drive_file_id && previous.drive_file_id !== driveFileId) await deleteFromDrive(previous.drive_file_id)
+    console.info(JSON.stringify({ service: 'diary-media', event: 'success', requestId, elapsedMs: Date.now() - startedAt }))
+    return json({ media: toPublicMedia(request, data as SavedMedia, user.id) })
+  } catch (reason: unknown) {
+    console.error(JSON.stringify({ service: 'diary-media', event: 'failure', requestId, stage, elapsedMs: Date.now() - startedAt, error: errorMessage(reason, 'Unknown media upload error.') }))
+    throw reason
   }
-  if (previous?.drive_file_id && previous.drive_file_id !== driveFileId) await deleteFromDrive(previous.drive_file_id)
-  return json({ media: toPublicMedia(request, data as SavedMedia, user.id) })
 }
 
 const handleSync = async (request: Request): Promise<Response> => {

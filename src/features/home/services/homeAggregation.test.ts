@@ -72,6 +72,23 @@ describe('Home aggregation', () => {
     expect(entries.reduce((sum, entry) => sum + (entry.presenceWeight ?? 0), 0)).toBeCloseTo(3.2)
   })
 
+  it('splits three secondary emotions into equal 10% shares', () => {
+    const emotion = (id: string, color: string) => ({ emotion_id: id, emotion_name_vn: id, emotion_name_en: id, emoji: '◉', color_hex: color })
+    const entries = getHomeOrbEntries([{
+      ...record('2026-08-29T03:00:00.000Z'),
+      intensity: 5,
+      primaryEmotion: emotion('primary', '#FF9F1C') as CheckinRecord['primaryEmotion'],
+      secondaryEmotions: [
+        emotion('secondary-a', '#52B788') as NonNullable<CheckinRecord['primaryEmotion']>,
+        emotion('secondary-b', '#118AB2') as NonNullable<CheckinRecord['primaryEmotion']>,
+        emotion('secondary-c', '#EF476F') as NonNullable<CheckinRecord['primaryEmotion']>,
+      ],
+    }])
+    expect(entries[0].presenceWeight).toBeCloseTo(2.24)
+    entries.slice(1).forEach((entry) => expect(entry.presenceWeight).toBeCloseTo(0.32))
+    expect(entries.reduce((sum, entry) => sum + (entry.presenceWeight ?? 0), 0)).toBeCloseTo(3.2)
+  })
+
   it('keeps completed actions out of Home while counting them for Hero metrics', () => {
     const reminders: HomeReminder[] = [
       { id: 'today-pending', sourceCheckinId: null, title: 'Pending', note: null, plannedDate: '2026-08-29', dueTime: null, status: 'pending', completedAt: null, origin: 'manual' },

@@ -4,6 +4,7 @@ import type { ActionRecord, ActionReflection } from '../../actionspace/types'
 import { getReferenceData } from '../../checkin/services/referenceRepository'
 import { listCheckins } from '../../checkin/services/checkinRepository'
 import type { CheckinRecord } from '../../checkin/types'
+import { richTextToPlainText } from '../../../components/richText'
 import { getDiaryLocalDate } from '../utils'
 import type { DayRecord, DayRecordFact, DayRecordItem, DayRecordSnapshot } from '../types'
 
@@ -11,6 +12,11 @@ const ACTION_COLOR = '#743CFF'
 const UNKNOWN_COLOR = '#7B879D'
 
 const dayFor = (value: string): string => getDiaryLocalDate(new Date(value))
+
+const toComparableText = (value: string | null | undefined): string | undefined => {
+  const text = richTextToPlainText(value).trim()
+  return text || undefined
+}
 
 export const isDayRecordLocked = (localDate: string, now = new Date()): boolean => localDate < getDiaryLocalDate(now)
 
@@ -24,7 +30,7 @@ const checkinFact = (record: CheckinRecord): DayRecordFact => {
       color: UNKNOWN_COLOR,
       emoji: record.unknownPrompt?.emoji ?? '◌',
       title: 'Check-in · Mình còn đang mơ hồ',
-      description: record.note ?? undefined,
+      description: record.note || undefined,
       unknownPrompt: record.unknownPrompt?.prompt_text_vn ?? undefined,
     }
   }
@@ -37,7 +43,7 @@ const checkinFact = (record: CheckinRecord): DayRecordFact => {
     emoji: record.primaryEmotion?.emoji ?? '◉',
     title: `Check-in · ${record.primaryEmotion?.emotion_name_vn ?? 'Cảm xúc'}`,
     titleEn: record.primaryEmotion?.emotion_name_en,
-    description: record.note ?? undefined,
+    description: record.note || undefined,
     intensity: record.intensity,
     secondaryEmotions: record.secondaryEmotions.map((emotion) => emotion.emotion_name_vn),
   }
@@ -54,10 +60,10 @@ const actionFact = (action: ActionRecord, source: CheckinRecord | null, reflecti
   color: source?.primaryEmotion?.color_hex ?? ACTION_COLOR,
   emoji: source?.primaryEmotion?.emoji ?? source?.unknownPrompt?.emoji ?? '✨',
   title: action.title,
-  description: action.note ?? undefined,
+  description: action.note || undefined,
   sourceLabel: source ? `Từ Check-in ${source.primaryEmotion?.emotion_name_vn ?? 'đã gắn'}` : 'Độc lập',
   reflectionLabel: reflection?.outcomeSnapshot ?? undefined,
-  reflectionNote: reflection?.note ?? undefined,
+  reflectionNote: reflection?.note || undefined,
 })
 
 const factKey = (fact: Pick<DayRecordFact, 'kind' | 'sourceId'>): string => `${fact.kind}:${fact.sourceId}`
@@ -70,13 +76,13 @@ const factsMatch = (left: DayRecordFact, right: DayRecordFact): boolean => JSON.
   emoji: left.emoji,
   title: left.title,
   titleEn: left.titleEn,
-  description: left.description,
+  description: toComparableText(left.description),
   intensity: left.intensity,
   secondaryEmotions: left.secondaryEmotions,
   unknownPrompt: left.unknownPrompt,
   sourceLabel: left.sourceLabel,
   reflectionLabel: left.reflectionLabel,
-  reflectionNote: left.reflectionNote,
+  reflectionNote: toComparableText(left.reflectionNote),
 }) === JSON.stringify({
   kind: right.kind,
   sourceId: right.sourceId,
@@ -85,13 +91,13 @@ const factsMatch = (left: DayRecordFact, right: DayRecordFact): boolean => JSON.
   emoji: right.emoji,
   title: right.title,
   titleEn: right.titleEn,
-  description: right.description,
+  description: toComparableText(right.description),
   intensity: right.intensity,
   secondaryEmotions: right.secondaryEmotions,
   unknownPrompt: right.unknownPrompt,
   sourceLabel: right.sourceLabel,
   reflectionLabel: right.reflectionLabel,
-  reflectionNote: right.reflectionNote,
+  reflectionNote: toComparableText(right.reflectionNote),
 })
 
 export const buildDayRecord = ({ localDate, checkins, actions, reflections, snapshots = [], lockedAt = null }: {

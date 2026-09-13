@@ -14,7 +14,7 @@
 .gift-home-layout { display: grid; gap: 1rem; }
 .gift-hero { display: grid; grid-template-columns: minmax(0,1fr) minmax(18rem,.68fr); min-height: 22rem; overflow: hidden; padding: clamp(1.35rem,3vw,2.4rem); border: 1px solid rgba(113,88,180,.14); border-radius: 1.4rem; background: radial-gradient(circle at 14% 95%,rgba(86,214,177,.25),transparent 30%), radial-gradient(circle at 80% 12%,rgba(255,128,107,.2),transparent 32%), linear-gradient(135deg,#fff 0%,#fff9ef 58%,#f5f0ff 100%); box-shadow: var(--shadow-card); }
 .gift-hero__copy { display: flex; min-width: 0; flex-direction: column; align-items: flex-start; justify-content: center; }
-.gift-hero__copy h2 { max-width: 35rem; margin: 0 0 .5rem; font-size: clamp(1.65rem,3.2vw,2.55rem); line-height: 1.05; letter-spacing: -.06em; }
+.gift-hero__copy h2 { max-width: 35rem; margin: 0 0 .5rem; font-size: calc(clamp(1.65rem,3.2vw,2.55rem) - 6px); line-height: 1.05; letter-spacing: -.06em; }
 .gift-hero__copy > p:not(.eyebrow) { max-width: 32rem; margin: 0 0 1.1rem; color: var(--color-text-muted); font-size: .86rem; line-height: 1.65; }
 .gift-hero__copy > small { margin-top: 1rem; color: var(--color-text-soft); font-size: .68rem; }
 .gift-hero__actions { display: flex; flex-wrap: wrap; gap: .55rem; }

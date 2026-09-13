@@ -1,6 +1,6 @@
 import { filterByDateRange, getCurrentStreakFromOccurredAt, getHistoryDateRange, getLocalDateKey, type DateRange, type HistoryPreset } from '../../checkin/utils/history'
 import type { CheckinRecord } from '../../checkin/types'
-import { intensityToPresenceWeight, type ColorOrbEntry } from '../../checkin/utils/colorOrb'
+import { getCheckinEmotionShares, intensityToPresenceWeight, type ColorOrbEntry } from '../../checkin/utils/colorOrb'
 import type { HomeRange, HomeReminder } from '../types'
 
 export const HOME_TIME_ZONE = 'Asia/Ho_Chi_Minh'
@@ -40,7 +40,7 @@ export const getHomeOrbEntries = (records: readonly CheckinRecord[]): ColorEntry
     if (record.checkinType !== 'emotion' || !record.primaryEmotion) return []
     const totalWeight = intensityToPresenceWeight(record.intensity ?? 1)
     const secondary = record.secondaryEmotions.filter((emotion, index, list) => emotion.emotion_id !== record.primaryEmotion?.emotion_id && list.findIndex((item) => item.emotion_id === emotion.emotion_id) === index)
-    const shares = secondary.length === 0 ? [1] : secondary.length === 1 ? [.7, .3] : [.7, .15, .15]
+    const shares = getCheckinEmotionShares(secondary.length)
     return [record.primaryEmotion, ...secondary].map((emotion, index) => ({
       color: emotion.color_hex,
       intensity: record.intensity ?? 1,

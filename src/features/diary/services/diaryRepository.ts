@@ -93,6 +93,10 @@ const missingDiaryMediaTable = (message: string): boolean => /diary_media|relati
 const isManagedDiaryImage = (image: DiaryImage): boolean => image.sourceType === 'local_upload' || image.sourceType === 'url_import' || Boolean(image.mediaKey)
 const hasManagedDiaryImages = (images: DiaryImage[]): boolean => images.some(isManagedDiaryImage)
 
+type SaveDiaryOptions = {
+  skipMediaSync?: boolean
+}
+
 const toPrompt = (row: DiaryPromptRow): DiaryPrompt => ({
   id: row.id,
   code: row.code,
@@ -301,7 +305,7 @@ const syncGiftDiaryPrompts = async (entry: DiaryEntry, previousEntry: DiaryEntry
   }
 }
 
-const saveRemoteEntry = async (entry: DiaryEntry, previousEntry: DiaryEntry | null): Promise<DiaryEntry> => {
+const saveRemoteEntry = async (entry: DiaryEntry, previousEntry: DiaryEntry | null, options: SaveDiaryOptions = {}): Promise<DiaryEntry> => {
   const payload: Record<string, unknown> = {
       id: entry.id,
       user_id: entry.userId,
@@ -347,12 +351,12 @@ const saveRemoteEntry = async (entry: DiaryEntry, previousEntry: DiaryEntry | nu
     const { error: insertError } = await supabase.from('diary_images').insert(legacyImages.map((item) => ({ id: item.id, diary_id: entryId, external_file_id: item.externalFileId ?? null, external_url: item.externalUrl, position: item.position, caption: item.caption || null, metadata: item.metadata ?? null })))
     if (insertError) throw insertError
   }
-  if (hasManagedDiaryImages(entry.images) || hasManagedDiaryImages(previousEntry?.images ?? [])) await syncDiaryMedia(entryId, entry.images)
+  if (!options.skipMediaSync && (hasManagedDiaryImages(entry.images) || hasManagedDiaryImages(previousEntry?.images ?? []))) await syncDiaryMedia(entryId, entry.images)
   await syncGiftDiaryPrompts({ ...entry, id: entryId }, previousEntry)
   return { ...entry, id: entryId, status: normalizeDiaryStatus(row.status), createdAt: row.created_at, updatedAt: row.updated_at, completedAt: row.completed_at, dayLockedAt: row.day_locked_at ?? entry.dayLockedAt }
 }
 
-export const saveDiary = async (draft: DiaryDraft): Promise<DiaryEntry> => {
+export const saveDiary = async (draft: DiaryDraft, options: SaveDiaryOptions = {}): Promise<DiaryEntry> => {
   if (!draft.localDate) throw new Error('Diary needs a local date.')
   if (draft.promptResponses.length > 6) throw new Error('Diary chỉ có thể chọn tối đa 6 prompt.')
   if (draft.images.length > 4) throw new Error('Diary chỉ có thể thêm tối đa 4 ảnh.')
@@ -360,7 +364,7 @@ export const saveDiary = async (draft: DiaryDraft): Promise<DiaryEntry> => {
   const existing = (await listDiaryEntries()).find((entry) => entry.localDate === draft.localDate) ?? null
   const entry = normalizeDraft(draft, userId, existing)
   try {
-    const saved = await saveRemoteEntry(entry, existing)
+    const saved = await saveRemoteEntry(entry, existing, options)
     const localEntries = readLocalEntries(userId).filter((item) => item.localDate !== saved.localDate)
     writeLocalEntries(userId, [saved, ...localEntries])
     return saved

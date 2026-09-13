@@ -3,6 +3,7 @@ import { buildDayRecord, isDayRecordLocked } from './dayRecord'
 import type { ActionRecord } from '../../actionspace/types'
 import type { CheckinRecord } from '../../checkin/types'
 import type { DayRecordSnapshot } from '../types'
+import { serializeRichText } from '../../../components/richText'
 
 const emotionCheckin = (id: string, createdAt: string, note = 'Một ghi chú', updatedAt = createdAt): CheckinRecord => ({
   id,
@@ -65,6 +66,26 @@ describe('Day Record', () => {
     expect(record.items.map((item) => item.kind)).toEqual(['checkin', 'checkin', 'action'])
     expect(record.items.at(-1)).toMatchObject({ sourceLabel: 'Từ Check-in Bình yên', reflectionLabel: 'Ổn hơn', reflectionNote: 'Dễ thở hơn.' })
     expect(record.items[1]).toMatchObject({ unknownPrompt: 'Mình chưa gọi tên được điều này.' })
+  })
+
+  it('keeps rich-text check-in notes for the Day Record renderer', () => {
+    const note = serializeRichText({
+      type: 'doc',
+      version: 1,
+      lineSpacing: 'normal',
+      paragraphSpacing: 'normal',
+      blocks: [
+        { type: 'paragraph', children: [{ text: 'Buổi sáng mình đã đi chơi.' }] },
+        { type: 'paragraph', children: [{ text: 'Mình thấy nhẹ lòng hơn.' }] },
+      ],
+    })
+    const record = buildDayRecord({
+      localDate: '2026-09-02',
+      checkins: [emotionCheckin('checkin-rich-text', '2026-09-02T01:15:00.000Z', note)],
+      actions: [],
+      reflections: [],
+    })
+    expect(record.items[0].description).toBe(note)
   })
 
   it('keeps the locked fact and flags a current source changed after the day ended', () => {

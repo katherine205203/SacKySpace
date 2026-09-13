@@ -283,6 +283,8 @@
 .drawer-sections { display: grid; gap: .75rem; padding: .85rem 0; }
 .drawer-sections > div { display: grid; gap: .35rem; }
 .drawer-sections p { margin: 0; color: var(--checkin-muted); font-size: .74rem; line-height: 1.45; white-space: pre-wrap; }
+.drawer-note__body, .drawer-note__body p, .drawer-note__body .rich-text-renderer { font-size: calc(.74rem - 2px); }
+.drawer-note__body .rich-text-renderer > :is(p, blockquote, ul, ol) { font-size: inherit; }
 .drawer-section-header { display: flex; align-items: center; justify-content: space-between; gap: .5rem; }
 .drawer-action-list { display: grid; gap: .35rem; }
 .drawer-action { display: flex; align-items: center; gap: .5rem; padding: .45rem; border-radius: 7px; background: #f8f7ff; }

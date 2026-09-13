@@ -1,4 +1,4 @@
-export const MAX_SECONDARY_EMOTIONS = 2
+export const MAX_SECONDARY_EMOTIONS = 3
 export const MAX_NEEDS = 3
 export const MAX_CONTEXTS = 2
 export const MAX_ACTIONS = 2

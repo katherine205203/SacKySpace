@@ -3,6 +3,9 @@ import type { DiaryImage } from '../types'
 
 const MEDIA_API_URL = import.meta.env.VITE_DIARY_MEDIA_API_URL || '/api/diary-media'
 const MAX_LOCAL_SOURCE_BYTES = 15 * 1024 * 1024
+const MAX_LOCAL_LONG_EDGE = 2000
+const LOCAL_WEBP_QUALITY = 0.88
+const MEDIA_REQUEST_TIMEOUT_MS = 60_000
 const ACCEPTED_IMAGE_TYPES = new Set(['image/jpeg', 'image/png', 'image/webp'])
 
 type MediaResponse = { media: DiaryImage }
@@ -22,11 +25,20 @@ const getErrorMessage = async (response: Response): Promise<string> => {
   return `Không thể xử lý ảnh (${response.status}).`
 }
 
-const request = async (input: RequestInfo | URL, init: RequestInit): Promise<Response> => {
+const requestJson = async <T>(input: RequestInfo | URL, init: RequestInit): Promise<T> => {
   const token = await getAccessToken()
-  const response = await fetch(input, { ...init, headers: { authorization: `Bearer ${token}`, ...(init.headers ?? {}) } })
-  if (!response.ok) throw new Error(await getErrorMessage(response))
-  return response
+  const controller = new AbortController()
+  const timeout = setTimeout(() => controller.abort(), MEDIA_REQUEST_TIMEOUT_MS)
+  try {
+    const response = await fetch(input, { ...init, signal: controller.signal, headers: { authorization: `Bearer ${token}`, ...(init.headers ?? {}) } })
+    if (!response.ok) throw new Error(await getErrorMessage(response))
+    return await response.json() as T
+  } catch (reason: unknown) {
+    if (controller.signal.aborted) throw new Error('Tải ảnh quá thời gian chờ. Vui lòng thử lại với ảnh nhỏ hơn hoặc kiểm tra kết nối.')
+    throw reason
+  } finally {
+    clearTimeout(timeout)
+  }
 }
 
 export const validateLocalDiaryImage = (file: File): void => {
@@ -34,34 +46,61 @@ export const validateLocalDiaryImage = (file: File): void => {
   if (file.size > MAX_LOCAL_SOURCE_BYTES) throw new Error('Ảnh vượt quá giới hạn 15MB.')
 }
 
+const compressLocalDiaryImage = async (file: File): Promise<File> => {
+  if (typeof document === 'undefined' || typeof createImageBitmap !== 'function') return file
+
+  let bitmap: ImageBitmap | undefined
+  try {
+    bitmap = await createImageBitmap(file)
+    const scale = Math.min(1, MAX_LOCAL_LONG_EDGE / Math.max(bitmap.width, bitmap.height))
+    const width = Math.max(1, Math.round(bitmap.width * scale))
+    const height = Math.max(1, Math.round(bitmap.height * scale))
+    const canvas = document.createElement('canvas')
+    canvas.width = width
+    canvas.height = height
+    const context = canvas.getContext('2d')
+    if (!context) return file
+    context.drawImage(bitmap, 0, 0, width, height)
+    const blob = await new Promise<Blob | null>((resolve) => canvas.toBlob(resolve, 'image/webp', LOCAL_WEBP_QUALITY))
+    if (!blob || blob.size >= file.size) return file
+    const baseName = file.name.replace(/\.[^.]+$/, '') || 'diary-image'
+    return new File([blob], `${baseName}.webp`, { type: 'image/webp', lastModified: file.lastModified })
+  } catch {
+    // The server still validates and optimizes the original when a browser cannot decode it.
+    return file
+  } finally {
+    bitmap?.close()
+  }
+}
+
 export const uploadDiaryMedia = async ({ diaryId, slotOrder, file, sourceUrl, caption, onStatus }: { diaryId: string; slotOrder: number; file?: File; sourceUrl?: string; caption?: string; onStatus?: (status: 'compressing' | 'uploading') => void }): Promise<DiaryImage> => {
   if (!file && !sourceUrl) throw new Error('Chưa chọn ảnh.')
   if (file) validateLocalDiaryImage(file)
   onStatus?.(file ? 'compressing' : 'uploading')
-  let response: Response
+  let payload: MediaResponse
   if (file) {
+    const compressedFile = await compressLocalDiaryImage(file)
     const form = new FormData()
     form.append('diaryId', diaryId)
     form.append('slotOrder', String(slotOrder))
     form.append('caption', caption ?? '')
-    form.append('file', file, file.name)
+    form.append('file', compressedFile, compressedFile.name)
     onStatus?.('uploading')
-    response = await request(MEDIA_API_URL, { method: 'POST', body: form })
+    payload = await requestJson<MediaResponse>(MEDIA_API_URL, { method: 'POST', body: form })
   } else {
     onStatus?.('uploading')
-    response = await request(MEDIA_API_URL, { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ action: 'import_url', diaryId, slotOrder, sourceUrl, caption: caption ?? '' }) })
+    payload = await requestJson<MediaResponse>(MEDIA_API_URL, { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ action: 'import_url', diaryId, slotOrder, sourceUrl, caption: caption ?? '' }) })
   }
-  const payload = await response.json() as MediaResponse
+  if (!payload.media) throw new Error('Máy chủ không trả về ảnh đã lưu.')
   return payload.media
 }
 
 export const resolveDiaryMediaUrl = async (mediaId: string): Promise<string> => {
-  const response = await request(`${MEDIA_API_URL}?mediaId=${encodeURIComponent(mediaId)}`, { method: 'GET' })
-  const payload = await response.json() as { url: string }
+  const payload = await requestJson<{ url: string }>(`${MEDIA_API_URL}?mediaId=${encodeURIComponent(mediaId)}`, { method: 'GET' })
   if (!payload.url) throw new Error('Không thể tạo liên kết ảnh.')
   return payload.url
 }
 
 export const syncDiaryMedia = async (diaryId: string, images: DiaryImage[]): Promise<void> => {
-  await request(`${MEDIA_API_URL}?action=sync`, { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ action: 'sync', diaryId, images: images.filter((image) => Boolean(image.externalFileId)).map((image) => ({ id: image.id, position: image.position, caption: image.caption })) }) })
+  await requestJson<{ ok: boolean }>(`${MEDIA_API_URL}?action=sync`, { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ action: 'sync', diaryId, images: images.filter((image) => Boolean(image.externalFileId)).map((image) => ({ id: image.id, position: image.position, caption: image.caption })) }) })
 }

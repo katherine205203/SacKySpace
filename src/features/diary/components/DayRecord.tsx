@@ -4,6 +4,7 @@ import { getDiaryEntry, markDiaryDayLocked } from '../services/diaryRepository'
 import { applyDayRecordSnapshots, isDayRecordLocked, listDayRecordSnapshots, loadLiveDayRecord, saveDayRecordSnapshots } from '../services/dayRecord'
 import type { DayRecord, DayRecordFact, DayRecordItem, DayRecordSnapshot, DiaryEntry } from '../types'
 import { DIARY_TIME_ZONE, formatDiaryDate } from '../utils'
+import { isRichTextEmpty, RichTextRenderer } from '../../../components/richText'
 
 type DayRecordFilter = 'all' | 'checkin' | 'action'
 
@@ -78,16 +79,23 @@ export function DayRecordContextCard({ localDate, entry, compact = false }: { lo
   </section>
 }
 
-const FactDetails = ({ item, historical = false }: { item: DayRecordFact; historical?: boolean }) => <div className="day-record-fact-details">
-  <p>{historical ? 'Khi ngày kết thúc' : 'Hiện tại'}</p>
-  <strong>{item.title}</strong>
-  {item.description && <span>{item.description}</span>}
-  {item.intensity && <small>Cường độ {item.intensity}/5</small>}
-  {item.secondaryEmotions?.length ? <small>Cảm xúc phụ: {item.secondaryEmotions.join(' · ')}</small> : null}
-  {item.unknownPrompt && <small>Prompt: {item.unknownPrompt}</small>}
-  {item.sourceLabel && <small>{item.sourceLabel}</small>}
-  {item.reflectionLabel && <small>Reflection: {item.reflectionLabel}{item.reflectionNote ? ` · ${item.reflectionNote}` : ''}</small>}
-</div>
+const DayRecordRichText = ({ value, className = '' }: { value: string | null | undefined; className?: string }) => {
+  if (isRichTextEmpty(value)) return null
+  return <RichTextRenderer value={value} className={`day-record-rich-text ${className}`.trim()} />
+}
+
+const FactDetails = ({ item, historical = false }: { item: DayRecordFact; historical?: boolean }) => {
+  return <div className="day-record-fact-details">
+    <p>{historical ? 'Khi ngày kết thúc' : 'Hiện tại'}</p>
+    <strong>{item.title}</strong>
+    <DayRecordRichText value={item.description} />
+    {item.intensity && <small>Cường độ {item.intensity}/5</small>}
+    {item.secondaryEmotions?.length ? <small>Cảm xúc phụ: {item.secondaryEmotions.join(' · ')}</small> : null}
+    {item.unknownPrompt && <small>Prompt: {item.unknownPrompt}</small>}
+    {item.sourceLabel && <small>{item.sourceLabel}</small>}
+    {item.reflectionLabel && <div className="day-record-fact-details__reflection"><small>Reflection: {item.reflectionLabel}</small><DayRecordRichText value={item.reflectionNote} /></div>}
+  </div>
+}
 
 const DayRecordTimelineItem = ({ item }: { item: DayRecordItem }) => {
   const [expanded, setExpanded] = useState(false)
@@ -96,12 +104,12 @@ const DayRecordTimelineItem = ({ item }: { item: DayRecordItem }) => {
     <time>{formatTime(item.occurredAt)}</time>
     <span className="day-record-item__rail" aria-hidden="true" />
     <div className="day-record-item__body"><div className="day-record-item__heading"><span className="day-record-item__emoji" aria-hidden="true">{item.emoji}</span><div><span className="day-record-item__type">{typeLabel}</span><h2>{item.kind === 'checkin' ? item.title.replace('Check-in · ', '') : item.title}</h2>{item.titleEn && <small>{item.titleEn}</small>}</div></div>
-      {item.description && <p>{item.description}</p>}
+      <DayRecordRichText value={item.description} />
       {item.intensity && <span className="day-record-chip">Cường độ {item.intensity}/5</span>}
       {item.secondaryEmotions?.length ? <span className="day-record-chip">Cảm xúc phụ: {item.secondaryEmotions.join(' · ')}</span> : null}
       {item.unknownPrompt && <span className="day-record-chip">{item.unknownPrompt}</span>}
       {item.sourceLabel && <span className="day-record-source">{item.sourceLabel}</span>}
-      {item.reflectionLabel && <div className="day-record-reflection"><span>Reflection</span><strong>{item.reflectionLabel}</strong>{item.reflectionNote && <p>{item.reflectionNote}</p>}</div>}
+      {item.reflectionLabel && <div className="day-record-reflection"><span>Reflection</span><strong>{item.reflectionLabel}</strong><DayRecordRichText value={item.reflectionNote} /></div>}
       {item.changedAfterLock && <div className="day-record-change"><button type="button" aria-expanded={expanded} onClick={() => setExpanded((value) => !value)}>Đã cập nhật sau khi ngày kết thúc <span aria-hidden="true">{expanded ? '−' : '+'}</span></button>{expanded && <div className="day-record-change__compare">{item.snapshot && <FactDetails item={item.snapshot} historical />}{item.sourceMissing ? <div className="day-record-fact-details"><p>Hiện tại</p><strong>Nguồn này không còn trong Sắc Ký</strong><span>Nội dung khi ngày kết thúc vẫn được giữ lại ở trên.</span></div> : <FactDetails item={item} />}</div>}</div>}
     </div>
   </article>

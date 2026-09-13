@@ -41,4 +41,24 @@ describe('rich text document compatibility', () => {
     expect(richTextWordCount(serializeRichText({ type: 'doc', version: 1, lineSpacing: 'normal', paragraphSpacing: 'normal', blocks: [{ type: 'paragraph', children: [{ text: 'Viết điều này' }] }, { type: 'quote', children: [{ text: 'cho mình' }] }] }))).toBe(5)
     expect(richTextWordCount('   ')).toBe(0)
   })
+
+  it('round-trips the Focus writing structure and keeps only supported styling', () => {
+    const document: RichTextDocument = {
+      type: 'doc',
+      version: 1,
+      lineSpacing: 'compact',
+      paragraphSpacing: 'normal',
+      blocks: [
+        { type: 'heading_2', indent: 1, children: [{ text: 'Một tiêu đề', marks: ['bold', 'underline'], color: 'violet', fontSize: 'xl' }] },
+        { type: 'divider' },
+        { type: 'bullet_list', items: [{ children: [{ text: 'Một dòng' }], indent: 2 }] },
+      ],
+    }
+    const serialized = serializeRichText(document)
+    expect(parseRichText(serialized)).toEqual(document)
+    expect(richTextToPlainText(serialized)).toBe('Một tiêu đề\n\nMột dòng')
+
+    const unsafe = `${RICH_TEXT_PREFIX}${JSON.stringify({ ...document, blocks: [{ type: 'paragraph', indent: 99, children: [{ text: 'Safe', marks: ['bold', 'blink'], color: 'hot-pink', fontSize: 'giant' }] }] })}`
+    expect(parseRichText(unsafe).blocks).toEqual([{ type: 'paragraph', indent: 3, children: [{ text: 'Safe', marks: ['bold'] }] }])
+  })
 })

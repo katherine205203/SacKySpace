@@ -1,9 +1,19 @@
 import { describe, expect, it } from 'vitest'
-import { buildColorHaloRing, buildColorOrbField, buildColorOrbRegionsFromColors, colorDistance, getColorOrbLegend, intensityToPresenceWeight, ORB_RADIUS, ORB_VIEW_SIZE, readableColorOrbEntries, sampleColorOrbField, simplifyColorOrbEntries } from './colorOrb'
+import { buildColorHaloRing, buildColorOrbField, buildColorOrbRegionsFromColors, colorDistance, getCheckinEmotionShares, getColorOrbLegend, intensityToPresenceWeight, ORB_RADIUS, ORB_VIEW_SIZE, readableColorOrbEntries, sampleColorOrbField, simplifyColorOrbEntries } from './colorOrb'
 
 describe('Color Orb regions', () => {
   it('maps stored intensity to the non-linear presence weights', () => {
     expect([1, 2, 3, 4, 5].map(intensityToPresenceWeight)).toEqual([1, 1.35, 1.8, 2.4, 3.2])
+  })
+
+  it('keeps the primary at 70% and splits the secondary 30% evenly', () => {
+    expect(getCheckinEmotionShares(0)).toEqual([1])
+    expect(getCheckinEmotionShares(1)).toEqual([0.7, 0.3])
+    expect(getCheckinEmotionShares(2)).toEqual([0.7, 0.15, 0.15])
+    const threeSecondaryShares = getCheckinEmotionShares(3)
+    expect(threeSecondaryShares[0]).toBeCloseTo(0.7)
+    threeSecondaryShares.slice(1).forEach((share) => expect(share).toBeCloseTo(0.1))
+    expect(threeSecondaryShares.reduce((sum, share) => sum + share, 0)).toBeCloseTo(1)
   })
 
   it('aggregates presence weights and produces deterministic field metadata', () => {

@@ -11,7 +11,7 @@ import { richTextToPlainText } from '../../../components/richText'
 type DeepDiveStep = 'secondary' | 'needs' | 'contexts'
 
 const stepInfo: Record<DeepDiveStep, { eyebrow: string; title: string; copy: string; next: string; path: string }> = {
-  secondary: { eyebrow: 'Đào sâu hơn · 2/5', title: 'Cảm xúc phụ nào đang hiện diện?', copy: 'Chọn tối đa 2 cảm xúc phụ, hoặc tiếp tục nếu chưa cần.', next: 'Tiếp tục', path: 'needs' },
+  secondary: { eyebrow: 'Đào sâu hơn · 2/5', title: 'Cảm xúc phụ nào đang hiện diện?', copy: `Chọn tối đa ${MAX_SECONDARY_EMOTIONS} cảm xúc phụ, hoặc tiếp tục nếu chưa cần.`, next: 'Tiếp tục', path: 'needs' },
   needs: { eyebrow: 'Đào sâu hơn · 3/5', title: 'Điều mình đang cần là gì?', copy: 'Chọn tối đa 3 nhu cầu, hoặc tiếp tục nếu chưa cần.', next: 'Tiếp tục', path: 'contexts' },
   contexts: { eyebrow: 'Đào sâu hơn · 4/5', title: 'Bối cảnh nào đang liên quan?', copy: 'Chọn tối đa 2 bối cảnh, hoặc tiếp tục nếu chưa cần.', next: 'Xem lại', path: 'review' },
 }

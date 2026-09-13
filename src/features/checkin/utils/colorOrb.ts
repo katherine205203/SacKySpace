@@ -145,6 +145,17 @@ export const intensityToPresenceWeight = (intensity: number): number => {
   return PRESENCE_WEIGHT_BY_INTENSITY[safeIntensity]
 }
 
+export const CHECKIN_PRIMARY_EMOTION_SHARE = 0.7
+export const CHECKIN_SECONDARY_EMOTION_SHARE = 0.3
+
+/** Keeps the primary emotion at 70% and splits the remaining 30% evenly. */
+export const getCheckinEmotionShares = (secondaryCount: number): number[] => {
+  const safeSecondaryCount = Math.max(0, Math.floor(secondaryCount))
+  if (safeSecondaryCount === 0) return [1]
+  const secondaryShare = CHECKIN_SECONDARY_EMOTION_SHARE / safeSecondaryCount
+  return [CHECKIN_PRIMARY_EMOTION_SHARE, ...Array.from({ length: safeSecondaryCount }, () => secondaryShare)]
+}
+
 const stableHash = (value: string): number => {
   let hash = 2166136261
   for (let index = 0; index < value.length; index += 1) {
@@ -385,7 +396,7 @@ export const buildColorOrbRegions = (records: readonly CheckinRecord[]): OrbRegi
   if (record.checkinType !== 'emotion' || !record.primaryEmotion) return []
   const totalWeight = intensityToPresenceWeight(record.intensity ?? 1)
   const secondary = record.secondaryEmotions.filter((emotion, index, list) => emotion.emotion_id !== record.primaryEmotion?.emotion_id && list.findIndex((item) => item.emotion_id === emotion.emotion_id) === index)
-  const shares = secondary.length === 0 ? [1] : secondary.length === 1 ? [0.7, 0.3] : [0.7, 0.15, 0.15]
+  const shares = getCheckinEmotionShares(secondary.length)
   return [record.primaryEmotion, ...secondary].map((emotion, index) => ({
     color: emotion.color_hex,
     intensity: record.intensity ?? 1,
