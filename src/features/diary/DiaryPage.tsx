@@ -414,7 +414,14 @@ export function DiaryEditorPage() {
       const cached = readEditorCache(localDate)
       let nextDraft: DiaryDraft = entry ? { ...entry, id: entry.id, userId: entry.userId } : emptyDiaryDraft(localDate)
       if (cached && (!entry || (cached.updatedAt && cached.updatedAt > entry.updatedAt))) nextDraft = cached
-      if (isMounted) { setDraft({ ...nextDraft, promptResponses: getPromptResponses(entry, nextPrompts).length && !cached ? getPromptResponses(entry, nextPrompts) : nextDraft.promptResponses }); setPendingImages([]); setPrompts(nextPrompts); setIsLoading(false) }
+      if (isMounted) {
+        const loadedDraft = { ...nextDraft, promptResponses: getPromptResponses(entry, nextPrompts).length && !cached ? getPromptResponses(entry, nextPrompts) : nextDraft.promptResponses }
+        latestDraftRef.current = loadedDraft
+        setDraft(loadedDraft)
+        setPendingImages([])
+        setPrompts(nextPrompts)
+        setIsLoading(false)
+      }
     }).catch((reason: unknown) => { if (isMounted) { setError(reason instanceof Error ? reason.message : 'Không thể mở trình biên tập.'); setIsLoading(false) } })
     return () => { isMounted = false }
   }, [localDate])
@@ -447,7 +454,13 @@ export function DiaryEditorPage() {
     if (hasLoadedDraftRef.current) writeEditorCache(localDate, latestDraftRef.current)
   }, [localDate])
 
-  const updateDraft = (patch: Partial<DiaryDraft>) => { setDraft((current) => ({ ...current, ...patch })); setError(null); setSaveNotice('Đang lưu…') }
+  const updateDraft = (patch: Partial<DiaryDraft>) => {
+    const nextDraft = { ...latestDraftRef.current, ...patch }
+    latestDraftRef.current = nextDraft
+    setDraft(nextDraft)
+    setError(null)
+    setSaveNotice('Đang lưu…')
+  }
   const emotions = reference?.emotions ?? []
   const selectedIds = draft.promptResponses.map((response) => response.promptId).filter((id): id is string => Boolean(id))
   const applyPromptSelection = (ids: string[]) => {
@@ -471,10 +484,12 @@ export function DiaryEditorPage() {
     let shell: DiaryEntry | null = null
     const uploadedPendingIds = new Set<string>()
     try {
+      const currentDraft = latestDraftRef.current
       const hasPendingImages = pendingImages.length > 0
-      shell = await saveDiary({ ...draft, status: hasPendingImages ? 'draft' : target === 'user_done' ? 'user_done' : isDiaryFinished(draft.status) ? draft.status : 'draft' })
+      shell = await saveDiary({ ...currentDraft, status: hasPendingImages ? 'draft' : target === 'user_done' ? 'user_done' : isDiaryFinished(currentDraft.status) ? currentDraft.status : 'draft' })
       let saved = shell
       if (hasPendingImages) {
+        latestDraftRef.current = { ...shell }
         setDraft({ ...shell })
         for (const pendingImage of [...pendingImages].sort((left, right) => left.slotOrder - right.slotOrder)) {
           setPendingImages((current) => current.map((item) => item.id === pendingImage.id ? { ...item, status: 'compressing', error: undefined } : item))
@@ -482,7 +497,8 @@ export function DiaryEditorPage() {
             const uploaded = await uploadDiaryMedia({ diaryId: shell.id, slotOrder: pendingImage.slotOrder, file: pendingImage.file, sourceUrl: pendingImage.sourceUrl, caption: pendingImage.caption, onStatus: (status) => setPendingImages((current) => current.map((item) => item.id === pendingImage.id ? { ...item, status } : item)) })
             uploadedPendingIds.add(pendingImage.id)
             saved = { ...saved, images: [...saved.images.filter((image) => image.position !== uploaded.position), uploaded].sort((left, right) => left.position - right.position) }
-            setDraft((current) => ({ ...current, images: saved.images }))
+            latestDraftRef.current = { ...latestDraftRef.current, images: saved.images }
+            setDraft(latestDraftRef.current)
             setPendingImages((current) => current.map((item) => item.id === pendingImage.id ? { ...item, status: 'uploading', error: undefined } : item))
           } catch (reason: unknown) {
             const message = reason instanceof Error ? reason.message : 'Không thể tải ảnh lên.'
@@ -498,7 +514,12 @@ export function DiaryEditorPage() {
       }
       window.localStorage.removeItem(localDraftStorageKey(localDate))
       if (target === 'user_done') navigate('/diary')
-      else { setDraft({ ...saved }); setSaveNotice('Đã lưu bản nháp'); navigate(`/diary?view=editor&date=${localDate}`, { replace: true }) }
+      else {
+        latestDraftRef.current = { ...saved }
+        setDraft(latestDraftRef.current)
+        setSaveNotice('Đã lưu bản nháp')
+        navigate(`/diary?view=editor&date=${localDate}`, { replace: true })
+      }
     } catch (reason: unknown) {
       const uploadedPending = pendingImages.filter((item) => uploadedPendingIds.has(item.id))
       uploadedPending.forEach((item) => { if (item.previewUrl.startsWith('blob:')) URL.revokeObjectURL(item.previewUrl) })

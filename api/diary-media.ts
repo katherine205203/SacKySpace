@@ -363,7 +363,7 @@ const handleStream = async (request: Request, url: URL): Promise<Response> => {
   return new Response(response.body, { status: 200, headers: { 'content-type': data.mime_type, 'cache-control': 'private, max-age=300, stale-while-revalidate=600' } })
 }
 
-export default async function handler(request: Request): Promise<Response> {
+const handleRequest = async (request: Request): Promise<Response> => {
   if (request.method === 'OPTIONS') return new Response(null, { status: 204, headers: { allow: 'GET, POST, OPTIONS' } })
   try {
     const url = new URL(request.url)
@@ -376,3 +376,7 @@ export default async function handler(request: Request): Promise<Response> {
     return json({ error: message }, status)
   }
 }
+
+export const GET = handleRequest
+export const POST = handleRequest
+export const OPTIONS = handleRequest
