@@ -60,7 +60,8 @@ const env = (name: string): string => process.env[name]?.trim() ?? ''
 const getSupabaseAdmin = () => {
   const url = env('SUPABASE_URL') || env('VITE_SUPABASE_URL')
   const serviceRoleKey = env('SUPABASE_SERVICE_ROLE_KEY')
-  if (!url || !serviceRoleKey) throw new Error('Missing SUPABASE_URL or SUPABASE_SERVICE_ROLE_KEY.')
+  if (!url) throw new Error('Missing SUPABASE_URL.')
+  if (!serviceRoleKey) throw new Error('Missing SUPABASE_SERVICE_ROLE_KEY.')
   return createClient(url, serviceRoleKey, { auth: { autoRefreshToken: false, persistSession: false } })
 }
 
