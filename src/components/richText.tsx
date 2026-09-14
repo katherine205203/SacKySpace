@@ -148,6 +148,16 @@ const documentToPlainText = (document: RichTextDocument): string => document.blo
   return inlineText(block.children)
 }).join('\n')
 
+const isListBlock = (block: RichTextBlock): block is Extract<RichTextBlock, { type: 'bullet_list' | 'numbered_list' }> => block.type === 'bullet_list' || block.type === 'numbered_list'
+const normalizedPlainText = (document: RichTextDocument): string => documentToPlainText(document).replace(/\s+/gu, '')
+
+export const stabilizeListStructure = (previous: RichTextDocument, next: RichTextDocument): RichTextDocument => {
+  const previousHasList = previous.blocks.some(isListBlock)
+  const nextHasList = next.blocks.some(isListBlock)
+  if (!previousHasList || nextHasList || normalizedPlainText(previous) !== normalizedPlainText(next)) return next
+  return { ...next, blocks: previous.blocks }
+}
+
 export const richTextToPlainText = (value: string | null | undefined): string => documentToPlainText(parseRichText(value))
 
 export const richTextWordCount = (value: string | null | undefined): number => {
@@ -426,7 +436,6 @@ const headingTag = (command: RichTextCommand): string | undefined => command.sta
 export function RichTextEditor({ value, onChange, placeholder, ariaLabel, className = '', minHeight, maxLength, autoFocus = false, focusMode = false }: { value: string; onChange: (value: string) => void; placeholder: string; ariaLabel: string; className?: string; minHeight?: number; maxLength?: number; autoFocus?: boolean; focusMode?: boolean }) {
   const containerRef = useRef<HTMLDivElement>(null)
   const editorRef = useRef<HTMLDivElement>(null)
-  const syncFrameRef = useRef<number | null>(null)
   const modelRef = useRef<RichTextDocument | null>(null)
   const onChangeRef = useRef(onChange)
   const maxLengthRef = useRef(maxLength)
@@ -460,10 +469,6 @@ export function RichTextEditor({ value, onChange, placeholder, ariaLabel, classN
     return () => window.clearTimeout(timer)
   }, [autoFocus])
 
-  useEffect(() => () => {
-    if (syncFrameRef.current !== null) window.cancelAnimationFrame(syncFrameRef.current)
-  }, [])
-
   useEffect(() => {
     const closeMenus = (event: PointerEvent) => {
       if (containerRef.current && event.target instanceof Node && !containerRef.current.contains(event.target)) {
@@ -479,29 +484,15 @@ export function RichTextEditor({ value, onChange, placeholder, ariaLabel, classN
     return () => window.document.removeEventListener('pointerdown', closeMenus)
   }, [])
 
-  const syncFromDom = () => {
+  const syncFromDom = (options: { preserveExistingLists?: boolean } = {}) => {
     if (!editorRef.current) return
-    const nextDocument = serializeEditorDom(editorRef.current, modelRef.current ?? model)
+    const currentDocument = modelRef.current ?? model
+    const serializedDocument = serializeEditorDom(editorRef.current, currentDocument)
+    const nextDocument = options.preserveExistingLists === false ? serializedDocument : stabilizeListStructure(currentDocument, serializedDocument)
     const limitedDocument = maxLengthRef.current === undefined ? nextDocument : truncateDocument(nextDocument, maxLengthRef.current)
     const nextValue = serializeRichText(limitedDocument)
-    if (nextValue !== serializeRichText(nextDocument)) editorRef.current.innerHTML = documentToEditorHtml(limitedDocument)
+    if (nextValue !== serializeRichText(nextDocument) || nextDocument !== serializedDocument) editorRef.current.innerHTML = documentToEditorHtml(limitedDocument)
     onChangeRef.current(nextValue)
-  }
-
-  const scheduleSyncFromDom = () => {
-    if (syncFrameRef.current !== null) return
-    syncFrameRef.current = window.requestAnimationFrame(() => {
-      syncFrameRef.current = null
-      syncFromDom()
-    })
-  }
-
-  const flushScheduledSync = () => {
-    if (syncFrameRef.current !== null) {
-      window.cancelAnimationFrame(syncFrameRef.current)
-      syncFrameRef.current = null
-    }
-    syncFromDom()
   }
 
   const closeSlashMenu = () => {
@@ -582,7 +573,7 @@ export function RichTextEditor({ value, onChange, placeholder, ariaLabel, classN
     else if (command === 'quote') window.document.execCommand('formatBlock', false, 'blockquote')
     else if (command === 'divider') window.document.execCommand('insertHorizontalRule', false)
     else window.document.execCommand(command, false)
-    syncFromDom()
+    syncFromDom({ preserveExistingLists: command !== 'insertUnorderedList' && command !== 'insertOrderedList' })
   }
 
   const applyColor = (color: RichTextColor) => {
@@ -705,6 +696,6 @@ export function RichTextEditor({ value, onChange, placeholder, ariaLabel, classN
     {showEmoji && <div className="rich-text-inline-popover rich-text-emoji-popover" role="dialog" aria-label="Chọn emoji">{EMOJI_OPTIONS.map((emoji) => <button key={emoji} type="button" onMouseDown={(event) => { preventToolbarBlur(event); insertEmoji(emoji) }}>{emoji}</button>)}</div>}
     {showSpacing && <div className="rich-text-spacing-popover" role="dialog" aria-label="Thiết lập khoảng cách"><label><span>Line spacing</span><select value={model.lineSpacing} onChange={(event) => updateSpacing('lineSpacing', event.target.value as RichTextLineSpacing)}><option value="compact">Compact · 1.25</option><option value="normal">Normal · 1.5</option><option value="airy">Relaxed · 1.8</option></select></label><label><span>Paragraph spacing</span><select value={model.paragraphSpacing} onChange={(event) => updateSpacing('paragraphSpacing', event.target.value as RichTextParagraphSpacing)}><option value="small">Tight</option><option value="normal">Normal</option><option value="large">Spacious</option></select></label></div>}
     {slashMenu && <div className="rich-text-slash-menu" role="listbox" aria-label="Quick Insert" style={{ left: slashMenu.left, top: slashMenu.top }}>{filteredSlashCommands.length ? filteredSlashCommands.map((command, index) => <button key={command.key} className={index === slashIndex ? 'is-highlighted' : ''} type="button" role="option" aria-selected={index === slashIndex} onMouseDown={(event) => { preventToolbarBlur(event); applySlashCommand(command) }}><strong>{command.key}</strong><span><b>{command.label}</b><small>{command.description}</small></span></button>) : <p>Không tìm thấy lệnh</p>}</div>}
-    <div ref={editorRef} className="rich-text-content" contentEditable role="textbox" aria-multiline="true" aria-label={ariaLabel} data-placeholder={placeholder} data-empty={isEmpty} style={minHeight ? { minHeight } : undefined} suppressContentEditableWarning onFocus={() => setIsFocused(true)} onBlur={(event) => { flushScheduledSync(); if (event.relatedTarget instanceof Node && event.currentTarget.parentElement?.contains(event.relatedTarget)) return; setIsFocused(false); setShowSpacing(false) }} onInput={() => { scheduleSyncFromDom(); syncSlashMenu() }} onPaste={handlePaste} onKeyDown={handleKeyDown} />
+    <div ref={editorRef} className="rich-text-content" contentEditable role="textbox" aria-multiline="true" aria-label={ariaLabel} data-placeholder={placeholder} data-empty={isEmpty} style={minHeight ? { minHeight } : undefined} suppressContentEditableWarning onFocus={() => setIsFocused(true)} onBlur={(event) => { syncFromDom(); if (event.relatedTarget instanceof Node && event.currentTarget.parentElement?.contains(event.relatedTarget)) return; setIsFocused(false); setShowSpacing(false) }} onInput={() => { syncFromDom(); syncSlashMenu() }} onPaste={handlePaste} onKeyDown={handleKeyDown} />
   </div>
 }

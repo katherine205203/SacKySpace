@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { isRichTextEmpty, parseRichText, RICH_TEXT_PREFIX, richTextToPlainText, richTextWordCount, serializeRichText, type RichTextDocument } from './richText'
+import { isRichTextEmpty, parseRichText, RICH_TEXT_PREFIX, richTextToPlainText, richTextWordCount, serializeRichText, stabilizeListStructure, type RichTextDocument } from './richText'
 
 describe('rich text document compatibility', () => {
   it('treats legacy plain text as one normal paragraph', () => {
@@ -60,5 +60,21 @@ describe('rich text document compatibility', () => {
 
     const unsafe = `${RICH_TEXT_PREFIX}${JSON.stringify({ ...document, blocks: [{ type: 'paragraph', indent: 99, children: [{ text: 'Safe', marks: ['bold', 'blink'], color: 'hot-pink', fontSize: 'giant' }] }] })}`
     expect(parseRichText(unsafe).blocks).toEqual([{ type: 'paragraph', indent: 3, children: [{ text: 'Safe', marks: ['bold'] }] }])
+  })
+
+  it('keeps a list when DOM normalization removes only its visual list structure', () => {
+    const listDocument: RichTextDocument = {
+      type: 'doc',
+      version: 1,
+      lineSpacing: 'normal',
+      paragraphSpacing: 'normal',
+      blocks: [
+        { type: 'paragraph', children: [{ text: 'Intro' }] },
+        { type: 'bullet_list', items: [{ children: [{ text: 'Một' }] }, { children: [{ text: 'Hai' }] }] },
+      ],
+    }
+    const flattenedDocument: RichTextDocument = { ...listDocument, blocks: [{ type: 'paragraph', children: [{ text: 'Intro' }, { text: 'MộtHai' }] }] }
+    expect(stabilizeListStructure(listDocument, flattenedDocument)).toEqual(listDocument)
+    expect(richTextToPlainText(serializeRichText(listDocument))).toBe('Intro\nMột\nHai')
   })
 })
