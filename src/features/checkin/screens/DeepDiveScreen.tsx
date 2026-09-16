@@ -90,8 +90,8 @@ export function DeepDiveScreen({ step }: { step: DeepDiveStep }) {
         <SummaryRail draft={draft} reference={reference} showPrimaryDetails />
       </div>
       <FlowFooter onBack={() => navigate(step === 'secondary' ? '/checkin/emotion' : routeFor(step === 'needs' ? 'secondary-emotions' : 'needs'))} onQuickSave={() => void quickSave()} onContinue={() => void saveAndContinue()} isSaving={isSaving} continueLabel={info.next} />
-      {modal === 'decision' && <DecisionModal draft={draft} reference={reference} onClose={() => setModal(null)} onFinish={() => completeAndGo()} onDeepDive={() => setModal(null)} onAction={() => setModal('action')} />}
-      {modal === 'action' && <ActionModal reference={reference} context={{ emotion: reference.emotions.find((emotion) => emotion.emotion_id === draft.primaryEmotionId), checkinType: draft.checkinType }} onClose={() => setModal('decision')} onSaved={(actions) => { const nextDraft = { ...draft, actions }; updateDraft({ actions }); void completeAndGo(nextDraft) }} />}
+      {modal === 'decision' && <DecisionModal draft={draft} reference={reference} onClose={() => setModal(null)} onFinish={() => completeAndGo()} onDeepDive={() => setModal(null)} onAction={() => setModal('action')} isSaving={isSaving} />}
+      {modal === 'action' && <ActionModal reference={reference} context={{ emotion: reference.emotions.find((emotion) => emotion.emotion_id === draft.primaryEmotionId), checkinType: draft.checkinType }} onClose={() => setModal('decision')} onSaved={(actions) => { const nextDraft = { ...draft, actions }; updateDraft({ actions }); void completeAndGo(nextDraft) }} isSaving={isSaving} />}
       {detail && <ReferenceDetailModal detail={detail} onClose={() => setDetail(null)} />}
     </div>
   )

@@ -93,9 +93,9 @@ export function EmotionCoreScreen() {
         <SummaryRail draft={draft} reference={reference} showPrimaryDetails />
       </div>
       <footer className="flow-footer"><button className="button button--secondary" type="button" onClick={() => navigate('/checkin')}>← Quay lại</button><button className="button button--primary" type="button" onClick={() => void persist('decision')} disabled={isSaving}>{isSaving ? 'Đang lưu…' : 'Lưu'}</button></footer>
-      {modal === 'decision' && <DecisionModal draft={draft} reference={reference} onClose={() => setModal(null)} onFinish={() => completeAndGo()} onDeepDive={openDeepDive} onAction={() => setModal('action')} />}
-      {modal === 'completion' && <CompletionModal onClose={() => setModal(null)} onFinish={() => completeAndGo()} onAction={() => setModal('action')} />}
-      {modal === 'action' && <ActionModal reference={reference} context={{ emotion: primary, checkinType: draft.checkinType }} onClose={() => setModal('decision')} onSaved={(actions) => { const nextDraft = { ...draft, actions }; updateDraft({ actions }); void completeAndGo(nextDraft) }} />}
+      {modal === 'decision' && <DecisionModal draft={draft} reference={reference} onClose={() => setModal(null)} onFinish={() => completeAndGo()} onDeepDive={openDeepDive} onAction={() => setModal('action')} isSaving={isSaving} />}
+      {modal === 'completion' && <CompletionModal onClose={() => setModal(null)} onFinish={() => completeAndGo()} onAction={() => setModal('action')} isSaving={isSaving} />}
+      {modal === 'action' && <ActionModal reference={reference} context={{ emotion: primary, checkinType: draft.checkinType }} onClose={() => setModal('decision')} onSaved={(actions) => { const nextDraft = { ...draft, actions }; updateDraft({ actions }); void completeAndGo(nextDraft) }} isSaving={isSaving} />}
     </div>
   )
 }

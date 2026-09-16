@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState, type ReactNode } from 'react'
-import { createCheckin, draftFromRecord, getCheckin, updateCheckin } from './services/checkinRepository'
+import { createCheckin, createCheckinId, draftFromRecord, getCheckin, updateCheckin } from './services/checkinRepository'
 import { getReferenceData } from './services/referenceRepository'
 import { createEmptyDraft, type CheckinDraft } from './types'
 import { checkinFlowContext, type CheckinFlowContextValue } from './useCheckinFlow'
@@ -24,6 +24,7 @@ export function CheckinFlowProvider({ children }: { children: ReactNode }) {
   const [isSaving, setIsSaving] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const skipDraftPersistence = useRef(false)
+  const completeInFlight = useRef<Promise<CheckinDraft> | null>(null)
 
   const value = useMemo<CheckinFlowContextValue>(() => ({
     draft,
@@ -42,25 +43,39 @@ export function CheckinFlowProvider({ children }: { children: ReactNode }) {
       setError(null)
       return nextDraft
     },
-    completeCheckin: async (nextDraft = draft) => {
+    completeCheckin: (nextDraft = draft) => {
+      if (completeInFlight.current) return completeInFlight.current
+
+      // Allocate the id before the network request. The id is persisted with the
+      // draft, so a retry after a partial save can upsert the same check-in.
+      const persistedDraft = nextDraft.id ? nextDraft : { ...nextDraft, id: createCheckinId() }
+      setDraft(persistedDraft)
       setIsSaving(true)
       setError(null)
-      try {
-        const result = nextDraft.id
-          ? await updateCheckin({ ...nextDraft, id: nextDraft.id })
-          : await createCheckin(nextDraft)
-        const savedDraft = { ...nextDraft, id: result.id, occurredAt: result.occurredAt, createdAt: result.createdAt }
-        skipDraftPersistence.current = true
-        setDraft(createEmptyDraft(nextDraft.checkinType))
-        window.localStorage.removeItem(DRAFT_STORAGE_KEY)
-        return savedDraft
-      } catch (reason: unknown) {
-        const message = reason instanceof Error ? reason.message : 'Unable to save this check-in.'
-        setError(message)
-        throw reason
-      } finally {
-        setIsSaving(false)
+      const operation = (async () => {
+        try {
+          const result = persistedDraft.createdAt
+            ? await updateCheckin({ ...persistedDraft, id: persistedDraft.id! })
+            : await createCheckin(persistedDraft)
+          const savedDraft = { ...persistedDraft, id: result.id, occurredAt: result.occurredAt, createdAt: result.createdAt }
+          skipDraftPersistence.current = true
+          setDraft(createEmptyDraft(persistedDraft.checkinType))
+          window.localStorage.removeItem(DRAFT_STORAGE_KEY)
+          return savedDraft
+        } catch (reason: unknown) {
+          const message = reason instanceof Error ? reason.message : 'Unable to save this check-in.'
+          setError(message)
+          throw reason
+        } finally {
+          setIsSaving(false)
+        }
+      })()
+      completeInFlight.current = operation
+      const clearInFlight = () => {
+        if (completeInFlight.current === operation) completeInFlight.current = null
       }
+      void operation.then(clearInFlight, clearInFlight)
+      return operation
     },
     loadExistingDraft: async (id) => {
       const reference = await getReferenceData()

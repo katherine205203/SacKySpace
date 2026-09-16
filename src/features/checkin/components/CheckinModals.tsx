@@ -10,9 +10,10 @@ type DecisionModalProps = {
   onFinish: () => void | Promise<void>
   onDeepDive: () => void | Promise<void>
   onAction: () => void | Promise<void>
+  isSaving?: boolean
 }
 
-export function DecisionModal({ draft, reference, onClose, onFinish, onDeepDive, onAction }: DecisionModalProps) {
+export function DecisionModal({ draft, reference, onClose, onFinish, onDeepDive, onAction, isSaving = false }: DecisionModalProps) {
   const primary = reference.emotions.find((emotion) => emotion.emotion_id === draft.primaryEmotionId)
   return (
     <ModalShell title="Bạn muốn đi tiếp thế nào?" onClose={onClose}>
@@ -22,16 +23,16 @@ export function DecisionModal({ draft, reference, onClose, onFinish, onDeepDive,
         {draft.intensity && <div><span className="eyebrow">Cường độ</span><strong><IntensityDots value={draft.intensity} /></strong></div>}
       </div>
       <div className="modal-options">
-        <button className="modal-option" type="button" onClick={() => void onFinish()}><span className="option-icon option-icon--violet">✓</span><span><strong>Vậy là đủ</strong><small>Hoàn tất check-in và về Home</small></span><b>›</b></button>
-        <button className="modal-option" type="button" onClick={() => void onDeepDive()}><span className="option-icon option-icon--blue">▱</span><span><strong>Đào sâu hơn</strong><small>Thêm cảm xúc phụ, nhu cầu và bối cảnh</small></span><b>›</b></button>
-        <button className="modal-option" type="button" onClick={() => void onAction()}><span className="option-icon option-icon--green">⚑</span><span><strong>Chọn action</strong><small>Gắn một bước nhỏ tiếp theo</small></span><b>›</b></button>
+        <button className="modal-option" type="button" disabled={isSaving} onClick={() => void onFinish()}><span className="option-icon option-icon--violet">✓</span><span><strong>Vậy là đủ</strong><small>Hoàn tất check-in và về Home</small></span><b>›</b></button>
+        <button className="modal-option" type="button" disabled={isSaving} onClick={() => void onDeepDive()}><span className="option-icon option-icon--blue">▱</span><span><strong>Đào sâu hơn</strong><small>Thêm cảm xúc phụ, nhu cầu và bối cảnh</small></span><b>›</b></button>
+        <button className="modal-option" type="button" disabled={isSaving} onClick={() => void onAction()}><span className="option-icon option-icon--green">⚑</span><span><strong>Chọn action</strong><small>Gắn một bước nhỏ tiếp theo</small></span><b>›</b></button>
       </div>
     </ModalShell>
   )
 }
 
-export function CompletionModal({ onClose, onFinish, onAction, title = 'Hoàn tất check-in', copy = 'Chọn một hướng để hoàn tất khoảng dừng này.' }: { onClose: () => void; onFinish: () => void | Promise<void>; onAction: () => void | Promise<void>; title?: string; copy?: string }) {
-  return <ModalShell title={title} onClose={onClose}><p className="modal-copy">{copy}</p><div className="modal-options"><button className="modal-option" type="button" onClick={() => void onFinish()}><span className="option-icon option-icon--violet">✓</span><span><strong>Vậy là đủ</strong><small>Hoàn tất và về Home</small></span><b>›</b></button><button className="modal-option" type="button" onClick={() => void onAction()}><span className="option-icon option-icon--green">⚑</span><span><strong>Chọn action</strong><small>Gắn một bước nhỏ tiếp theo</small></span><b>›</b></button></div></ModalShell>
+export function CompletionModal({ onClose, onFinish, onAction, isSaving = false, title = 'Hoàn tất check-in', copy = 'Chọn một hướng để hoàn tất khoảng dừng này.' }: { onClose: () => void; onFinish: () => void | Promise<void>; onAction: () => void | Promise<void>; isSaving?: boolean; title?: string; copy?: string }) {
+  return <ModalShell title={title} onClose={onClose}><p className="modal-copy">{copy}</p><div className="modal-options"><button className="modal-option" type="button" disabled={isSaving} onClick={() => void onFinish()}><span className="option-icon option-icon--violet">✓</span><span><strong>Vậy là đủ</strong><small>Hoàn tất và về Home</small></span><b>›</b></button><button className="modal-option" type="button" disabled={isSaving} onClick={() => void onAction()}><span className="option-icon option-icon--green">⚑</span><span><strong>Chọn action</strong><small>Gắn một bước nhỏ tiếp theo</small></span><b>›</b></button></div></ModalShell>
 }
 
 const today = () => new Date().toISOString().slice(0, 10)
@@ -44,7 +45,7 @@ export type ActionModalContext = {
   unknownEmoji?: string
 }
 
-export function ActionModal({ reference, context, onClose, onSaved, initialActions = [] }: { reference: ReferenceData; context?: ActionModalContext; onClose: () => void; onSaved: (actions: ActionDraft[]) => void; initialActions?: ActionDraft[] }) {
+export function ActionModal({ reference, context, onClose, onSaved, initialActions = [], isSaving = false }: { reference: ReferenceData; context?: ActionModalContext; onClose: () => void; onSaved: (actions: ActionDraft[]) => void; initialActions?: ActionDraft[]; isSaving?: boolean }) {
   const [selected, setSelected] = useState<ActionDraft[]>(initialActions)
   const [showAll, setShowAll] = useState(false)
   const [seed, setSeed] = useState(0)
@@ -83,6 +84,6 @@ export function ActionModal({ reference, context, onClose, onSaved, initialActio
         {selected.length > 0 && <div className="checkin-action-config"><span className="section-label">Tinh chỉnh action</span>{selected.map((action, index) => <div className="checkin-action-config__item" key={`${action.careActionId ?? 'custom'}-${index}`}><input aria-label="Tên action" placeholder="Tên action" value={action.title} onChange={(event) => updateAction(index, { title: event.target.value })} /><div className="checkin-action-config__row"><input aria-label="Ngày dự kiến" type="date" value={action.plannedDate} onChange={(event) => updateAction(index, { plannedDate: event.target.value })} /><input aria-label="Giờ đến hạn" type="time" value={action.dueTime} onChange={(event) => updateAction(index, { dueTime: event.target.value })} /></div><textarea aria-label="Ghi chú action" placeholder="Ghi chú (tuỳ chọn)" value={action.note} onChange={(event) => updateAction(index, { note: event.target.value })} /></div>)}</div>}
       </div>
     </div>
-    <footer className="checkin-action-modal__footer"><button className="button button--secondary" type="button" onClick={onClose}>Thôi không chọn</button><button className="button button--primary" type="button" disabled={selected.some((action) => !action.title.trim())} onClick={() => onSaved(selected)}>Lưu action ✓</button></footer>
+    <footer className="checkin-action-modal__footer"><button className="button button--secondary" type="button" disabled={isSaving} onClick={onClose}>Thôi không chọn</button><button className="button button--primary" type="button" disabled={isSaving || selected.some((action) => !action.title.trim())} onClick={() => onSaved(selected)}>{isSaving ? 'Đang lưu…' : 'Lưu action ✓'}</button></footer>
   </section></div>
 }

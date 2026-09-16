@@ -53,8 +53,8 @@ export function UnknownScreen() {
         <SummaryRail draft={draft} reference={reference} title="Unknown Check-in" />
       </div>
       <FlowFooter onBack={() => navigate('/checkin')} onQuickSave={() => void persist()} onContinue={() => void persist()} isSaving={isSaving} continueLabel="Lưu check-in" />
-      {modal === 'decision' && <DecisionModal draft={draft} reference={reference} onClose={() => setModal(null)} onFinish={() => completeAndGo()} onDeepDive={deepDive} onAction={() => setModal('action')} />}
-      {modal === 'action' && <ActionModal reference={reference} context={{ emotion: null, checkinType: draft.checkinType, unknownEmoji: selectedPrompt?.emoji }} onClose={() => setModal('decision')} onSaved={(actions) => { const nextDraft = { ...draft, actions }; updateDraft({ actions }); void completeAndGo(nextDraft) }} />}
+      {modal === 'decision' && <DecisionModal draft={draft} reference={reference} onClose={() => setModal(null)} onFinish={() => completeAndGo()} onDeepDive={deepDive} onAction={() => setModal('action')} isSaving={isSaving} />}
+      {modal === 'action' && <ActionModal reference={reference} context={{ emotion: null, checkinType: draft.checkinType, unknownEmoji: selectedPrompt?.emoji }} onClose={() => setModal('decision')} onSaved={(actions) => { const nextDraft = { ...draft, actions }; updateDraft({ actions }); void completeAndGo(nextDraft) }} isSaving={isSaving} />}
     </div>
   )
 }

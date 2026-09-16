@@ -333,6 +333,92 @@ const serializeEditorDom = (root: HTMLElement, document: RichTextDocument): Rich
   return { ...document, blocks: blocks.length ? blocks : defaultDocument().blocks }
 }
 
+const editorListAncestor = (node: Node | null, root: HTMLElement): HTMLOListElement | HTMLUListElement | null => {
+  let current = node?.nodeType === Node.ELEMENT_NODE ? node as HTMLElement : node?.parentElement ?? null
+  while (current && current !== root) {
+    if (current.tagName === 'UL' || current.tagName === 'OL') return current as HTMLOListElement | HTMLUListElement
+    current = current.parentElement
+  }
+  return null
+}
+
+const setCaretAtEnd = (element: HTMLElement): void => {
+  const selection = window.getSelection()
+  if (!selection) return
+  const range = window.document.createRange()
+  range.selectNodeContents(element)
+  range.collapse(false)
+  selection.removeAllRanges()
+  selection.addRange(range)
+}
+
+const listItemFromBlock = (block: HTMLElement): HTMLLIElement => {
+  const item = window.document.createElement('li')
+  const indent = indentFromElement(block)
+  if (indent) item.dataset.richIndent = String(indent)
+  while (block.firstChild) item.appendChild(block.firstChild)
+  if (!item.childNodes.length) item.appendChild(window.document.createElement('br'))
+  return item
+}
+
+const unwrapEditorList = (list: HTMLOListElement | HTMLUListElement): void => {
+  const replacement = window.document.createDocumentFragment()
+  const paragraphs: HTMLParagraphElement[] = []
+  Array.from(list.children).filter((child) => child.tagName === 'LI').forEach((child) => {
+    const paragraph = window.document.createElement('p')
+    const indent = indentFromElement(child as HTMLElement)
+    if (indent) paragraph.dataset.richIndent = String(indent)
+    Array.from(child.childNodes).filter((node) => !isListElement(node)).forEach((node) => paragraph.appendChild(node))
+    if (!paragraph.childNodes.length) paragraph.appendChild(window.document.createElement('br'))
+    paragraphs.push(paragraph)
+    replacement.appendChild(paragraph)
+  })
+  if (!paragraphs.length) {
+    const paragraph = window.document.createElement('p')
+    paragraph.appendChild(window.document.createElement('br'))
+    paragraphs.push(paragraph)
+    replacement.appendChild(paragraph)
+  }
+  list.replaceWith(replacement)
+  setCaretAtEnd(paragraphs[paragraphs.length - 1])
+}
+
+const toggleEditorList = (root: HTMLElement, tagName: 'UL' | 'OL'): boolean => {
+  const selection = window.getSelection()
+  if (!selection?.rangeCount || !selection.anchorNode) return false
+  const range = selection.getRangeAt(0)
+  const list = editorListAncestor(selection.anchorNode, root)
+  const focusList = editorListAncestor(selection.focusNode, root)
+
+  if (list && list === focusList) {
+    if (list.tagName === tagName) unwrapEditorList(list)
+    else {
+      const replacement = window.document.createElement(tagName.toLowerCase()) as HTMLOListElement | HTMLUListElement
+      if (list.dataset.richIndent) replacement.dataset.richIndent = list.dataset.richIndent
+      while (list.firstChild) replacement.appendChild(list.firstChild)
+      list.replaceWith(replacement)
+    }
+    return true
+  }
+
+  const blocks = Array.from(root.children).filter((child) => {
+    if (child.tagName === 'UL' || child.tagName === 'OL' || child.tagName === 'HR') return false
+    try {
+      return selection.isCollapsed ? child.contains(range.startContainer) : range.intersectsNode(child)
+    } catch {
+      return false
+    }
+  }) as HTMLElement[]
+  if (!blocks.length) return false
+
+  const listElement = window.document.createElement(tagName.toLowerCase()) as HTMLOListElement | HTMLUListElement
+  blocks.forEach((block) => listElement.appendChild(listItemFromBlock(block)))
+  blocks[0].before(listElement)
+  blocks.forEach((block) => block.remove())
+  setCaretAtEnd(listElement.lastElementChild as HTMLElement)
+  return true
+}
+
 const escapeHtml = (value: string): string => value.replace(/[&<>"']/g, (character) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[character] ?? character)
 const textToHtml = (value: string): string => escapeHtml(value).replace(/\n/g, '<br />')
 
@@ -568,6 +654,13 @@ export function RichTextEditor({ value, onChange, placeholder, ariaLabel, classN
       return
     }
     editorRef.current?.focus()
+    if ((command === 'insertUnorderedList' || command === 'insertOrderedList') && editorRef.current) {
+      const handled = toggleEditorList(editorRef.current, command === 'insertUnorderedList' ? 'UL' : 'OL')
+      if (handled) {
+        syncFromDom({ preserveExistingLists: false })
+        return
+      }
+    }
     const tag = headingTag(command)
     if (tag) window.document.execCommand('formatBlock', false, tag)
     else if (command === 'quote') window.document.execCommand('formatBlock', false, 'blockquote')

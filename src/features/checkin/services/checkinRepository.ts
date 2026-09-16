@@ -48,6 +48,11 @@ const isMissingOccurredAtError = (error: { message?: string } | null | undefined
 
 const getOccurredAt = (row: Pick<CheckinRow, 'occurred_at' | 'created_at'>): string => row.occurred_at ?? row.created_at
 
+export const createCheckinId = (): string => {
+  if (typeof crypto !== 'undefined' && typeof crypto.randomUUID === 'function') return crypto.randomUUID()
+  throw new Error('Trình duyệt không hỗ trợ tạo mã Check-in an toàn.')
+}
+
 export const normalizeOccurredAt = (occurredAt?: string): string => {
   const value = occurredAt ? new Date(occurredAt) : new Date()
   if (Number.isNaN(value.getTime())) throw new Error('Thời điểm trải nghiệm không hợp lệ.')
@@ -56,9 +61,13 @@ export const normalizeOccurredAt = (occurredAt?: string): string => {
 }
 
 const insertRelations = async (draft: CheckinDraft): Promise<void> => {
+  if (!draft.id) throw new Error('Check-in chưa có mã để lưu các lựa chọn liên quan.')
+  const secondaryEmotionIds = [...new Set(draft.secondaryEmotionIds)]
+  const needIds = [...new Set(draft.needIds)]
+  const contextIds = [...new Set(draft.contextIds)]
   if (draft.secondaryEmotionIds.length) {
     const { error } = await supabase.from('checkin_secondary_emotions').insert(
-      draft.secondaryEmotionIds.map((emotionId, index) => ({
+      secondaryEmotionIds.map((emotionId, index) => ({
         checkin_id: draft.id,
         emotion_id: emotionId,
         position: index + 1,
@@ -66,9 +75,9 @@ const insertRelations = async (draft: CheckinDraft): Promise<void> => {
     )
     if (error) throw error
   }
-  if (draft.needIds.length) {
+  if (needIds.length) {
     const { error } = await supabase.from('checkin_needs').insert(
-      draft.needIds.map((needId, index) => ({
+      needIds.map((needId, index) => ({
         checkin_id: draft.id,
         need_id: needId,
         position: index + 1,
@@ -76,9 +85,9 @@ const insertRelations = async (draft: CheckinDraft): Promise<void> => {
     )
     if (error) throw error
   }
-  if (draft.contextIds.length) {
+  if (contextIds.length) {
     const { error } = await supabase.from('checkin_contexts').insert(
-      draft.contextIds.map((contextId, index) => ({
+      contextIds.map((contextId, index) => ({
         checkin_id: draft.id,
         context_id: contextId,
         position: index + 1,
@@ -110,9 +119,30 @@ const insertActions = async (draft: CheckinDraft, userId: string): Promise<void>
   if (error) throw error
 }
 
+const clearRelationsAndActions = async (checkinId: string): Promise<void> => {
+  const relationTables = ['checkin_secondary_emotions', 'checkin_needs', 'checkin_contexts'] as const
+  for (const table of relationTables) {
+    const { error } = await supabase.from(table).delete().eq('checkin_id', checkinId)
+    if (error) throw error
+  }
+  const { error } = await supabase
+    .from('reminders')
+    .delete()
+    .eq('source_checkin_id', checkinId)
+    .eq('origin', 'checkin')
+  if (error) throw error
+}
+
 const saveRelationsAndActions = async (draft: CheckinDraft, userId: string): Promise<void> => {
+  if (!draft.id) throw new Error('Check-in chưa có mã để lưu các lựa chọn liên quan.')
   await insertRelations(draft)
   await insertActions(draft, userId)
+}
+
+const replaceRelationsAndActions = async (draft: CheckinDraft, userId: string): Promise<void> => {
+  if (!draft.id) throw new Error('Check-in chưa có mã để lưu các lựa chọn liên quan.')
+  await clearRelationsAndActions(draft.id)
+  await saveRelationsAndActions(draft, userId)
 }
 
 export const createCheckin = async (
@@ -130,7 +160,10 @@ export const createCheckin = async (
   }
   const { data: rawData, error } = await supabase
     .from('checkins')
-    .insert({ ...basePayload, occurred_at: occurredAt })
+    // Keep the id stable across retries. If saving a relation/action fails after
+    // the main row was created, retrying this draft updates the same row instead
+    // of creating a second check-in.
+    .upsert({ ...basePayload, id: draft.id ?? createCheckinId(), occurred_at: occurredAt }, { onConflict: 'id' })
     .select('id, occurred_at, created_at, updated_at')
     .single()
   if (isMissingOccurredAtError(error)) throw new Error('Database Check-in chưa được cập nhật migration thời điểm trải nghiệm.')
@@ -138,7 +171,7 @@ export const createCheckin = async (
   const data = rawData as CheckinTimeRow
 
   const persistedDraft = { ...draft, id: data.id }
-  await saveRelationsAndActions(persistedDraft, userId)
+  await replaceRelationsAndActions(persistedDraft, userId)
   return { id: data.id, occurredAt: getOccurredAt(data), createdAt: data.created_at, updatedAt: data.updated_at }
 }
 
@@ -164,19 +197,7 @@ export const updateCheckin = async (
   if (error) throw error
   const data = rawData as CheckinTimeRow
 
-  const relationTables = ['checkin_secondary_emotions', 'checkin_needs', 'checkin_contexts'] as const
-  for (const table of relationTables) {
-    const { error: deleteError } = await supabase.from(table).delete().eq('checkin_id', draft.id)
-    if (deleteError) throw deleteError
-  }
-  const { error: actionDeleteError } = await supabase
-    .from('reminders')
-    .delete()
-    .eq('source_checkin_id', draft.id)
-    .eq('origin', 'checkin')
-  if (actionDeleteError) throw actionDeleteError
-
-  await saveRelationsAndActions(draft, userId)
+  await replaceRelationsAndActions(draft, userId)
   return { id: data.id, occurredAt: getOccurredAt(data), createdAt: data.created_at, updatedAt: data.updated_at }
 }
 

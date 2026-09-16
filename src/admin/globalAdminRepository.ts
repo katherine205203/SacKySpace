@@ -24,6 +24,7 @@ export type GlobalAdminOperation = {
   status: 'previewed' | 'queued' | 'completed' | 'failed'
   scope: GlobalAdminScope
   impact: GlobalAdminImpact
+  result: Record<string, unknown>
   createdAt: string
   completedAt: string | null
 }
@@ -99,6 +100,7 @@ const parseOperation = (row: Record<string, unknown>): GlobalAdminOperation => (
   status: row.status as GlobalAdminOperation['status'],
   scope: parseScope(row.scope),
   impact: parseImpact((row.impact ?? {}) as Record<string, unknown>),
+  result: (row.result ?? {}) as Record<string, unknown>,
   createdAt: String(row.created_at),
   completedAt: row.completed_at ? String(row.completed_at) : null,
 })
