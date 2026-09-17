@@ -234,8 +234,8 @@
   .diary-page--history .diary-history-calendar-column { position: sticky; top: 0; align-self: start; min-height: 0; }
   .diary-page--history .diary-history-detail,
   .diary-page--history > .diary-history-layout > .diary-read-view { height: 100%; min-height: 0; overflow-y: auto; overscroll-behavior: contain; scrollbar-gutter: stable; }
-  .diary-page--history > .diary-history-layout > .diary-read-view { align-self: stretch; }
-  .diary-read-view--history .diary-read-view__toolbar { position: sticky; z-index: 4; top: 0; margin: -1.25rem -1.25rem 0; padding: .7rem 1.25rem .65rem; border-bottom: 1px solid color-mix(in srgb, var(--color-divider) 85%, white); background: color-mix(in srgb, #fff 90%, var(--color-surface-violet)); box-shadow: 0 7px 16px rgba(60,35,95,.06); backdrop-filter: blur(12px); }
+  .diary-page--history > .diary-history-layout > .diary-read-view { align-self: stretch; isolation: isolate; }
+  .diary-read-view--history .diary-read-view__toolbar { position: sticky; z-index: 4; top: 0; padding: .7rem 0 .65rem; border-bottom: 1px solid var(--color-divider); background: var(--color-surface); box-shadow: 0 7px 16px rgba(60,35,95,.06); }
 }
 @media (max-width: 70rem) {
   .diary-editor-layout { grid-template-columns: minmax(0, 1fr) 16rem; }
@@ -550,7 +550,7 @@
 .diary-read-hero__copy::after { display: block; clear: both; content: ''; }
 .diary-read-hero__copy h2 { margin: 0 0 .65rem; color: #17123f; font-size: clamp(1.45rem, 2.4vw, 2rem); letter-spacing: -.055em; }
 .diary-read-view__overall { display: block; max-width: none; font-size: .8rem; line-height: 1.75; }
-.diary-read-view__overall > * + * { margin-top: var(--rich-paragraph-gap, .85rem) !important; }
+.diary-read-view__overall.rich-text-renderer > * + * { margin-top: var(--rich-paragraph-gap, .85rem) !important; }
 .diary-emotion-visual { display: grid; position: relative; z-index: 2; float: right; width: 12rem; height: 12rem; align-content: center; justify-items: center; gap: .16rem; margin: 0 0 1rem 1.3rem; padding: .75rem; border: 1px solid color-mix(in srgb, var(--emotion-color) 30%, white); border-radius: 50%; background: radial-gradient(circle at 34% 26%, color-mix(in srgb, var(--emotion-color) 35%, white), transparent 37%), linear-gradient(145deg, color-mix(in srgb, var(--emotion-color) 26%, white), color-mix(in srgb, var(--emotion-color) 72%, white)); color: #fff; text-align: center; box-shadow: 0 16px 30px color-mix(in srgb, var(--emotion-color) 24%, transparent), inset 0 -1.5rem 2.5rem rgba(43,30,91,.14); outline: none; }
 .diary-emotion-visual--small { width: 7.5rem; height: 7.5rem; margin-left: 1rem; }
 .diary-emotion-visual__orb { display: grid; width: 3.5rem; height: 3.5rem; place-items: center; border: 2px solid rgba(255,255,255,.66); border-radius: 50%; background: color-mix(in srgb, var(--emotion-color) 55%, white); box-shadow: inset 0 -.55rem 1rem rgba(43,30,91,.16), 0 5px 12px rgba(52,31,111,.14); }
