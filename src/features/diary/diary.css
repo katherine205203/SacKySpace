@@ -234,6 +234,7 @@
   .diary-page--history .diary-history-calendar-column { position: sticky; top: 0; align-self: start; min-height: 0; }
   .diary-page--history .diary-history-detail,
   .diary-page--history > .diary-history-layout > .diary-read-view { height: 100%; min-height: 0; overflow-y: auto; overscroll-behavior: contain; scrollbar-gutter: stable; }
+  .diary-page--history .diary-history-detail--missing { height: auto; min-height: 25rem; align-self: start; overflow: visible; }
   .diary-page--history > .diary-history-layout > .diary-read-view { align-self: stretch; isolation: isolate; }
   .diary-read-view--history .diary-read-view__toolbar { position: sticky; z-index: 4; top: 0; padding: .7rem 0 .65rem; border-bottom: 1px solid var(--color-divider); background: var(--color-surface); box-shadow: 0 7px 16px rgba(60,35,95,.06); }
 }
