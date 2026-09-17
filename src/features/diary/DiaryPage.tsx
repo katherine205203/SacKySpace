@@ -5,7 +5,8 @@ import { useReferenceData } from '../checkin/hooks/useReferenceData'
 import type { CheckinRecord, Emotion } from '../checkin/types'
 import { createEmptyDiaryDraft, deleteDiary, getDiaryEntry, listDiaryEntries, listDiaryPrompts, saveDiary } from './services/diaryRepository'
 import type { DiaryCheckinLink, DiaryDraft, DiaryEntry, DiaryImage, DiaryPrompt, DiaryPromptResponse } from './types'
-import { addDiaryDays, clampDiaryWeight, DIARY_TIME_ZONE, formatDiaryDate, formatDiaryMonth, formatDiaryShortDate, getDiaryLocalDate, getDiaryMetrics, isDiaryBackfilledDate, isDiaryDateToday, monthDateKey } from './utils'
+import { addDiaryDays, clampDiaryWeight, DIARY_TIME_ZONE, formatDiaryDate, formatDiaryMonth, formatDiaryShortDate, getDiaryLocalDate, getDiaryMetrics, isDiaryDateToday, monthDateKey } from './utils'
+import { getDiaryDraftSignature, hasDiaryDraftContent, parseDiaryEditorCache } from './editorAutosave'
 import { PageHeading } from '../../components/PageHeading'
 import { useUiContent } from '../../services/uiContent'
 import { DayRecordContextCard, DayRecordPage } from './components/DayRecord'
@@ -232,26 +233,18 @@ export function DiaryTodayPage() {
 
 const localDraftStorageKey = (date: string): string => `sacky:diary:editor-draft:v2:${date}`
 
-const writeEditorCache = (date: string, draft: DiaryDraft): boolean => {
+const writeEditorCache = (date: string, draft: DiaryDraft, cachedAt = new Date().toISOString()): boolean => {
   try {
-    window.localStorage.setItem(localDraftStorageKey(date), JSON.stringify(draft))
+    window.localStorage.setItem(localDraftStorageKey(date), JSON.stringify({ version: 1, cachedAt, draft }))
     return true
   } catch {
     return false
   }
 }
 
-const readEditorCache = (date: string): DiaryDraft | null => {
+const readEditorCache = (date: string) => {
   try {
-    const value = JSON.parse(window.localStorage.getItem(localDraftStorageKey(date)) ?? 'null') as DiaryDraft | null
-    if (value?.localDate !== date) return null
-    const rawStatus = String(value.status)
-    return {
-      ...value,
-      status: rawStatus === 'done' || rawStatus === 'user_done' || rawStatus === 'day_locked' ? 'done' : 'draft',
-      completionSource: rawStatus === 'day_locked' ? 'system' : rawStatus === 'user_done' ? 'user' : value.completionSource ?? null,
-      isBackfilled: value.isBackfilled ?? isDiaryBackfilledDate(date),
-    }
+    return parseDiaryEditorCache(JSON.parse(window.localStorage.getItem(localDraftStorageKey(date)) ?? 'null'), date)
   } catch { return null }
 }
 
@@ -273,7 +266,7 @@ const PromptSelectionModal = ({ prompts, selectedIds, responses, onApply, onClos
   return <div className="diary-modal-backdrop" role="presentation" onClick={onClose}><section className="diary-modal diary-modal--prompt" role="dialog" aria-modal="true" aria-labelledby="prompt-dialog-title" onClick={(event) => event.stopPropagation()}><button className="diary-modal__close" type="button" onClick={onClose} aria-label="Đóng">×</button><div className="diary-modal__header"><p className="eyebrow">Những dòng tự sự thêm</p><h2 id="prompt-dialog-title">Chọn prompt cho hôm nay</h2><p>Bạn có thể chọn tối đa 6 prompt. Thứ tự bạn chọn sẽ được giữ nguyên trong bài viết.</p><strong>Đã chọn {selectedCount}/6</strong></div><label className="diary-search"><span aria-hidden="true">⌕</span><input aria-label="Tìm prompt" value={query} placeholder="Tìm prompt…" onChange={(event) => setQuery(event.target.value)} /></label><div className="diary-prompt-selection-grid">{visiblePrompts.map((prompt) => { const selected = pendingIds.includes(prompt.id); const disabled = !selected && selectedCount >= 6; return <button key={prompt.id} type="button" className={`diary-prompt-selection ${selected ? 'is-selected' : ''}`} disabled={disabled} onClick={() => toggle(prompt.id)} style={{ '--prompt-color': prompt.hexColor } as React.CSSProperties}><span>{prompt.emoji}</span><div><strong>{prompt.textVn}</strong>{prompt.description && <small>{prompt.description}</small>}</div><i aria-hidden="true">{selected ? '✓' : '+'}</i></button> })}</div>{visiblePrompts.length === 0 && <div className="diary-subtle-empty">Không tìm thấy prompt phù hợp.</div>}<div className="diary-modal__footer"><button className="button button--secondary" type="button" onClick={onClose}>Hủy</button><button className="button button--primary" type="button" onClick={() => onApply(pendingIds)}>Xong</button></div></section></div>
 }
 
-const PromptResponseEditor = ({ responses, onChange, onRemove, onMove }: { responses: DiaryPromptResponse[]; onChange: (index: number, patch: Partial<DiaryPromptResponse>) => void; onRemove: (index: number) => void; onMove: (index: number, direction: -1 | 1) => void }) => <div className="diary-response-list">{responses.map((response, index) => <section className={`diary-response-card ${response.isDone ? 'is-done' : ''}`} key={response.promptSnapshot.id} style={{ '--prompt-color': response.promptSnapshot.hexColor } as React.CSSProperties}><div className="diary-response-card__top"><span className="diary-response-card__emoji">{response.promptSnapshot.emoji}</span><div><span className="section-label">Dòng {index + 1}</span><h3>{response.promptSnapshot.textVn}</h3></div><div className="diary-response-card__actions"><button type="button" onClick={() => onMove(index, -1)} disabled={index === 0} aria-label="Di chuyển lên">↑</button><button type="button" onClick={() => onMove(index, 1)} disabled={index === responses.length - 1} aria-label="Di chuyển xuống">↓</button><button type="button" onClick={() => onRemove(index)} aria-label={`Bỏ prompt ${response.promptSnapshot.textVn}`}>×</button></div></div><RichTextEditor value={response.responseText} onChange={(value) => onChange(index, { responseText: value })} placeholder="Viết vài dòng nếu bạn muốn…" ariaLabel={`Trả lời: ${response.promptSnapshot.textVn}`} minHeight={195} /><div className="diary-response-card__footer"><span>{richTextToPlainText(response.responseText).length} ký tự</span><button type="button" className={`diary-tick ${response.isDone ? 'is-done' : ''}`} aria-pressed={response.isDone} onClick={() => onChange(index, { isDone: !response.isDone })}>{response.isDone ? '✓ Đã viết xong' : '○ Đánh dấu đã xong'}</button></div></section>)}</div>
+const PromptResponseEditor = ({ responses, onChange, onRemove, onMove, onFocus }: { responses: DiaryPromptResponse[]; onChange: (index: number, patch: Partial<DiaryPromptResponse>) => void; onRemove: (index: number) => void; onMove: (index: number, direction: -1 | 1) => void; onFocus: (index: number) => void }) => <div className="diary-response-list">{responses.map((response, index) => <section className={`diary-response-card ${response.isDone ? 'is-done' : ''}`} key={response.promptSnapshot.id} style={{ '--prompt-color': response.promptSnapshot.hexColor } as React.CSSProperties}><div className="diary-response-card__top"><span className="diary-response-card__emoji">{response.promptSnapshot.emoji}</span><div><span className="section-label">Dòng {index + 1}</span><h3>{response.promptSnapshot.textVn}</h3></div><div className="diary-response-card__actions"><button type="button" onClick={() => onFocus(index)} aria-label={`Mở Focus cho ${response.promptSnapshot.textVn}`}>⌗</button><button type="button" onClick={() => onMove(index, -1)} disabled={index === 0} aria-label="Di chuyển lên">↑</button><button type="button" onClick={() => onMove(index, 1)} disabled={index === responses.length - 1} aria-label="Di chuyển xuống">↓</button><button type="button" onClick={() => onRemove(index)} aria-label={`Bỏ prompt ${response.promptSnapshot.textVn}`}>×</button></div></div><RichTextEditor value={response.responseText} onChange={(value) => onChange(index, { responseText: value })} placeholder="Viết vài dòng nếu bạn muốn…" ariaLabel={`Trả lời: ${response.promptSnapshot.textVn}`} minHeight={195} focusMode /><div className="diary-response-card__footer"><span>{richTextToPlainText(response.responseText).length} ký tự</span><button type="button" className={`diary-tick ${response.isDone ? 'is-done' : ''}`} aria-pressed={response.isDone} onClick={() => onChange(index, { isDone: !response.isDone })}>{response.isDone ? '✓ Đã viết xong' : '○ Đánh dấu đã xong'}</button></div></section>)}</div>
 
 const CheckinPickerModal = ({ localDate, records, links, onApply, onClose }: { localDate: string; records: CheckinRecord[]; links: DiaryCheckinLink[]; onApply: (links: DiaryCheckinLink[]) => void; onClose: () => void }) => {
   const [pendingLinks, setPendingLinks] = useState(links)
@@ -370,7 +363,7 @@ const ImageManager = ({ images, pending, onChange, onPendingChange }: { images: 
   </div>
 }
 
-const FocusWritingLayer = ({ title, date, value, onChange, saveNotice, isSaving, onExit }: { title: string; date: string; value: string; onChange: (value: string) => void; saveNotice: string; isSaving: boolean; onExit: () => void }) => {
+const FocusWritingLayer = ({ title, date, value, onChange, saveNotice, isSaving, onExit, eyebrow = 'Focus writing', placeholder = 'Bắt đầu viết điều đang ở cùng bạn…', ariaLabel = 'Vùng viết Focus' }: { title: string; date: string; value: string; onChange: (value: string) => void; saveNotice: string; isSaving: boolean; onExit: () => void; eyebrow?: string; placeholder?: string; ariaLabel?: string }) => {
   useEffect(() => {
     const previousOverflow = document.body.style.overflow
     document.body.style.overflow = 'hidden'
@@ -388,8 +381,8 @@ const FocusWritingLayer = ({ title, date, value, onChange, saveNotice, isSaving,
   }, [onExit])
 
   return <div className="diary-focus-layer" role="dialog" aria-modal="true" aria-labelledby="diary-focus-title">
-    <header className="diary-focus-header"><div className="diary-focus-header__copy"><span className="eyebrow">Focus writing</span><h2 id="diary-focus-title">{title}</h2><p>{formatDiaryDate(date, { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })}</p></div><div className="diary-focus-header__actions"><span className="diary-focus-save-status" role="status"><i aria-hidden="true">●</i>{isSaving ? 'Đang lưu…' : saveNotice || 'Đã lưu'}</span><button className="button button--secondary" type="button" onClick={onExit}>Thoát Focus <span aria-hidden="true">Esc</span></button></div></header>
-    <main className="diary-focus-canvas"><RichTextEditor value={value} onChange={onChange} placeholder="Bắt đầu viết điều đang ở cùng bạn…" ariaLabel="Vùng viết Focus" minHeight={460} className="diary-focus-editor" autoFocus focusMode /></main>
+    <header className="diary-focus-header"><div className="diary-focus-header__copy"><span className="eyebrow">{eyebrow}</span><h2 id="diary-focus-title">{title}</h2><p>{formatDiaryDate(date, { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })}</p></div><div className="diary-focus-header__actions"><span className="diary-focus-save-status" role="status"><i aria-hidden="true">●</i>{isSaving ? 'Đang lưu…' : saveNotice || 'Đã lưu'}</span><button className="button button--secondary" type="button" onClick={onExit}>Thoát Focus <span aria-hidden="true">Esc</span></button></div></header>
+    <main className="diary-focus-canvas"><RichTextEditor value={value} onChange={onChange} placeholder={placeholder} ariaLabel={ariaLabel} minHeight={460} className="diary-focus-editor" autoFocus focusMode /></main>
   </div>
 }
 
@@ -401,15 +394,22 @@ export function DiaryEditorPage() {
   const [prompts, setPrompts] = useState<DiaryPrompt[]>([])
   const [records, setRecords] = useState<CheckinRecord[]>([])
   const [isLoading, setIsLoading] = useState(true)
+  const [loadedDate, setLoadedDate] = useState<string | null>(null)
   const [isSaving, setIsSaving] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [saveNotice, setSaveNotice] = useState('')
   const [isFocusMode, setIsFocusMode] = useState(false)
+  const [focusPromptIndex, setFocusPromptIndex] = useState<number | null>(null)
   const [showPromptSelection, setShowPromptSelection] = useState(false)
   const [pendingImages, setPendingImages] = useState<PendingDiaryImage[]>([])
   const { reference } = useReferenceData()
   const latestDraftRef = useRef(draft)
   const hasLoadedDraftRef = useRef(false)
+  const lastAutosavedSignatureRef = useRef<string | null>(null)
+  const autosaveTimerRef = useRef<number | null>(null)
+  const autosaveRevisionRef = useRef(0)
+  const autosaveQueueRef = useRef<Promise<void>>(Promise.resolve())
+  const editorIsLoading = isLoading || loadedDate !== localDate
 
   useLayoutEffect(() => {
     latestDraftRef.current = draft
@@ -417,19 +417,23 @@ export function DiaryEditorPage() {
 
   useEffect(() => {
     let isMounted = true
+    lastAutosavedSignatureRef.current = null
     void Promise.all([getDiaryEntry(localDate), listDiaryPrompts()]).then(([entry, nextPrompts]) => {
       const cached = readEditorCache(localDate)
       let nextDraft: DiaryDraft = entry ? { ...entry, id: entry.id, userId: entry.userId } : emptyDiaryDraft(localDate)
-      if (cached && (!entry || (cached.updatedAt && cached.updatedAt > entry.updatedAt))) nextDraft = cached
+      const shouldUseCachedDraft = Boolean(cached && (!entry || !entry.updatedAt || Date.parse(cached.cachedAt) > Date.parse(entry.updatedAt)))
+      if (shouldUseCachedDraft && cached) nextDraft = cached.draft
       if (isMounted) {
-        const loadedDraft = { ...nextDraft, promptResponses: getPromptResponses(entry, nextPrompts).length && !cached ? getPromptResponses(entry, nextPrompts) : nextDraft.promptResponses }
+        const loadedDraft = { ...nextDraft, promptResponses: shouldUseCachedDraft ? nextDraft.promptResponses : getPromptResponses(entry, nextPrompts) }
         latestDraftRef.current = loadedDraft
+        lastAutosavedSignatureRef.current = getDiaryDraftSignature(loadedDraft)
         setDraft(loadedDraft)
         setPendingImages([])
         setPrompts(nextPrompts)
+        setLoadedDate(localDate)
         setIsLoading(false)
       }
-    }).catch((reason: unknown) => { if (isMounted) { setError(reason instanceof Error ? reason.message : 'Không thể mở trình biên tập.'); setIsLoading(false) } })
+    }).catch((reason: unknown) => { if (isMounted) { setError(reason instanceof Error ? reason.message : 'Không thể mở trình biên tập.'); setLoadedDate(localDate); setIsLoading(false) } })
     return () => { isMounted = false }
   }, [localDate])
 
@@ -445,17 +449,56 @@ export function DiaryEditorPage() {
   }, [localDate, reference])
 
   useEffect(() => {
-    if (!isLoading) hasLoadedDraftRef.current = true
-  }, [isLoading])
+    if (!editorIsLoading) hasLoadedDraftRef.current = true
+  }, [editorIsLoading])
 
   useEffect(() => {
-    if (isLoading) return
+    if (editorIsLoading) return
     const timer = window.setTimeout(() => {
       if (writeEditorCache(localDate, draft)) setSaveNotice('Đã lưu an toàn trên thiết bị')
       else setSaveNotice('')
     }, 350)
     return () => window.clearTimeout(timer)
-  }, [draft, isLoading, localDate])
+  }, [draft, editorIsLoading, localDate])
+
+  useEffect(() => {
+    if (editorIsLoading || lastAutosavedSignatureRef.current === null) return
+    const signature = getDiaryDraftSignature(draft)
+    if (signature === lastAutosavedSignatureRef.current || !hasDiaryDraftContent(draft)) return
+
+    autosaveRevisionRef.current += 1
+    const revision = autosaveRevisionRef.current
+    if (autosaveTimerRef.current !== null) window.clearTimeout(autosaveTimerRef.current)
+    autosaveTimerRef.current = window.setTimeout(() => {
+      autosaveTimerRef.current = null
+      if (revision !== autosaveRevisionRef.current) return
+      const snapshot = latestDraftRef.current
+      const snapshotSignature = getDiaryDraftSignature(snapshot)
+      if (snapshotSignature === lastAutosavedSignatureRef.current || !hasDiaryDraftContent(snapshot)) return
+      autosaveQueueRef.current = autosaveQueueRef.current.then(async () => {
+        if (revision !== autosaveRevisionRef.current) return
+        const saved = await saveDiary({ ...snapshot, status: isDiaryFinished(snapshot.status) ? 'done' : 'draft' })
+        lastAutosavedSignatureRef.current = snapshotSignature
+        const current = latestDraftRef.current
+        const currentSignature = getDiaryDraftSignature(current)
+        const nextDraft = currentSignature === snapshotSignature
+          ? { ...saved }
+          : { ...current, id: saved.id, userId: saved.userId, createdAt: saved.createdAt, updatedAt: saved.updatedAt, completedAt: saved.completedAt }
+        latestDraftRef.current = nextDraft
+        setDraft(nextDraft)
+        writeEditorCache(localDate, nextDraft)
+        if (currentSignature === snapshotSignature) setSaveNotice('Đã tự động lưu')
+      }).catch((reason: unknown) => {
+        if (revision === autosaveRevisionRef.current) {
+          setSaveNotice('Chưa đồng bộ')
+          setError(reason instanceof Error ? reason.message : 'Không thể tự động lưu nhật ký.')
+        }
+      })
+    }, 900)
+    return () => {
+      if (autosaveTimerRef.current !== null) window.clearTimeout(autosaveTimerRef.current)
+    }
+  }, [draft, editorIsLoading, localDate])
 
   useEffect(() => () => {
     if (hasLoadedDraftRef.current) writeEditorCache(localDate, latestDraftRef.current)
@@ -487,10 +530,16 @@ export function DiaryEditorPage() {
   const moveResponse = (index: number, direction: -1 | 1) => { const nextIndex = index + direction; if (nextIndex < 0 || nextIndex >= draft.promptResponses.length) return; const next = [...draft.promptResponses]; [next[index], next[nextIndex]] = [next[nextIndex], next[index]]; updateDraft({ promptResponses: next.map((item, position) => ({ ...item, position: position + 1 })) }) }
   const selectEmotion = (emotion: Emotion | null) => updateDraft({ dailyEmotionId: emotion?.emotion_id ?? null, dailyEmotionSnapshot: emotion ? { emotion_id: emotion.emotion_id, emotion_name_vn: emotion.emotion_name_vn, emotion_name_en: emotion.emotion_name_en, emoji: emotion.emoji, color_hex: emotion.color_hex, description_vn: emotion.description_vn } : null })
   const persist = async (target: 'draft' | 'done') => {
+    if (autosaveTimerRef.current !== null) {
+      window.clearTimeout(autosaveTimerRef.current)
+      autosaveTimerRef.current = null
+    }
+    autosaveRevisionRef.current += 1
     setIsSaving(true); setError(null)
     let shell: DiaryEntry | null = null
     const uploadedPendingIds = new Set<string>()
     try {
+      await autosaveQueueRef.current
       const currentDraft = latestDraftRef.current
       const hasPendingImages = pendingImages.length > 0
       shell = await saveDiary({ ...currentDraft, status: hasPendingImages ? 'draft' : target === 'done' ? 'done' : isDiaryFinished(currentDraft.status) ? currentDraft.status : 'draft' }, target === 'done' ? { completionSource: 'user' } : {})
@@ -519,7 +568,9 @@ export function DiaryEditorPage() {
         pendingImages.forEach((item) => { if (item.previewUrl.startsWith('blob:')) URL.revokeObjectURL(item.previewUrl) })
         setPendingImages([])
       }
-      window.localStorage.removeItem(localDraftStorageKey(localDate))
+      lastAutosavedSignatureRef.current = getDiaryDraftSignature(saved)
+      if (target === 'done') window.localStorage.removeItem(localDraftStorageKey(localDate))
+      else writeEditorCache(localDate, saved)
       if (target === 'done') navigate('/diary')
       else {
         latestDraftRef.current = { ...saved }
@@ -535,16 +586,18 @@ export function DiaryEditorPage() {
     } finally { setIsSaving(false) }
   }
 
-  if (isLoading) return <section className="diary-page"><DiaryState>Đang chuẩn bị trang viết…</DiaryState></section>
+  if (editorIsLoading) return <section className="diary-page"><DiaryState>Đang chuẩn bị trang viết…</DiaryState></section>
   if (error && !draft.localDate) return <section className="diary-page"><DiaryState error={error}> </DiaryState></section>
   const previewEntry = mapDraftToEntry(draft)
   const isBackfill = !isDiaryDateToday(localDate)
+  const focusedPrompt = focusPromptIndex === null ? null : draft.promptResponses[focusPromptIndex] ?? null
   return <section className="diary-page diary-page--editor" aria-labelledby="diary-editor-title">
     <div className="diary-editor-heading"><div><Link className="diary-back-link" to={isBackfill ? '/diary?view=history' : '/diary'}>← Quay lại</Link><p className="eyebrow">{isBackfill ? 'Viết bù' : 'Diary hôm nay'}</p><h1 id="diary-editor-title">{isBackfill ? 'Giữ lại một ngày đã qua' : 'Viết nhật ký'}</h1><p className="diary-date-context">{formatDiaryDate(localDate, { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })}{isBackfill && ' · Bạn đang viết cho ngày này'}</p></div><div className="diary-editor-actions"><span className="diary-autosave" role="status"><i aria-hidden="true">●</i>{saveNotice || 'Bản nháp tự động'}</span><button className="button button--secondary" type="button" onClick={() => setIsFocusMode(true)}>Focus</button><button className="button button--secondary" type="button" disabled={isSaving} onClick={() => void persist('draft')}>{isDiaryFinished(draft.status) ? 'Lưu thay đổi' : 'Lưu nháp'}</button><button className="button button--primary" type="button" disabled={isSaving} onClick={() => void persist('done')}>✓ {isSaving ? 'Đang lưu…' : 'Hoàn tất'}</button></div></div>
     {error && <p className="form-error" role="alert">{error}</p>}
-    <div className="diary-editor-layout"><main className="diary-editor-main"><section className="diary-editor-card diary-editor-card--writing"><div className="diary-field"><label htmlFor="diary-title">Tiêu đề <em>tuỳ chọn</em></label><input id="diary-title" maxLength={120} value={draft.title} onChange={(event) => updateDraft({ title: event.target.value })} placeholder="Một tiêu đề để nhớ về ngày hôm nay…" /><small>{draft.title.length}/120</small></div><div className="diary-field"><label>Tổng quan <em>tuỳ chọn</em></label>{isFocusMode ? <button className="diary-focus-inline-entry" type="button" onClick={() => setIsFocusMode(true)}>Focus mode đang mở ở phía trước</button> : <RichTextEditor value={draft.overallText} onChange={(value) => updateDraft({ overallText: value })} placeholder="Hôm nay của bạn như thế nào? Điều gì đã xảy ra, bạn đã nghĩ gì, cảm nhận gì?" ariaLabel="Tổng quan nhật ký" minHeight={380} />}<small>{richTextWordCount(draft.overallText)} từ</small></div></section><DayRecordContextCard localDate={localDate} entry={draft.id ? previewEntry : null} compact /><section className="diary-editor-card"><div className="diary-section-header"><div><span className="section-label">Những dòng tự sự thêm</span><p>Chọn prompt nếu bạn muốn nhìn ngày hôm nay từ một góc khác.</p></div><button className="button button--secondary button--small" type="button" onClick={() => setShowPromptSelection(true)}>＋ {draft.promptResponses.length ? 'Thêm / sửa prompt' : 'Chọn prompt'}</button></div>{draft.promptResponses.length === 0 ? <div className="diary-subtle-empty diary-subtle-empty--prompt">Chưa có prompt nào được chọn. Phần này hoàn toàn tuỳ chọn.</div> : <PromptResponseEditor responses={draft.promptResponses} onChange={updateResponse} onRemove={removeResponse} onMove={moveResponse} />}</section><section className="diary-editor-card"><EmotionPicker selected={draft.dailyEmotionId} emotions={emotions} onSelect={selectEmotion} /></section><section className="diary-editor-card"><CheckinAttachmentPicker localDate={localDate} records={records} links={draft.checkinLinks} onChange={(links) => updateDraft({ checkinLinks: links })} /></section><section className="diary-editor-card"><ImageManager images={draft.images} pending={pendingImages} onChange={(images) => updateDraft({ images })} onPendingChange={setPendingImages} /></section><div className="diary-editor-footer"><Link className="button button--secondary" to={isBackfill ? '/diary?view=history' : '/diary'}>← Quay lại</Link><div><button className="button button--secondary" type="button" disabled={isSaving} onClick={() => void persist('draft')}>{isDiaryFinished(draft.status) ? 'Lưu thay đổi' : 'Lưu nháp'}</button><button className="button button--primary" type="button" disabled={isSaving} onClick={() => void persist('done')}>✓ Hoàn tất nhật ký</button></div></div></main><DiarySummary entry={previewEntry} checkins={records} /></div>
+    <div className="diary-editor-layout"><main className="diary-editor-main"><section className="diary-editor-card diary-editor-card--writing"><div className="diary-field"><label htmlFor="diary-title">Tiêu đề <em>tuỳ chọn</em></label><input id="diary-title" maxLength={120} value={draft.title} onChange={(event) => updateDraft({ title: event.target.value })} placeholder="Một tiêu đề để nhớ về ngày hôm nay…" /><small>{draft.title.length}/120</small></div><div className="diary-field"><label>Tổng quan <em>tuỳ chọn</em></label>{isFocusMode ? <button className="diary-focus-inline-entry" type="button" onClick={() => setIsFocusMode(true)}>Focus mode đang mở ở phía trước</button> : <RichTextEditor value={draft.overallText} onChange={(value) => updateDraft({ overallText: value })} placeholder="Hôm nay của bạn như thế nào? Điều gì đã xảy ra, bạn đã nghĩ gì, cảm nhận gì?" ariaLabel="Tổng quan nhật ký" minHeight={380} focusMode />}<small>{richTextWordCount(draft.overallText)} từ</small></div></section><DayRecordContextCard localDate={localDate} entry={draft.id ? previewEntry : null} compact /><section className="diary-editor-card"><div className="diary-section-header"><div><span className="section-label">Những dòng tự sự thêm</span><p>Chọn prompt nếu bạn muốn nhìn ngày hôm nay từ một góc khác.</p></div><button className="button button--secondary button--small" type="button" onClick={() => setShowPromptSelection(true)}>＋ {draft.promptResponses.length ? 'Thêm / sửa prompt' : 'Chọn prompt'}</button></div>{draft.promptResponses.length === 0 ? <div className="diary-subtle-empty diary-subtle-empty--prompt">Chưa có prompt nào được chọn. Phần này hoàn toàn tuỳ chọn.</div> : <PromptResponseEditor responses={draft.promptResponses} onChange={updateResponse} onRemove={removeResponse} onMove={moveResponse} onFocus={setFocusPromptIndex} />}</section><section className="diary-editor-card"><EmotionPicker selected={draft.dailyEmotionId} emotions={emotions} onSelect={selectEmotion} /></section><section className="diary-editor-card"><CheckinAttachmentPicker localDate={localDate} records={records} links={draft.checkinLinks} onChange={(links) => updateDraft({ checkinLinks: links })} /></section><section className="diary-editor-card"><ImageManager images={draft.images} pending={pendingImages} onChange={(images) => updateDraft({ images })} onPendingChange={setPendingImages} /></section><div className="diary-editor-footer"><Link className="button button--secondary" to={isBackfill ? '/diary?view=history' : '/diary'}>← Quay lại</Link><div><button className="button button--secondary" type="button" disabled={isSaving} onClick={() => void persist('draft')}>{isDiaryFinished(draft.status) ? 'Lưu thay đổi' : 'Lưu nháp'}</button><button className="button button--primary" type="button" disabled={isSaving} onClick={() => void persist('done')}>✓ Hoàn tất nhật ký</button></div></div></main><DiarySummary entry={previewEntry} checkins={records} /></div>
     {showPromptSelection && <PromptSelectionModal prompts={prompts} selectedIds={selectedIds} responses={draft.promptResponses} onApply={applyPromptSelection} onClose={() => setShowPromptSelection(false)} />}
     {isFocusMode && <FocusWritingLayer title={draft.title || 'Viết nhật ký'} date={localDate} value={draft.overallText} onChange={(value) => updateDraft({ overallText: value })} saveNotice={saveNotice} isSaving={isSaving} onExit={() => setIsFocusMode(false)} />}
+    {focusedPrompt && focusPromptIndex !== null && <FocusWritingLayer title={focusedPrompt.promptSnapshot.textVn} eyebrow="Mảnh tự sự" date={localDate} value={focusedPrompt.responseText} onChange={(value) => updateResponse(focusPromptIndex, { responseText: value })} placeholder="Viết điều prompt này đang gợi lên…" ariaLabel={`Vùng viết: ${focusedPrompt.promptSnapshot.textVn}`} saveNotice={saveNotice} isSaving={isSaving} onExit={() => setFocusPromptIndex(null)} />}
   </section>
 }
 
