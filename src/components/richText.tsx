@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState, type CSSProperties, type ClipboardEvent, type MouseEvent, type ReactNode } from 'react'
+import { createPortal } from 'react-dom'
 import './richText.css'
 
 export const RICH_TEXT_PREFIX = 'sacky-richtext:v1:'
@@ -561,6 +562,7 @@ export function RichTextEditor({ value, onChange, placeholder, ariaLabel, classN
   const [slashMenu, setSlashMenu] = useState<{ query: string; left: number; top: number } | null>(null)
   const [slashIndex, setSlashIndex] = useState(0)
   const popoverAnchorRef = useRef<HTMLElement | null>(null)
+  const popoverRef = useRef<HTMLDivElement | null>(null)
   const [popoverPosition, setPopoverPosition] = useState<RichTextPopoverPosition | null>(null)
   const model = parseRichText(value)
   const isEmpty = !documentToPlainText(model).trim()
@@ -587,7 +589,9 @@ export function RichTextEditor({ value, onChange, placeholder, ariaLabel, classN
 
   useEffect(() => {
     const closeMenus = (event: PointerEvent) => {
-      if (containerRef.current && event.target instanceof Node && !containerRef.current.contains(event.target)) {
+      const isInsideEditor = containerRef.current && event.target instanceof Node && containerRef.current.contains(event.target)
+      const isInsidePopover = popoverRef.current && event.target instanceof Node && popoverRef.current.contains(event.target)
+      if (!isInsideEditor && !isInsidePopover) {
         setSlashMenu(null)
         slashRangeRef.current = null
         setShowColors(false)
@@ -828,6 +832,8 @@ export function RichTextEditor({ value, onChange, placeholder, ariaLabel, classN
   }
   const popoverClass = (baseClass: string): string => `${baseClass}${popoverPosition ? ' is-floating' : ''}`
   const popoverStyle = popoverPosition ? { left: popoverPosition.left, top: popoverPosition.top } : undefined
+  const popoverRefProps = { ref: popoverRef }
+  const renderPopover = (popover: ReactNode): ReactNode => popoverPosition ? createPortal(popover, document.body) : popover
 
   return <div ref={containerRef} className={`rich-text-editor ${active ? 'is-active' : ''} ${className}`.trim()} style={editorStyle}>
     <div className="rich-text-toolbar" role="toolbar" aria-label="Định dạng văn bản">
@@ -862,10 +868,10 @@ export function RichTextEditor({ value, onChange, placeholder, ariaLabel, classN
         {toolbarButton('↷', 'Làm lại', redo)}
       </div>
     </div>
-    {showColors && <div className={popoverClass('rich-text-inline-popover rich-text-color-popover')} style={popoverStyle} role="dialog" aria-label="Màu chữ">{COLOR_COMMANDS.map((color) => <button key={color.value} type="button" title={color.label} onMouseDown={(event) => { preventToolbarBlur(event); applyColor(color.value) }}><i style={{ background: COLOR_VALUES[color.value] }} />{color.label}</button>)}</div>}
-    {showFontSizes && <div className={popoverClass('rich-text-inline-popover rich-text-font-size-popover')} style={popoverStyle} role="dialog" aria-label="Cỡ chữ">{FONT_SIZE_COMMANDS.map((size) => <button key={size.value} type="button" onMouseDown={(event) => { preventToolbarBlur(event); applyFontSize(size.value) }}>{size.label}</button>)}</div>}
-    {showEmoji && <div className={popoverClass('rich-text-inline-popover rich-text-emoji-popover')} style={popoverStyle} role="dialog" aria-label="Chọn emoji">{EMOJI_OPTIONS.map((emoji) => <button key={emoji} type="button" onMouseDown={(event) => { preventToolbarBlur(event); insertEmoji(emoji) }}>{emoji}</button>)}</div>}
-    {showSpacing && <div className={popoverClass('rich-text-spacing-popover')} style={popoverStyle} role="dialog" aria-label="Thiết lập khoảng cách"><label><span>Line spacing</span><select value={model.lineSpacing} onChange={(event) => updateSpacing('lineSpacing', event.target.value as RichTextLineSpacing)}><option value="compact">Compact · 1.25</option><option value="normal">Normal · 1.5</option><option value="airy">Relaxed · 1.8</option></select></label><label><span>Paragraph spacing</span><select value={model.paragraphSpacing} onChange={(event) => updateSpacing('paragraphSpacing', event.target.value as RichTextParagraphSpacing)}><option value="small">Tight</option><option value="normal">Normal</option><option value="large">Spacious</option></select></label></div>}
+    {showColors && renderPopover(<div {...popoverRefProps} className={popoverClass('rich-text-inline-popover rich-text-color-popover')} style={popoverStyle} role="dialog" aria-label="Màu chữ">{COLOR_COMMANDS.map((color) => <button key={color.value} type="button" title={color.label} onMouseDown={(event) => { preventToolbarBlur(event); applyColor(color.value) }}><i style={{ background: COLOR_VALUES[color.value] }} />{color.label}</button>)}</div>)}
+    {showFontSizes && renderPopover(<div {...popoverRefProps} className={popoverClass('rich-text-inline-popover rich-text-font-size-popover')} style={popoverStyle} role="dialog" aria-label="Cỡ chữ">{FONT_SIZE_COMMANDS.map((size) => <button key={size.value} type="button" onMouseDown={(event) => { preventToolbarBlur(event); applyFontSize(size.value) }}>{size.label}</button>)}</div>)}
+    {showEmoji && renderPopover(<div {...popoverRefProps} className={popoverClass('rich-text-inline-popover rich-text-emoji-popover')} style={popoverStyle} role="dialog" aria-label="Chọn emoji">{EMOJI_OPTIONS.map((emoji) => <button key={emoji} type="button" onMouseDown={(event) => { preventToolbarBlur(event); insertEmoji(emoji) }}>{emoji}</button>)}</div>)}
+    {showSpacing && renderPopover(<div {...popoverRefProps} className={popoverClass('rich-text-spacing-popover')} style={popoverStyle} role="dialog" aria-label="Thiết lập khoảng cách"><label><span>Line spacing</span><select value={model.lineSpacing} onChange={(event) => updateSpacing('lineSpacing', event.target.value as RichTextLineSpacing)}><option value="compact">Compact · 1.25</option><option value="normal">Normal · 1.5</option><option value="airy">Relaxed · 1.8</option></select></label><label><span>Paragraph spacing</span><select value={model.paragraphSpacing} onChange={(event) => updateSpacing('paragraphSpacing', event.target.value as RichTextParagraphSpacing)}><option value="small">Tight</option><option value="normal">Normal</option><option value="large">Spacious</option></select></label></div>)}
     {slashMenu && <div className="rich-text-slash-menu" role="listbox" aria-label="Quick Insert" style={{ left: slashMenu.left, top: slashMenu.top }}>{filteredSlashCommands.length ? filteredSlashCommands.map((command, index) => <button key={command.key} className={index === slashIndex ? 'is-highlighted' : ''} type="button" role="option" aria-selected={index === slashIndex} onMouseDown={(event) => { preventToolbarBlur(event); applySlashCommand(command) }}><strong>{command.key}</strong><span><b>{command.label}</b><small>{command.description}</small></span></button>) : <p>Không tìm thấy lệnh</p>}</div>}
     <div ref={editorRef} className="rich-text-content" contentEditable role="textbox" aria-multiline="true" aria-label={ariaLabel} data-placeholder={placeholder} data-empty={isEmpty} style={minHeight ? { minHeight } : undefined} suppressContentEditableWarning onFocus={() => setIsFocused(true)} onBlur={(event) => { syncFromDom(); if (event.relatedTarget instanceof Node && event.currentTarget.parentElement?.contains(event.relatedTarget)) return; setIsFocused(false); setShowSpacing(false) }} onInput={() => { syncFromDom(); syncSlashMenu() }} onPaste={handlePaste} onKeyDown={handleKeyDown} />
   </div>

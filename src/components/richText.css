@@ -103,7 +103,7 @@
 .rich-text-inline-popover.is-floating,
 .rich-text-spacing-popover.is-floating {
   position: fixed;
-  z-index: 30;
+  z-index: 1000;
   top: auto;
   left: auto;
   max-height: calc(100vh - 1rem);
