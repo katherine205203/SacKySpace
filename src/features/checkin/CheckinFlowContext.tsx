@@ -4,6 +4,7 @@ import { getReferenceData } from './services/referenceRepository'
 import { createEmptyDraft, type CheckinDraft } from './types'
 import { checkinFlowContext, type CheckinFlowContextValue } from './useCheckinFlow'
 import { isRichTextEmpty } from '../../components/richText'
+import { getCheckinErrorMessage } from './utils/errors'
 
 const DRAFT_STORAGE_KEY = 'sacky:checkin-draft:v1'
 
@@ -63,8 +64,7 @@ export function CheckinFlowProvider({ children }: { children: ReactNode }) {
           window.localStorage.removeItem(DRAFT_STORAGE_KEY)
           return savedDraft
         } catch (reason: unknown) {
-          const message = reason instanceof Error ? reason.message : 'Unable to save this check-in.'
-          setError(message)
+          setError(getCheckinErrorMessage(reason))
           throw reason
         } finally {
           setIsSaving(false)

@@ -1,6 +1,7 @@
 import { supabase } from '../../../services/supabase/client'
 import type { ActionDraft, CheckinDraft, CheckinRecord, ReferenceData } from '../types'
 import { getCurrentStreakFromOccurredAt, getHistoryDateRange, getLocalDateKey } from '../utils/history'
+import { MAX_ACTIONS, MAX_CONTEXTS, MAX_NEEDS, MAX_SECONDARY_EMOTIONS } from '../utils/selectionRules'
 import { isRichTextEmpty } from '../../../components/richText'
 
 type CheckinRow = {
@@ -60,89 +61,109 @@ export const normalizeOccurredAt = (occurredAt?: string): string => {
   return value.toISOString()
 }
 
-const insertRelations = async (draft: CheckinDraft): Promise<void> => {
+const unique = (values: string[]): string[] => [...new Set(values)]
+
+const assertSelectionLimit = (label: string, values: { length: number }, limit: number): void => {
+  if (values.length > limit) throw new Error(`Check-in chỉ có thể có tối đa ${limit} ${label}.`)
+}
+
+const syncRelation = async (
+  checkinId: string,
+  table: 'checkin_secondary_emotions' | 'checkin_needs' | 'checkin_contexts',
+  key: 'emotion_id' | 'need_id' | 'context_id',
+  values: string[],
+): Promise<void> => {
+  const { data, error: loadError } = await supabase.from(table).select(key).eq('checkin_id', checkinId)
+  if (loadError) throw loadError
+
+  const existingIds = (data ?? [])
+    .map((row) => String((row as Record<string, unknown>)[key] ?? ''))
+    .filter(Boolean)
+  const removedIds = existingIds.filter((id) => !values.includes(id))
+  if (removedIds.length) {
+    const { error } = await supabase.from(table).delete().eq('checkin_id', checkinId).in(key, removedIds)
+    if (error) throw error
+  }
+
+  if (!values.length) return
+  const rows = values.map((value, index) => ({ checkin_id: checkinId, [key]: value, position: index + 1 }))
+  const { error } = await supabase.from(table).upsert(rows, { onConflict: `checkin_id,${key}` })
+  if (error) throw error
+}
+
+const syncRelations = async (draft: CheckinDraft): Promise<void> => {
   if (!draft.id) throw new Error('Check-in chưa có mã để lưu các lựa chọn liên quan.')
-  const secondaryEmotionIds = [...new Set(draft.secondaryEmotionIds)]
-  const needIds = [...new Set(draft.needIds)]
-  const contextIds = [...new Set(draft.contextIds)]
-  if (draft.secondaryEmotionIds.length) {
-    const { error } = await supabase.from('checkin_secondary_emotions').insert(
-      secondaryEmotionIds.map((emotionId, index) => ({
-        checkin_id: draft.id,
-        emotion_id: emotionId,
-        position: index + 1,
-      })),
-    )
-    if (error) throw error
-  }
-  if (needIds.length) {
-    const { error } = await supabase.from('checkin_needs').insert(
-      needIds.map((needId, index) => ({
-        checkin_id: draft.id,
-        need_id: needId,
-        position: index + 1,
-      })),
-    )
-    if (error) throw error
-  }
-  if (contextIds.length) {
-    const { error } = await supabase.from('checkin_contexts').insert(
-      contextIds.map((contextId, index) => ({
-        checkin_id: draft.id,
-        context_id: contextId,
-        position: index + 1,
-      })),
-    )
-    if (error) throw error
-  }
+  const secondaryEmotionIds = unique(draft.secondaryEmotionIds)
+  const needIds = unique(draft.needIds)
+  const contextIds = unique(draft.contextIds)
+  assertSelectionLimit('cảm xúc phụ', secondaryEmotionIds, MAX_SECONDARY_EMOTIONS)
+  assertSelectionLimit('nhu cầu', needIds, MAX_NEEDS)
+  assertSelectionLimit('bối cảnh', contextIds, MAX_CONTEXTS)
+  await syncRelation(draft.id, 'checkin_secondary_emotions', 'emotion_id', secondaryEmotionIds)
+  await syncRelation(draft.id, 'checkin_needs', 'need_id', needIds)
+  await syncRelation(draft.id, 'checkin_contexts', 'context_id', contextIds)
 }
 
-const insertActions = async (draft: CheckinDraft, userId: string): Promise<void> => {
-  if (!draft.actions.length) return
-  if (draft.actions.length > 2 || !draft.id) {
-    throw new Error('A check-in can have at most two actions.')
-  }
-  const { error } = await supabase.from('reminders').insert(
-    draft.actions.map((action) => ({
-      user_id: userId,
-      origin: 'checkin',
-      source_checkin_id: draft.id,
-      care_action_id: action.careActionId,
-      title: action.title.trim(),
-      note: action.note.trim() || null,
-      planned_date: action.plannedDate || null,
-      due_time: action.dueTime || null,
-      status: action.status ?? 'pending',
-      completed_at: action.completedAt ?? null,
-    })),
-  )
-  if (error) throw error
-}
+const actionPayload = (action: ActionDraft, userId: string, checkinId: string) => ({
+  user_id: userId,
+  origin: 'checkin',
+  source_checkin_id: checkinId,
+  care_action_id: action.careActionId,
+  title: action.title.trim(),
+  note: action.note.trim() || null,
+  planned_date: action.plannedDate || null,
+  due_time: action.dueTime || null,
+  status: action.status ?? 'pending',
+  completed_at: action.completedAt ?? null,
+})
 
-const clearRelationsAndActions = async (checkinId: string): Promise<void> => {
-  const relationTables = ['checkin_secondary_emotions', 'checkin_needs', 'checkin_contexts'] as const
-  for (const table of relationTables) {
-    const { error } = await supabase.from(table).delete().eq('checkin_id', checkinId)
-    if (error) throw error
-  }
-  const { error } = await supabase
+const syncActions = async (draft: CheckinDraft, userId: string): Promise<void> => {
+  if (!draft.id) throw new Error('Check-in chưa có mã để lưu action.')
+  assertSelectionLimit('action', draft.actions, MAX_ACTIONS)
+
+  const { data: existingRows, error: loadError } = await supabase
     .from('reminders')
-    .delete()
-    .eq('source_checkin_id', checkinId)
+    .select('id')
+    .eq('source_checkin_id', draft.id)
     .eq('origin', 'checkin')
-  if (error) throw error
+    .eq('user_id', userId)
+  if (loadError) throw loadError
+
+  const existingIds = (existingRows ?? []).map((row) => String((row as { id?: unknown }).id ?? '')).filter(Boolean)
+  const existingIdSet = new Set(existingIds)
+  const desiredExistingIds = draft.actions.map((action) => action.id).filter((id): id is string => Boolean(id && existingIdSet.has(id)))
+  const removedIds = existingIds.filter((id) => !desiredExistingIds.includes(id))
+  if (removedIds.length) {
+    const { error } = await supabase.from('reminders').delete().in('id', removedIds).eq('user_id', userId)
+    if (error) throw error
+  }
+
+  const newActions = draft.actions.filter((action) => !action.id || !existingIdSet.has(action.id))
+  if (newActions.length) {
+    const { error } = await supabase.from('reminders').insert(newActions.map((action) => actionPayload(action, userId, draft.id!)))
+    if (error) throw error
+  }
+
+  for (const action of draft.actions) {
+    if (!action.id || !existingIdSet.has(action.id)) continue
+    const { error } = await supabase
+      .from('reminders')
+      .update(actionPayload(action, userId, draft.id!))
+      .eq('id', action.id)
+      .eq('source_checkin_id', draft.id)
+      .eq('origin', 'checkin')
+      .eq('user_id', userId)
+    if (error) throw error
+  }
 }
 
 const saveRelationsAndActions = async (draft: CheckinDraft, userId: string): Promise<void> => {
   if (!draft.id) throw new Error('Check-in chưa có mã để lưu các lựa chọn liên quan.')
-  await insertRelations(draft)
-  await insertActions(draft, userId)
-}
-
-const replaceRelationsAndActions = async (draft: CheckinDraft, userId: string): Promise<void> => {
-  if (!draft.id) throw new Error('Check-in chưa có mã để lưu các lựa chọn liên quan.')
-  await clearRelationsAndActions(draft.id)
-  await saveRelationsAndActions(draft, userId)
+  // Synchronize in place: remove only stale rows, then upsert the desired rows.
+  // This makes retries idempotent and avoids the old delete-all/insert-all path
+  // leaving a check-in partially empty when one request fails.
+  await syncRelations(draft)
+  await syncActions(draft, userId)
 }
 
 export const createCheckin = async (
@@ -171,7 +192,7 @@ export const createCheckin = async (
   const data = rawData as CheckinTimeRow
 
   const persistedDraft = { ...draft, id: data.id }
-  await replaceRelationsAndActions(persistedDraft, userId)
+  await saveRelationsAndActions(persistedDraft, userId)
   return { id: data.id, occurredAt: getOccurredAt(data), createdAt: data.created_at, updatedAt: data.updated_at }
 }
 
@@ -197,7 +218,7 @@ export const updateCheckin = async (
   if (error) throw error
   const data = rawData as CheckinTimeRow
 
-  await replaceRelationsAndActions(draft, userId)
+  await saveRelationsAndActions(draft, userId)
   return { id: data.id, occurredAt: getOccurredAt(data), createdAt: data.created_at, updatedAt: data.updated_at }
 }
 
