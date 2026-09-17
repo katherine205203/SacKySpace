@@ -182,12 +182,12 @@ const getCheckinLabel = (record: CheckinRecord): { title: string; emoji: string;
 
 const formatCheckinTime = (record: CheckinRecord): string => new Intl.DateTimeFormat('vi-VN', { timeZone: DIARY_TIME_ZONE, hour: '2-digit', minute: '2-digit', hour12: false }).format(new Date(record.occurredAt))
 
-const DiaryReadView = ({ entry, onEdit, onDelete, emotionSize = 'default' }: { entry: DiaryEntry; onEdit?: () => void; onDelete?: () => void; emotionSize?: 'default' | 'small' }) => {
+const DiaryReadView = ({ entry, onEdit, onDelete, emotionSize = 'default', historyDetail = false }: { entry: DiaryEntry; onEdit?: () => void; onDelete?: () => void; emotionSize?: 'default' | 'small'; historyDetail?: boolean }) => {
   const { records, reference } = useDiaryCheckins(entry.localDate)
   const linked = entry.checkinLinks.map((link) => ({ link, record: records.find((record) => record.id === link.checkinId) })).filter((item): item is { link: DiaryCheckinLink; record: CheckinRecord } => Boolean(item.record))
   const completedPrompts = entry.promptResponses.filter((response) => response.isDone).length
   const updatedTime = new Intl.DateTimeFormat('vi-VN', { timeZone: DIARY_TIME_ZONE, hour: '2-digit', minute: '2-digit', hour12: false }).format(new Date(entry.updatedAt))
-  return <article className="diary-read-view">
+  return <article className={`diary-read-view${historyDetail ? ' diary-read-view--history' : ''}`}>
     <div className="diary-read-view__toolbar"><span className="diary-read-view__date">{formatDiaryDate(entry.localDate, { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })}</span><div><DiaryStatusBadge status={entry.status} />{onEdit && <button className="button button--secondary button--small" type="button" onClick={onEdit}>{entry.status === 'draft' ? '→ Tiếp tục viết' : '✎ Chỉnh sửa'}</button>}{onDelete && <button className="button button--danger button--small" type="button" onClick={onDelete}>Xóa</button>}</div></div>
     <div className="diary-read-hero">
       <div className="diary-read-hero__copy">{entry.dailyEmotionSnapshot && <DiaryEmotionVisual snapshot={entry.dailyEmotionSnapshot} size={emotionSize} />}<p className="eyebrow">{entry.status === 'done' ? 'Một ngày được giữ lại' : 'Bản nháp của ngày này'}</p><h2>{entry.title || 'Nhật ký ngày này'}</h2>{!isRichTextEmpty(entry.overallText) && <RichTextRenderer value={entry.overallText} className="diary-read-view__overall" />}</div>
@@ -635,7 +635,7 @@ const DiaryCalendar = ({ month, entries, selectedDate, onSelect, onMoveMonth }: 
 
 const HistoryDetail = ({ date, entry, onEdit, onDelete }: { date: string; entry: DiaryEntry | null; onEdit: () => void; onDelete: () => void }) => {
   if (!entry) return <section className="diary-history-detail diary-history-detail--missing"><div className="diary-empty-hero__art" aria-hidden="true"><span>✦</span><i>◌</i></div><p className="eyebrow">{formatDiaryDate(date, { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })}</p><h2>Chưa viết ngày này</h2><p>Mỗi ngày là một cơ hội để nhìn lại. Bạn có thể viết bù mà không cần quay về hôm nay.</p><button className="button button--primary" type="button" onClick={onEdit}>✎ Viết bù</button></section>
-  return <DiaryReadView entry={entry} onEdit={onEdit} onDelete={onDelete} emotionSize="small" />
+  return <DiaryReadView entry={entry} onEdit={onEdit} onDelete={onDelete} emotionSize="small" historyDetail />
 }
 
 export function DiaryHistoryPage() {
