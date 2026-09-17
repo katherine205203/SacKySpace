@@ -29,6 +29,10 @@ export const getCheckinErrorMessage = (reason: unknown, fallback = 'Không thể
     return 'Không thể lưu 3 cảm xúc phụ vì database chưa đồng bộ rule mới. Hãy cập nhật Supabase migration rồi thử lại.'
   }
 
+  if (/active action limit|linked actions|linked action|action limit|action/.test(normalized) && /limit|at most|reached|tối đa|can have/.test(normalized)) {
+    return 'Check-in này đã có tối đa 2 Action đang hoạt động.'
+  }
+
   if (/occurred_at|schema cache|column .* does not exist/.test(normalized)) {
     return 'Database Check-in chưa được cập nhật migration thời điểm trải nghiệm.'
   }

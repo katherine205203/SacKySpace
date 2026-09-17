@@ -18,4 +18,8 @@ describe('getCheckinErrorMessage', () => {
     const message = 'there is no unique or exclusion constraint matching the ON CONFLICT specification for table checkin_secondary_emotions'
     expect(getCheckinErrorMessage({ code: '42P10', message })).toBe(message)
   })
+
+  it('translates the linked-action limit into an actionable message', () => {
+    expect(getCheckinErrorMessage({ message: 'A check-in has reached its active action limit' })).toBe('Check-in này đã có tối đa 2 Action đang hoạt động.')
+  })
 })

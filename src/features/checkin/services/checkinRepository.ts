@@ -136,6 +136,17 @@ const actionPayload = (action: ActionDraft, userId: string, checkinId: string) =
   completed_at: action.completedAt ?? null,
 })
 
+const actionUpdatePayload = (action: ActionDraft, checkinId: string) => ({
+  source_checkin_id: checkinId,
+  care_action_id: action.careActionId,
+  title: action.title.trim(),
+  note: action.note.trim() || null,
+  planned_date: action.plannedDate || null,
+  due_time: action.dueTime || null,
+  status: action.status ?? 'pending',
+  completed_at: action.completedAt ?? null,
+})
+
 const syncActions = async (draft: CheckinDraft, userId: string): Promise<void> => {
   if (!draft.id) throw new Error('Check-in chưa có mã để lưu action.')
   assertSelectionLimit('action', draft.actions, MAX_ACTIONS)
@@ -144,7 +155,6 @@ const syncActions = async (draft: CheckinDraft, userId: string): Promise<void> =
     .from('reminders')
     .select('id')
     .eq('source_checkin_id', draft.id)
-    .eq('origin', 'checkin')
     .eq('user_id', userId)
   if (loadError) throw loadError
 
@@ -167,10 +177,12 @@ const syncActions = async (draft: CheckinDraft, userId: string): Promise<void> =
     if (!action.id || !existingIdSet.has(action.id)) continue
     const { error } = await supabase
       .from('reminders')
-      .update(actionPayload(action, userId, draft.id!))
+      // Keep the action's existing origin (for example, an Action Space item
+      // linked later to this check-in). Editing a check-in must not silently
+      // reclassify that action as a check-in-created action.
+      .update(actionUpdatePayload(action, draft.id!))
       .eq('id', action.id)
       .eq('source_checkin_id', draft.id)
-      .eq('origin', 'checkin')
       .eq('user_id', userId)
     if (error) throw error
   }
@@ -247,7 +259,7 @@ const loadRelations = async (ids: string[]) => {
     supabase.from('checkin_secondary_emotions').select('checkin_id, emotion_id, position').in('checkin_id', ids).order('position'),
     supabase.from('checkin_needs').select('checkin_id, need_id, position').in('checkin_id', ids).order('position'),
     supabase.from('checkin_contexts').select('checkin_id, context_id, position').in('checkin_id', ids).order('position'),
-    supabase.from('reminders').select('id, source_checkin_id, care_action_id, title, note, planned_date, due_time, status, completed_at').eq('origin', 'checkin').in('source_checkin_id', ids),
+    supabase.from('reminders').select('id, source_checkin_id, care_action_id, title, note, planned_date, due_time, status, completed_at').in('source_checkin_id', ids),
   ])
   for (const result of [secondaryResult, needsResult, contextsResult, actionsResult]) {
     if (result.error) throw result.error
@@ -404,7 +416,6 @@ export const deleteLinkedActions = async (id: string): Promise<void> => {
     .from('reminders')
     .delete()
     .eq('source_checkin_id', id)
-    .eq('origin', 'checkin')
     .eq('user_id', userId)
   if (error) throw error
 }
@@ -415,7 +426,6 @@ export const detachLinkedActions = async (id: string): Promise<void> => {
     .from('reminders')
     .update({ source_checkin_id: null })
     .eq('source_checkin_id', id)
-    .eq('origin', 'checkin')
     .eq('user_id', userId)
   if (error) throw error
 }
