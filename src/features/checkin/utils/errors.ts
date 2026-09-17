@@ -22,7 +22,10 @@ export const getCheckinErrorMessage = (reason: unknown, fallback = 'Không thể
   const code = typeof error?.code === 'string' ? error.code : ''
   const normalized = message.toLocaleLowerCase()
 
-  if (/secondary emotion|secondary_emotion|cảm xúc phụ/.test(normalized) && /limit|at most|reached|tối đa|constraint|check/.test(normalized)) {
+  if (
+    /secondary emotion|secondary_emotion|cảm xúc phụ/.test(normalized) &&
+    /limit|at most|reached|tối đa|can have|has reached/.test(normalized)
+  ) {
     return 'Không thể lưu 3 cảm xúc phụ vì database chưa đồng bộ rule mới. Hãy cập nhật Supabase migration rồi thử lại.'
   }
 

@@ -86,9 +86,28 @@ const syncRelation = async (
   }
 
   if (!values.length) return
-  const rows = values.map((value, index) => ({ checkin_id: checkinId, [key]: value, position: index + 1 }))
-  const { error } = await supabase.from(table).upsert(rows, { onConflict: `checkin_id,${key}` })
-  if (error) throw error
+
+  // Update rows that already belong to this check-in and insert only genuinely
+  // new rows. Avoid relying on PostgREST's ON CONFLICT target here: some
+  // production schemas expose the composite primary key differently, which
+  // makes create work but causes editing an existing check-in to fail.
+  const existingIdSet = new Set(existingIds)
+  for (const [index, value] of values.entries()) {
+    if (existingIdSet.has(value)) {
+      const { error } = await supabase
+        .from(table)
+        .update({ position: index + 1 })
+        .eq('checkin_id', checkinId)
+        .eq(key, value)
+      if (error) throw error
+      continue
+    }
+
+    const { error } = await supabase
+      .from(table)
+      .insert({ checkin_id: checkinId, [key]: value, position: index + 1 })
+    if (error) throw error
+  }
 }
 
 const syncRelations = async (draft: CheckinDraft): Promise<void> => {
@@ -159,7 +178,7 @@ const syncActions = async (draft: CheckinDraft, userId: string): Promise<void> =
 
 const saveRelationsAndActions = async (draft: CheckinDraft, userId: string): Promise<void> => {
   if (!draft.id) throw new Error('Check-in chưa có mã để lưu các lựa chọn liên quan.')
-  // Synchronize in place: remove only stale rows, then upsert the desired rows.
+  // Synchronize in place: remove only stale rows, then update/insert desired rows.
   // This makes retries idempotent and avoids the old delete-all/insert-all path
   // leaving a check-in partially empty when one request fails.
   await syncRelations(draft)

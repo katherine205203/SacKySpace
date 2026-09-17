@@ -13,4 +13,9 @@ describe('getCheckinErrorMessage', () => {
   it('keeps actionable unknown errors', () => {
     expect(getCheckinErrorMessage({ message: 'new row violates row-level security policy' })).toBe('new row violates row-level security policy')
   })
+
+  it('does not mislabel an edit conflict-target error as a secondary-emotion limit', () => {
+    const message = 'there is no unique or exclusion constraint matching the ON CONFLICT specification for table checkin_secondary_emotions'
+    expect(getCheckinErrorMessage({ code: '42P10', message })).toBe(message)
+  })
 })
