@@ -80,6 +80,7 @@
 .diary-response-card__actions button, .diary-image-card figcaption button, .diary-calendar__header button { display: grid; width: 1.8rem; height: 1.8rem; place-items: center; padding: 0; border: 1px solid var(--color-border); border-radius: .55rem; background: white; color: var(--color-text-muted); font-size: .75rem; }
 .diary-response-card__actions button:hover, .diary-image-card figcaption button:hover, .diary-calendar__header button:hover { border-color: var(--color-violet); color: var(--color-violet); }
 .diary-response-card__actions button:disabled, .diary-image-card figcaption button:disabled { cursor: not-allowed; opacity: .35; }
+.diary-response-card__actions .diary-prompt-focus-button { width: auto; padding: 0 .5rem; gap: .22rem; font-size: .62rem; font-weight: 800; }
 .diary-response-card textarea { width: 100%; min-height: 5rem; padding: .65rem; margin-top: .75rem; border: 1px solid color-mix(in srgb, var(--prompt-color) 25%, var(--color-border)); border-radius: .65rem; outline: 0; background: rgba(255,255,255,.85); color: var(--color-text); font-size: .78rem; line-height: 1.6; resize: vertical; }
 .diary-response-card textarea:focus { border-color: var(--prompt-color); box-shadow: 0 0 0 3px color-mix(in srgb, var(--prompt-color) 14%, white); }
 .diary-response-card__footer { display: flex; align-items: center; justify-content: space-between; gap: .5rem; margin-top: .35rem; color: var(--color-text-soft); font-size: .63rem; }
