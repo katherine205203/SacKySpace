@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef, useState, type CSSProperties } from 'react'
 import { Link, useSearchParams } from 'react-router-dom'
-import { getDiaryEntry, markDiaryDayLocked } from '../services/diaryRepository'
+import { getDiaryEntry } from '../services/diaryRepository'
 import { applyDayRecordSnapshots, isDayRecordLocked, listDayRecordSnapshots, loadLiveDayRecord, saveDayRecordSnapshots } from '../services/dayRecord'
 import type { DayRecord, DayRecordFact, DayRecordItem, DayRecordSnapshot, DiaryEntry } from '../types'
 import { DIARY_TIME_ZONE, formatDiaryDate } from '../utils'
@@ -27,18 +27,16 @@ const useDayRecord = (localDate: string, entry: DiaryEntry | null) => {
   const [error, setError] = useState<string | null>(null)
   const capturedLockedAtRef = useRef<string | null>(null)
   const entryId = entry?.id ?? null
-  const entryLockedAt = entry?.dayLockedAt ?? null
 
   const refresh = useCallback(async () => {
     try {
       const live = await loadLiveDayRecord(localDate)
-      let lockedAt = entryLockedAt ?? capturedLockedAtRef.current
       let snapshots = entryId ? await listDayRecordSnapshots(entryId) : []
+      let lockedAt = capturedLockedAtRef.current ?? snapshots[0]?.lockedAt ?? null
       if (entryId && isDayRecordLocked(localDate) && !lockedAt) {
         const nextLockedAt = new Date().toISOString()
         const facts = live.items.map(toFact)
         await saveDayRecordSnapshots(entryId, facts, nextLockedAt)
-        await markDiaryDayLocked(entryId, localDate, nextLockedAt)
         lockedAt = nextLockedAt
         capturedLockedAtRef.current = nextLockedAt
         snapshots = toSnapshots(entryId, facts, nextLockedAt)
@@ -50,7 +48,7 @@ const useDayRecord = (localDate: string, entry: DiaryEntry | null) => {
     } finally {
       setIsLoading(false)
     }
-  }, [entryId, entryLockedAt, localDate])
+  }, [entryId, localDate])
 
   useEffect(() => {
     void refresh()

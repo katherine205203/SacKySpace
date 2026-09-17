@@ -1,8 +1,8 @@
 import { supabase } from '../../../services/supabase/client'
-import { createDiaryId, getDiaryLocalDate } from '../utils'
+import { createDiaryId, getDiaryLocalDate, isDiaryBackfilledDate, shouldSystemCompleteDiary, systemCompleteDiary } from '../utils'
 import { DEFAULT_DIARY_PROMPTS } from '../prompts'
 import { resolveDiaryMediaUrl, syncDiaryMedia } from './diaryMedia'
-import type { DiaryCheckinLink, DiaryDraft, DiaryEntry, DiaryImage, DiaryPrompt, DiaryStatus, JourneyDraft, JourneyEntry, JourneyStatus } from '../types'
+import type { DiaryCheckinLink, DiaryCompletionSource, DiaryDraft, DiaryEntry, DiaryImage, DiaryPrompt, DiaryStatus, JourneyDraft, JourneyEntry, JourneyStatus } from '../types'
 import { isRichTextEmpty } from '../../../components/richText'
 
 const LOCAL_STORAGE_PREFIX = 'sacky:diary:v2:'
@@ -20,10 +20,12 @@ type DiaryEntryRow = {
   created_at: string
   updated_at: string
   completed_at: string | null
+  completion_source?: string | null
+  is_backfilled?: boolean | null
   day_locked_at?: string | null
 }
 
-const DIARY_ENTRY_SELECT = 'id, user_id, local_date, status, title, overall_text, daily_emotion_id, daily_emotion_snapshot, created_at, updated_at, completed_at, day_locked_at'
+const DIARY_ENTRY_SELECT = 'id, user_id, local_date, status, title, overall_text, daily_emotion_id, daily_emotion_snapshot, created_at, updated_at, completed_at, completion_source, is_backfilled, day_locked_at'
 const LEGACY_DIARY_ENTRY_SELECT = 'id, user_id, local_date, status, title, overall_text, daily_emotion_id, daily_emotion_snapshot, created_at, updated_at, completed_at'
 
 type DiaryPromptRow = {
@@ -79,15 +81,22 @@ const currentUserId = async (): Promise<string> => {
   return data.user.id
 }
 
-const isFinishedStatus = (status: DiaryStatus): boolean => status === 'done' || status === 'user_done' || status === 'day_locked'
+const isFinishedStatus = (status: DiaryStatus): boolean => status === 'done'
 
 const normalizeDiaryStatus = (status: string): DiaryStatus => {
-  if (status === 'done') return 'user_done'
-  if (status === 'draft' || status === 'user_done' || status === 'day_locked' || status === 'deleted') return status
+  if (status === 'done' || status === 'user_done' || status === 'day_locked') return 'done'
+  if (status === 'draft') return 'draft'
   return 'draft'
 }
 
-const missingDayLockColumn = (message: string): boolean => /day_locked_at|column .* does not exist|schema cache/i.test(message)
+const normalizeCompletionSource = (status: string, source?: string | null): DiaryCompletionSource | null => {
+  if (status === 'day_locked') return 'system'
+  if (status === 'user_done') return 'user'
+  if (status !== 'done') return null
+  return source === 'system' ? 'system' : 'user'
+}
+
+const missingDiaryLifecycleColumn = (message: string): boolean => /completion_source|is_backfilled|day_locked_at|column .* does not exist|schema cache/i.test(message)
 const missingDiaryMediaTable = (message: string): boolean => /diary_media|relation .* does not exist|schema cache/i.test(message)
 
 const isManagedDiaryImage = (image: DiaryImage): boolean => image.sourceType === 'local_upload' || image.sourceType === 'url_import' || Boolean(image.mediaKey)
@@ -95,6 +104,7 @@ const hasManagedDiaryImages = (images: DiaryImage[]): boolean => images.some(isM
 
 type SaveDiaryOptions = {
   skipMediaSync?: boolean
+  completionSource?: DiaryCompletionSource
 }
 
 const toPrompt = (row: DiaryPromptRow): DiaryPrompt => ({
@@ -149,7 +159,10 @@ const readLocalEntries = (userId: string): DiaryEntry[] => {
   try {
     const parsed = JSON.parse(window.localStorage.getItem(`${LOCAL_STORAGE_PREFIX}${userId}`) ?? '[]') as unknown
     if (!Array.isArray(parsed)) return []
-    return parsed.filter((entry): entry is DiaryEntry => Boolean(entry && typeof entry === 'object' && typeof (entry as DiaryEntry).localDate === 'string' && (entry as DiaryEntry).status !== 'deleted'))
+    return parsed.flatMap((entry) => {
+      const normalized = normalizeStoredEntry(entry)
+      return normalized ? [normalized] : []
+    })
   } catch {
     return []
   }
@@ -157,10 +170,30 @@ const readLocalEntries = (userId: string): DiaryEntry[] => {
 
 const writeLocalEntries = (userId: string, entries: DiaryEntry[]): void => {
   try {
-    window.localStorage.setItem(`${LOCAL_STORAGE_PREFIX}${userId}`, JSON.stringify(entries.filter((entry) => entry.status !== 'deleted')))
+    window.localStorage.setItem(`${LOCAL_STORAGE_PREFIX}${userId}`, JSON.stringify(entries))
   } catch {
     // The remote record remains authoritative when local storage is unavailable.
   }
+}
+
+const normalizeStoredEntry = (value: unknown): DiaryEntry | null => {
+  if (!value || typeof value !== 'object') return null
+  const raw = value as Record<string, unknown>
+  if (typeof raw.localDate !== 'string') return null
+  const rawStatus = typeof raw.status === 'string' ? raw.status : 'draft'
+  if (rawStatus === 'deleted') return null
+  const createdAt = typeof raw.createdAt === 'string' ? raw.createdAt : new Date().toISOString()
+  const status = normalizeDiaryStatus(rawStatus)
+  const { dayLockedAt: _legacyDayLockedAt, ...rest } = raw
+  return {
+    ...rest,
+    status,
+    completionSource: normalizeCompletionSource(rawStatus, typeof raw.completionSource === 'string' ? raw.completionSource : null),
+    isBackfilled: typeof raw.isBackfilled === 'boolean' ? raw.isBackfilled : isDiaryBackfilledDate(raw.localDate, new Date(createdAt)),
+    completedAt: status === 'done' && typeof raw.completedAt === 'string' ? raw.completedAt : status === 'done' ? createdAt : null,
+    createdAt,
+    updatedAt: typeof raw.updatedAt === 'string' ? raw.updatedAt : createdAt,
+  } as DiaryEntry
 }
 
 const mapRemoteEntry = (
@@ -168,11 +201,13 @@ const mapRemoteEntry = (
   promptRows: Array<{ diary_id: string; prompt_id: string | null; prompt_snapshot: unknown; position: number; response_text: string; is_done: boolean }>,
   linkRows: Array<{ diary_id: string; checkin_id: string; weight_percent: number; position: number }>,
   imageRows: DiaryImageRow[],
-): DiaryEntry => ({
+): DiaryEntry => {
+  const status = normalizeDiaryStatus(row.status)
+  return {
   id: row.id,
   userId: row.user_id,
   localDate: row.local_date,
-  status: normalizeDiaryStatus(row.status),
+  status,
   title: row.title ?? '',
   overallText: row.overall_text ?? '',
   dailyEmotionId: row.daily_emotion_id,
@@ -198,8 +233,10 @@ const mapRemoteEntry = (
   createdAt: row.created_at,
   updatedAt: row.updated_at,
   completedAt: row.completed_at,
-  dayLockedAt: row.day_locked_at ?? null,
-})
+  completionSource: normalizeCompletionSource(row.status, row.completion_source),
+  isBackfilled: row.is_backfilled ?? (status === 'draft' && isDiaryBackfilledDate(row.local_date, new Date(row.created_at))),
+  }
+}
 
 const listRemoteEntries = async (userId: string): Promise<DiaryEntry[]> => {
   const query = (select: string) => supabase
@@ -209,7 +246,7 @@ const listRemoteEntries = async (userId: string): Promise<DiaryEntry[]> => {
     .neq('status', 'deleted')
     .order('local_date', { ascending: false })
   let result = await query(DIARY_ENTRY_SELECT)
-  if (result.error && missingDayLockColumn(result.error.message)) result = await query(LEGACY_DIARY_ENTRY_SELECT)
+  if (result.error && missingDiaryLifecycleColumn(result.error.message)) result = await query(LEGACY_DIARY_ENTRY_SELECT)
   if (result.error) throw result.error
   const rows = (result.data ?? []) as unknown as DiaryEntryRow[]
   if (!rows.length) return []
@@ -235,11 +272,26 @@ const listRemoteEntries = async (userId: string): Promise<DiaryEntry[]> => {
   return rows.map((row) => mapRemoteEntry(row, promptResult.data ?? [], linkResult.data ?? [], [...resolvedMediaRows, ...legacyRows]))
 }
 
+const finalizeExpiredDiaryDrafts = async (): Promise<void> => {
+  try {
+    await supabase.rpc('finalize_expired_diary_drafts')
+  } catch {
+    // The local fallback below still handles stale drafts if the migration is not available yet.
+  }
+}
+
+const finalizeLocalEntries = (entries: DiaryEntry[]): DiaryEntry[] => {
+  const completedAt = new Date().toISOString()
+  const today = getDiaryLocalDate()
+  return entries.map((entry) => shouldSystemCompleteDiary(entry, today) ? systemCompleteDiary(entry, completedAt) : entry)
+}
+
 export const listDiaryEntries = async (): Promise<DiaryEntry[]> => {
   const userId = await currentUserId()
   try {
+    await finalizeExpiredDiaryDrafts()
     const remoteEntries = await listRemoteEntries(userId)
-    const localEntries = readLocalEntries(userId)
+    const localEntries = finalizeLocalEntries(readLocalEntries(userId))
     const localByDate = new Map(localEntries.map((entry) => [entry.localDate, entry]))
     const remoteDates = new Set(remoteEntries.map((entry) => entry.localDate))
     const entries = [
@@ -252,7 +304,9 @@ export const listDiaryEntries = async (): Promise<DiaryEntry[]> => {
     writeLocalEntries(userId, entries)
     return entries
   } catch {
-    return readLocalEntries(userId)
+    const entries = finalizeLocalEntries(readLocalEntries(userId))
+    writeLocalEntries(userId, entries)
+    return entries
   }
 }
 
@@ -261,16 +315,17 @@ export const getDiaryEntry = async (localDate: string): Promise<DiaryEntry | nul
   return entries.find((entry) => entry.localDate === localDate) ?? null
 }
 
-const normalizeDraft = (draft: DiaryDraft, userId: string, existing?: DiaryEntry | null): DiaryEntry => {
+const normalizeDraft = (draft: DiaryDraft, userId: string, existing: DiaryEntry | null | undefined, options: SaveDiaryOptions = {}): DiaryEntry => {
   const now = new Date().toISOString()
-  const requestedStatus = draft.status === 'done' ? 'user_done' : draft.status
-  const status: DiaryStatus = existing?.status === 'day_locked'
-    ? 'day_locked'
-    : isFinishedStatus(existing?.status ?? 'draft') && requestedStatus === 'draft'
-      ? normalizeDiaryStatus(existing!.status)
-      : requestedStatus
+  const requestedStatus: DiaryStatus = draft.status === 'done' ? 'done' : 'draft'
+  const status: DiaryStatus = isFinishedStatus(existing?.status ?? 'draft') && requestedStatus === 'draft' ? 'done' : requestedStatus
+  const completionSource: DiaryCompletionSource | null = status === 'done'
+    ? existing?.status === 'done' && requestedStatus === 'draft'
+      ? existing.completionSource ?? 'user'
+      : options.completionSource ?? draft.completionSource ?? existing?.completionSource ?? 'user'
+    : null
+  const isBackfilled = existing?.isBackfilled ?? (draft.isBackfilled || isDiaryBackfilledDate(draft.localDate))
   const completedAt = isFinishedStatus(status) ? existing?.completedAt ?? draft.completedAt ?? now : null
-  const dayLockedAt = status === 'day_locked' ? existing?.dayLockedAt ?? draft.dayLockedAt ?? now : null
   return {
     id: draft.id ?? existing?.id ?? createDiaryId(),
     userId,
@@ -286,7 +341,8 @@ const normalizeDraft = (draft: DiaryDraft, userId: string, existing?: DiaryEntry
     createdAt: existing?.createdAt ?? draft.createdAt ?? now,
     updatedAt: now,
     completedAt,
-    dayLockedAt,
+    completionSource,
+    isBackfilled,
   }
 }
 
@@ -316,17 +372,23 @@ const saveRemoteEntry = async (entry: DiaryEntry, previousEntry: DiaryEntry | nu
       daily_emotion_id: entry.dailyEmotionId,
       daily_emotion_snapshot: entry.dailyEmotionSnapshot,
       completed_at: entry.completedAt,
-      day_locked_at: entry.dayLockedAt,
+      completion_source: entry.completionSource,
+      is_backfilled: entry.isBackfilled,
     }
-  const persist = (select: string) => supabase
+  const persist = (nextPayload: Record<string, unknown>, select: string) => supabase
     .from('diary_entries')
-    .upsert(payload, { onConflict: 'user_id,local_date' })
+    .upsert(nextPayload, { onConflict: 'user_id,local_date' })
     .select(select)
     .single()
-  let result = await persist(DIARY_ENTRY_SELECT)
-  if (result.error && missingDayLockColumn(result.error.message)) {
-    delete payload.day_locked_at
-    result = await persist(LEGACY_DIARY_ENTRY_SELECT)
+  let result = await persist(payload, DIARY_ENTRY_SELECT)
+  if (result.error && missingDiaryLifecycleColumn(result.error.message)) {
+    const legacyPayload: Record<string, unknown> = {
+      ...payload,
+      status: entry.status === 'done' ? entry.completionSource === 'system' ? 'day_locked' : 'user_done' : 'draft',
+    }
+    delete legacyPayload.completion_source
+    delete legacyPayload.is_backfilled
+    result = await persist(legacyPayload, LEGACY_DIARY_ENTRY_SELECT)
   }
   if (result.error) throw result.error
   const row = result.data as unknown as DiaryEntryRow
@@ -353,7 +415,7 @@ const saveRemoteEntry = async (entry: DiaryEntry, previousEntry: DiaryEntry | nu
   }
   if (!options.skipMediaSync && (hasManagedDiaryImages(entry.images) || hasManagedDiaryImages(previousEntry?.images ?? []))) await syncDiaryMedia(entryId, entry.images)
   await syncGiftDiaryPrompts({ ...entry, id: entryId }, previousEntry)
-  return { ...entry, id: entryId, status: normalizeDiaryStatus(row.status), createdAt: row.created_at, updatedAt: row.updated_at, completedAt: row.completed_at, dayLockedAt: row.day_locked_at ?? entry.dayLockedAt }
+  return { ...entry, id: entryId, status: normalizeDiaryStatus(row.status), createdAt: row.created_at, updatedAt: row.updated_at, completedAt: row.completed_at, completionSource: normalizeCompletionSource(row.status, row.completion_source) ?? entry.completionSource, isBackfilled: row.is_backfilled ?? entry.isBackfilled }
 }
 
 export const saveDiary = async (draft: DiaryDraft, options: SaveDiaryOptions = {}): Promise<DiaryEntry> => {
@@ -362,7 +424,7 @@ export const saveDiary = async (draft: DiaryDraft, options: SaveDiaryOptions = {
   if (draft.images.length > 4) throw new Error('Diary chỉ có thể thêm tối đa 4 ảnh.')
   const userId = await currentUserId()
   const existing = (await listDiaryEntries()).find((entry) => entry.localDate === draft.localDate) ?? null
-  const entry = normalizeDraft(draft, userId, existing)
+  const entry = normalizeDraft(draft, userId, existing, options)
   try {
     const saved = await saveRemoteEntry(entry, existing, options)
     const localEntries = readLocalEntries(userId).filter((item) => item.localDate !== saved.localDate)
@@ -400,34 +462,9 @@ export const createEmptyDiaryDraft = (localDate = getDiaryLocalDate()): DiaryDra
   promptResponses: [],
   checkinLinks: [],
   images: [],
-  dayLockedAt: null,
+  completionSource: null,
+  isBackfilled: isDiaryBackfilledDate(localDate),
 })
-
-export const markDiaryDayLocked = async (id: string, localDate: string, lockedAt: string): Promise<void> => {
-  const userId = await currentUserId()
-  try {
-    let result = await supabase
-      .from('diary_entries')
-      .update({ status: 'day_locked', day_locked_at: lockedAt })
-      .eq('id', id)
-      .eq('user_id', userId)
-      .select(DIARY_ENTRY_SELECT)
-      .single()
-    if (result.error && missingDayLockColumn(result.error.message)) {
-      result = await supabase
-        .from('diary_entries')
-        .update({ status: 'day_locked' })
-        .eq('id', id)
-        .eq('user_id', userId)
-        .select(LEGACY_DIARY_ENTRY_SELECT)
-        .single()
-    }
-    if (result.error) throw result.error
-  } catch {
-    // A local mirror still preserves the transition while the migration is not available remotely.
-  }
-  writeLocalEntries(userId, readLocalEntries(userId).map((item) => item.id === id || item.localDate === localDate ? { ...item, status: 'day_locked', dayLockedAt: lockedAt, updatedAt: lockedAt } : item))
-}
 
 export const getDiaryCheckinDate = (createdAt: string): string => getDiaryLocalDate(new Date(createdAt))
 

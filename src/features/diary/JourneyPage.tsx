@@ -29,7 +29,7 @@ const getCheckinLabel = (record: CheckinRecord): { title: string; emoji: string;
 }
 
 const formatTime = (value: string): string => new Intl.DateTimeFormat('vi-VN', { timeZone: DIARY_TIME_ZONE, hour: '2-digit', minute: '2-digit', hour12: false }).format(new Date(value))
-const isDiaryUserDone = (entry: DiaryEntry): boolean => entry.status === 'user_done' || entry.status === 'done' || entry.status === 'day_locked'
+const isDiaryUserDone = (entry: DiaryEntry): boolean => entry.status === 'done'
 
 const useJourneyContext = (rangeStart: string, rangeEnd: string) => {
   const { reference } = useReferenceData()
@@ -224,7 +224,7 @@ const JourneyDiaryQuickView = ({ entry, checkins, onClose }: { entry: DiaryEntry
 
 const JourneyRecordDetail = ({ rangeStart, rangeEnd, dailyEntries, checkins, actions, reflections }: { rangeStart: string; rangeEnd: string; dailyEntries: DiaryEntry[]; checkins: CheckinRecord[]; actions: ActionRecord[]; reflections: ActionReflection[] }) => {
   const events = useMemo<JourneyRecordEvent[]>(() => {
-  const diaryEvents = dailyEntries.filter((entry) => entry.status !== 'deleted' && journeyDateInRange(entry.localDate, rangeStart, rangeEnd)).map((entry) => ({ id: `diary-${entry.id}`, date: entry.localDate, time: entry.updatedAt || entry.createdAt, kind: 'diary' as const, title: entry.title || 'Nhật ký ngày', description: isRichTextEmpty(entry.overallText) ? 'Chưa thêm tổng quan.' : richTextToPlainText(entry.overallText).replace(/\s+/g, ' ').trim(), emoji: entry.dailyEmotionSnapshot?.emoji ?? '▣', color: entry.dailyEmotionSnapshot?.color_hex ?? 'var(--color-violet)', dailyEntry: entry }))
+    const diaryEvents = dailyEntries.filter((entry) => journeyDateInRange(entry.localDate, rangeStart, rangeEnd)).map((entry) => ({ id: `diary-${entry.id}`, date: entry.localDate, time: entry.updatedAt || entry.createdAt, kind: 'diary' as const, title: entry.title || 'Nhật ký ngày', description: isRichTextEmpty(entry.overallText) ? 'Chưa thêm tổng quan.' : richTextToPlainText(entry.overallText).replace(/\s+/g, ' ').trim(), emoji: entry.dailyEmotionSnapshot?.emoji ?? '▣', color: entry.dailyEmotionSnapshot?.color_hex ?? 'var(--color-violet)', dailyEntry: entry }))
     const checkinEvents = checkins.filter((record) => journeyDateInRange(journeyDateFor(record.occurredAt), rangeStart, rangeEnd)).map((record) => { const label = getCheckinLabel(record); return { id: `checkin-${record.id}`, date: journeyDateFor(record.occurredAt), time: record.occurredAt, kind: 'checkin' as const, title: label.title, description: label.description, emoji: label.emoji, color: label.color } })
     const actionEvents = actions.filter((action) => action.status === 'completed' && action.completedAt && journeyDateInRange(journeyDateFor(action.completedAt), rangeStart, rangeEnd)).map((action) => ({ id: `action-${action.id}`, date: journeyDateFor(action.completedAt as string), time: action.completedAt as string, kind: 'action' as const, title: action.title, description: action.note || 'Đã hoàn tất việc này.', emoji: '✓', color: 'var(--color-green)', reflection: reflections.find((reflection) => reflection.actionId === action.id) }))
     return [...diaryEvents, ...checkinEvents, ...actionEvents].sort((left, right) => left.date.localeCompare(right.date) || left.time.localeCompare(right.time))

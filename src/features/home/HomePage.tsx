@@ -45,7 +45,7 @@ export function HomePage() {
   const selectedRecord = selectedRecordId ? records.find((record) => record.id === selectedRecordId) ?? null : null
   const todayDiary = useMemo(() => snapshot?.diaryEntries.find((entry) => entry.localDate === getDiaryLocalDate()) ?? null, [snapshot])
   const diaryPreview: HomeDiaryPreview = todayDiary
-    ? { status: ['done', 'user_done', 'day_locked'].includes(todayDiary.status) ? 'done' : 'draft', title: todayDiary.title.trim() || undefined, excerpt: getDiaryPreviewExcerpt(todayDiary), imageUrl: todayDiary.images[0]?.externalUrl }
+    ? { status: todayDiary.status === 'done' ? 'done' : 'draft', title: todayDiary.title.trim() || undefined, excerpt: getDiaryPreviewExcerpt(todayDiary), imageUrl: todayDiary.images[0]?.externalUrl }
     : { status: 'empty' }
 
   useEffect(() => { void listReflectionOutcomes().then((outcomes) => { if (outcomes.length) setReflectionOutcomes(outcomes) }).catch(() => undefined) }, [])

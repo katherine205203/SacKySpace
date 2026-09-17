@@ -419,7 +419,7 @@
 .home-v2__detail-emotion small { grid-column: 2; color: var(--color-text-muted); font-size: .7rem; }
 .home-v2__prompt-detail { display: flex; align-items: center; gap: .55rem; }
 .home-v2__prompt-detail span { display: grid; width: 2rem; height: 2rem; place-items: center; border-radius: .65rem; background: var(--color-surface-violet); font-size: 1rem; }
-.home-v2__detail-note { white-space: pre-wrap; }
+.home-v2__detail-note { white-space: pre-wrap; font-size: calc(1em - 4px); }
 .home-v2__detail-actions { display: grid; }
 .home-v2__detail-action { display: flex; align-items: center; gap: .55rem; padding: .5rem 0; border-top: 1px solid rgba(113,88,180,.1); }
 .home-v2__detail-action:first-child { border-top: 0; padding-top: 0; }

@@ -40,6 +40,21 @@ export const monthDateKey = (date: Date): string => {
 
 export const isDiaryDateToday = (dateKey: string, now = new Date()): boolean => dateKey === getDiaryLocalDate(now)
 
+export const isDiaryBackfilledDate = (dateKey: string, now = new Date()): boolean => dateKey < getDiaryLocalDate(now)
+
+export const shouldSystemCompleteDiary = (entry: Pick<DiaryEntry, 'status' | 'localDate' | 'isBackfilled'>, today = getDiaryLocalDate()): boolean =>
+  entry.status === 'draft' && !entry.isBackfilled && entry.localDate < today
+
+export const systemCompleteDiary = <T extends Pick<DiaryEntry, 'status' | 'completionSource' | 'completedAt' | 'updatedAt'>>(
+  entry: T,
+  completedAt: string,
+): T => ({ ...entry, status: 'done', completionSource: 'system', completedAt, updatedAt: completedAt } as T)
+
+export type DiaryCalendarStatus = 'empty' | 'draft' | 'done'
+
+export const getDiaryCalendarStatus = (entry: Pick<DiaryEntry, 'status'> | null | undefined): DiaryCalendarStatus =>
+  entry ? entry.status === 'done' ? 'done' : 'draft' : 'empty'
+
 export const clampDiaryWeight = (value: number): number => Math.max(1, Math.min(100, Math.round(value)))
 
 export const createDiaryId = (): string => {
@@ -48,7 +63,7 @@ export const createDiaryId = (): string => {
 }
 
 export const getDiaryMetrics = (entries: readonly DiaryEntry[], now = new Date()) => {
-  const isFinished = (entry: DiaryEntry): boolean => entry.status === 'done' || entry.status === 'user_done' || entry.status === 'day_locked'
+  const isFinished = (entry: DiaryEntry): boolean => entry.status === 'done'
   const doneDates = new Set(entries.filter(isFinished).map((entry) => entry.localDate))
   let currentStreak = 0
   let cursor = getDiaryLocalDate(now)

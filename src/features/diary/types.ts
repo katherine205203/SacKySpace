@@ -1,7 +1,7 @@
 import type { CheckinRecord, Emotion } from '../checkin/types'
 
-/** `done` remains readable for records created before the Day Record rollout. */
-export type DiaryStatus = 'draft' | 'user_done' | 'day_locked' | 'done' | 'deleted'
+export type DiaryStatus = 'draft' | 'done'
+export type DiaryCompletionSource = 'user' | 'system'
 
 export type JourneyStatus = 'draft' | 'done'
 
@@ -67,7 +67,8 @@ export type DiaryEntry = {
   createdAt: string
   updatedAt: string
   completedAt: string | null
-  dayLockedAt: string | null
+  completionSource: DiaryCompletionSource | null
+  isBackfilled: boolean
 }
 
 export type DiaryDraft = Omit<DiaryEntry, 'id' | 'userId' | 'createdAt' | 'updatedAt' | 'completedAt'> & {
@@ -116,7 +117,7 @@ export type JourneyCoverage = {
   completedActionCount: number
 }
 
-export type DiaryFilter = 'all' | 'user_done' | 'day_locked' | 'draft'
+export type DiaryFilter = 'all' | 'draft' | 'done'
 
 export type DayRecordKind = 'checkin' | 'action'
 

@@ -156,7 +156,7 @@ const ruleValue = (rule: FutureLetterRule, context: FutureLetterEvaluationContex
     return { value: qualifying ? inactiveDays : 0, observed: { return_after_inactivity: Boolean(qualifying), inactive_days: inactiveDays, checkin_date: qualifying ?? null }, windowStart: qualifying ? addDays(qualifying, -inactiveDays) : null, windowEnd: qualifying ?? null }
   }
   if (rule.type === 'diary_total') {
-    const value = context.diaryEntries.filter((entry) => entry.status !== 'draft' && entry.status !== 'deleted' && entry.localDate <= context.today).length
+    const value = context.diaryEntries.filter((entry) => entry.status === 'done' && entry.localDate <= context.today).length
     return { value, observed: { diary_total: value }, windowStart: null, windowEnd: context.today }
   }
   if (rule.type === 'journey_total') {
