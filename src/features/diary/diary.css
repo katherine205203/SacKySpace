@@ -204,6 +204,10 @@
 .diary-page--history { gap: 1.2rem; }
 .diary-history-layout { display: grid; grid-template-columns: minmax(0, 2fr) minmax(0, 3fr); align-items: start; gap: 1rem; }
 .diary-history-calendar-column { display: grid; gap: .9rem; min-width: 0; }
+.diary-history-stats { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: .45rem; min-width: 0; }
+.diary-history-stats > div { display: grid; min-width: 0; gap: .12rem; padding: .5rem .6rem; border: 1px solid rgba(113,88,180,.12); border-radius: .75rem; background: rgba(255,255,255,.72); }
+.diary-history-stats strong { color: var(--color-text); font-size: 1rem; line-height: 1; }
+.diary-history-stats span { overflow: hidden; color: var(--color-text-soft); font-size: .56rem; text-overflow: ellipsis; white-space: nowrap; }
 .diary-calendar, .diary-history-detail { min-width: 0; padding: 1.1rem; border: 1px solid rgba(113,88,180,.14); border-radius: 1.05rem; background: rgba(255,255,255,.86); box-shadow: 0 7px 20px rgba(60,35,95,.04); }
 .diary-calendar__header { display: flex; align-items: center; justify-content: space-between; gap: 1rem; }
 .diary-calendar__header h2 { margin: .3rem 0 0; font-size: 1rem; letter-spacing: -.04em; }
@@ -239,7 +243,11 @@
   .diary-page--history .diary-history-detail { height: 100%; min-height: 0; }
   .diary-page--history .diary-history-detail--entry { padding: 0; overflow: hidden; }
   .diary-page--history .diary-history-detail--entry .diary-history-detail__scroll { overflow-y: auto; overscroll-behavior: contain; scrollbar-gutter: stable; }
-  .diary-page--history .diary-history-detail--missing { height: auto; min-height: 25rem; align-self: start; overflow: visible; }
+  .diary-page--history .diary-history-detail--missing { height: 100%; min-height: 0; align-self: stretch; overflow: hidden; }
+  .diary-page--history .diary-calendar { padding: 1rem; }
+  .diary-page--history .diary-calendar-day { min-height: 3.15rem; }
+  .diary-page--history .diary-weekdays { margin-top: .85rem; margin-bottom: .4rem; }
+  .diary-page--history .diary-calendar__legend { padding-top: .65rem; margin-top: .65rem; }
 }
 @media (max-width: 70rem) {
   .diary-editor-layout { grid-template-columns: minmax(0, 1fr) 16rem; }

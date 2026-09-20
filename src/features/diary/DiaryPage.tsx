@@ -635,6 +635,12 @@ const DiaryCalendar = ({ month, entries, selectedDate, onSelect, onMoveMonth }: 
   return <section className="diary-calendar"><div className="diary-calendar__header"><div><span className="section-label">Lịch viết</span><h2>{formatDiaryMonth(new Date(`${month}-01T12:00:00+07:00`))}</h2></div><div><button type="button" onClick={() => onMoveMonth(-1)} aria-label="Tháng trước">‹</button><button type="button" onClick={() => onMoveMonth(1)} aria-label="Tháng sau">›</button></div></div><div className="diary-weekdays">{['T2', 'T3', 'T4', 'T5', 'T6', 'T7', 'CN'].map((day) => <span key={day}>{day}</span>)}</div><div className="diary-calendar__grid">{days.map((date) => { const entry = byDate.get(date); const inMonth = date.startsWith(month); return <button key={date} type="button" className={`diary-calendar-day ${inMonth ? '' : 'is-outside'} ${selectedDate === date ? 'is-selected' : ''} ${entry ? statusClass(entry.status) : ''}`} onClick={() => onSelect(date)}><span>{Number(date.slice(8, 10))}</span>{entry && <i aria-label={statusLabel(entry.status)} />}</button> })}</div><div className="diary-calendar__legend"><span><i className="is-done" /> Đã hoàn tất</span><span><i className="is-draft" /> Bản nháp</span></div></section>
 }
 
+const DiaryHistoryStats = ({ entries }: { entries: DiaryEntry[] }) => {
+  const doneCount = entries.filter((entry) => entry.status === 'done').length
+  const draftCount = entries.filter((entry) => entry.status === 'draft').length
+  return <section className="diary-history-stats" aria-label="Tóm tắt nhật ký"><div><strong>{entries.length}</strong><span>Tổng Diary</span></div><div><strong>{doneCount}</strong><span>Đã hoàn tất</span></div><div><strong>{draftCount}</strong><span>Bản nháp</span></div></section>
+}
+
 const HistoryDetail = ({ date, entry, onEdit, onDelete }: { date: string; entry: DiaryEntry | null; onEdit: () => void; onDelete: () => void }) => {
   if (!entry) return <section className="diary-history-detail diary-history-detail--missing"><div className="diary-empty-hero__art" aria-hidden="true"><span>✦</span><i>◌</i></div><p className="eyebrow">{formatDiaryDate(date, { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })}</p><h2>Chưa viết ngày này</h2><p>Mỗi ngày là một cơ hội để nhìn lại. Bạn có thể viết bù mà không cần quay về hôm nay.</p><button className="button button--primary" type="button" onClick={onEdit}>✎ Viết bù</button></section>
   return <section className="diary-history-detail diary-history-detail--entry"><DiaryReadToolbar entry={entry} onEdit={onEdit} onDelete={onDelete} /><div className="diary-history-detail__scroll"><DiaryReadView entry={entry} emotionSize="small" showToolbar={false} /></div></section>
@@ -659,7 +665,7 @@ export function DiaryHistoryPage() {
   if (error) return <section className="diary-page"><DiaryState error={error} onRetry={() => void refresh()}> </DiaryState></section>
   return <section className="diary-page diary-page--history" aria-labelledby="diary-history-title">
     <DiaryPageHeader title="Lịch sử nhật ký" description="Nhìn lại những điều bạn đã viết cho từng ngày."><div className="diary-header-actions"><Link className="button button--secondary button--small" to="/journey?view=setup">Nhìn lại một chặng</Link><Link className="button button--primary button--small" to="/diary">Viết nhật ký hôm nay</Link></div></DiaryPageHeader>
-    <div className="diary-history-layout"><div className="diary-history-calendar-column"><DiaryCalendar month={month} entries={entries} selectedDate={selectedDate} onSelect={setSelectedDate} onMoveMonth={changeMonth} /></div><HistoryDetail date={selectedDate} entry={selectedEntry} onEdit={() => navigate(`/diary?view=editor&date=${selectedDate}`)} onDelete={() => void deleteSelected()} /></div>
+    <div className="diary-history-layout"><div className="diary-history-calendar-column"><DiaryHistoryStats entries={entries} /><DiaryCalendar month={month} entries={entries} selectedDate={selectedDate} onSelect={setSelectedDate} onMoveMonth={changeMonth} /></div><HistoryDetail date={selectedDate} entry={selectedEntry} onEdit={() => navigate(`/diary?view=editor&date=${selectedDate}`)} onDelete={() => void deleteSelected()} /></div>
   </section>
 }
 
