@@ -284,8 +284,8 @@ export const listAdminAuditLogs = async (): Promise<AdminAuditLog[]> => {
   return ((data ?? []) as Record<string, unknown>[]).map(mapAudit)
 }
 
-export const exportAdminData = async (selection: readonly AdminExportSelection[]): Promise<AdminExportDataset[]> => {
-  await claimAdminOwner()
+export const exportAdminData = async (selection: readonly AdminExportSelection[], options: { requireAdminOwner?: boolean } = {}): Promise<AdminExportDataset[]> => {
+  if (options.requireAdminOwner !== false) await claimAdminOwner()
   const uniqueSelection = [...new Set(selection)]
   if (!uniqueSelection.length) throw new Error('Hãy chọn ít nhất một dataset để export.')
   const datasets = await Promise.all(uniqueSelection.map(async (key): Promise<AdminExportDataset> => {

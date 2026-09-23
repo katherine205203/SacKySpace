@@ -106,7 +106,7 @@ const scopeOptions: Array<{ value: Scope; label: string; copy: string }> = [
   { value: 'all_applicable', label: 'All applicable data', copy: 'Bao gồm mọi dataset phù hợp với quyền hiện tại' },
 ]
 
-export function ImportExportStudio({ auditLogs, onChanged }: { auditLogs: AdminAuditLog[]; onChanged: () => Promise<void> }) {
+export function ImportExportStudio({ auditLogs, onChanged, platformAdminMode = false }: { auditLogs: AdminAuditLog[]; onChanged: () => Promise<void>; platformAdminMode?: boolean }) {
   const [tab, setTab] = useState<'import' | 'export' | 'history' | 'snapshots'>('import')
   const [scope, setScope] = useState<Scope>('global')
   const [selectedUserId, setSelectedUserId] = useState('')
@@ -150,7 +150,7 @@ export function ImportExportStudio({ auditLogs, onChanged }: { auditLogs: AdminA
     if (scope === 'selected_user' && !selectedUserId.trim()) { setExportError('Nhập user ID khi chọn scope Personal / selected user.'); return }
     setIsExporting(true)
     try {
-      const datasets = await exportAdminData(exportKeys)
+      const datasets = await exportAdminData(exportKeys, { requireAdminOwner: !platformAdminMode })
       const filename = await downloadAdminExport(datasets, exportFormat, { scope, selectedUserId: selectedUserId.trim() || undefined, xlsxPackaging })
       setExportMessage(`Đã tạo ${filename} · ${datasets.reduce((total, dataset) => total + dataset.rows.length, 0)} records. Metadata đã được đóng gói.`)
     } catch (reason: unknown) { setExportError(reason instanceof Error ? reason.message : 'Không thể export dữ liệu.') } finally { setIsExporting(false) }

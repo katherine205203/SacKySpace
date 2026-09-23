@@ -2,8 +2,9 @@ import { useCallback, useEffect, useState } from 'react'
 import type { Session } from '@supabase/supabase-js'
 import { getSession, signIn, signOut, subscribeToAuthChanges } from '../services/supabase/auth'
 import { ADMIN_ENTITY_REGISTRY, getAdminEntity } from '../features/admin/registry'
-import type { AdminEntityKey, AdminField, AdminReferenceRow } from '../features/admin/types'
-import { parseDelimitedText, previewImport, type ImportPreviewRow } from '../features/admin/utils'
+import { ImportExportStudio } from '../features/admin/ImportExportStudio'
+import { listAdminAuditLogs } from '../features/admin/services/adminRepository'
+import type { AdminAuditLog, AdminEntityKey, AdminField, AdminReferenceRow } from '../features/admin/types'
 import {
   adminErrorMessage,
   createCanonicalRow,
@@ -25,7 +26,7 @@ import {
   type GlobalAdminUser,
 } from './globalAdminRepository'
 
-type AdminView = 'overview' | 'canonical' | 'users' | 'operations' | 'platform'
+type AdminView = 'overview' | 'canonical' | 'users' | 'operations' | 'platform' | 'import_export'
 
 const navigation: Array<{ id: AdminView; label: string; icon: string }> = [
   { id: 'overview', label: 'Overview', icon: '▦' },
@@ -33,6 +34,7 @@ const navigation: Array<{ id: AdminView; label: string; icon: string }> = [
   { id: 'users', label: 'Users', icon: '♙' },
   { id: 'operations', label: 'Operations', icon: '⟳' },
   { id: 'platform', label: 'Platform', icon: '⌁' },
+  { id: 'import_export', label: 'Import / Export', icon: '⇆' },
 ]
 
 const actionLabels: Record<GlobalAdminAction, string> = {
@@ -127,6 +129,7 @@ function GlobalAdminWorkspace() {
   const [identity, setIdentity] = useState<GlobalAdminIdentity | null>(null)
   const [overview, setOverview] = useState<GlobalAdminOverview | null>(null)
   const [users, setUsers] = useState<GlobalAdminUser[]>([])
+  const [auditLogs, setAuditLogs] = useState<AdminAuditLog[]>([])
   const [view, setView] = useState<AdminView>('overview')
   const [search, setSearch] = useState('')
   const [status, setStatus] = useState<'all' | 'active' | 'inactive'>('all')
@@ -158,10 +161,23 @@ function GlobalAdminWorkspace() {
     }
   }, [])
 
+  const refreshAudit = useCallback(async () => {
+    try {
+      setAuditLogs(await listAdminAuditLogs())
+    } catch (reason) {
+      setError(adminErrorMessage(reason))
+    }
+  }, [])
+
   useEffect(() => {
     const request = window.setTimeout(() => { void refresh('', 'all') }, 0)
     return () => window.clearTimeout(request)
   }, [refresh])
+
+  useEffect(() => {
+    if (view !== 'import_export') return
+    void refreshAudit()
+  }, [refreshAudit, view])
 
   const selectedUser = users.find((user) => user.userId === selectedUserId) ?? null
   const scope: GlobalAdminScope = { mode: 'selected', userIds: selectedUserIds }
@@ -202,6 +218,7 @@ function GlobalAdminWorkspace() {
       {view === 'users' && <UsersView users={users} canRunAllUsers={canRunAllUsers} search={search} status={status} selectedUser={selectedUser} selectedUserIds={selectedUserIds} setSearch={setSearch} setStatus={setStatus} onSearch={runSearch} onToggleUser={toggleUser} onSelectUser={(userId) => { setSelectedUserId(userId); setSelectedUserIds((current) => current.includes(userId) ? current : [...current, userId]) }} onSelectAll={selectAllVisible} onClearSelection={() => setSelectedUserIds([])} onOperation={setOperation} />}
       {view === 'operations' && overview && <OperationsView operations={overview.recentOperations} initialScope={scope} canRunAllUsers={canRunAllUsers} onOperation={setOperation} />}
       {view === 'platform' && overview && <PlatformView overview={overview} />}
+      {view === 'import_export' && <ImportExportStudio auditLogs={auditLogs} platformAdminMode onChanged={refreshAudit} />}
     </section>
 
     {operation && <OperationDialog action={operation} initialScope={scope} canRunAllUsers={canRunAllUsers} onClose={() => setOperation(null)} onCompleted={(message) => { setOperation(null); setNotice(message); void refresh(search, status) }} />}
@@ -219,7 +236,7 @@ function OverviewView({ overview, onNavigate, onOperation }: { overview: GlobalA
     </section>
     <section className="global-admin-three-columns">
       <article className="global-admin-panel"><PanelHeading title="Tình trạng nền tảng" action="Xem chi tiết" /><HealthList /></article>
-      <article className="global-admin-panel"><PanelHeading title="Thao tác nhanh" /><div className="global-admin-quick-actions"><button type="button" onClick={() => onNavigate('users')}><span>♙</span><div><strong>Mở quản lý người dùng</strong><small>Tìm kiếm, xem metadata và chạy typed actions</small></div><b>›</b></button><button type="button" onClick={() => onNavigate('canonical')}><span>◫</span><div><strong>Mở Global Data</strong><small>Catalog chuẩn, import/export và usage</small></div><b>›</b></button><button type="button" onClick={() => onOperation('migrate_occurred_at')}><span>▷</span><div><strong>Chạy kiểm tra migration</strong><small>Đồng bộ occurred_at và Diary attachment</small></div><b>›</b></button><button type="button" onClick={() => onNavigate('operations')}><span>⟳</span><div><strong>Mở Operations Center</strong><small>Preview, queue, retry và kết quả tác vụ</small></div><b>›</b></button></div></article>
+      <article className="global-admin-panel"><PanelHeading title="Thao tác nhanh" /><div className="global-admin-quick-actions"><button type="button" onClick={() => onNavigate('users')}><span>♙</span><div><strong>Mở quản lý người dùng</strong><small>Tìm kiếm, xem metadata và chạy typed actions</small></div><b>›</b></button><button type="button" onClick={() => onNavigate('canonical')}><span>◫</span><div><strong>Mở Global Data</strong><small>Catalog chuẩn và usage</small></div><b>›</b></button><button type="button" onClick={() => onNavigate('import_export')}><span>⇆</span><div><strong>Mở Import / Export</strong><small>Detect, map, validate, snapshot và audit</small></div><b>›</b></button><button type="button" onClick={() => onOperation('migrate_occurred_at')}><span>▷</span><div><strong>Chạy kiểm tra migration</strong><small>Đồng bộ occurred_at và Diary attachment</small></div><b>›</b></button><button type="button" onClick={() => onNavigate('operations')}><span>⟳</span><div><strong>Mở Operations Center</strong><small>Preview, queue, retry và kết quả tác vụ</small></div><b>›</b></button></div></article>
       <article className="global-admin-panel"><PanelHeading title="Thay đổi gần đây" action="Tất cả" /><RecentOperations operations={overview.recentOperations} /></article>
     </section>
     <section className="global-admin-bottom-grid"><ScopeSnapshot label="Scope builder nhanh" copy="Scope, policy và Impact Preview xuất hiện ngay trong Users, User Detail và Global Data theo đúng ngữ cảnh thao tác." /><article className="global-admin-privacy"><span>◈</span><div><h3>Bảo vệ quyền riêng tư</h3><p>Global Admin chỉ xem metadata và aggregate count. Nội dung Diary, Check-in và ghi chú riêng tư không mở trong control plane.</p></div></article></section>
@@ -246,7 +263,6 @@ function CanonicalView({ onNavigate, onNotice, onError }: { onNavigate: (view: A
   const [loading, setLoading] = useState(true)
   const [search, setSearch] = useState('')
   const [saving, setSaving] = useState(false)
-  const [importPreviewRows, setImportPreviewRows] = useState<ImportPreviewRow[]>([])
   const definition = getAdminEntity(entityKey)
   const selected = rows.find((row) => String(row[definition.idField]) === selectedId) ?? rows[0] ?? null
   const editorRow = creating ? newRow : selected
@@ -261,7 +277,6 @@ function CanonicalView({ onNavigate, onNotice, onError }: { onNavigate: (view: A
       setSelectedId(nextRows.length ? String(nextRows[0][nextDefinition.idField]) : null)
       setCreating(false)
       setNewRow(null)
-      setImportPreviewRows([])
     } catch (reason) {
       onError(adminErrorMessage(reason))
     } finally {
@@ -335,57 +350,12 @@ function CanonicalView({ onNavigate, onNotice, onError }: { onNavigate: (view: A
       setSaving(false)
     }
   }
-  const importFile = async (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0]
-    event.target.value = ''
-    if (!file) return
-    onError(null)
-    try {
-      const parsed = parseDelimitedText(await file.text())
-      if (!parsed.rows.length) throw new Error('File import chưa có dòng dữ liệu.')
-      setImportPreviewRows(previewImport(definition, parsed.rows, rows))
-    } catch (reason) {
-      onError(adminErrorMessage(reason))
-    }
-  }
-  const applyImport = async () => {
-    const validRows = importPreviewRows.filter((row) => row.classification === 'new' || row.classification === 'update')
-    if (!validRows.length) return
-    setSaving(true)
-    onError(null)
-    try {
-      for (const previewRow of validRows) {
-        const id = String(previewRow.values[definition.idField])
-        if (previewRow.classification === 'new') await createCanonicalRow(entityKey, previewRow.values)
-        else await saveCanonicalRow(entityKey, id, previewRow.values)
-      }
-      setImportPreviewRows([])
-      onNotice(`Đã áp dụng ${validRows.length} dòng import cho ${definition.label.toLocaleLowerCase()}.`)
-      await load(entityKey)
-    } catch (reason) {
-      onError(adminErrorMessage(reason))
-    } finally {
-      setSaving(false)
-    }
-  }
-  const exportCatalog = () => {
-    const payload = JSON.stringify({ schemaVersion: 'global-canonical-v1', catalog: entityKey, generatedAt: new Date().toISOString(), items: rows }, null, 2)
-    const url = window.URL.createObjectURL(new Blob([payload], { type: 'application/json' }))
-    const link = window.document.createElement('a')
-    link.href = url
-    link.download = `sacky-${entityKey}-export.json`
-    link.click()
-    window.URL.revokeObjectURL(url)
-    onNotice(`Đã export ${rows.length} dòng ${definition.label.toLocaleLowerCase()}.`)
-  }
-
   return <div className="global-admin-page-stack">
     <section className="global-admin-catalog-tabs">{ADMIN_ENTITY_REGISTRY.map((entity) => <button key={entity.key} className={entity.key === entityKey ? 'is-active' : ''} type="button" onClick={() => { setLoading(true); setCreating(false); setNewRow(null); setEntityKey(entity.key) }}><span>{catalogIcon(entity.key)}</span><strong>{entity.label}</strong><small>{entity.module}</small></button>)}</section>
     <section className="global-admin-canonical-layout">
-      <article className="global-admin-panel global-admin-canonical-table"><div className="global-admin-filter-inline"><label className="global-admin-search"><span>⌕</span><input value={search} onChange={(event) => setSearch(event.target.value)} placeholder={`Tìm trong ${definition.label.toLocaleLowerCase()}…`} /></label><span>{filteredRows.length} records</span><label className="global-admin-import-button">⇧ Import<input type="file" accept=".csv,.tsv,text/csv,text/tab-separated-values" onChange={(event) => void importFile(event)} /></label><button className="global-admin-export-button" type="button" onClick={exportCatalog}>⇩ Export</button><button className="global-admin-add-button" type="button" onClick={startCreate}>＋ Thêm</button></div>{loading ? <p className="global-admin-empty">Đang tải canonical data…</p> : <div className="global-admin-table-scroll"><table><thead><tr><th>Tên</th><th>ID</th><th>Trạng thái</th><th>Thứ tự</th></tr></thead><tbody>{filteredRows.map((row) => { const id = String(row[definition.idField]); return <tr key={id} className={!creating && id === String(selected?.[definition.idField] ?? '') ? 'is-selected' : ''} onClick={() => { setCreating(false); setNewRow(null); setSelectedId(id) }}><td><span className="global-admin-canonical-name"><i>{String(row.emoji ?? catalogIcon(entityKey))}</i><strong>{String(row[definition.displayField] ?? id)}</strong></span></td><td><code>{id}</code></td><td><StatusPill status={row[definition.activeField] === false ? 'inactive' : 'active'} /></td><td>{String(row[definition.sortField] ?? '—')}</td></tr> })}</tbody></table></div>}</article>
+      <article className="global-admin-panel global-admin-canonical-table"><div className="global-admin-filter-inline"><label className="global-admin-search"><span>⌕</span><input value={search} onChange={(event) => setSearch(event.target.value)} placeholder={`Tìm trong ${definition.label.toLocaleLowerCase()}…`} /></label><span>{filteredRows.length} records</span><button className="global-admin-add-button" type="button" onClick={startCreate}>＋ Thêm</button></div>{loading ? <p className="global-admin-empty">Đang tải canonical data…</p> : <div className="global-admin-table-scroll"><table><thead><tr><th>Tên</th><th>ID</th><th>Trạng thái</th><th>Thứ tự</th></tr></thead><tbody>{filteredRows.map((row) => { const id = String(row[definition.idField]); return <tr key={id} className={!creating && id === String(selected?.[definition.idField] ?? '') ? 'is-selected' : ''} onClick={() => { setCreating(false); setNewRow(null); setSelectedId(id) }}><td><span className="global-admin-canonical-name"><i>{String(row.emoji ?? catalogIcon(entityKey))}</i><strong>{String(row[definition.displayField] ?? id)}</strong></span></td><td><code>{id}</code></td><td><StatusPill status={row[definition.activeField] === false ? 'inactive' : 'active'} /></td><td>{String(row[definition.sortField] ?? '—')}</td></tr> })}</tbody></table></div>}</article>
       <CanonicalEditor key={creating ? `${entityKey}:new` : editorRow ? `${entityKey}:${String(editorRow[definition.idField])}` : `${entityKey}:empty`} definition={definition} row={editorRow} isNew={creating} saving={saving} onSave={save} onCancel={creating ? cancelCreate : undefined} onDeactivate={deactivate} onDelete={remove} />
     </section>
-    {importPreviewRows.length > 0 && <section className="global-admin-panel global-admin-import-preview"><div className="global-admin-panel-heading"><div><h2>Import preview</h2><small>{importPreviewRows.length} dòng · chưa ghi dữ liệu</small></div><button type="button" disabled={!importPreviewRows.some((row) => row.classification === 'new' || row.classification === 'update') || saving} onClick={() => void applyImport()}>Apply valid rows</button></div><div className="global-admin-import-summary"><span><b>{importPreviewRows.filter((row) => row.classification === 'new').length}</b>New</span><span><b>{importPreviewRows.filter((row) => row.classification === 'update').length}</b>Update</span><span><b>{importPreviewRows.filter((row) => row.classification === 'error').length}</b>Error</span></div><ul>{importPreviewRows.slice(0, 8).map((row) => <li key={row.row}><code>Row {row.row}</code><span>{row.classification}</span><small>{row.issues.join(', ') || String(row.values[definition.displayField] ?? row.values[definition.idField])}</small></li>)}</ul>{importPreviewRows.length > 8 && <small className="global-admin-import-more">Hiển thị 8 dòng đầu; toàn bộ preview vẫn được tính trước khi Apply.</small>}</section>}
     <section className="global-admin-bottom-grid"><article className="global-admin-panel global-admin-propagation"><h3>Apply mode & overlay resolver</h3><div><span>◎</span><strong>Update Global default</strong><small>Users đang inherit nhận baseline mới; user override được giữ nguyên.</small></div><div><span>⌘</span><strong>Apply to scope</strong><small>Chọn user/filter trong Users rồi preview policy trước khi force write.</small></div><div><span>◫</span><strong>Lịch sử bảo toàn snapshot</strong><small>Deactivate/remove khỏi active catalog nhưng không sửa record lịch sử.</small></div></article><article className="global-admin-panel global-admin-impact-panel"><h3>Scope & policy</h3><p>Scope builder chỉ mở khi có một canonical change cần áp dụng theo user. Nội dung riêng tư, custom item và historical snapshot luôn có policy riêng.</p><button type="button" onClick={() => onNavigate('users')}>Chọn scope trong Users →</button></article><article className="global-admin-panel global-admin-impact-panel"><h3>Impact Preview</h3><p>Preview là bước bắt buộc trước bulk apply hoặc thao tác destructive. Kết quả được ghi thành operation để theo dõi và retry từng phần.</p><button type="button" onClick={() => onNavigate('operations')}>Mở Operations Center →</button></article></section>
   </div>
 }
@@ -522,11 +492,11 @@ function AdminState({ title, copy, action, onAction, error = false }: { title: s
 }
 
 function pageTitle(view: AdminView): string {
-  return ({ overview: 'Overview', canonical: 'Global Data', users: 'Users', operations: 'Operations', platform: 'Platform' })[view]
+  return ({ overview: 'Overview', canonical: 'Global Data', users: 'Users', operations: 'Operations', platform: 'Platform', import_export: 'Import / Export' })[view]
 }
 
 function pageDescription(view: AdminView): string {
-  return ({ overview: 'Tổng quan control plane và các thay đổi gần đây.', canonical: 'Quản lý catalog chuẩn; update global giữ nguyên personal override và lịch sử.', users: 'Tìm user, xem metadata, chọn scope và chạy typed action theo từng account.', operations: 'Theo dõi preview, queue, kết quả và partial retry của các typed operation.', platform: 'Runtime config, feature flags, assets, jobs và system health theo read-model.' })[view]
+  return ({ overview: 'Tổng quan control plane và các thay đổi gần đây.', canonical: 'Quản lý catalog chuẩn; update global giữ nguyên personal override và lịch sử.', users: 'Tìm user, xem metadata, chọn scope và chạy typed action theo từng account.', operations: 'Theo dõi preview, queue, kết quả và partial retry của các typed operation.', platform: 'Runtime config, feature flags, assets, jobs và system health theo read-model.', import_export: 'Một flow duy nhất cho import/export: detect, validate, snapshot, apply và audit.' })[view]
 }
 
 function catalogIcon(key: AdminEntityKey): string {
