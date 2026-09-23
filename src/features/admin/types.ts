@@ -1,5 +1,5 @@
 export type AdminMode = 'basic' | 'advanced'
-export type AdminView = 'overview' | 'content' | 'data' | 'prompts' | 'rules' | 'assets' | 'recovery' | 'audit'
+export type AdminView = 'overview' | 'content' | 'data' | 'prompts' | 'import_export' | 'rules' | 'assets' | 'recovery' | 'audit'
 export type AdminFieldType = 'text' | 'textarea' | 'number' | 'color' | 'boolean'
 
 export type AdminField = {

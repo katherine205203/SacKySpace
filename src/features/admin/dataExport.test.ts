@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import { getExportColumns, serializeDelimitedDataset } from './dataExport'
+import { createStoredZip, readStoredZip } from './dataExport'
 import type { AdminExportDataset } from './types'
 
 const dataset: AdminExportDataset = {
@@ -20,5 +21,14 @@ describe('Admin data export', () => {
 
   it('quotes delimiters, line breaks, and JSON values in delimited exports', () => {
     expect(serializeDelimitedDataset(dataset, ',')).toBe('emotion_id,emotion_name_vn,metadata,extra\r\njoy,"Vui, nhẹ","{""active"":true}",\r\ncalm,Bình yên,,3')
+  })
+})
+
+describe('portable admin export package', () => {
+  it('round-trips stored ZIP package files', () => {
+    const zip = createStoredZip([{ name: 'manifest.json', data: '{"format":"json"}' }, { name: 'emotions.json', data: '{"records":[]}' }])
+    const files = readStoredZip(zip)
+    expect(new TextDecoder().decode(files['manifest.json'])).toContain('json')
+    expect(new TextDecoder().decode(files['emotions.json'])).toContain('records')
   })
 })
