@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState, type CSSProperties } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState, type CSSProperties } from 'react'
 import { Link, useSearchParams } from 'react-router-dom'
 import {
   DEFAULT_REFLECTION_OUTCOMES,
@@ -23,6 +23,8 @@ import { PageHeading } from '../../components/PageHeading'
 import type { ActionDraft, ActionRecord, ActionReflection, ActionReflectionOutcome, ActionSpaceSnapshot, ActionTab } from './types'
 import type { CheckinRecord } from '../checkin/types'
 import { getLocalDateKey } from '../checkin/utils/history'
+import { useAutosave } from '../../hooks/useAutosave'
+import { ReflectionModal } from './components/ReflectionModal'
 import './actionspace.css'
 
 const tabs: { value: ActionTab; label: string }[] = [
@@ -82,6 +84,17 @@ const emptyDraft = (): ActionDraft => ({
   dueTime: '',
   sourceCheckinId: null,
 })
+
+const ACTION_DRAFT_STORAGE_KEY = 'sacky:action-composer-draft:v1'
+const readActionDraft = (): ActionDraft => {
+  try {
+    const value = JSON.parse(window.localStorage.getItem(ACTION_DRAFT_STORAGE_KEY) ?? 'null') as Partial<ActionDraft> | null
+    if (!value || typeof value.title !== 'string' || typeof value.note !== 'string') return emptyDraft()
+    return { ...emptyDraft(), ...value }
+  } catch {
+    return emptyDraft()
+  }
+}
 
 const draftFromAction = (action: ActionRecord): ActionDraft => ({
   title: action.title,
@@ -216,6 +229,10 @@ export function ActionSpacePage() {
     await refresh()
   }
 
+  const handleComposerAutosaved = useCallback((saved: ActionRecord) => {
+    setSnapshot((current) => current ? { ...current, actions: current.actions.map((item) => item.id === saved.id ? saved : item) } : current)
+  }, [])
+
   if (isLoading && !snapshot) return <section className="action-space" role="status"><p className="eyebrow">{pageEyebrow}</p><h1>{pageTitle}</h1><p className="action-space__loading">Đang gom những bước nhỏ của bạn…</p></section>
   if (!snapshot) return <section className="action-space action-space--error" role="alert"><p className="eyebrow">{pageEyebrow}</p><h1>Chưa thể mở {pageTitle}</h1><p>{error ?? 'Dữ liệu chưa sẵn sàng.'}</p><button className="button button--secondary" type="button" onClick={() => void refresh()}>Thử lại</button></section>
 
@@ -223,7 +240,7 @@ export function ActionSpacePage() {
     <PageHeading className="action-space__header" eyebrow={historyEyebrow} title={historyTitle} description={historySubtitle} titleId="action-history-title" actions={<><Link className="button button--secondary" to="/action-space">← Action Space</Link><button className="button button--primary" type="button" onClick={() => setComposer({ action: null })}>{addButton}</button></>} />
     {error && <p className="action-space__notice" role="alert">Không thể làm mới dữ liệu: {error}</p>}
     <ActionHistorySurface snapshot={snapshot} outcomes={reflectionOutcomes} lens={historyLens} onLensChange={(nextLens) => setSearchParams({ view: 'history', lens: nextLens })} />
-    {composer && <ActionComposerModal action={composer.action} snapshot={snapshot} onClose={() => setComposer(null)} onSubmit={(draft) => composer.action ? runUpdate(composer.action, draft) : runCreate(draft)} />}
+    {composer && <ActionComposerModal action={composer.action} snapshot={snapshot} onClose={() => setComposer(null)} onAutosaved={handleComposerAutosaved} onSubmit={(draft) => composer.action ? runUpdate(composer.action, draft) : runCreate(draft)} />}
   </section>
 
   return <section className="action-space" aria-labelledby="action-space-title">
@@ -242,7 +259,7 @@ export function ActionSpacePage() {
       <ActionContextRail action={selectedAction} tab={tab} visibleActions={visibleActions} completedTodayCount={completedTodayCount} rhythm={rhythm} snapshot={snapshot} reflections={selectedAction ? snapshot.reflections.filter((item) => item.actionId === selectedAction.id) : []} reflectionOutcomes={reflectionOutcomes} onClose={() => setSelectedActionId(null)} onEdit={() => selectedAction && setComposer({ action: selectedAction })} onReschedule={() => selectedAction && setComposer({ action: selectedAction })} onDone={() => selectedAction && void handleDone(selectedAction)} onDelete={() => selectedAction && void handleDelete(selectedAction)} onLink={async (checkinId) => { if (selectedAction) { await linkActionToCheckin(selectedAction.id, checkinId); await refresh() } }} busy={Boolean(selectedAction && busyActionId === selectedAction.id)} />
     </div>
 
-    {composer && <ActionComposerModal action={composer.action} snapshot={snapshot} onClose={() => setComposer(null)} onSubmit={(draft) => composer.action ? runUpdate(composer.action, draft) : runCreate(draft)} />}
+    {composer && <ActionComposerModal action={composer.action} snapshot={snapshot} onClose={() => setComposer(null)} onAutosaved={handleComposerAutosaved} onSubmit={(draft) => composer.action ? runUpdate(composer.action, draft) : runCreate(draft)} />}
     {reflection && <ReflectionModal action={reflection.action} checkin={reflection.action.sourceCheckinId ? snapshot.checkins.find((checkin) => checkin.id === reflection.action.sourceCheckinId) ?? null : null} outcomes={reflectionOutcomes} historyAvailable={reflection.historyAvailable} onClose={() => setReflection(null)} onSave={(outcome, note) => handleReflectionSave(reflection.action, outcome, note)} />}
   </section>
 }
@@ -393,12 +410,35 @@ function ActionHistoryEmpty({ copy = 'Chưa có Action hoàn thành trong khoả
   return <div className="action-history__empty"><span aria-hidden="true">◌</span><strong>{copy}</strong><Link to="/action-space">Về Action Space để viết một bước mới.</Link></div>
 }
 
-function ActionComposerModal({ action, snapshot, onClose, onSubmit }: { action: ActionRecord | null; snapshot: ActionSpaceSnapshot; onClose: () => void; onSubmit: (draft: ActionDraft) => Promise<void> }) {
-  const [draft, setDraft] = useState<ActionDraft>(() => action ? draftFromAction(action) : emptyDraft())
+function ActionComposerModal({ action, snapshot, onClose, onAutosaved, onSubmit }: { action: ActionRecord | null; snapshot: ActionSpaceSnapshot; onClose: () => void; onAutosaved?: (action: ActionRecord) => void; onSubmit: (draft: ActionDraft) => Promise<void> }) {
+  const [draft, setDraft] = useState<ActionDraft>(() => action ? draftFromAction(action) : readActionDraft())
   const [checkinQuery, setCheckinQuery] = useState('')
   const [showMoreCheckins, setShowMoreCheckins] = useState(false)
   const [isSaving, setIsSaving] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const autosaveSignatureRef = useRef(JSON.stringify(action ? draftFromAction(action) : null))
+  const { flush: flushAutosave, schedule: scheduleAutosave, status: autosaveStatus } = useAutosave(async (nextDraft: ActionDraft) => {
+    if (!action?.id || !nextDraft.title.trim()) return
+    const saved = await updateAction(action.id, nextDraft)
+    autosaveSignatureRef.current = JSON.stringify(nextDraft)
+    onAutosaved?.(saved)
+  }, { delay: 700 })
+
+  useEffect(() => {
+    if (action) return
+    const timer = window.setTimeout(() => {
+      try { window.localStorage.setItem(ACTION_DRAFT_STORAGE_KEY, JSON.stringify(draft)) } catch { /* Device autosave is best effort. */ }
+    }, 250)
+    return () => window.clearTimeout(timer)
+  }, [action, draft])
+
+  useEffect(() => {
+    if (!action?.id || !draft.title.trim()) return
+    const signature = JSON.stringify(draft)
+    if (signature === autosaveSignatureRef.current) return
+    scheduleAutosave(draft)
+  }, [action, draft, scheduleAutosave])
+
   const selectedCheckin = draft.sourceCheckinId ? snapshot.checkins.find((item) => item.id === draft.sourceCheckinId) ?? null : null
   const checkins = snapshot.checkins.filter((checkin) => {
     if (!checkinQuery.trim()) return true
@@ -412,26 +452,11 @@ function ActionComposerModal({ action, snapshot, onClose, onSubmit }: { action: 
     if (draft.scheduleType === 'date_range' && (!draft.plannedDate || !draft.plannedEndDate || draft.plannedEndDate < draft.plannedDate)) { setError('Khoảng ngày chưa hợp lệ.'); return }
     setIsSaving(true)
     setError(null)
-    try { await onSubmit(draft) } catch (reason: unknown) { setError(reason instanceof Error ? reason.message : 'Không thể lưu Action.') } finally { setIsSaving(false) }
+    try {
+      await flushAutosave().catch(() => undefined)
+      await onSubmit(draft)
+      if (!action) window.localStorage.removeItem(ACTION_DRAFT_STORAGE_KEY)
+    } catch (reason: unknown) { setError(reason instanceof Error ? reason.message : 'Không thể lưu Action.') } finally { setIsSaving(false) }
   }
-  return <div className="action-modal-backdrop" role="presentation" onClick={onClose}><section className="action-modal" role="dialog" aria-modal="true" aria-labelledby="action-modal-title" onClick={(event) => event.stopPropagation()}><button className="action-modal__close" type="button" onClick={onClose} aria-label="Đóng">×</button><header><p className="eyebrow">{action ? 'Chỉnh sửa action' : 'Capture'}</p><h2 id="action-modal-title">{action ? 'Giữ action đúng với bạn' : 'Bạn muốn làm gì?'}</h2><p>Một bước nhỏ cũng đủ. Lên lịch khi bạn muốn, hoặc để dành trong Chưa lên lịch.</p></header><div className="action-modal__fields"><label><span>Tên action <em>*</em></span><input autoFocus value={draft.title} onChange={(event) => setDraft((current) => ({ ...current, title: event.target.value }))} placeholder="Ví dụ: Đi bộ 10 phút" /></label><label><span>Ghi chú <small>tuỳ chọn</small></span><textarea rows={3} value={draft.note} onChange={(event) => setDraft((current) => ({ ...current, note: event.target.value }))} placeholder="Điều gì sẽ giúp bước này vừa đủ?" /></label><section className="action-modal__section" aria-labelledby="schedule-label"><h3 id="schedule-label">Lên lịch</h3><div className="schedule-choices">{([['none', 'Chưa lên lịch'], ['date', 'Một ngày'], ['date_range', 'Khoảng ngày']] as const).map(([value, label]) => <button key={value} className={draft.scheduleType === value ? 'is-selected' : ''} type="button" onClick={() => setDraft((current) => ({ ...current, scheduleType: value }))}>{label}</button>)}</div>{draft.scheduleType !== 'none' && <div className="schedule-inputs"><label><span>{draft.scheduleType === 'date_range' ? 'Từ ngày' : 'Ngày'}</span><input type="date" value={draft.plannedDate} onChange={(event) => setDraft((current) => ({ ...current, plannedDate: event.target.value }))} /></label>{draft.scheduleType === 'date_range' && <label><span>Đến ngày</span><input type="date" value={draft.plannedEndDate} onChange={(event) => setDraft((current) => ({ ...current, plannedEndDate: event.target.value }))} /></label>}<label><span>Giờ <small>tuỳ chọn</small></span><input type="time" value={draft.dueTime} onChange={(event) => setDraft((current) => ({ ...current, dueTime: event.target.value }))} /></label></div>}</section><section className="action-modal__section" aria-labelledby="checkin-label"><h3 id="checkin-label">Gắn với Check-in <small>tuỳ chọn</small></h3>{selectedCheckin ? <div className="selected-checkin" style={{ '--checkin-color': selectedCheckin.primaryEmotion?.color_hex ?? '#b8a5df' } as CSSProperties}><span>{selectedCheckin.primaryEmotion?.emoji ?? selectedCheckin.unknownPrompt?.emoji ?? '◌'}</span><div><strong>{selectedCheckin.primaryEmotion?.emotion_name_vn ?? 'Mình còn đang mơ hồ'}</strong><small>{formatCheckinDate(selectedCheckin.occurredAt)} · {selectedCheckin.note || selectedCheckin.unknownPrompt?.prompt_text_vn || 'Không có ghi chú'}</small></div><button type="button" onClick={() => setDraft((current) => ({ ...current, sourceCheckinId: null }))}>Bỏ gắn</button></div> : <><div className="checkin-picker-toolbar"><input value={checkinQuery} onChange={(event) => { setCheckinQuery(event.target.value); setShowMoreCheckins(Boolean(event.target.value)) }} placeholder="Tìm Check-in gần đây…" aria-label="Tìm Check-in" /></div><div className="checkin-picker-list">{checkins.map((checkin) => { const count = activeCountFor(checkin.id); const disabled = count >= 2; const name = checkin.primaryEmotion?.emotion_name_vn ?? 'Mình còn đang mơ hồ'; return <button key={checkin.id} className="checkin-picker-item" style={{ '--checkin-color': checkin.primaryEmotion?.color_hex ?? '#b8a5df' } as CSSProperties} disabled={disabled} type="button" onClick={() => setDraft((current) => ({ ...current, sourceCheckinId: checkin.id }))}><span>{checkin.primaryEmotion?.emoji ?? checkin.unknownPrompt?.emoji ?? '◌'}</span><span><strong>{name}</strong><small>{formatCheckinDate(checkin.occurredAt)} · {disabled ? 'Đã đủ 2 action đang hoạt động' : (checkin.note || checkin.unknownPrompt?.prompt_text_vn || 'Check-in không có ghi chú')}</small></span><i>{disabled ? 'Đủ' : 'Gắn'}</i></button> })}{!checkins.length && <small className="muted-text">Không tìm thấy Check-in phù hợp.</small>}{!checkinQuery && !showMoreCheckins && snapshot.checkins.length > 3 && <button className="text-button checkin-picker-more" type="button" onClick={() => setShowMoreCheckins(true)}>Xem thêm</button>}</div></>}</section></div>{error && <p className="action-modal__error" role="alert">{error}</p>}<footer><button className="button button--secondary" type="button" onClick={onClose}>Hủy</button><button className="button button--primary" type="button" disabled={isSaving} onClick={() => void submit()}>{isSaving ? 'Đang lưu…' : action ? 'Lưu thay đổi' : 'Thêm action'}</button></footer></section></div>
-}
-
-const getReflectionSource = (checkin: CheckinRecord | null | undefined) => {
-  if (checkin?.primaryEmotion) return { emoji: checkin.primaryEmotion.emoji, nameVn: checkin.primaryEmotion.emotion_name_vn, nameEn: checkin.primaryEmotion.emotion_name_en, color: checkin.primaryEmotion.color_hex, sourceLabel: 'Từ Check-in' }
-  if (checkin?.checkinType === 'unknown') return { emoji: checkin.unknownPrompt?.emoji ?? '◌', nameVn: 'Mình còn đang mơ hồ', nameEn: 'Unknown Check-in', color: '#7C9BEF', sourceLabel: 'Từ Check-in' }
-  return { emoji: '✦', nameVn: 'Action Space', nameEn: 'Một bước nhỏ cho bạn', color: ACTION_INDEPENDENT_COLOR, sourceLabel: 'Action độc lập' }
-}
-
-const reflectionIcons: Record<string, string> = { better: '↗', lighter: '≈', same: '—', not_better: '↘', other: '✦' }
-
-export function ReflectionModal({ action, checkin, outcomes, onClose, onSave }: { action: ActionRecord; checkin?: CheckinRecord | null; outcomes: ActionReflectionOutcome[]; historyAvailable?: boolean; onClose: () => void; onSave: (outcome: ActionReflectionOutcome, note: string) => Promise<void> }) {
-  const availableOutcomes = outcomes.length ? outcomes : DEFAULT_REFLECTION_OUTCOMES
-  const [selected, setSelected] = useState<ActionReflectionOutcome | null>(availableOutcomes[0] ?? null)
-  const [note, setNote] = useState('')
-  const [isSaving, setIsSaving] = useState(false)
-  const [error, setError] = useState<string | null>(null)
-  const submit = async () => { if (!selected) return; setIsSaving(true); setError(null); try { await onSave(selected, note) } catch { setError('Chưa thể lưu lại lúc này. Thử lại nhé.') } finally { setIsSaving(false) } }
-  const source = getReflectionSource(checkin)
-  return <div className="action-modal-backdrop" role="presentation" onClick={onClose}><section className="reflection-modal" style={{ '--reflection-color': source.color } as CSSProperties} role="dialog" aria-modal="true" aria-labelledby="reflection-modal-title" onClick={(event) => event.stopPropagation()}><button className="action-modal__close" type="button" onClick={onClose} aria-label="Đóng">×</button><div className="reflection-modal__layout"><aside className="reflection-modal__source"><div className="reflection-modal__source-orb" aria-hidden="true">{source.emoji}</div><span className="eyebrow">{source.sourceLabel}</span><strong>{source.nameVn}</strong><small>{source.nameEn}</small><div className="reflection-modal__source-action"><span>✓</span><p>{action.title}</p></div></aside><div className="reflection-modal__main"><p className="eyebrow">Một khoảng nhìn lại</p><h2 id="reflection-modal-title">Làm xong, bạn thấy thế nào rồi?</h2><p className="reflection-modal__prompt">Không cần câu trả lời hoàn hảo — chỉ cần điều đúng nhất với bạn lúc này.</p><div className="reflection-options" role="radiogroup" aria-label="Cảm nhận sau khi làm xong">{availableOutcomes.map((outcome) => <button key={outcome.id} className={`reflection-option reflection-option--${outcome.semanticGroup} ${selected?.id === outcome.id ? 'is-selected' : ''}`} type="button" role="radio" aria-checked={selected?.id === outcome.id} onClick={() => setSelected(outcome)}><span aria-hidden="true">{reflectionIcons[outcome.id] ?? '◌'}</span><span>{outcome.labelVn}</span>{selected?.id === outcome.id && <b aria-hidden="true">✓</b>}</button>)}</div><label className="reflection-note"><span>Ghi chú tùy chọn</span><textarea rows={4} value={note} onChange={(event) => setNote(event.target.value)} placeholder="Viết một dòng nếu bạn muốn…" /></label>{error && <p className="action-modal__error" role="alert">{error}</p>}<footer><button className="button button--secondary" type="button" onClick={onClose}>Bỏ qua</button><button className="button button--primary" type="button" disabled={!selected || isSaving} onClick={() => void submit()}>{isSaving ? 'Đang lưu…' : 'Lưu lại'}</button></footer></div></div></section></div>
+  return <div className="action-modal-backdrop" role="presentation" onClick={onClose}><section className="action-modal" role="dialog" aria-modal="true" aria-labelledby="action-modal-title" onClick={(event) => event.stopPropagation()}><button className="action-modal__close" type="button" onClick={onClose} aria-label="Đóng">×</button><header><p className="eyebrow">{action ? 'Chỉnh sửa action' : 'Capture'}</p><h2 id="action-modal-title">{action ? 'Giữ action đúng với bạn' : 'Bạn muốn làm gì?'}</h2><p>Một bước nhỏ cũng đủ. Lên lịch khi bạn muốn, hoặc để dành trong Chưa lên lịch.</p></header><div className="action-modal__fields"><label><span>Tên action <em>*</em></span><input autoFocus value={draft.title} onChange={(event) => setDraft((current) => ({ ...current, title: event.target.value }))} placeholder="Ví dụ: Đi bộ 10 phút" /></label><label><span>Ghi chú <small>tuỳ chọn</small></span><textarea rows={3} value={draft.note} onChange={(event) => setDraft((current) => ({ ...current, note: event.target.value }))} placeholder="Điều gì sẽ giúp bước này vừa đủ?" /></label><section className="action-modal__section" aria-labelledby="schedule-label"><h3 id="schedule-label">Lên lịch</h3><div className="schedule-choices">{([['none', 'Chưa lên lịch'], ['date', 'Một ngày'], ['date_range', 'Khoảng ngày']] as const).map(([value, label]) => <button key={value} className={draft.scheduleType === value ? 'is-selected' : ''} type="button" onClick={() => setDraft((current) => ({ ...current, scheduleType: value }))}>{label}</button>)}</div>{draft.scheduleType !== 'none' && <div className="schedule-inputs"><label><span>{draft.scheduleType === 'date_range' ? 'Từ ngày' : 'Ngày'}</span><input type="date" value={draft.plannedDate} onChange={(event) => setDraft((current) => ({ ...current, plannedDate: event.target.value }))} /></label>{draft.scheduleType === 'date_range' && <label><span>Đến ngày</span><input type="date" value={draft.plannedEndDate} onChange={(event) => setDraft((current) => ({ ...current, plannedEndDate: event.target.value }))} /></label>}<label><span>Giờ <small>tuỳ chọn</small></span><input type="time" value={draft.dueTime} onChange={(event) => setDraft((current) => ({ ...current, dueTime: event.target.value }))} /></label></div>}</section><section className="action-modal__section" aria-labelledby="checkin-label"><h3 id="checkin-label">Gắn với Check-in <small>tuỳ chọn</small></h3>{selectedCheckin ? <div className="selected-checkin" style={{ '--checkin-color': selectedCheckin.primaryEmotion?.color_hex ?? '#b8a5df' } as CSSProperties}><span>{selectedCheckin.primaryEmotion?.emoji ?? selectedCheckin.unknownPrompt?.emoji ?? '◌'}</span><div><strong>{selectedCheckin.primaryEmotion?.emotion_name_vn ?? 'Mình còn đang mơ hồ'}</strong><small>{formatCheckinDate(selectedCheckin.occurredAt)} · {selectedCheckin.note || selectedCheckin.unknownPrompt?.prompt_text_vn || 'Không có ghi chú'}</small></div><button type="button" onClick={() => setDraft((current) => ({ ...current, sourceCheckinId: null }))}>Bỏ gắn</button></div> : <><div className="checkin-picker-toolbar"><input value={checkinQuery} onChange={(event) => { setCheckinQuery(event.target.value); setShowMoreCheckins(Boolean(event.target.value)) }} placeholder="Tìm Check-in gần đây…" aria-label="Tìm Check-in" /></div><div className="checkin-picker-list">{checkins.map((checkin) => { const count = activeCountFor(checkin.id); const disabled = count >= 2; const name = checkin.primaryEmotion?.emotion_name_vn ?? 'Mình còn đang mơ hồ'; return <button key={checkin.id} className="checkin-picker-item" style={{ '--checkin-color': checkin.primaryEmotion?.color_hex ?? '#b8a5df' } as CSSProperties} disabled={disabled} type="button" onClick={() => setDraft((current) => ({ ...current, sourceCheckinId: checkin.id }))}><span>{checkin.primaryEmotion?.emoji ?? checkin.unknownPrompt?.emoji ?? '◌'}</span><span><strong>{name}</strong><small>{formatCheckinDate(checkin.occurredAt)} · {disabled ? 'Đã đủ 2 action đang hoạt động' : (checkin.note || checkin.unknownPrompt?.prompt_text_vn || 'Check-in không có ghi chú')}</small></span><i>{disabled ? 'Đủ' : 'Gắn'}</i></button> })}{!checkins.length && <small className="muted-text">Không tìm thấy Check-in phù hợp.</small>}{!checkinQuery && !showMoreCheckins && snapshot.checkins.length > 3 && <button className="text-button checkin-picker-more" type="button" onClick={() => setShowMoreCheckins(true)}>Xem thêm</button>}</div></>}</section></div>{error && <p className="action-modal__error" role="alert">{error}</p>}<footer><small className="action-modal__autosave" role="status">{autosaveStatus === 'saving' ? 'Đang tự động lưu…' : autosaveStatus === 'saved' ? 'Đã tự động lưu' : autosaveStatus === 'error' ? 'Chưa lưu được — sẽ thử lại khi bạn tiếp tục' : !action ? 'Bản nháp lưu trên thiết bị' : ''}</small><button className="button button--secondary" type="button" onClick={onClose}>Hủy</button><button className="button button--primary" type="button" disabled={isSaving} onClick={() => void submit()}>{isSaving ? 'Đang lưu…' : action ? 'Lưu thay đổi' : 'Thêm action'}</button></footer></section></div>
 }

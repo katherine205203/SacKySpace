@@ -3,7 +3,7 @@ import { getPublishedRuntimeValue } from '../../../services/runtimeConfig'
 import { getDiaryEntry, saveDiary } from '../../diary/services/diaryRepository'
 import { createEmptyDiaryDraft } from '../../diary/services/diaryRepository'
 import type { DiaryEntry, DiaryPrompt } from '../../diary/types'
-import { createGiftId, getGiftLocalDate, isGiftOnHome } from '../utils'
+import { addGiftDays, createGiftId, getGiftLocalDate, isGiftOnHome } from '../utils'
 import type { DiaryConversionLink, GiftBoxStyle, GiftDraft, GiftHomeProjection, GiftQuestionAnswer, GiftReceiptStatus, GiftRecord, GiftType } from '../types'
 import { isRichTextEmpty } from '../../../components/richText'
 
@@ -214,12 +214,13 @@ export const getGiftHomeProjection = async (userId?: string): Promise<GiftHomePr
   try {
     const effectiveUserId = userId ?? await currentUserId()
     await syncGiftLifecycle()
-    const { data, error } = await supabase.from('gifts').select(selectGift).eq('user_id', effectiveUserId).order('creation_local_date', { ascending: false }).order('created_at', { ascending: false })
+    const today = getGiftLocalDate()
+    const { data, error } = await supabase.from('gifts').select(selectGift).eq('user_id', effectiveUserId).gte('creation_local_date', addGiftDays(today, -1)).lte('creation_local_date', today).order('creation_local_date', { ascending: false }).order('created_at', { ascending: false })
     if (error) throw error
     const records = ((data ?? []) as GiftRow[]).map(mapGift)
     const homeExpiry = await getPublishedRuntimeValue('gift.home_expiry_local_time', '23:30')
     const gift = records.find((record) => isGiftOnHome(record, new Date(), homeExpiry)) ?? null
-    const todayGift = records.find((record) => record.creationLocalDate === getGiftLocalDate()) ?? null
+    const todayGift = records.find((record) => record.creationLocalDate === today) ?? null
     const answer = gift ? await getGiftAnswer(gift.id) : null
     return { gift, todayGift, answer }
   } catch {

@@ -255,8 +255,9 @@ export const flushFutureLetterDraft = async (): Promise<void> => {
 }
 
 export const saveFutureLetterDraft = async (draft: FutureLetterDraft): Promise<FutureLetter> => {
-  if (!draft.title.trim()) throw new Error('Hãy đặt tiêu đề cho bản nháp.')
-  if (isRichTextEmpty(draft.body)) throw new Error('Hãy viết nội dung cho bản nháp.')
+  // Drafts are intentionally allowed to be incomplete. Validation belongs to
+  // sealing, so every keystroke can be persisted without blocking a user who
+  // starts with the body, conditions, or decoration first.
   const userId = await currentUserId()
   const existing = draft.id ? readLocalLetters(userId).find((letter) => letter.id === draft.id) ?? knownLetters.get(draft.id) ?? null : null
   if (existing?.state === 'sealed_waiting' || existing?.state === 'available_unopened' || existing?.state === 'opened' || existing?.state === 'archived') throw new Error('Lá thư đã niêm phong nên không thể chỉnh sửa.')
@@ -443,11 +444,23 @@ export const getFutureLetterLibrary = async (): Promise<{ letters: FutureLetter[
 
 export const getFutureLetterHomeProjection = async (userId?: string): Promise<{ availableCount: number; availableTitle: string | null }> => {
   try {
-    // Reconciliation belongs to FutureMe; Home only receives the resulting projection.
-    const letters = await reconcileFutureLetters(userId)
-    const available = letters.filter((letter) => isHomeAvailable(letter))
+    const effectiveUserId = userId ?? await currentUserId()
+    const { data, error } = await supabase
+      .from('future_letters')
+      .select('title, lifecycle_state, last_opened_at')
+      .eq('user_id', effectiveUserId)
+      .order('updated_at', { ascending: false })
+    if (error) throw error
+    const available = ((data ?? []) as Array<{ title: string; lifecycle_state: FutureLetter['state']; last_opened_at: string | null }>)
+      .filter((letter) => isHomeAvailable({ state: letter.lifecycle_state, lastOpenedAt: letter.last_opened_at }))
     return { availableCount: available.length, availableTitle: available[0]?.title ?? null }
-  } catch { return { availableCount: 0, availableTitle: null } }
+  } catch {
+    try {
+      const letters = await listFutureLetters(userId)
+      const available = letters.filter((letter) => isHomeAvailable(letter))
+      return { availableCount: available.length, availableTitle: available[0]?.title ?? null }
+    } catch { return { availableCount: 0, availableTitle: null } }
+  }
 }
 
 export const createEmptyFutureLetterDraft = (): FutureLetterDraft => {

@@ -1,7 +1,8 @@
 import { supabase } from '../../../services/supabase/client'
 import { getReferenceData } from '../../checkin/services/referenceRepository'
 import { listCheckins } from '../../checkin/services/checkinRepository'
-import { listDiaryEntries } from '../../diary/services/diaryRepository'
+import { getDiaryEntry } from '../../diary/services/diaryRepository'
+import { getDiaryLocalDate } from '../../diary/utils'
 import { getFutureLetterHomeProjection } from '../../futureletter/services/futureLetterRepository'
 import { getGiftHomeProjection } from '../../gift/services/giftRepository'
 import type { HomeReminder, HomeSnapshot } from '../types'
@@ -20,8 +21,7 @@ type ReminderRow = {
 }
 
 const HOME_PROJECTION_TIMEOUT_MS = 15_000
-
-const timeHomeDependency = async <T>(_label: string, operation: () => Promise<T>): Promise<T> => operation()
+const HOME_SNAPSHOT_TTL_MS = 15_000
 
 const withHomeTimeout = <T>(operation: Promise<T>, label: string): Promise<T> => {
   return new Promise<T>((resolve, reject) => {
@@ -58,10 +58,8 @@ const listHomeReminders = async (userId: string): Promise<HomeReminder[]> => {
     .eq('user_id', userId)
     .order('planned_date', { ascending: true, nullsFirst: true })
     .order('due_time', { ascending: true, nullsFirst: false })
-  let result = await timeHomeDependency('supabase.reminders.select', async () => await run('id, title, note, planned_date, planned_end_date, due_time, status, completed_at, origin, source_checkin_id'))
-  if (result.error && /planned_end_date|column .* does not exist|schema cache/i.test(result.error.message)) {
-    result = await timeHomeDependency('supabase.reminders.select.compatibility', async () => await run('id, title, note, planned_date, due_time, status, completed_at, origin, source_checkin_id'))
-  }
+  let result = await run('id, title, note, planned_date, planned_end_date, due_time, status, completed_at, origin, source_checkin_id')
+  if (result.error && /planned_end_date|column .* does not exist|schema cache/i.test(result.error.message)) result = await run('id, title, note, planned_date, due_time, status, completed_at, origin, source_checkin_id')
   const { data, error } = result
   if (error) throw error
 
@@ -79,34 +77,62 @@ const listHomeReminders = async (userId: string): Promise<HomeReminder[]> => {
   }))
 }
 
-const getHomeSnapshotUnbounded = async (): Promise<HomeSnapshot> => {
-  const { data: userResult, error: userError } = await timeHomeDependency('supabase.auth.getUser', () => supabase.auth.getUser())
-  if (userError) throw userError
-  if (!userResult.user) throw new Error('You must be signed in to view Home.')
+type HomeUser = {
+  id: string
+  email?: string | null
+  user_metadata?: Record<string, unknown>
+}
 
+const getHomeSnapshotUnbounded = async (user: HomeUser): Promise<HomeSnapshot> => {
   const [reference, futureLetter, gift] = await Promise.all([
-    timeHomeDependency('reference.getReferenceData', getReferenceData),
-    timeHomeDependency('future-letter.homeProjection', () => getFutureLetterHomeProjection(userResult.user.id)),
-    timeHomeDependency('gift.homeProjection', () => getGiftHomeProjection(userResult.user.id)),
+    getReferenceData(),
+    getFutureLetterHomeProjection(user.id),
+    getGiftHomeProjection(user.id),
   ])
-  const [records, reminders, diaryEntries] = await Promise.all([
-    timeHomeDependency('checkins.listCheckins', () => listCheckins(reference, userResult.user.id)),
-    timeHomeDependency('reminders.listHomeReminders', () => listHomeReminders(userResult.user.id)),
-    timeHomeDependency('diary.listDiaryEntries', listDiaryEntries),
+  const [records, reminders, diaryEntry] = await Promise.all([
+    listCheckins(reference, user.id),
+    listHomeReminders(user.id),
+    getDiaryEntry(getDiaryLocalDate(), { finalize: false, userId: user.id }),
   ])
 
   return {
-    displayName: getDisplayName(userResult.user),
+    displayName: getDisplayName(user),
     records,
     reminders,
-    diaryEntries,
+    diaryEntries: diaryEntry ? [diaryEntry] : [],
     futureLetter,
     gift,
   }
 }
 
-export const getHomeSnapshot = (): Promise<HomeSnapshot> =>
-  timeHomeDependency(
-    'home projection',
-    () => withHomeTimeout(getHomeSnapshotUnbounded(), 'Home projection'),
+let homeCache: { userId: string; snapshot: HomeSnapshot; expiresAt: number } | null = null
+let homeRequest: { userId: string; promise: Promise<HomeSnapshot> } | null = null
+
+export const clearHomeSnapshotCache = (): void => {
+  homeCache = null
+}
+
+export const getHomeSnapshot = async ({ force = false }: { force?: boolean } = {}): Promise<HomeSnapshot> => {
+  const { data: userResult, error: userError } = await withHomeTimeout(
+    supabase.auth.getUser(),
+    'Home authentication',
   )
+  if (userError) throw userError
+  if (!userResult.user) throw new Error('You must be signed in to view Home.')
+
+  const user = userResult.user as HomeUser
+  const now = Date.now()
+  if (!force && homeCache?.userId === user.id && homeCache.expiresAt > now) return homeCache.snapshot
+  if (homeRequest?.userId === user.id) return homeRequest.promise
+
+  const promise = withHomeTimeout(getHomeSnapshotUnbounded(user), 'Home projection')
+  homeRequest = { userId: user.id, promise }
+
+  try {
+    const snapshot = await promise
+    homeCache = { userId: user.id, snapshot, expiresAt: Date.now() + HOME_SNAPSHOT_TTL_MS }
+    return snapshot
+  } finally {
+    if (homeRequest?.promise === promise) homeRequest = null
+  }
+}

@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useUiContent } from '../../../services/uiContent'
 import { DiaryPromptLimitError, convertGiftQuestionToDiary, getGiftAnswer, getGiftDiaryConversion, saveGiftAnswer, setGiftOpened, setGiftReceipt } from '../../gift/services/giftRepository'
@@ -42,15 +42,32 @@ function GiftSurface({ projection, onChanged }: { projection?: GiftHomeProjectio
   const [isConverting, setIsConverting] = useState(false)
   const [conversionLimitOpen, setConversionLimitOpen] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const lastAutosavedAnswerRef = useRef('')
   const isOpened = Boolean(gift?.openedAt || selectedGift?.openedAt)
   const style = gift?.boxStyleSnapshot ?? fallbackGiftStyle
+
+  useEffect(() => {
+    if (!selectedGift || selectedGift.type !== 'question' || !answer || answer.giftId !== selectedGift.id) return
+    const signature = `${answer.answerText}\u0000${answer.isDone ? 'done' : 'draft'}`
+    if (signature === lastAutosavedAnswerRef.current) return
+    const timer = window.setTimeout(() => {
+      void saveGiftAnswer(selectedGift.id, answer.answerText, answer.isDone).then((saved) => {
+        lastAutosavedAnswerRef.current = signature
+        setAnswer(saved)
+        setAnswerSaveNotice('Đã lưu')
+      }).catch(() => setAnswerSaveNotice('Chưa lưu được — nội dung vẫn còn ở đây.'))
+    }, 550)
+    return () => window.clearTimeout(timer)
+  }, [answer, selectedGift])
 
   if (!gift) return <Link className="home-v2__personal-surface home-v2__gift" to="/gift-for-tmr"><div><h3>A Gift for Myself</h3><p>Chưa có quà đang chờ mở</p></div><div className="home-v2__gift-art" aria-hidden="true"><span>🎁</span></div><span className="home-v2__surface-arrow" aria-hidden="true">→</span></Link>
 
   const showGift = (nextGift: GiftRecord, existingAnswer = projection?.answer ?? null) => {
     const openedGift = { ...nextGift, openedAt: nextGift.openedAt ?? new Date().toISOString() }
+    const nextAnswer = nextGift.type === 'question' ? existingAnswer ?? emptyAnswer(nextGift.id) : null
     setSelectedGift(openedGift)
-    setAnswer(nextGift.type === 'question' ? existingAnswer ?? emptyAnswer(nextGift.id) : null)
+    setAnswer(nextAnswer)
+    lastAutosavedAnswerRef.current = nextAnswer ? `${nextAnswer.answerText}\u0000${nextAnswer.isDone ? 'done' : 'draft'}` : ''
     setConversionLink(null)
     setAnswerSaveNotice('')
     setConversionLimitOpen(false)

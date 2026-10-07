@@ -307,8 +307,7 @@
   .action-space,
   .future-page,
   .gift-page,
-  .more-page,
-  .reminder-workspace { width: 100%; max-width: 100%; min-width: 0; }
+  .more-page { width: 100%; max-width: 100%; min-width: 0; }
 
   .home-v2__grid,
   .action-space__layout,

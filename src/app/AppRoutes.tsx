@@ -1,18 +1,20 @@
+import { lazy, Suspense } from 'react'
 import { Route, Routes } from 'react-router-dom'
 import { CheckinFlowProvider } from '../features/checkin/CheckinFlowContext'
-import { CheckinLandingScreen } from '../features/checkin/screens/CheckinLandingScreen'
-import { EmotionCoreScreen } from '../features/checkin/screens/EmotionCoreScreen'
-import { DeepDiveScreen } from '../features/checkin/screens/DeepDiveScreen'
-import { HistoryScreen } from '../features/checkin/screens/HistoryScreen'
-import { ReviewScreen } from '../features/checkin/screens/ReviewScreen'
-import { UnknownScreen } from '../features/checkin/screens/UnknownScreen'
 import { HomePage } from '../features/home/HomePage'
-import { ActionSpacePage } from '../features/actionspace/ActionSpacePage'
-import { DiaryPage } from '../features/diary/DiaryPage'
-import { JourneyPage } from '../features/diary/JourneyPage'
-import { FutureLetterPage } from '../features/futureletter/FutureLetterPage'
-import { GiftPage } from '../features/gift/GiftPage'
-import { MorePage } from '../features/more/MorePage'
+
+const CheckinLandingScreen = lazy(() => import('../features/checkin/screens/CheckinLandingScreen').then((module) => ({ default: module.CheckinLandingScreen })))
+const EmotionCoreScreen = lazy(() => import('../features/checkin/screens/EmotionCoreScreen').then((module) => ({ default: module.EmotionCoreScreen })))
+const DeepDiveScreen = lazy(() => import('../features/checkin/screens/DeepDiveScreen').then((module) => ({ default: module.DeepDiveScreen })))
+const HistoryScreen = lazy(() => import('../features/checkin/screens/HistoryScreen').then((module) => ({ default: module.HistoryScreen })))
+const ReviewScreen = lazy(() => import('../features/checkin/screens/ReviewScreen').then((module) => ({ default: module.ReviewScreen })))
+const UnknownScreen = lazy(() => import('../features/checkin/screens/UnknownScreen').then((module) => ({ default: module.UnknownScreen })))
+const ActionSpacePage = lazy(() => import('../features/actionspace/ActionSpacePage').then((module) => ({ default: module.ActionSpacePage })))
+const DiaryPage = lazy(() => import('../features/diary/DiaryPage').then((module) => ({ default: module.DiaryPage })))
+const JourneyPage = lazy(() => import('../features/diary/JourneyPage').then((module) => ({ default: module.JourneyPage })))
+const FutureLetterPage = lazy(() => import('../features/futureletter/FutureLetterPage').then((module) => ({ default: module.FutureLetterPage })))
+const GiftPage = lazy(() => import('../features/gift/GiftPage').then((module) => ({ default: module.GiftPage })))
+const MorePage = lazy(() => import('../features/more/MorePage').then((module) => ({ default: module.MorePage })))
 
 const PlaceholderScreen = ({ title }: { title: string }) => (
   <section className="placeholder-screen">
@@ -25,7 +27,8 @@ const PlaceholderScreen = ({ title }: { title: string }) => (
 export function AppRoutes() {
   return (
     <CheckinFlowProvider>
-      <Routes>
+      <Suspense fallback={<section className="placeholder-screen" role="status"><p className="eyebrow">Sắc Ký</p><h2>Đang mở không gian của bạn…</h2></section>}>
+        <Routes>
         <Route path="/" element={<HomePage />} />
         <Route path="/checkin" element={<CheckinLandingScreen />} />
         <Route path="/checkin/emotion" element={<EmotionCoreScreen />} />
@@ -47,7 +50,8 @@ export function AppRoutes() {
         <Route path="/gift-for-tmr" element={<GiftPage />} />
         <Route path="/more" element={<MorePage />} />
         <Route path="*" element={<PlaceholderScreen title="Page not found" />} />
-      </Routes>
+        </Routes>
+      </Suspense>
     </CheckinFlowProvider>
   )
 }

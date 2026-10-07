@@ -11,7 +11,7 @@ import type { CheckinRecord } from '../types'
 import { filterByDateRange, getHistoryDateRange, getHistoryMetrics, getLocalDateKey, sortByOccurredAtDesc, type HistoryPreset } from '../utils/history'
 import { getHomeOrbEntries } from '../../home/services/homeAggregation'
 import { DEFAULT_REFLECTION_OUTCOMES, listReflectionOutcomes, saveActionReflection, setActionStatus } from '../../actionspace/actionService'
-import { ReflectionModal } from '../../actionspace/ActionSpacePage'
+import { ReflectionModal } from '../../actionspace/components/ReflectionModal'
 import type { ActionRecord, ActionReflectionOutcome } from '../../actionspace/types'
 import { isRichTextEmpty, richTextToPlainText, RichTextRenderer } from '../../../components/richText'
 

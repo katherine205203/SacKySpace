@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState, type CSSProperties, type ReactNode } from 'react'
+import { useEffect, useMemo, useRef, useState, type CSSProperties, type ReactNode } from 'react'
 import { Link, useNavigate, useSearchParams } from 'react-router-dom'
 import { listCheckins } from '../checkin/services/checkinRepository'
 import { useReferenceData } from '../checkin/hooks/useReferenceData'
@@ -13,6 +13,7 @@ import type { DiaryCheckinLink, DiaryEntry, JourneyCoverage, JourneyDraft, Journ
 import { addDiaryDays, clampDiaryWeight, DIARY_TIME_ZONE, formatDiaryDate, formatDiaryShortDate, getDiaryLocalDate } from './utils'
 import { getJourneyCoverage, getJourneyDays, journeyDateFor, journeyDateInRange } from './journeyUtils'
 import { isRichTextEmpty, richTextToPlainText, RichTextEditor, RichTextRenderer } from '../../components/richText'
+import { useAutosave } from '../../hooks/useAutosave'
 
 const formatRange = (rangeStart: string, rangeEnd: string): string => `${formatDiaryShortDate(rangeStart)} → ${formatDiaryShortDate(rangeEnd)}`
 const getDateFor = journeyDateFor
@@ -159,6 +160,16 @@ const JourneySummaryRail = ({ entry }: { entry: JourneyDraft | JourneyEntry }) =
 }
 
 const journeyEditorStorageKey = (id: string | undefined, rangeStart: string, rangeEnd: string): string => `sacky:diary:journey:editor:v1:${id ?? `${rangeStart}:${rangeEnd}`}`
+const journeyDraftSignature = (draft: JourneyDraft): string => JSON.stringify({
+  title: draft.title,
+  overallText: draft.overallText,
+  primaryEmotionId: draft.primaryEmotionId,
+  selectedDailyDiaryIds: draft.selectedDailyDiaryIds,
+  checkinLinks: draft.checkinLinks,
+  closingThought: draft.closingThought,
+  rangeStart: draft.rangeStart,
+  rangeEnd: draft.rangeEnd,
+})
 
 const JourneyEditorPage = () => {
   const navigate = useNavigate()
@@ -172,6 +183,13 @@ const JourneyEditorPage = () => {
   const [error, setError] = useState<string | null>(null)
   const [saveNotice, setSaveNotice] = useState('')
   const [showAttachments, setShowAttachments] = useState(false)
+  const autosavedSignatureRef = useRef('')
+  const { flush: flushJourneyAutosave, schedule: scheduleJourneyAutosave } = useAutosave(async (nextDraft: JourneyDraft) => {
+    const saved = await saveJourney(nextDraft)
+    autosavedSignatureRef.current = journeyDraftSignature(nextDraft)
+    setDraft((current) => journeyDraftSignature(current) === journeyDraftSignature(nextDraft) ? { ...current, ...saved } : current)
+    setSaveNotice('Đã tự động lưu')
+  }, { delay: 850 })
   const { dailyEntries: allDailyEntries, checkins: allCheckins, actions, emotions } = useJourneyContext(draft.rangeStart, draft.rangeEnd)
   const dailyEntries = allDailyEntries.filter((entry) => journeyDateInRange(entry.localDate, draft.rangeStart, draft.rangeEnd))
   const checkins = allCheckins
@@ -186,7 +204,11 @@ const JourneyEditorPage = () => {
         const cached = JSON.parse(window.localStorage.getItem(cacheKey) ?? 'null') as JourneyDraft | null
         if (cached && (!entry || (cached.updatedAt ?? '') > entry.updatedAt)) nextDraft = cached
       } catch { /* Ignore an invalid device draft. */ }
-      if (mounted) { setDraft(nextDraft); setIsLoading(false) }
+      if (mounted) {
+        autosavedSignatureRef.current = journeyDraftSignature(nextDraft)
+        setDraft(nextDraft)
+        setIsLoading(false)
+      }
     }).catch((reason: unknown) => { if (mounted) { setError(reason instanceof Error ? reason.message : 'Không thể mở trình biên tập chặng.'); setIsLoading(false) } })
     return () => { mounted = false }
   }, [initialEnd, initialStart, journeyId])
@@ -197,6 +219,13 @@ const JourneyEditorPage = () => {
     return () => window.clearTimeout(timer)
   }, [draft, isLoading, journeyId])
 
+  useEffect(() => {
+    if (isLoading || !draft.title.trim() || isRichTextEmpty(draft.overallText)) return
+    const signature = journeyDraftSignature(draft)
+    if (signature === autosavedSignatureRef.current) return
+    scheduleJourneyAutosave(draft)
+  }, [draft, isLoading, scheduleJourneyAutosave])
+
   const updateDraft = (patch: Partial<JourneyDraft>) => { setDraft((current) => ({ ...current, ...patch })); setError(null); setSaveNotice('Đang lưu…') }
   const selectEmotion = (emotion: Emotion | null) => updateDraft({ primaryEmotionId: emotion?.emotion_id ?? null, primaryEmotionSnapshot: emotion ? { emotion_id: emotion.emotion_id, emotion_name_vn: emotion.emotion_name_vn, emotion_name_en: emotion.emotion_name_en, emoji: emotion.emoji, color_hex: emotion.color_hex } : null })
   const persist = async (status: 'draft' | 'done') => {
@@ -204,6 +233,7 @@ const JourneyEditorPage = () => {
     if (isRichTextEmpty(draft.overallText)) { setError('Hãy viết một chút cho phần tổng quan chặng trước khi lưu.'); return }
     setIsSaving(true); setError(null)
     try {
+      await flushJourneyAutosave().catch(() => undefined)
       const saved = await saveJourney({ ...draft, status })
       window.localStorage.removeItem(journeyEditorStorageKey(journeyId, draft.rangeStart, draft.rangeEnd))
       if (status === 'done') navigate(`/journey?view=read&id=${saved.id}`)

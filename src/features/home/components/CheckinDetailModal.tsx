@@ -1,15 +1,16 @@
-import { useEffect, useState, type ReactNode } from 'react'
+import { useEffect, useRef, useState, type ReactNode } from 'react'
 import { Link } from 'react-router-dom'
 import { HomeOrb } from './HomeOrb'
 import { formatCheckinDate, formatCheckinTime, formatReminderSchedule, getCheckinPresentation, getHomeOrbEntries, isReminderCompleted } from '../services/homeAggregation'
 import { deleteReminder, updateReminder, type ReminderEdit } from '../services/reminderRepository'
 import { DEFAULT_REFLECTION_OUTCOMES, listReflectionOutcomes, saveActionReflection, setActionStatus } from '../../actionspace/actionService'
-import { ReflectionModal } from '../../actionspace/ActionSpacePage'
+import { ReflectionModal } from '../../actionspace/components/ReflectionModal'
 import type { ActionRecord, ActionReflectionOutcome } from '../../actionspace/types'
 import type { HomeReminder } from '../types'
 import type { CheckinRecord } from '../../checkin/types'
 import { IntensityDots, TagList } from '../../checkin/components/CheckinComponents'
 import { isRichTextEmpty, RichTextRenderer } from '../../../components/richText'
+import { useAutosave } from '../../../hooks/useAutosave'
 
 type CheckinDetailModalProps = {
   record: CheckinRecord
@@ -21,6 +22,7 @@ type CheckinDetailModalProps = {
 }
 
 type CheckinRecordWithReflection = CheckinRecord & { reflection?: string | null }
+type EditingAction = ReminderEdit & { id: string; plannedEndDate?: string; sourceCheckinId?: string | null }
 
 export function CheckinDetailModal({ record, linkedActions, onClose, onEdit, onDelete, onActionChanged }: CheckinDetailModalProps) {
   const [isDeleting, setIsDeleting] = useState(false)
@@ -29,7 +31,8 @@ export function CheckinDetailModal({ record, linkedActions, onClose, onEdit, onD
   const [deletedActionIds, setDeletedActionIds] = useState<string[]>([])
   const [actionBusyId, setActionBusyId] = useState<string | null>(null)
   const [actionError, setActionError] = useState<string | null>(null)
-  const [editingAction, setEditingAction] = useState<(ReminderEdit & { id: string }) | null>(null)
+  const [editingAction, setEditingAction] = useState<EditingAction | null>(null)
+  const autosaveSignatureRef = useRef('')
   const [reflectionAction, setReflectionAction] = useState<{ action: ActionRecord; historyAvailable: boolean } | null>(null)
   const [reflectionOutcomes, setReflectionOutcomes] = useState<ActionReflectionOutcome[]>(DEFAULT_REFLECTION_OUTCOMES)
   const presentation = getCheckinPresentation(record)
@@ -37,6 +40,24 @@ export function CheckinDetailModal({ record, linkedActions, onClose, onEdit, onD
   const orbEntries = isUnknown ? [] : getHomeOrbEntries([record])
   const reflection = (record as CheckinRecordWithReflection).reflection?.trim()
   const actions = linkedActions.filter((action) => !deletedActionIds.includes(action.id)).map((action) => ({ ...action, ...actionPatches[action.id] }))
+  const { flush: flushActionAutosave, schedule: scheduleActionAutosave, status: actionAutosaveStatus } = useAutosave(async (edit: EditingAction) => {
+    if (!edit.title.trim()) return
+    try {
+      await updateReminder(edit.id, edit)
+      autosaveSignatureRef.current = JSON.stringify(edit)
+      setActionPatches((current) => ({ ...current, [edit.id]: { ...current[edit.id], title: edit.title.trim(), note: edit.note.trim() || null, plannedDate: edit.plannedDate || null, plannedEndDate: edit.plannedEndDate || null, dueTime: edit.dueTime || null } }))
+    } catch (reason: unknown) {
+      setActionError(reason instanceof Error ? reason.message : 'Chưa tự động lưu được Action.')
+      throw reason
+    }
+  }, { delay: 700 })
+
+  useEffect(() => {
+    if (!editingAction || !editingAction.title.trim()) return
+    const signature = JSON.stringify(editingAction)
+    if (signature === autosaveSignatureRef.current) return
+    scheduleActionAutosave(editingAction)
+  }, [editingAction, scheduleActionAutosave])
 
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
@@ -90,6 +111,7 @@ export function CheckinDetailModal({ record, linkedActions, onClose, onEdit, onD
     setActionBusyId(editingAction.id)
     setActionError(null)
     try {
+      await flushActionAutosave().catch(() => undefined)
       await updateReminder(editingAction.id, editingAction)
       setActionPatches((current) => ({ ...current, [editingAction.id]: { ...current[editingAction.id], title: editingAction.title.trim(), note: editingAction.note.trim() || null, plannedDate: editingAction.plannedDate || null, dueTime: editingAction.dueTime || null } }))
       setEditingAction(null)
@@ -99,6 +121,13 @@ export function CheckinDetailModal({ record, linkedActions, onClose, onEdit, onD
     } finally {
       setActionBusyId(null)
     }
+  }
+
+  const openActionEditor = (action: HomeReminder) => {
+    const nextEdit: EditingAction = { id: action.id, title: action.title, note: action.note ?? '', plannedDate: action.plannedDate ?? '', plannedEndDate: action.plannedEndDate ?? '', dueTime: action.dueTime ?? '', sourceCheckinId: action.sourceCheckinId }
+    autosaveSignatureRef.current = JSON.stringify(nextEdit)
+    setActionError(null)
+    setEditingAction(nextEdit)
   }
 
   const handleDeleteAction = async (action: HomeReminder) => {
@@ -169,10 +198,10 @@ export function CheckinDetailModal({ record, linkedActions, onClose, onEdit, onD
               <DetailSection label={`Việc cần làm liên kết (${actions.length})`}><div className="home-v2__detail-actions">{actions.length ? actions.map((action) => <div className="home-v2__detail-action" key={action.id}>
                 <button className="home-v2__detail-action-toggle" type="button" disabled={actionBusyId === action.id} aria-label={isReminderCompleted(action) ? `Hoàn tác: ${action.title}` : `Đánh dấu hoàn thành: ${action.title}`} aria-pressed={isReminderCompleted(action)} onClick={() => void handleToggleAction(action)}><span className={`home-v2__action-status ${isReminderCompleted(action) ? 'is-completed' : ''}`}>{isReminderCompleted(action) ? '✓' : ''}</span></button>
                 <div className="home-v2__detail-action-copy"><strong>{action.title}</strong><small>{formatReminderSchedule(action)} · {isReminderCompleted(action) ? 'Đã hoàn thành' : 'Đang chờ'}</small></div>
-                <div className="home-v2__detail-action-controls"><Link to="/action-space" aria-label={`Mở action: ${action.title}`}>Mở</Link><button type="button" disabled={actionBusyId === action.id} onClick={() => setEditingAction({ id: action.id, title: action.title, note: action.note ?? '', plannedDate: action.plannedDate ?? '', dueTime: action.dueTime ?? '' })}>Sửa</button><button type="button" disabled={actionBusyId === action.id} onClick={() => void handleDeleteAction(action)}>Xoá</button></div>
+                <div className="home-v2__detail-action-controls"><Link to="/action-space" aria-label={`Mở action: ${action.title}`}>Mở</Link><button type="button" disabled={actionBusyId === action.id} onClick={() => openActionEditor(action)}>Sửa</button><button type="button" disabled={actionBusyId === action.id} onClick={() => void handleDeleteAction(action)}>Xoá</button></div>
               </div>) : <p>Chưa có action cho khoảng dừng này.</p>}</div></DetailSection>
               {editingAction && <div className="home-v2__detail-action-editor">
-                <span className="home-v2__detail-label">Chỉnh sửa Action</span>
+                <span className="home-v2__detail-label">Chỉnh sửa Action <small role="status">{actionAutosaveStatus === 'saving' ? 'Đang tự động lưu…' : actionAutosaveStatus === 'saved' ? 'Đã tự động lưu' : actionAutosaveStatus === 'error' ? 'Chưa lưu được' : ''}</small></span>
                 <input aria-label="Tên action" value={editingAction.title} onChange={(event) => setEditingAction({ ...editingAction, title: event.target.value })} />
                 <div><input aria-label="Ngày dự kiến" type="date" value={editingAction.plannedDate} onChange={(event) => setEditingAction({ ...editingAction, plannedDate: event.target.value })} /><input aria-label="Giờ đến hạn" type="time" value={editingAction.dueTime} onChange={(event) => setEditingAction({ ...editingAction, dueTime: event.target.value })} /></div>
                 <textarea aria-label="Ghi chú action" value={editingAction.note} onChange={(event) => setEditingAction({ ...editingAction, note: event.target.value })} placeholder="Ghi chú (tuỳ chọn)" />

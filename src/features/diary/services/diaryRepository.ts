@@ -238,13 +238,17 @@ const mapRemoteEntry = (
   }
 }
 
-const listRemoteEntries = async (userId: string): Promise<DiaryEntry[]> => {
-  const query = (select: string) => supabase
-    .from('diary_entries')
-    .select(select)
-    .eq('user_id', userId)
-    .neq('status', 'deleted')
-    .order('local_date', { ascending: false })
+const listRemoteEntries = async (userId: string, localDate?: string): Promise<DiaryEntry[]> => {
+  const query = (select: string) => {
+    let request = supabase
+      .from('diary_entries')
+      .select(select)
+      .eq('user_id', userId)
+      .neq('status', 'deleted')
+      .order('local_date', { ascending: false })
+    if (localDate) request = request.eq('local_date', localDate)
+    return request
+  }
   let result = await query(DIARY_ENTRY_SELECT)
   if (result.error && missingDiaryLifecycleColumn(result.error.message)) result = await query(LEGACY_DIARY_ENTRY_SELECT)
   if (result.error) throw result.error
@@ -310,9 +314,19 @@ export const listDiaryEntries = async (): Promise<DiaryEntry[]> => {
   }
 }
 
-export const getDiaryEntry = async (localDate: string): Promise<DiaryEntry | null> => {
-  const entries = await listDiaryEntries()
-  return entries.find((entry) => entry.localDate === localDate) ?? null
+export const getDiaryEntry = async (localDate: string, { finalize = true, userId: requestedUserId }: { finalize?: boolean; userId?: string } = {}): Promise<DiaryEntry | null> => {
+  const userId = requestedUserId ?? await currentUserId()
+  try {
+    if (finalize) await finalizeExpiredDiaryDrafts()
+    const [remoteEntries, localEntries] = await Promise.all([listRemoteEntries(userId, localDate), Promise.resolve(finalizeLocalEntries(readLocalEntries(userId)))])
+    const remoteEntry = remoteEntries[0] ?? null
+    const localEntry = localEntries.find((entry) => entry.localDate === localDate) ?? null
+    const entry = localEntry && (!remoteEntry || localEntry.updatedAt > remoteEntry.updatedAt) ? localEntry : remoteEntry
+    if (entry) writeLocalEntries(userId, [entry, ...localEntries.filter((item) => item.localDate !== localDate)])
+    return entry
+  } catch {
+    return finalizeLocalEntries(readLocalEntries(userId)).find((entry) => entry.localDate === localDate) ?? null
+  }
 }
 
 const normalizeDraft = (draft: DiaryDraft, userId: string, existing: DiaryEntry | null | undefined, options: SaveDiaryOptions = {}): DiaryEntry => {

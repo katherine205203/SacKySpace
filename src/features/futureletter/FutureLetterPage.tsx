@@ -305,7 +305,7 @@ export function FutureLetterPage() {
   const flushDraftSave = async () => {
     if (draftSaveInFlightRef.current) return
     const nextDraft = pendingDraftRef.current
-    if (!nextDraft?.title.trim() || isRichTextEmpty(nextDraft.body)) return
+    if (!nextDraft) return
     pendingDraftRef.current = null
     draftSaveInFlightRef.current = true
     const revision = draftRevisionRef.current

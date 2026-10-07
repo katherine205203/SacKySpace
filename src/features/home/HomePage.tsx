@@ -15,7 +15,7 @@ import type { DateRange } from '../checkin/utils/history'
 import './home.css'
 import { getDiaryLocalDate } from '../diary/utils'
 import { DEFAULT_REFLECTION_OUTCOMES, listReflectionOutcomes, saveActionReflection, setActionStatus } from '../actionspace/actionService'
-import { ReflectionModal } from '../actionspace/ActionSpacePage'
+import { ReflectionModal } from '../actionspace/components/ReflectionModal'
 import type { ActionRecord, ActionReflectionOutcome } from '../actionspace/types'
 import { richTextToPlainText } from '../../components/richText'
 
@@ -58,7 +58,7 @@ export function HomePage() {
         const action: ActionRecord = { id: reminder.id, userId: '', title: reminder.title, note: reminder.note, plannedDate: reminder.plannedDate, plannedEndDate: reminder.plannedEndDate ?? null, dueTime: reminder.dueTime, status: 'completed', completedAt: new Date().toISOString(), createdAt: new Date().toISOString(), updatedAt: new Date().toISOString(), origin: reminder.origin, sourceCheckinId: reminder.sourceCheckinId, careActionId: null }
         setReflectionAction({ action, historyAvailable: result.historyAvailable })
       }
-      await refresh()
+      await refresh(true)
     } catch (reason: unknown) {
       setInteractionError(reason instanceof Error ? reason.message : 'Không thể cập nhật Action.')
     }
@@ -79,7 +79,7 @@ export function HomePage() {
     if (!selectedRecord) return
     await deleteCheckin(selectedRecord.id)
     setSelectedRecordId(null)
-    await refresh()
+    await refresh(true)
   }
 
   return <section className="home-v2" aria-labelledby="home-v2-title">
@@ -92,10 +92,10 @@ export function HomePage() {
         <HomeHero displayName={snapshot.displayName} streak={getCurrentStreak(records, now)} orbEntries={orbEntries} range={range} customRange={customRange} relevantCheckins={rangeRecords.length} completedActions={actionSummary.completed} remainingActions={actionSummary.remaining} onRangeChange={setRange} onCustomRangeChange={setCustomRange} />
         <div className="home-v2__right-column"><RecentJourney records={journeyCheckins} onSelectCheckin={(record) => { setInteractionError(null); setSelectedRecordId(record.id) }} /><ActionPreview reminders={reminders} checkins={records} onDone={(reminder) => completeHomeAction(reminder)} /></div>
         <DiaryToday preview={diaryPreview} />
-        <PersonalSurfaces futureLetter={snapshot.futureLetter} gift={snapshot.gift} onGiftChanged={() => void refresh()} />
+        <PersonalSurfaces futureLetter={snapshot.futureLetter} gift={snapshot.gift} onGiftChanged={() => void refresh(true)} />
       </div>
-      {selectedRecord && <CheckinDetailModal record={selectedRecord} linkedActions={reminders.filter((reminder) => reminder.sourceCheckinId === selectedRecord.id)} onClose={closeSelectedRecord} onEdit={() => void editSelectedRecord()} onDelete={deleteSelectedRecord} onActionChanged={refresh} />}
-      {reflectionAction && <ReflectionModal action={reflectionAction.action} checkin={records.find((record) => record.id === reflectionAction.action.sourceCheckinId) ?? null} outcomes={reflectionOutcomes} historyAvailable={reflectionAction.historyAvailable} onClose={() => setReflectionAction(null)} onSave={async (outcome, note) => { await saveActionReflection(reflectionAction.action.id, outcome, note); setReflectionAction(null); await refresh() }} />}
+      {selectedRecord && <CheckinDetailModal record={selectedRecord} linkedActions={reminders.filter((reminder) => reminder.sourceCheckinId === selectedRecord.id)} onClose={closeSelectedRecord} onEdit={() => void editSelectedRecord()} onDelete={deleteSelectedRecord} onActionChanged={() => refresh(true)} />}
+      {reflectionAction && <ReflectionModal action={reflectionAction.action} checkin={records.find((record) => record.id === reflectionAction.action.sourceCheckinId) ?? null} outcomes={reflectionOutcomes} historyAvailable={reflectionAction.historyAvailable} onClose={() => setReflectionAction(null)} onSave={async (outcome, note) => { await saveActionReflection(reflectionAction.action.id, outcome, note); setReflectionAction(null); await refresh(true) }} />}
     </>}
   </section>
 }

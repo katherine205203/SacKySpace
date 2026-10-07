@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
-import { getHomeSnapshot } from '../services/homeRepository'
+import { clearHomeSnapshotCache, getHomeSnapshot } from '../services/homeRepository'
 import type { HomeSnapshot } from '../types'
 
 export function useHomeData() {
@@ -8,13 +8,14 @@ export function useHomeData() {
   const [error, setError] = useState<string | null>(null)
   const isMounted = useRef(true)
 
-  const refresh = useCallback(async () => {
+  const refresh = useCallback(async (force = false) => {
     if (isMounted.current) {
       setIsLoading(true)
       setError(null)
     }
     try {
-      const nextSnapshot = await getHomeSnapshot()
+      if (force) clearHomeSnapshotCache()
+      const nextSnapshot = await getHomeSnapshot({ force })
       if (isMounted.current) {
         setSnapshot(nextSnapshot)
         setError(null)

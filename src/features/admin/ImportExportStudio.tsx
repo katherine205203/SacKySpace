@@ -4,6 +4,7 @@ import { analyzeImport, findEntityKey, formatValue, getAdminEntityList, recordDi
 import { downloadAdminExport, readStoredZip, type AdminExportFormat, type AdminXlsxPackaging } from './dataExport'
 import { exportAdminData, listReferenceRows, deactivateReferenceRow, upsertReferenceRow, writeAudit } from './services/adminRepository'
 import type { AdminAuditLog, AdminEntityKey, AdminExportDataset, AdminExportSelection, AdminReferenceRow } from './types'
+import { parseDelimitedText } from './utils'
 
 type Scope = 'global' | 'selected_user' | 'all_applicable'
 type DetectedFormat = 'xlsx' | 'csv' | 'tsv' | 'json' | 'zip'
@@ -69,7 +70,7 @@ const parseZipTables = async (bytes: Uint8Array): Promise<ParsedTable[]> => {
     if (extension === 'xlsx' || extension === 'xls') tables.push(...await parseWorkbookBytes(file))
     else if (extension === 'json') tables.push(...parseJsonTables(textFromBytes(file), hint))
     else if (extension === 'csv' || extension === 'tsv') {
-      const parsed = (await import('./utils')).parseDelimitedText(textFromBytes(file))
+      const parsed = parseDelimitedText(textFromBytes(file))
       tables.push({ name: hint, headers: parsed.headers, rows: parsed.rows, suggestedKey: findEntityKey(hint) })
     }
   }
@@ -91,7 +92,7 @@ const datasetsFromFile = async (file: File, format: DetectedFormat): Promise<Par
   if (format === 'xlsx') return parseWorkbookBytes(await file.arrayBuffer())
   if (format === 'json') return parseJsonTables(await file.text(), file.name)
   if (format === 'zip') return parseZipTables(new Uint8Array(await file.arrayBuffer()))
-  const parsed = (await import('./utils')).parseDelimitedText(await file.text())
+  const parsed = parseDelimitedText(await file.text())
   return [{ name: file.name, headers: parsed.headers, rows: parsed.rows, suggestedKey: null }]
 }
 

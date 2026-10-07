@@ -57,6 +57,7 @@ export function GiftPage() {
   const [giftTimes, setGiftTimes] = useState({ cutoff: '23:30', delivery: '03:00' })
   const navigate = useNavigate()
   const draftRevisionRef = useRef(0)
+  const lastAutosavedAnswerRef = useRef('')
   const view = searchParams.get('view') === 'history' ? 'history' : 'home'
   const today = getGiftLocalDate()
   const stylesById = useMemo(() => new Map(styles.map((style) => [style.id, style])), [styles])
@@ -122,6 +123,7 @@ export function GiftPage() {
     setSelectedGift(openedGift)
     setGifts((items) => items.map((item) => item.id === gift.id ? openedGift : item))
     setAnswer(null)
+    lastAutosavedAnswerRef.current = ''
     setAnswerSaveNotice('')
     setConversionLink(null)
     if (!gift.openedAt) void setGiftOpened(gift.id).then((saved) => { setSelectedGift((current) => current?.id === saved.id ? { ...current, ...saved } : current); setGifts((items) => items.map((item) => item.id === saved.id ? saved : item)) }).catch((reason: unknown) => setError(giftUserError(reason, 'Không thể lưu trạng thái đã mở.')))
@@ -131,7 +133,9 @@ export function GiftPage() {
 
   useEffect(() => {
     if (!selectedGift || selectedGift.type !== 'question' || answer === null) return
-    const timer = window.setTimeout(() => { void saveGiftAnswer(selectedGift.id, answer.answerText, answer.isDone).then((saved) => { setAnswer(saved); setAnswerSaveNotice('Đã lưu') }).catch(() => setAnswerSaveNotice('Chưa lưu được — nội dung vẫn còn ở đây.')) }, 550)
+    const signature = `${answer.answerText}\u0000${answer.isDone ? 'done' : 'draft'}`
+    if (signature === lastAutosavedAnswerRef.current) return
+    const timer = window.setTimeout(() => { void saveGiftAnswer(selectedGift.id, answer.answerText, answer.isDone).then((saved) => { lastAutosavedAnswerRef.current = signature; setAnswer(saved); setAnswerSaveNotice('Đã lưu') }).catch(() => setAnswerSaveNotice('Chưa lưu được — nội dung vẫn còn ở đây.')) }, 550)
     return () => window.clearTimeout(timer)
   }, [answer, selectedGift])
 
@@ -139,7 +143,9 @@ export function GiftPage() {
     if (!selectedGift || selectedGift.type !== 'question' || !answer?.answerText.trim()) return
     setIsSavingAnswer(true)
     try {
-      setAnswer(await saveGiftAnswer(selectedGift.id, answer.answerText, answer.isDone))
+      const saved = await saveGiftAnswer(selectedGift.id, answer.answerText, answer.isDone)
+      lastAutosavedAnswerRef.current = `${answer.answerText}\u0000${answer.isDone ? 'done' : 'draft'}`
+      setAnswer(saved)
       setAnswerSaveNotice('Đã lưu câu trả lời')
     } catch (reason: unknown) {
       setAnswerSaveNotice(giftUserError(reason, 'Chưa lưu được — nội dung vẫn còn ở đây.'))
