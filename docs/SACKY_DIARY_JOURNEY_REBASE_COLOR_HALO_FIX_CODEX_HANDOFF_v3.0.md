@@ -723,6 +723,12 @@ No Secondary:
 - Secondary A 15%
 - Secondary B 15%
 
+3 Secondary:
+- Primary 70%
+- Secondary A 10%
+- Secondary B 10%
+- Secondary C 10%
+
 Unknown Check-in:
 excluded.
 

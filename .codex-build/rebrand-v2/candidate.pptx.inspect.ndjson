@@ -1,0 +1,846 @@
+{"kind":"deck","id":"pr/3wjdm4","name":"Deck"}
+{"kind":"layout","layoutId":"b8c1125c-2e66-4b3d-8aee-3a0e7cafff77","name":"Master","type":"master"}
+{"kind":"layout","layoutId":"5bb528c0-dc95-49eb-9e09-83d34a465397","name":"Title Slide","type":"title"}
+{"kind":"slide","id":"sl/cblv0y","slide":1,"title":"THE VIETNAM CHAPTER OF ICF","textShapes":6}
+{"kind":"shape","id":"sh/q5wr29c7","slide":1,"bbox":[64,62,224,30]}
+{"kind":"textbox","id":"sh/d8nadobi","slide":1,"text":"THE VIETNAM CHAPTER OF ICF","textPreview":"THE VIETNAM CHAPTER OF ICF","textChars":26,"textLines":1,"bbox":[76,67,200,20]}
+{"kind":"textbox","id":"sh/c7e94jux","slide":1,"text":"Chapter\nTalk","textPreview":"Chapter | Talk","textChars":12,"textLines":2,"bbox":[64,154,530,190]}
+{"kind":"textbox","id":"sh/zupsfeto","slide":1,"text":"August 2026","textPreview":"August 2026","textChars":11,"textLines":1,"bbox":[64,370,420,42]}
+{"kind":"textbox","id":"sh/y9gr69c3","slide":1,"text":"Building a sustainable coaching ecosystem together.","textPreview":"Building a sustainable coaching ecosystem together.","textChars":51,"textLines":1,"bbox":[64,446,440,56]}
+{"kind":"shape","id":"sh/lw7ahobu","slide":1,"bbox":[760,82,392,244]}
+{"kind":"shape","id":"sh/fyl83utk","slide":1,"bbox":[856,350,304,218]}
+{"kind":"textbox","id":"sh/snu9or69","slide":1,"text":"The Vietnam Chapter of ICF","textPreview":"The Vietnam Chapter of ICF","textChars":26,"textLines":1,"bbox":[760,604,430,28]}
+{"kind":"textbox","id":"sh/to3qxw7u","slide":1,"text":"01","textPreview":"01","textChars":2,"textLines":1,"bbox":[1174,675,42,18]}
+{"kind":"image","id":"im/lkrypo76","slide":1,"name":"","geometry":"roundRect","bbox":[768,90,376,228]}
+{"kind":"image","id":"im/zm5gbapw","slide":1,"name":"","geometry":"roundRect","bbox":[864,358,288,202]}
+{"kind":"notes","id":"nt/cblv0y","slide":1,"text":""}
+{"kind":"slide","id":"sl/nrg6gt","slide":2,"title":"SECTION 01","textShapes":5}
+{"kind":"shape","id":"sh/k3up8fm9","slide":2,"bbox":[64,66,138,30]}
+{"kind":"textbox","id":"sh/j2lofa5o","slide":2,"text":"SECTION 01","textPreview":"SECTION 01","textChars":10,"textLines":1,"bbox":[76,71,114,20]}
+{"kind":"textbox","id":"sh/y1c76p43","slide":2,"text":"01","textPreview":"01","textChars":2,"textLines":1,"bbox":[56,158,260,150]}
+{"kind":"textbox","id":"sh/x0j6dkni","slide":2,"text":"The Vietnam Chapter of ICF","textPreview":"The Vietnam Chapter of ICF","textChars":26,"textLines":1,"bbox":[64,306,920,118]}
+{"kind":"textbox","id":"sh/czap4f6x","slide":2,"text":"Introduction","textPreview":"Introduction","textChars":12,"textLines":1,"bbox":[64,442,760,50]}
+{"kind":"shape","id":"sh/by1oba5c","slide":2,"bbox":[64,530,106,0]}
+{"kind":"textbox","id":"sh/axsn25or","slide":2,"text":"02","textPreview":"02","textChars":2,"textLines":1,"bbox":[1174,675,42,18]}
+{"kind":"notes","id":"nt/nrg6gt","slide":2,"text":""}
+{"kind":"slide","id":"sl/jp3mws","slide":3,"title":"ABOUT ICF","textShapes":7}
+{"kind":"shape","id":"sh/q98nu5sj","slide":3,"bbox":[64,58,108,28]}
+{"kind":"textbox","id":"sh/dcz6pkra","slide":3,"text":"ABOUT ICF","textPreview":"ABOUT ICF","textChars":9,"textLines":1,"bbox":[76,63,84,18]}
+{"kind":"textbox","id":"sh/sbq5wfap","slide":3,"text":"What ICF Does","textPreview":"What ICF Does","textChars":13,"textLines":1,"bbox":[64,105,760,70]}
+{"kind":"shape","id":"sh/3mxoja98","slide":3,"bbox":[64,186,74,0]}
+{"kind":"textbox","id":"sh/ilonq5sn","slide":3,"text":"•  Pioneers in development of global standards for professional coaching, core competencies, ethics, and industry research.\n•  Independent credentialing and training program accreditation body.\n•  Professional development and network-building opportunities for coaches.\n•  Provide organizations access to credentialed coaches around the world.","textPreview":"•  Pioneers in development of global standards for professional coaching, core competencies, ethics, and industry research. | •  Independ...","textChars":343,"textLines":4,"bbox":[64,214,678,312]}
+{"kind":"shape","id":"sh/5oz6l0ry","slide":3,"bbox":[850,176,350,354]}
+{"kind":"shape","id":"sh/4n65svat","slide":3,"bbox":[884,208,148,28]}
+{"kind":"textbox","id":"sh/ni1ovu9c","slide":3,"text":"GLOBAL STANDARD","textPreview":"GLOBAL STANDARD","textChars":15,"textLines":1,"bbox":[896,213,124,18]}
+{"kind":"textbox","id":"sh/mhsn2psr","slide":3,"text":"Professional\ncoaching\nwith purpose.","textPreview":"Professional | coaching | with purpose.","textChars":35,"textLines":3,"bbox":[884,274,260,150]}
+{"kind":"textbox","id":"sh/87ih4na9","slide":3,"text":"Competence · ethics · research","textPreview":"Competence · ethics · research","textChars":30,"textLines":1,"bbox":[884,454,260,25]}
+{"kind":"textbox","id":"sh/tsridsre","slide":3,"text":"03","textPreview":"03","textChars":2,"textLines":1,"bbox":[1174,675,42,18]}
+{"kind":"notes","id":"nt/jp3mws","slide":3,"text":""}
+{"kind":"slide","id":"sl/vaip9o","slide":4,"title":"ABOUT ICF","textShapes":12}
+{"kind":"shape","id":"sh/qdgnadwz","slide":4,"bbox":[64,58,108,28]}
+{"kind":"textbox","id":"sh/dg7m5sfa","slide":4,"text":"ABOUT ICF","textPreview":"ABOUT ICF","textChars":9,"textLines":1,"bbox":[76,63,84,18]}
+{"kind":"textbox","id":"sh/cfy5cnep","slide":4,"text":"The ICF Ecosystem","textPreview":"The ICF Ecosystem","textChars":17,"textLines":1,"bbox":[64,105,760,70]}
+{"kind":"shape","id":"sh/3a54zyx8","slide":4,"bbox":[64,186,74,0]}
+{"kind":"textbox","id":"sh/i9wn6dwn","slide":4,"text":"One global community.\nMany ways to grow.","textPreview":"One global community. | Many ways to grow.","textChars":40,"textLines":2,"bbox":[64,214,368,110]}
+{"kind":"textbox","id":"sh/5c7m18fe","slide":4,"text":"Credentials, education, research and community come together to raise the standard of coaching.","textPreview":"Credentials, education, research and community come together to raise the standard of coaching.","textChars":95,"textLines":1,"bbox":[64,350,360,96]}
+{"kind":"shape","id":"sh/4be583et","slide":4,"bbox":[639,235,225,0]}
+{"kind":"shape","id":"sh/v654vyxc","slide":4,"bbox":[548,198,182,74]}
+{"kind":"textbox","id":"sh/ulwn2twr","slide":4,"text":"Credentialing","textPreview":"Credentialing","textChars":13,"textLines":1,"bbox":[562,223,154,26]}
+{"kind":"shape","id":"sh/gbi9wbup","slide":4,"bbox":[864,235,222,0]}
+{"kind":"shape","id":"sh/1crqpgva","slide":4,"bbox":[1004,198,164,74]}
+{"kind":"textbox","id":"sh/e9gru1cj","slide":4,"text":"Education","textPreview":"Education","textChars":9,"textLines":1,"bbox":[1018,223,136,26]}
+{"kind":"shape","id":"sh/fa98n6d4","slide":4,"bbox":[611,527,253,0]}
+{"kind":"shape","id":"sh/s7y9sbud","slide":4,"bbox":[520,490,182,74]}
+{"kind":"textbox","id":"sh/t87qlwvy","slide":4,"text":"Research","textPreview":"Research","textChars":8,"textLines":1,"bbox":[534,515,154,26]}
+{"kind":"shape","id":"sh/65grq1cn","slide":4,"bbox":[864,527,227,0]}
+{"kind":"shape","id":"sh/r6p8j6ds","slide":4,"bbox":[1014,490,154,74]}
+{"kind":"textbox","id":"sh/c3294vux","slide":4,"text":"Community","textPreview":"Community","textChars":9,"textLines":1,"bbox":[1028,515,126,26]}
+{"kind":"shape","id":"sh/d4bax0v2","slide":4,"bbox":[738,274,252,182]}
+{"kind":"textbox","id":"sh/lk7qh0nm","slide":4,"text":"ICF","textPreview":"ICF","textChars":3,"textLines":1,"bbox":[788,306,152,54]}
+{"kind":"textbox","id":"sh/kzy9ovm1","slide":4,"text":"Professional\ncoaching","textPreview":"Professional | coaching","textChars":21,"textLines":2,"bbox":[788,366,152,52]}
+{"kind":"shape","id":"sh/zyp8fq5g","slide":4,"bbox":[790,436,148,26]}
+{"kind":"textbox","id":"sh/yxgrml4v","slide":4,"text":"GLOBAL STANDARD","textPreview":"GLOBAL STANDARD","textChars":15,"textLines":1,"bbox":[802,441,124,16]}
+{"kind":"textbox","id":"sh/xwnqdgna","slide":4,"text":"04","textPreview":"04","textChars":2,"textLines":1,"bbox":[1174,675,42,18]}
+{"kind":"notes","id":"nt/vaip9o","slide":4,"text":""}
+{"kind":"slide","id":"sl/0cg3lw","slide":5,"title":"OUR CHAPTER","textShapes":12}
+{"kind":"shape","id":"sh/wnap4jmx","slide":5,"bbox":[64,58,130,28]}
+{"kind":"textbox","id":"sh/vm1ovelc","slide":5,"text":"OUR CHAPTER","textPreview":"OUR CHAPTER","textChars":11,"textLines":1,"bbox":[76,63,106,18]}
+{"kind":"textbox","id":"sh/als7294r","slide":5,"text":"The Vietnam Chapter of ICF","textPreview":"The Vietnam Chapter of ICF","textChars":26,"textLines":1,"bbox":[64,105,740,70]}
+{"kind":"shape","id":"sh/5s3q1o3e","slide":5,"bbox":[64,186,74,0]}
+{"kind":"shape","id":"sh/4rup83m9","slide":5,"bbox":[64,190,330,148]}
+{"kind":"shape","id":"sh/jq1ozylo","slide":5,"bbox":[84,208,74,25]}
+{"kind":"textbox","id":"sh/ips76t43","slide":5,"text":"VISION","textPreview":"VISION","textChars":6,"textLines":1,"bbox":[96,213,50,15]}
+{"kind":"textbox","id":"sh/tg3q583q","slide":5,"text":"A trusted chapter","textPreview":"A trusted chapter","textChars":17,"textLines":1,"bbox":[84,251,290,42]}
+{"kind":"textbox","id":"sh/svupc3m5","slide":5,"text":"Become a trusted professional coaching chapter in Vietnam.","textPreview":"Become a trusted professional coaching chapter in Vietnam.","textChars":58,"textLines":1,"bbox":[84,298,290,22]}
+{"kind":"shape","id":"sh/ydcva1wj","slide":5,"bbox":[414,190,372,148]}
+{"kind":"shape","id":"sh/jylw36x4","slide":5,"bbox":[434,208,80,25]}
+{"kind":"textbox","id":"sh/kzudcbep","slide":5,"text":"MISSION","textPreview":"MISSION","textChars":7,"textLines":1,"bbox":[446,213,56,15]}
+{"kind":"textbox","id":"sh/l03e5gfa","slide":5,"text":"Empower coaches","textPreview":"Empower coaches","textChars":15,"textLines":1,"bbox":[434,251,332,42]}
+{"kind":"textbox","id":"sh/61cvelwv","slide":5,"text":"Empower professional coaches to deliver exceptional service through unwavering commitment to competence and ethical practice.","textPreview":"Empower professional coaches to deliver exceptional service through unwavering commitment to competence and ethical practice.","textChars":125,"textLines":1,"bbox":[434,298,332,22]}
+{"kind":"shape","id":"sh/72lw7qxg","slide":5,"bbox":[814,190,372,334]}
+{"kind":"shape","id":"sh/83udgvel","slide":5,"bbox":[840,214,118,26]}
+{"kind":"textbox","id":"sh/t43e90f6","slide":5,"text":"CORE CULTURE","textPreview":"CORE CULTURE","textChars":12,"textLines":1,"bbox":[852,219,94,16]}
+{"kind":"textbox","id":"sh/m58v2hgb","slide":5,"text":"Ready to…","textPreview":"Ready to…","textChars":9,"textLines":1,"bbox":[840,260,280,44]}
+{"kind":"textbox","id":"sh/n61cvmxw","slide":5,"text":"•  take care of your well-being\n•  continuously develop coaching competencies\n•  support other people’s well-being\n•  develop the coaching industry in Vietnam","textPreview":"•  take care of your well-being | •  continuously develop coaching competencies | •  support other people’s well-being | •  develop the c...","textChars":158,"textLines":4,"bbox":[840,315,310,170]}
+{"kind":"textbox","id":"sh/raxs3ido","slide":5,"text":"05","textPreview":"05","textChars":2,"textLines":1,"bbox":[1174,675,42,18]}
+{"kind":"notes","id":"nt/0cg3lw","slide":5,"text":""}
+{"kind":"slide","id":"sl/7jt3hw","slide":6,"title":"OUR CHAPTER","textShapes":17}
+{"kind":"shape","id":"sh/9cvi9c3e","slide":6,"bbox":[64,58,130,28]}
+{"kind":"textbox","id":"sh/m9kjyxk3","slide":6,"text":"OUR CHAPTER","textPreview":"OUR CHAPTER","textChars":11,"textLines":1,"bbox":[76,63,106,18]}
+{"kind":"textbox","id":"sh/7at072l8","slide":6,"text":"The Vietnam Chapter of ICF – Strategy","textPreview":"The Vietnam Chapter of ICF – Strategy","textChars":37,"textLines":1,"bbox":[64,105,840,70]}
+{"kind":"shape","id":"sh/gzm14r25","slide":6,"bbox":[64,186,74,0]}
+{"kind":"textbox","id":"sh/h0v2dcjq","slide":6,"text":"Our strategy connects member well-being, coaching competence and industry development.","textPreview":"Our strategy connects member well-being, coaching competence and industry development.","textChars":86,"textLines":1,"bbox":[64,190,620,38]}
+{"kind":"shape","id":"sh/ud4j2hkz","slide":6,"bbox":[64,286,250,224]}
+{"kind":"textbox","id":"sh/ved0bm1k","slide":6,"text":"01","textPreview":"01","textChars":2,"textLines":1,"bbox":[84,310,48,44]}
+{"kind":"textbox","id":"sh/c3i1sn2l","slide":6,"text":"Member well-being","textPreview":"Member well-being","textChars":17,"textLines":1,"bbox":[84,364,208,40]}
+{"kind":"textbox","id":"sh/x4bi1s36","slide":6,"text":"A chapter that is ready to take care of its people.","textPreview":"A chapter that is ready to take care of its people.","textChars":51,"textLines":1,"bbox":[84,420,208,56]}
+{"kind":"shape","id":"sh/t0ju98vi","slide":6,"bbox":[350,286,250,224]}
+{"kind":"textbox","id":"sh/szat03ux","slide":6,"text":"02","textPreview":"02","textChars":2,"textLines":1,"bbox":[370,310,48,44]}
+{"kind":"textbox","id":"sh/7y1s7ydc","slide":6,"text":"Competence","textPreview":"Competence","textChars":10,"textLines":1,"bbox":[370,364,208,40]}
+{"kind":"textbox","id":"sh/6xsbytcr","slide":6,"text":"Continuous development of coaching capability and ethics.","textPreview":"Continuous development of coaching capability and ethics.","textChars":57,"textLines":1,"bbox":[370,420,208,56]}
+{"kind":"shape","id":"sh/h43ud8ve","slide":6,"bbox":[636,286,250,224]}
+{"kind":"textbox","id":"sh/g3ut43ut","slide":6,"text":"03","textPreview":"03","textChars":2,"textLines":1,"bbox":[656,310,48,44]}
+{"kind":"textbox","id":"sh/f2lcbydo","slide":6,"text":"Community","textPreview":"Community","textChars":9,"textLines":1,"bbox":[656,364,208,40]}
+{"kind":"textbox","id":"sh/u1cb2tc3","slide":6,"text":"Ready to support other people’s well-being.","textPreview":"Ready to support other people’s well-being.","textChars":43,"textLines":1,"bbox":[656,420,208,56]}
+{"kind":"shape","id":"sh/p83uhsvq","slide":6,"bbox":[922,286,250,224]}
+{"kind":"textbox","id":"sh/47ut8nu5","slide":6,"text":"04","textPreview":"04","textChars":2,"textLines":1,"bbox":[942,310,48,44]}
+{"kind":"textbox","id":"sh/8nm50b6d","slide":6,"text":"Industry","textPreview":"Industry","textChars":8,"textLines":1,"bbox":[942,364,208,40]}
+{"kind":"textbox","id":"sh/9ovmtgny","slide":6,"text":"Grow the coaching profession in Vietnam.","textPreview":"Grow the coaching profession in Vietnam.","textChars":40,"textLines":1,"bbox":[942,420,208,56]}
+{"kind":"shape","id":"sh/ml4nylon","slide":6,"bbox":[64,550,940,0]}
+{"kind":"textbox","id":"sh/nmd4rq5s","slide":6,"text":"Ready to grow together","textPreview":"Ready to grow together","textChars":22,"textLines":1,"bbox":[64,570,420,32]}
+{"kind":"textbox","id":"sh/wb654v6p","slide":6,"text":"06","textPreview":"06","textChars":2,"textLines":1,"bbox":[1174,675,42,18]}
+{"kind":"notes","id":"nt/7jt3hw","slide":6,"text":""}
+{"kind":"slide","id":"sl/59q1av","slide":7,"title":"OUR CHAPTER","textShapes":19}
+{"kind":"shape","id":"sh/nml0jmpc","slide":7,"bbox":[64,58,130,28]}
+{"kind":"textbox","id":"sh/onuhcrqx","slide":7,"text":"OUR CHAPTER","textPreview":"OUR CHAPTER","textChars":11,"textLines":1,"bbox":[76,63,106,18]}
+{"kind":"textbox","id":"sh/po3ilc72","slide":7,"text":"Our community at a glance","textPreview":"Our community at a glance","textChars":25,"textLines":1,"bbox":[64,105,660,70]}
+{"kind":"shape","id":"sh/apczeh8n","slide":7,"bbox":[64,186,74,0]}
+{"kind":"textbox","id":"sh/bql0nmp8","slide":7,"text":"Updated by Dec 2025","textPreview":"Updated by Dec 2025","textChars":19,"textLines":1,"bbox":[970,75,218,28]}
+{"kind":"shape","id":"sh/cruhgr6t","slide":7,"bbox":[64,185,212,160]}
+{"kind":"textbox","id":"sh/xc3ipw7e","slide":7,"text":"78","textPreview":"78","textChars":2,"textLines":1,"bbox":[86,211,168,50]}
+{"kind":"textbox","id":"sh/qt8z2x8j","slide":7,"text":"members located\nin Vietnam","textPreview":"members located | in Vietnam","textChars":26,"textLines":2,"bbox":[86,272,170,48]}
+{"kind":"shape","id":"sh/ru1gb2p4","slide":7,"bbox":[304,185,212,160]}
+{"kind":"textbox","id":"sh/7qhwn2xk","slide":7,"text":"61","textPreview":"61","textChars":2,"textLines":1,"bbox":[326,211,168,50]}
+{"kind":"textbox","id":"sh/6p8vexgz","slide":7,"text":"members of the\nVietnam Chapter","textPreview":"members of the | Vietnam Chapter","textChars":30,"textLines":2,"bbox":[326,272,170,48]}
+{"kind":"shape","id":"sh/tszepcfq","slide":7,"bbox":[544,185,212,160]}
+{"kind":"textbox","id":"sh/srqdg7y5","slide":7,"text":"171","textPreview":"171","textChars":3,"textLines":1,"bbox":[566,211,168,50]}
+{"kind":"textbox","id":"sh/jmxcjix8","slide":7,"text":"ICF credentialed\ncoaches","textPreview":"ICF credentialed | coaches","textChars":24,"textLines":2,"bbox":[566,272,170,48]}
+{"kind":"textbox","id":"sh/i1ovadgn","slide":7,"text":"ICF credential distribution","textPreview":"ICF credential distribution","textChars":27,"textLines":1,"bbox":[64,414,350,34]}
+{"kind":"shape","id":"sh/5ozulsfe","slide":7,"bbox":[64,470,142,76]}
+{"kind":"textbox","id":"sh/knqdcnyt","slide":7,"text":"ACC","textPreview":"ACC","textChars":3,"textLines":1,"bbox":[78,483,114,22]}
+{"kind":"textbox","id":"sh/vyxcfixc","slide":7,"text":"85","textPreview":"85","textChars":2,"textLines":1,"bbox":[78,507,114,30]}
+{"kind":"shape","id":"sh/axov6dgr","slide":7,"bbox":[234,470,142,76]}
+{"kind":"textbox","id":"sh/yt4vyd0j","slide":7,"text":"PCC","textPreview":"PCC","textChars":3,"textLines":1,"bbox":[248,483,114,22]}
+{"kind":"textbox","id":"sh/zudwri14","slide":7,"text":"81","textPreview":"81","textChars":2,"textLines":1,"bbox":[248,507,114,30]}
+{"kind":"shape","id":"sh/0vmd03ip","slide":7,"bbox":[404,470,142,76]}
+{"kind":"textbox","id":"sh/lwfet8ja","slide":7,"text":"MCC","textPreview":"MCC","textChars":3,"textLines":1,"bbox":[418,483,114,22]}
+{"kind":"textbox","id":"sh/mxof2d0v","slide":7,"text":"3","textPreview":"3","textChars":1,"textLines":1,"bbox":[418,507,114,30]}
+{"kind":"shape","id":"sh/nyxwvi1g","slide":7,"bbox":[574,470,142,76]}
+{"kind":"textbox","id":"sh/8z6x4nil","slide":7,"text":"ACTC","textPreview":"ACTC","textChars":4,"textLines":1,"bbox":[588,483,114,22]}
+{"kind":"textbox","id":"sh/9kfexsj6","slide":7,"text":"2","textPreview":"2","textChars":1,"textLines":1,"bbox":[588,507,114,30]}
+{"kind":"textbox","id":"sh/alof6x0r","slide":7,"text":"07","textPreview":"07","textChars":2,"textLines":1,"bbox":[1174,675,42,18]}
+{"kind":"notes","id":"nt/59q1av","slide":7,"text":""}
+{"kind":"slide","id":"sl/4qgk08","slide":8,"title":"OUR CHAPTER","textShapes":3}
+{"kind":"shape","id":"sh/d0nmxgb6","slide":8,"bbox":[64,58,130,28]}
+{"kind":"textbox","id":"sh/qxc3m1sf","slide":8,"text":"OUR CHAPTER","textPreview":"OUR CHAPTER","textChars":11,"textLines":1,"bbox":[76,63,106,18]}
+{"kind":"textbox","id":"sh/ry54v6t0","slide":8,"text":"The Vietnam Chapter of ICF – Board Team","textPreview":"The Vietnam Chapter of ICF – Board Team","textChars":39,"textLines":1,"bbox":[64,105,890,70]}
+{"kind":"shape","id":"sh/4vulkbup","slide":8,"bbox":[64,186,74,0]}
+{"kind":"textbox","id":"sh/itc3i1cj","slide":8,"text":"08","textPreview":"08","textChars":2,"textLines":1,"bbox":[1174,675,42,18]}
+{"kind":"table","id":"tb/4v6hgb65","slide":8,"name":"","rows":6,"cols":4,"preview":"ROLE | NAME | ROLE | NAME","bbox":[64,190,1152,400]}
+{"kind":"notes","id":"nt/4qgk08","slide":8,"text":""}
+{"kind":"slide","id":"sl/t9k9vj","slide":9,"title":"COMMUNITY IN ACTION","textShapes":4}
+{"kind":"shape","id":"sh/v65sn29g","slide":9,"bbox":[64,70,170,30]}
+{"kind":"textbox","id":"sh/g7etw7q1","slide":9,"text":"COMMUNITY IN ACTION","textPreview":"COMMUNITY IN ACTION","textChars":19,"textLines":1,"bbox":[76,75,146,20]}
+{"kind":"textbox","id":"sh/h8napcr6","slide":9,"text":"700+ participants\nengaged.","textPreview":"700+ participants | engaged.","textChars":26,"textLines":2,"bbox":[64,142,530,150]}
+{"kind":"textbox","id":"sh/6hcbqx8j","slide":9,"text":"Through both online and offline events from Feb 2025 – Mar 2026.","textPreview":"Through both online and offline events from Feb 2025 – Mar 2026.","textChars":64,"textLines":1,"bbox":[64,332,430,82]}
+{"kind":"shape","id":"sh/72lsj294","slide":9,"bbox":[660,70,520,502]}
+{"kind":"textbox","id":"sh/t43alsra","slide":9,"text":"09","textPreview":"09","textChars":2,"textLines":1,"bbox":[1174,675,42,18]}
+{"kind":"image","id":"im/t8nats7u","slide":9,"name":"","geometry":"roundRect","bbox":[670,80,500,482]}
+{"kind":"notes","id":"nt/t9k9vj","slide":9,"text":""}
+{"kind":"slide","id":"sl/eucwp7","slide":10,"title":"COMMUNITY IN ACTION","textShapes":6}
+{"kind":"shape","id":"sh/50n6hgfa","slide":10,"bbox":[64,58,192,28]}
+{"kind":"textbox","id":"sh/ixc761gj","slide":10,"text":"COMMUNITY IN ACTION","textPreview":"COMMUNITY IN ACTION","textChars":19,"textLines":1,"bbox":[76,63,168,18]}
+{"kind":"textbox","id":"sh/jylof6h4","slide":10,"text":"Events Photos","textPreview":"Events Photos","textChars":13,"textLines":1,"bbox":[64,105,500,70]}
+{"kind":"shape","id":"sh/s3epcbyl","slide":10,"bbox":[64,186,74,0]}
+{"kind":"shape","id":"sh/t4n6lgf6","slide":10,"bbox":[64,190,350,322]}
+{"kind":"shape","id":"sh/r25oj6x0","slide":10,"bbox":[84,532,92,27]}
+{"kind":"textbox","id":"sh/g7ypgvyx","slide":10,"text":"Feb 2025","textPreview":"Feb 2025","textChars":8,"textLines":1,"bbox":[96,537,68,17]}
+{"kind":"shape","id":"sh/1s76p0fi","slide":10,"bbox":[464,190,350,322]}
+{"kind":"shape","id":"sh/8zyp4zmt","slide":10,"bbox":[484,532,92,27]}
+{"kind":"textbox","id":"sh/7y5obu58","slide":10,"text":"Mar 2025","textPreview":"Mar 2025","textChars":8,"textLines":1,"bbox":[496,537,68,17]}
+{"kind":"shape","id":"sh/mxw72p4n","slide":10,"bbox":[864,190,350,322]}
+{"kind":"shape","id":"sh/w3yp8jmp","slide":10,"bbox":[884,532,92,27]}
+{"kind":"textbox","id":"sh/v2p8fe54","slide":10,"text":"Apr 2025","textPreview":"Apr 2025","textChars":8,"textLines":1,"bbox":[896,537,68,17]}
+{"kind":"textbox","id":"sh/u1g7694j","slide":10,"text":"10","textPreview":"10","textChars":2,"textLines":1,"bbox":[1174,675,42,18]}
+{"kind":"image","id":"im/729wra1k","slide":10,"name":"","geometry":"roundRect","bbox":[73,199,332,304]}
+{"kind":"image","id":"im/y9gj2l4f","slide":10,"name":"","geometry":"roundRect","bbox":[473,199,332,304]}
+{"kind":"image","id":"im/q5wzy14j","slide":10,"name":"","geometry":"roundRect","bbox":[873,199,332,304]}
+{"kind":"notes","id":"nt/eucwp7","slide":10,"text":""}
+{"kind":"slide","id":"sl/co5910","slide":11,"title":"COMMUNITY IN ACTION","textShapes":5}
+{"kind":"shape","id":"sh/dwnu5one","slide":11,"bbox":[64,58,192,28]}
+{"kind":"textbox","id":"sh/qtwvat43","slide":11,"text":"COMMUNITY IN ACTION","textPreview":"COMMUNITY IN ACTION","textChars":19,"textLines":1,"bbox":[76,63,168,18]}
+{"kind":"textbox","id":"sh/ru5c3y58","slide":11,"text":"Events Photos","textPreview":"Events Photos","textChars":13,"textLines":1,"bbox":[64,105,500,70]}
+{"kind":"shape","id":"sh/0zydg3m5","slide":11,"bbox":[64,186,74,0]}
+{"kind":"shape","id":"sh/107u98nq","slide":11,"bbox":[64,186,548,350]}
+{"kind":"shape","id":"sh/fypc7y5k","slide":11,"bbox":[668,186,548,350]}
+{"kind":"shape","id":"sh/h43ux4n6","slide":11,"bbox":[88,552,147,28]}
+{"kind":"textbox","id":"sh/98zu9kn2","slide":11,"text":"May 2025 · Online","textPreview":"May 2025 · Online","textChars":17,"textLines":1,"bbox":[100,557,123,18]}
+{"kind":"shape","id":"sh/onqtgf6h","slide":11,"bbox":[692,552,147,28]}
+{"kind":"textbox","id":"sh/nmxs7a5w","slide":11,"text":"May 2025 · Online","textPreview":"May 2025 · Online","textChars":17,"textLines":1,"bbox":[704,557,123,18]}
+{"kind":"textbox","id":"sh/mlobe5ob","slide":11,"text":"11","textPreview":"11","textChars":2,"textLines":1,"bbox":[1174,675,42,18]}
+{"kind":"image","id":"im/7ul8765g","slide":11,"name":"","geometry":"roundRect","bbox":[74,196,528,330]}
+{"kind":"image","id":"im/90zqxwni","slide":11,"name":"","geometry":"roundRect","bbox":[678,196,528,330]}
+{"kind":"notes","id":"nt/co5910","slide":11,"text":""}
+{"kind":"slide","id":"sl/v3i99e","slide":12,"title":"COMMUNITY IN ACTION","textShapes":5}
+{"kind":"shape","id":"sh/7e9k7ihk","slide":12,"bbox":[64,58,192,28]}
+{"kind":"textbox","id":"sh/8fi1gni5","slide":12,"text":"COMMUNITY IN ACTION","textPreview":"COMMUNITY IN ACTION","textChars":19,"textLines":1,"bbox":[76,63,168,18]}
+{"kind":"textbox","id":"sh/9gr29szq","slide":12,"text":"Events Photos","textPreview":"Events Photos","textChars":13,"textLines":1,"bbox":[64,105,500,70]}
+{"kind":"shape","id":"sh/y9gjad03","slide":12,"bbox":[64,186,74,0]}
+{"kind":"shape","id":"sh/zapk3yho","slide":12,"bbox":[64,186,548,350]}
+{"kind":"shape","id":"sh/lc7258zu","slide":12,"bbox":[668,186,548,350]}
+{"kind":"shape","id":"sh/b6p0zyhc","slide":12,"bbox":[88,552,260,28]}
+{"kind":"textbox","id":"sh/7ylojy9w","slide":12,"text":"May 2025 · Offline · Ho Chi Minh City","textPreview":"May 2025 · Offline · Ho Chi Minh City","textChars":37,"textLines":1,"bbox":[100,557,236,18]}
+{"kind":"shape","id":"sh/6xc7atsb","slide":12,"bbox":[692,552,287,28]}
+{"kind":"textbox","id":"sh/t036l8rm","slide":12,"text":"May 2025 · Offline · Ho Chi Minh City","textPreview":"May 2025 · Offline · Ho Chi Minh City","textChars":37,"textLines":1,"bbox":[704,557,263,18]}
+{"kind":"textbox","id":"sh/szupc3ah","slide":12,"text":"12","textPreview":"12","textChars":2,"textLines":1,"bbox":[1174,675,42,18]}
+{"kind":"image","id":"im/to72tcru","slide":12,"name":"","geometry":"roundRect","bbox":[74,196,528,330]}
+{"kind":"image","id":"im/fqpkvm90","slide":12,"name":"","geometry":"roundRect","bbox":[678,196,528,330]}
+{"kind":"notes","id":"nt/v3i99e","slide":12,"text":""}
+{"kind":"slide","id":"sl/yon7b0","slide":13,"title":"COMMUNITY IN ACTION","textShapes":5}
+{"kind":"shape","id":"sh/xcnahwvq","slide":13,"bbox":[64,58,192,28]}
+{"kind":"textbox","id":"sh/a9wbmhcz","slide":13,"text":"COMMUNITY IN ACTION","textPreview":"COMMUNITY IN ACTION","textChars":19,"textLines":1,"bbox":[76,63,168,18]}
+{"kind":"textbox","id":"sh/ba5sfmdk","slide":13,"text":"Events Photos","textPreview":"Events Photos","textChars":13,"textLines":1,"bbox":[64,105,500,70]}
+{"kind":"shape","id":"sh/onutk7u9","slide":13,"bbox":[64,186,74,0]}
+{"kind":"shape","id":"sh/983adcve","slide":13,"bbox":[64,186,548,350]}
+{"kind":"shape","id":"sh/nmlsb2do","slide":13,"bbox":[668,186,548,350]}
+{"kind":"shape","id":"sh/t47upgvy","slide":13,"bbox":[88,552,245,28]}
+{"kind":"textbox","id":"sh/tsr29sj2","slide":13,"text":"May 2025 · Offline · Hanoi City","textPreview":"May 2025 · Offline · Hanoi City","textChars":31,"textLines":1,"bbox":[100,557,221,18]}
+{"kind":"shape","id":"sh/8ri1gn2x","slide":13,"bbox":[692,552,245,28]}
+{"kind":"textbox","id":"sh/7qpk7i1c","slide":13,"text":"May 2025 · Offline · Hanoi City","textPreview":"May 2025 · Offline · Hanoi City","textChars":31,"textLines":1,"bbox":[704,557,221,18]}
+{"kind":"textbox","id":"sh/65gjedkr","slide":13,"text":"13","textPreview":"13","textChars":2,"textLines":1,"bbox":[1174,675,42,18]}
+{"kind":"image","id":"im/zmtwnm98","slide":13,"name":"","geometry":"roundRect","bbox":[74,196,528,330]}
+{"kind":"image","id":"im/1sredsra","slide":13,"name":"","geometry":"roundRect","bbox":[678,196,528,330]}
+{"kind":"notes","id":"nt/yon7b0","slide":13,"text":""}
+{"kind":"slide","id":"sl/xij9av","slide":14,"title":"COMMUNITY IN ACTION","textShapes":5}
+{"kind":"shape","id":"sh/dcvyl8zm","slide":14,"bbox":[64,58,192,28]}
+{"kind":"textbox","id":"sh/q9kzqtgv","slide":14,"text":"COMMUNITY IN ACTION","textPreview":"COMMUNITY IN ACTION","textChars":19,"textLines":1,"bbox":[76,63,168,18]}
+{"kind":"textbox","id":"sh/batgjyhg","slide":14,"text":"Events Photos","textPreview":"Events Photos","textChars":13,"textLines":1,"bbox":[64,105,500,70]}
+{"kind":"shape","id":"sh/o72xojy5","slide":14,"bbox":[64,186,74,0]}
+{"kind":"shape","id":"sh/p8byhozq","slide":14,"bbox":[64,186,410,244]}
+{"kind":"shape","id":"sh/36tgfehk","slide":14,"bbox":[494,186,332,244]}
+{"kind":"shape","id":"sh/94fytsfu","slide":14,"bbox":[846,186,370,244]}
+{"kind":"shape","id":"sh/szitsf2t","slide":14,"bbox":[64,448,568,112]}
+{"kind":"shape","id":"sh/6x0bq5kn","slide":14,"bbox":[652,448,564,112]}
+{"kind":"shape","id":"sh/kvi9ov2x","slide":14,"bbox":[84,588,146,28]}
+{"kind":"textbox","id":"sh/jupsfqlc","slide":14,"text":"July 2025 · Online","textPreview":"July 2025 · Online","textChars":18,"textLines":1,"bbox":[96,593,122,18]}
+{"kind":"shape","id":"sh/itgrmlkr","slide":14,"bbox":[250,588,146,28]}
+{"kind":"textbox","id":"sh/psbat43m","slide":14,"text":"Aug 2025 · Hanoi","textPreview":"Aug 2025 · Hanoi","textChars":16,"textLines":1,"bbox":[262,593,122,18]}
+{"kind":"textbox","id":"sh/4r2t0z21","slide":14,"text":"14","textPreview":"14","textChars":2,"textLines":1,"bbox":[1174,675,42,18]}
+{"kind":"image","id":"im/zy90rq1c","slide":14,"name":"","geometry":"roundRect","bbox":[72,194,394,228]}
+{"kind":"image","id":"im/5gvi5kzm","slide":14,"name":"","geometry":"roundRect","bbox":[502,194,316,228]}
+{"kind":"image","id":"im/it8fy5sf","slide":14,"name":"","geometry":"roundRect","bbox":[854,194,354,228]}
+{"kind":"image","id":"im/4vqx0fal","slide":14,"name":"","geometry":"roundRect","bbox":[71,455,554,98]}
+{"kind":"image","id":"im/upova5sj","slide":14,"name":"","geometry":"roundRect","bbox":[659,455,550,98]}
+{"kind":"notes","id":"nt/xij9av","slide":14,"text":""}
+{"kind":"slide","id":"sl/gzixzr","slide":15,"title":"COMMUNITY IN ACTION","textShapes":5}
+{"kind":"shape","id":"sh/e58nqxg3","slide":15,"bbox":[64,58,192,28]}
+{"kind":"textbox","id":"sh/18z61cfu","slide":15,"text":"COMMUNITY IN ACTION","textPreview":"COMMUNITY IN ACTION","textChars":19,"textLines":1,"bbox":[76,63,168,18]}
+{"kind":"textbox","id":"sh/07q5s7y9","slide":15,"text":"Events Photos","textPreview":"Events Photos","textChars":13,"textLines":1,"bbox":[64,105,500,70]}
+{"kind":"shape","id":"sh/na1o3mxk","slide":15,"bbox":[64,186,74,0]}
+{"kind":"shape","id":"sh/29snuhgf","slide":15,"bbox":[64,186,350,360]}
+{"kind":"shape","id":"sh/oba5wry5","slide":15,"bbox":[434,186,350,168]}
+{"kind":"shape","id":"sh/axsnyhgb","slide":15,"bbox":[804,186,412,168]}
+{"kind":"shape","id":"sh/xc7yp4jm","slide":15,"bbox":[434,368,350,178]}
+{"kind":"shape","id":"sh/bapwne1w","slide":15,"bbox":[804,368,412,178]}
+{"kind":"shape","id":"sh/lgrytojy","slide":15,"bbox":[84,566,150,28]}
+{"kind":"textbox","id":"sh/yd0fy907","slide":15,"text":"Sep 2025 · Online","textPreview":"Sep 2025 · Online","textChars":17,"textLines":1,"bbox":[96,571,126,18]}
+{"kind":"shape","id":"sh/ze9gre1s","slide":15,"bbox":[244,566,170,28]}
+{"kind":"textbox","id":"sh/83ix43i9","slide":15,"text":"Chapter Talk Series","textPreview":"Chapter Talk Series","textChars":19,"textLines":1,"bbox":[256,571,146,18]}
+{"kind":"textbox","id":"sh/94byxoju","slide":15,"text":"15","textPreview":"15","textChars":2,"textLines":1,"bbox":[1174,675,42,18]}
+{"kind":"image","id":"im/ojelwfet","slide":15,"name":"","geometry":"roundRect","bbox":[72,194,334,344]}
+{"kind":"image","id":"im/2ls3i1wj","slide":15,"name":"","geometry":"roundRect","bbox":[442,194,334,152]}
+{"kind":"image","id":"im/3qdwr25w","slide":15,"name":"","geometry":"roundRect","bbox":[812,194,396,152]}
+{"kind":"image","id":"im/psvetcn2","slide":15,"name":"","geometry":"roundRect","bbox":[442,376,334,162]}
+{"kind":"image","id":"im/f2twn250","slide":15,"name":"","geometry":"roundRect","bbox":[812,376,396,162]}
+{"kind":"notes","id":"nt/gzixzr","slide":15,"text":""}
+{"kind":"slide","id":"sl/mynan2","slide":16,"title":"COMMUNITY IN ACTION","textShapes":5}
+{"kind":"shape","id":"sh/zy50b2xg","slide":16,"bbox":[64,58,192,28]}
+{"kind":"textbox","id":"sh/0zeh47e1","slide":16,"text":"COMMUNITY IN ACTION","textPreview":"COMMUNITY IN ACTION","textChars":19,"textLines":1,"bbox":[76,63,168,18]}
+{"kind":"textbox","id":"sh/10nidcfm","slide":16,"text":"October internal activity","textPreview":"October internal activity","textChars":25,"textLines":1,"bbox":[64,105,760,70]}
+{"kind":"shape","id":"sh/q9czyxwz","slide":16,"bbox":[64,186,74,0]}
+{"kind":"textbox","id":"sh/ral072xk","slide":16,"text":"ICF Asia Pacific in-person forum","textPreview":"ICF Asia Pacific in-person forum","textChars":32,"textLines":1,"bbox":[64,196,430,42]}
+{"kind":"textbox","id":"sh/cveh07e5","slide":16,"text":"13–15 October 2025","textPreview":"13–15 October 2025","textChars":18,"textLines":1,"bbox":[64,245,360,28]}
+{"kind":"shape","id":"sh/dwni9cfq","slide":16,"bbox":[510,180,320,366]}
+{"kind":"shape","id":"sh/36l03ix8","slide":16,"bbox":[854,180,362,366]}
+{"kind":"textbox","id":"sh/als7a9wj","slide":16,"text":"16","textPreview":"16","textChars":2,"textLines":1,"bbox":[1174,675,42,18]}
+{"kind":"image","id":"im/jmxcfe18","slide":16,"name":"","geometry":"roundRect","bbox":[519,189,302,348]}
+{"kind":"image","id":"im/snud0f2d","slide":16,"name":"","geometry":"roundRect","bbox":[863,189,344,348]}
+{"kind":"notes","id":"nt/mynan2","slide":16,"text":""}
+{"kind":"slide","id":"sl/h5j6he","slide":17,"title":"COMMUNITY IN ACTION","textShapes":3}
+{"kind":"shape","id":"sh/qdgfe9kj","slide":17,"bbox":[64,58,192,28]}
+{"kind":"textbox","id":"sh/dg7yp43a","slide":17,"text":"COMMUNITY IN ACTION","textPreview":"COMMUNITY IN ACTION","textChars":19,"textLines":1,"bbox":[76,63,168,18]}
+{"kind":"textbox","id":"sh/cfyxgz2p","slide":17,"text":"A growing chapter community","textPreview":"A growing chapter community","textChars":27,"textLines":1,"bbox":[64,105,700,70]}
+{"kind":"shape","id":"sh/3a5gjuls","slide":17,"bbox":[64,186,74,0]}
+{"kind":"shape","id":"sh/29wfapkn","slide":17,"bbox":[64,186,300,170]}
+{"kind":"shape","id":"sh/obyxcz2d","slide":17,"bbox":[384,186,392,170]}
+{"kind":"shape","id":"sh/m50zmtkr","slide":17,"bbox":[796,186,420,170]}
+{"kind":"shape","id":"sh/t4nq1srm","slide":17,"bbox":[64,374,420,190]}
+{"kind":"shape","id":"sh/r258zitg","slide":17,"bbox":[504,374,280,190]}
+{"kind":"shape","id":"sh/5gnqx8bq","slide":17,"bbox":[804,374,412,190]}
+{"kind":"textbox","id":"sh/jel8vytk","slide":17,"text":"17","textPreview":"17","textChars":2,"textLines":1,"bbox":[1174,675,42,18]}
+{"kind":"image","id":"im/onal4vut","slide":17,"name":"","geometry":"roundRect","bbox":[72,194,284,154]}
+{"kind":"image","id":"im/aps365cz","slide":17,"name":"","geometry":"roundRect","bbox":[392,194,376,154]}
+{"kind":"image","id":"im/z69s3adk","slide":17,"name":"","geometry":"roundRect","bbox":[804,194,404,154]}
+{"kind":"image","id":"im/lsba5kvq","slide":17,"name":"","geometry":"roundRect","bbox":[72,382,404,174]}
+{"kind":"image","id":"im/b29szqdo","slide":17,"name":"","geometry":"roundRect","bbox":[512,382,264,174]}
+{"kind":"image","id":"im/d4ra10vu","slide":17,"name":"","geometry":"roundRect","bbox":[812,382,396,174]}
+{"kind":"notes","id":"nt/h5j6he","slide":17,"text":""}
+{"kind":"slide","id":"sl/5fuxa0","slide":18,"title":"COMMUNITY IN ACTION","textShapes":3}
+{"kind":"shape","id":"sh/7yt4jy1s","slide":18,"bbox":[64,58,192,28]}
+{"kind":"textbox","id":"sh/sz25c3id","slide":18,"text":"COMMUNITY IN ACTION","textPreview":"COMMUNITY IN ACTION","textChars":19,"textLines":1,"bbox":[76,63,168,18]}
+{"kind":"textbox","id":"sh/t0bmloji","slide":18,"text":"Chapter event highlight","textPreview":"Chapter event highlight","textChars":23,"textLines":1,"bbox":[64,112,430,50]}
+{"kind":"shape","id":"sh/u1knet03","slide":18,"bbox":[540,48,630,610]}
+{"kind":"textbox","id":"sh/gn25g3i9","slide":18,"text":"18","textPreview":"18","textChars":2,"textLines":1,"bbox":[1174,675,42,18]}
+{"kind":"image","id":"im/2hcz6lgv","slide":18,"name":"","geometry":"roundRect","bbox":[552,60,606,586]}
+{"kind":"notes","id":"nt/5fuxa0","slide":18,"text":""}
+{"kind":"slide","id":"sl/y2jnwa","slide":19,"title":"COMMUNITY IN ACTION","textShapes":3}
+{"kind":"shape","id":"sh/r6hsjm9o","slide":19,"bbox":[64,58,192,28]}
+{"kind":"textbox","id":"sh/s7qtcra9","slide":19,"text":"COMMUNITY IN ACTION","textPreview":"COMMUNITY IN ACTION","textChars":19,"textLines":1,"bbox":[76,63,168,18]}
+{"kind":"textbox","id":"sh/d8jalwru","slide":19,"text":"Event highlight","textPreview":"Event highlight","textChars":15,"textLines":1,"bbox":[64,112,430,50]}
+{"kind":"shape","id":"sh/ih8r6hs7","slide":19,"bbox":[540,48,630,610]}
+{"kind":"textbox","id":"sh/43qt87ax","slide":19,"text":"19","textPreview":"19","textChars":2,"textLines":1,"bbox":[1174,675,42,18]}
+{"kind":"image","id":"im/61svqxcj","slide":19,"name":"","geometry":"roundRect","bbox":[552,60,606,586]}
+{"kind":"notes","id":"nt/y2jnwa","slide":19,"text":""}
+{"kind":"slide","id":"sl/te287h","slide":20,"title":"ICW 2026","textShapes":6}
+{"kind":"shape","id":"sh/g3algvyp","slide":20,"bbox":[64,58,86,28]}
+{"kind":"textbox","id":"sh/f21knqx4","slide":20,"text":"ICW 2026","textPreview":"ICW 2026","textChars":8,"textLines":1,"bbox":[76,63,62,18]}
+{"kind":"textbox","id":"sh/ehs3e5gj","slide":20,"text":"International Coaching Week 2026","textPreview":"International Coaching Week 2026","textChars":32,"textLines":1,"bbox":[64,105,820,70]}
+{"kind":"shape","id":"sh/p83mtkf6","slide":20,"bbox":[64,186,74,0]}
+{"kind":"shape","id":"sh/o7ulkfy1","slide":20,"bbox":[64,204,174,30]}
+{"kind":"textbox","id":"sh/36l4raxg","slide":20,"text":"THE POWER OF VOICE","textPreview":"THE POWER OF VOICE","textChars":18,"textLines":1,"bbox":[76,209,150,20]}
+{"kind":"textbox","id":"sh/25c3i5gv","slide":20,"text":"Hà Nội · 10 May 2026","textPreview":"Hà Nội · 10 May 2026","textChars":20,"textLines":1,"bbox":[64,252,360,38]}
+{"kind":"textbox","id":"sh/dc3mxkfi","slide":20,"text":"A conversation about the voice we choose to bring into the world.","textPreview":"A conversation about the voice we choose to bring into the world.","textChars":65,"textLines":1,"bbox":[64,314,360,72]}
+{"kind":"shape","id":"sh/cbulofyx","slide":20,"bbox":[520,164,660,414]}
+{"kind":"textbox","id":"sh/rexszap8","slide":20,"text":"20","textPreview":"20","textChars":2,"textLines":1,"bbox":[1174,675,42,18]}
+{"kind":"image","id":"im/l4vqdgvu","slide":20,"name":"","geometry":"roundRect","bbox":[530,174,640,394]}
+{"kind":"notes","id":"nt/te287h","slide":20,"text":""}
+{"kind":"slide","id":"sl/1fkfpd","slide":21,"title":"ICW 2026","textShapes":6}
+{"kind":"shape","id":"sh/sryh0n61","slide":21,"bbox":[64,58,86,28]}
+{"kind":"textbox","id":"sh/rqp07i5g","slide":21,"text":"ICW 2026","textPreview":"ICW 2026","textChars":8,"textLines":1,"bbox":[76,63,62,18]}
+{"kind":"textbox","id":"sh/qpgzydob","slide":21,"text":"International Coaching Week 2026","textPreview":"International Coaching Week 2026","textChars":32,"textLines":1,"bbox":[64,105,820,70]}
+{"kind":"shape","id":"sh/5o7i58nq","slide":21,"bbox":[64,186,74,0]}
+{"kind":"shape","id":"sh/4nyhwn65","slide":21,"bbox":[64,194,174,30]}
+{"kind":"textbox","id":"sh/325g3i5k","slide":21,"text":"THE POWER OF VOICE","textPreview":"THE POWER OF VOICE","textChars":18,"textLines":1,"bbox":[76,199,150,20]}
+{"kind":"textbox","id":"sh/i1wzudoz","slide":21,"text":"Hà Nội · 10 May 2026","textPreview":"Hà Nội · 10 May 2026","textChars":20,"textLines":1,"bbox":[64,242,300,28]}
+{"kind":"textbox","id":"sh/h0ny18ne","slide":21,"text":"TPHCM · 17 May 2026","textPreview":"TPHCM · 17 May 2026","textChars":19,"textLines":1,"bbox":[64,274,300,28]}
+{"kind":"shape","id":"sh/gzehs36t","slide":21,"bbox":[420,182,240,166]}
+{"kind":"shape","id":"sh/jiloz6d8","slide":21,"bbox":[676,182,240,166]}
+{"kind":"shape","id":"sh/5kn6lwve","slide":21,"bbox":[932,182,284,166]}
+{"kind":"shape","id":"sh/bel4vmdc","slide":21,"bbox":[420,364,240,192]}
+{"kind":"shape","id":"sh/xg3mxwv2","slide":21,"bbox":[676,364,240,192]}
+{"kind":"shape","id":"sh/nq14rmd0","slide":21,"bbox":[932,364,284,192]}
+{"kind":"textbox","id":"sh/qt8jqdc7","slide":21,"text":"21","textPreview":"21","textChars":2,"textLines":1,"bbox":[1174,675,42,18]}
+{"kind":"image","id":"im/pkv6dorq","slide":21,"name":"","geometry":"roundRect","bbox":[427,189,226,152]}
+{"kind":"image","id":"im/3itobe90","slide":21,"name":"","geometry":"roundRect","bbox":[683,189,226,152]}
+{"kind":"image","id":"im/dov6hor2","slide":21,"name":"","geometry":"roundRect","bbox":[939,189,270,152]}
+{"kind":"image","id":"im/bmdofy9w","slide":21,"name":"","geometry":"roundRect","bbox":[427,371,226,178]}
+{"kind":"image","id":"im/tsb654ri","slide":21,"name":"","geometry":"roundRect","bbox":[683,371,226,178]}
+{"kind":"image","id":"im/kvm5szit","slide":21,"name":"","geometry":"roundRect","bbox":[939,371,270,178]}
+{"kind":"notes","id":"nt/1fkfpd","slide":21,"text":""}
+{"kind":"slide","id":"sl/0s0ifa","slide":22,"title":"THE POWER OF VOICE","textShapes":6}
+{"kind":"shape","id":"sh/vapcjm9w","slide":22,"bbox":[64,62,174,30]}
+{"kind":"textbox","id":"sh/gbydsrqh","slide":22,"text":"THE POWER OF VOICE","textPreview":"THE POWER OF VOICE","textChars":18,"textLines":1,"bbox":[76,67,150,20]}
+{"kind":"textbox","id":"sh/hcrulc7m","slide":22,"text":"International\nCoaching Week 2026","textPreview":"International | Coaching Week 2026","textChars":32,"textLines":2,"bbox":[64,132,510,112]}
+{"kind":"textbox","id":"sh/6lgbmx8z","slide":22,"text":"Weaving voices, shaping futures","textPreview":"Weaving voices, shaping futures","textChars":31,"textLines":1,"bbox":[64,286,430,38]}
+{"kind":"textbox","id":"sh/7mpcf29k","slide":22,"text":"HÀ NỘI · 10 MAY 2026","textPreview":"HÀ NỘI · 10 MAY 2026","textChars":20,"textLines":1,"bbox":[64,352,310,24]}
+{"kind":"textbox","id":"sh/87yto7q5","slide":22,"text":"TPHCM · 17 MAY 2026","textPreview":"TPHCM · 17 MAY 2026","textChars":19,"textLines":1,"bbox":[64,382,310,24]}
+{"kind":"shape","id":"sh/t87uhcrq","slide":22,"bbox":[590,90,570,400]}
+{"kind":"shape","id":"sh/ri9cr6p4","slide":22,"bbox":[1014,508,164,130]}
+{"kind":"textbox","id":"sh/ydgfa9o7","slide":22,"text":"22","textPreview":"22","textChars":2,"textLines":1,"bbox":[1174,675,42,18]}
+{"kind":"image","id":"im/r6twr2p8","slide":22,"name":"","geometry":"roundRect","bbox":[600,100,550,380]}
+{"kind":"image","id":"im/wbmlgfud","slide":22,"name":"","geometry":"roundRect","bbox":[1021,515,150,116]}
+{"kind":"notes","id":"nt/0s0ifa","slide":22,"text":""}
+{"kind":"slide","id":"sl/ahk8li","slide":23,"title":"COMMUNITY IN ACTION","textShapes":4}
+{"kind":"shape","id":"sh/xofahczq","slide":23,"bbox":[64,60,192,28]}
+{"kind":"textbox","id":"sh/alor6xgf","slide":23,"text":"COMMUNITY IN ACTION","textPreview":"COMMUNITY IN ACTION","textChars":19,"textLines":1,"bbox":[76,65,168,18]}
+{"kind":"textbox","id":"sh/bmxsf2h0","slide":23,"text":"Coming together in July","textPreview":"Coming together in July","textChars":23,"textLines":1,"bbox":[64,112,460,54]}
+{"kind":"shape","id":"sh/ojm94ny9","slide":23,"bbox":[500,44,650,612]}
+{"kind":"shape","id":"sh/mh4r2dg3","slide":23,"bbox":[64,220,138,30]}
+{"kind":"textbox","id":"sh/nidsbiho","slide":23,"text":"JULY 26, 2026","textPreview":"JULY 26, 2026","textChars":13,"textLines":1,"bbox":[76,225,114,20]}
+{"kind":"textbox","id":"sh/8fqtgryd","slide":23,"text":"23","textPreview":"23","textChars":2,"textLines":1,"bbox":[1174,675,42,18]}
+{"kind":"image","id":"im/cjedc3u5","slide":23,"name":"","geometry":"roundRect","bbox":[512,56,626,588]}
+{"kind":"notes","id":"nt/ahk8li","slide":23,"text":""}
+{"kind":"slide","id":"sl/df86wn","slide":24,"title":"SECTION 02","textShapes":5}
+{"kind":"shape","id":"sh/dc7mdkn2","slide":24,"bbox":[64,66,138,30]}
+{"kind":"textbox","id":"sh/q9w3i54r","slide":24,"text":"SECTION 02","textPreview":"SECTION 02","textChars":10,"textLines":1,"bbox":[76,71,114,20]}
+{"kind":"textbox","id":"sh/ra54ba5c","slide":24,"text":"02","textPreview":"02","textChars":2,"textLines":1,"bbox":[56,158,260,150]}
+{"kind":"textbox","id":"sh/0zyl8fmt","slide":24,"text":"Strategic Partnership Programs 2026","textPreview":"Strategic Partnership Programs 2026","textChars":35,"textLines":1,"bbox":[64,306,920,118]}
+{"kind":"textbox","id":"sh/107mhkne","slide":24,"text":"For sponsors · educators · partners","textPreview":"For sponsors · educators · partners","textChars":35,"textLines":1,"bbox":[64,442,760,50]}
+{"kind":"shape","id":"sh/edg3654n","slide":24,"bbox":[64,530,106,0]}
+{"kind":"textbox","id":"sh/zyp4fa58","slide":24,"text":"24","textPreview":"24","textChars":2,"textLines":1,"bbox":[1174,675,42,18]}
+{"kind":"notes","id":"nt/df86wn","slide":24,"text":""}
+{"kind":"slide","id":"sl/7lzbl5","slide":25,"title":"SECTION 02","textShapes":4}
+{"kind":"shape","id":"sh/itwny1sb","slide":25,"bbox":[64,66,120,30]}
+{"kind":"textbox","id":"sh/5g769wr2","slide":25,"text":"SECTION 02","textPreview":"SECTION 02","textChars":10,"textLines":1,"bbox":[76,71,96,20]}
+{"kind":"textbox","id":"sh/4fe50bah","slide":25,"text":"For Sponsors","textPreview":"For Sponsors","textChars":12,"textLines":1,"bbox":[64,192,600,90]}
+{"kind":"textbox","id":"sh/ripob698","slide":25,"text":"Build visibility, capability and impact with the ICF Vietnam Chapter.","textPreview":"Build visibility, capability and impact with the ICF Vietnam Chapter.","textChars":69,"textLines":1,"bbox":[64,310,570,60]}
+{"kind":"shape","id":"sh/6hgn21sn","slide":25,"bbox":[64,430,94,0]}
+{"kind":"textbox","id":"sh/tk76dgry","slide":25,"text":"25","textPreview":"25","textChars":2,"textLines":1,"bbox":[1174,675,42,18]}
+{"kind":"notes","id":"nt/7lzbl5","slide":25,"text":""}
+{"kind":"slide","id":"sl/6g9hll","slide":26,"title":"FOR SPONSORS","textShapes":12}
+{"kind":"shape","id":"sh/srel8zmp","slide":26,"bbox":[64,58,138,28]}
+{"kind":"textbox","id":"sh/r65kfu54","slide":26,"text":"FOR SPONSORS","textPreview":"FOR SPONSORS","textChars":12,"textLines":1,"bbox":[76,63,114,18]}
+{"kind":"textbox","id":"sh/q5w3694j","slide":26,"text":"Annual Sponsor Packages","textPreview":"Annual Sponsor Packages","textChars":23,"textLines":1,"bbox":[64,105,620,70]}
+{"kind":"shape","id":"sh/1w72lon6","slide":26,"bbox":[64,186,74,0]}
+{"kind":"shape","id":"sh/0vylcjml","slide":26,"bbox":[64,192,350,308]}
+{"kind":"shape","id":"sh/fupkje50","slide":26,"bbox":[84,210,98,25]}
+{"kind":"textbox","id":"sh/etg3a94f","slide":26,"text":"PLATINUM","textPreview":"PLATINUM","textChars":8,"textLines":1,"bbox":[96,215,74,15]}
+{"kind":"textbox","id":"sh/p0rmpon2","slide":26,"text":"Strategic Partner","textPreview":"Strategic Partner","textChars":17,"textLines":1,"bbox":[84,253,310,42]}
+{"kind":"textbox","id":"sh/ozilgjmh","slide":26,"text":"100M VND / Year\nMaximum visibility, flagship presence and co-created impact.","textPreview":"100M VND / Year | Maximum visibility, flagship presence and co-created impact.","textChars":76,"textLines":2,"bbox":[84,300,310,182]}
+{"kind":"shape","id":"sh/2pwn658v","slide":26,"bbox":[464,192,350,308]}
+{"kind":"shape","id":"sh/3q5oza9g","slide":26,"bbox":[484,210,68,25]}
+{"kind":"textbox","id":"sh/4re58fq1","slide":26,"text":"GOLD","textPreview":"GOLD","textChars":4,"textLines":1,"bbox":[496,215,44,15]}
+{"kind":"textbox","id":"sh/psn610rm","slide":26,"text":"Development Partner","textPreview":"Development Partner","textChars":19,"textLines":1,"bbox":[484,253,310,42]}
+{"kind":"textbox","id":"sh/qtwna587","slide":26,"text":"42M VND / Year\nA strong platform for development, education and community presence.","textPreview":"42M VND / Year | A strong platform for development, education and community presence.","textChars":83,"textLines":2,"bbox":[484,300,310,182]}
+{"kind":"shape","id":"sh/repo3a9s","slide":26,"bbox":[864,192,350,308]}
+{"kind":"shape","id":"sh/cfy5cfqd","slide":26,"bbox":[884,210,76,25]}
+{"kind":"textbox","id":"sh/dg765kri","slide":26,"text":"SILVER","textPreview":"SILVER","textChars":6,"textLines":1,"bbox":[896,215,52,15]}
+{"kind":"textbox","id":"sh/6xcnyl8n","slide":26,"text":"Collaborative Partner","textPreview":"Collaborative Partner","textChars":21,"textLines":1,"bbox":[884,253,310,42]}
+{"kind":"textbox","id":"sh/7il4rq98","slide":26,"text":"26M VND / Year\nFocused visibility and participation across chapter events.","textPreview":"26M VND / Year | Focused visibility and participation across chapter events.","textChars":74,"textLines":2,"bbox":[884,300,310,182]}
+{"kind":"textbox","id":"sh/b2hkzmp0","slide":26,"text":"26","textPreview":"26","textChars":2,"textLines":1,"bbox":[1174,675,42,18]}
+{"kind":"notes","id":"nt/6g9hll","slide":26,"text":""}
+{"kind":"slide","id":"sl/lkpbcb","slide":27,"title":"FOR SPONSORS","textShapes":27}
+{"kind":"shape","id":"sh/grupsbih","slide":27,"bbox":[0,0,350,720]}
+{"kind":"shape","id":"sh/vql8z6hw","slide":27,"bbox":[64,58,138,28]}
+{"kind":"textbox","id":"sh/upc7ql0b","slide":27,"text":"FOR SPONSORS","textPreview":"FOR SPONSORS","textChars":12,"textLines":1,"bbox":[76,63,114,18]}
+{"kind":"textbox","id":"sh/to3qxgz6","slide":27,"text":"PLATINUM","textPreview":"PLATINUM","textChars":8,"textLines":1,"bbox":[64,145,276,74]}
+{"kind":"textbox","id":"sh/8nup4bil","slide":27,"text":"STRATEGIC PARTNER","textPreview":"STRATEGIC PARTNER","textChars":17,"textLines":1,"bbox":[64,228,276,55]}
+{"kind":"textbox","id":"sh/7m1ov6h0","slide":27,"text":"100M VND / YEAR","textPreview":"100M VND / YEAR","textChars":15,"textLines":1,"bbox":[64,310,252,54]}
+{"kind":"shape","id":"sh/61s7210f","slide":27,"bbox":[64,394,82,0]}
+{"kind":"shape","id":"sh/dknq90za","slide":27,"bbox":[64,426,242,42]}
+{"kind":"textbox","id":"sh/sjep0vip","slide":27,"text":"01 SELECTED SPONSOR / INDUSTRY","textPreview":"01 SELECTED SPONSOR / INDUSTRY","textChars":30,"textLines":1,"bbox":[76,431,218,32]}
+{"kind":"textbox","id":"sh/ad83ex0b","slide":27,"text":"Partnership with the ICF Vietnam Chapter","textPreview":"Partnership with the ICF Vietnam Chapter","textChars":40,"textLines":1,"bbox":[64,594,238,50]}
+{"kind":"shape","id":"sh/behkn21w","slide":27,"bbox":[402,58,208,28]}
+{"kind":"textbox","id":"sh/cfqlg7ih","slide":27,"text":"2026 PARTNERSHIP PROGRAM","textPreview":"2026 PARTNERSHIP PROGRAM","textChars":24,"textLines":1,"bbox":[414,63,184,18]}
+{"kind":"textbox","id":"sh/x0z2pcj2","slide":27,"text":"STRATEGIC PARTNER / PLATINUM","textPreview":"STRATEGIC PARTNER / PLATINUM","textChars":28,"textLines":1,"bbox":[402,105,680,52]}
+{"kind":"shape","id":"sh/298jax0f","slide":27,"bbox":[402,170,74,0]}
+{"kind":"shape","id":"sh/nahkji1k","slide":27,"bbox":[402,196,360,128]}
+{"kind":"shape","id":"sh/obqlcni5","slide":27,"bbox":[422,208,88,22]}
+{"kind":"textbox","id":"sh/pcz2lsjq","slide":27,"text":"SPEECH & PRESENCE","textPreview":"SPEECH & PRESENCE","textChars":17,"textLines":1,"bbox":[434,213,64,12]}
+{"kind":"textbox","id":"sh/m5s3mh0j","slide":27,"text":"SPEECH & PRESENCE","textPreview":"SPEECH & PRESENCE","textChars":17,"textLines":1,"bbox":[422,238,320,24]}
+{"kind":"textbox","id":"sh/761kvm14","slide":27,"text":"10-minute keynote at International Coaching Week; recognition in the annual sponsor list.","textPreview":"10-minute keynote at International Coaching Week; recognition in the annual sponsor list.","textChars":89,"textLines":1,"bbox":[422,266,320,48]}
+{"kind":"shape","id":"sh/jet8rud4","slide":27,"bbox":[786,196,360,128]}
+{"kind":"shape","id":"sh/idkrypcj","slide":27,"bbox":[806,208,88,22]}
+{"kind":"textbox","id":"sh/50bqtkva","slide":27,"text":"EXCLUSIVE COMMUNICATION","textPreview":"EXCLUSIVE COMMUNICATION","textChars":23,"textLines":1,"bbox":[818,213,64,12]}
+{"kind":"textbox","id":"sh/4z290fup","slide":27,"text":"EXCLUSIVE COMMUNICATION","textPreview":"EXCLUSIVE COMMUNICATION","textChars":23,"textLines":1,"bbox":[806,238,320,24]}
+{"kind":"textbox","id":"sh/r2t8vudg","slide":27,"text":"06 dedicated social media posts.","textPreview":"06 dedicated social media posts.","textChars":32,"textLines":1,"bbox":[806,266,320,48]}
+{"kind":"shape","id":"sh/61kr2pcv","slide":27,"bbox":[402,338,360,128]}
+{"kind":"shape","id":"sh/t4vqx4v6","slide":27,"bbox":[422,350,88,22]}
+{"kind":"textbox","id":"sh/s3294zul","slide":27,"text":"BRANDING PRIVILEGES","textPreview":"BRANDING PRIVILEGES","textChars":19,"textLines":1,"bbox":[434,355,64,12]}
+{"kind":"textbox","id":"sh/f6d8zedc","slide":27,"text":"BRANDING PRIVILEGES","textPreview":"BRANDING PRIVILEGES","textChars":19,"textLines":1,"bbox":[422,380,320,24]}
+{"kind":"textbox","id":"sh/e54r69cr","slide":27,"text":"Top header logo placement; research / white-paper collaboration; demo or display booth at all events.","textPreview":"Top header logo placement; research / white-paper collaboration; demo or display booth at all events.","textChars":101,"textLines":1,"bbox":[422,408,320,48]}
+{"kind":"shape","id":"sh/cb6pwja5","slide":27,"bbox":[786,338,360,128]}
+{"kind":"shape","id":"sh/dcfqp4rq","slide":27,"bbox":[806,350,88,22]}
+{"kind":"textbox","id":"sh/q947u9sz","slide":27,"text":"EDUCATIONAL PRIVILEGES","textPreview":"EDUCATIONAL PRIVILEGES","textChars":22,"textLines":1,"bbox":[818,355,64,12]}
+{"kind":"textbox","id":"sh/bad8ne9k","slide":27,"text":"EDUCATIONAL PRIVILEGES","textPreview":"EDUCATIONAL PRIVILEGES","textChars":22,"textLines":1,"bbox":[806,380,320,24]}
+{"kind":"textbox","id":"sh/o7mpszat","slide":27,"text":"02 private internal workshops on coaching culture and leadership capability.","textPreview":"02 private internal workshops on coaching culture and leadership capability.","textChars":76,"textLines":1,"bbox":[806,408,320,48]}
+{"kind":"shape","id":"sh/p8vql4re","slide":27,"bbox":[402,480,360,128]}
+{"kind":"shape","id":"sh/2547qps3","slide":27,"bbox":[422,492,88,22]}
+{"kind":"textbox","id":"sh/36d8ju98","slide":27,"text":"VIP ACCESS","textPreview":"VIP ACCESS","textChars":10,"textLines":1,"bbox":[434,497,64,12]}
+{"kind":"textbox","id":"sh/g32pozax","slide":27,"text":"VIP ACCESS","textPreview":"VIP ACCESS","textChars":10,"textLines":1,"bbox":[422,522,320,24]}
+{"kind":"textbox","id":"sh/14v6hkri","slide":27,"text":"05 invitations per event and 02 VIP tickets for special ICW content.","textPreview":"05 invitations per event and 02 VIP tickets for special ICW content.","textChars":68,"textLines":1,"bbox":[422,550,320,48]}
+{"kind":"shape","id":"sh/58rmp07a","slide":27,"bbox":[786,480,360,128]}
+{"kind":"shape","id":"sh/47i5wvqp","slide":27,"bbox":[806,492,88,22]}
+{"kind":"textbox","id":"sh/jm94nqp4","slide":27,"text":"PRO-BONO & CSR","textPreview":"PRO-BONO & CSR","textChars":14,"textLines":1,"bbox":[818,497,64,12]}
+{"kind":"textbox","id":"sh/il0nul8j","slide":27,"text":"PRO-BONO & CSR","textPreview":"PRO-BONO & CSR","textChars":14,"textLines":1,"bbox":[806,522,320,24]}
+{"kind":"textbox","id":"sh/tcbmt076","slide":27,"text":"Lead Partner role: co-design, implement, enhance and evaluate project impact.","textPreview":"Lead Partner role: co-design, implement, enhance and evaluate project impact.","textChars":77,"textLines":1,"bbox":[806,550,320,48]}
+{"kind":"textbox","id":"sh/sbi50vql","slide":27,"text":"27","textPreview":"27","textChars":2,"textLines":1,"bbox":[1174,675,42,18]}
+{"kind":"notes","id":"nt/lkpbcb","slide":27,"text":""}
+{"kind":"slide","id":"sl/eqi3mk","slide":28,"title":"FOR SPONSORS","textShapes":27}
+{"kind":"shape","id":"sh/grmhkn6h","slide":28,"bbox":[0,0,350,720]}
+{"kind":"shape","id":"sh/fqd0bipw","slide":28,"bbox":[64,58,138,28]}
+{"kind":"textbox","id":"sh/e54zidob","slide":28,"text":"FOR SPONSORS","textPreview":"FOR SPONSORS","textChars":12,"textLines":1,"bbox":[76,63,114,18]}
+{"kind":"textbox","id":"sh/pwfihs7y","slide":28,"text":"GOLD","textPreview":"GOLD","textChars":4,"textLines":1,"bbox":[64,145,276,74]}
+{"kind":"textbox","id":"sh/ov6hon6d","slide":28,"text":"DEVELOPMENT PARTNER","textPreview":"DEVELOPMENT PARTNER","textChars":19,"textLines":1,"bbox":[64,228,276,55]}
+{"kind":"textbox","id":"sh/3ux0fip8","slide":28,"text":"42M VND / YEAR","textPreview":"42M VND / YEAR","textChars":14,"textLines":1,"bbox":[64,310,252,54]}
+{"kind":"shape","id":"sh/2tozmdon","slide":28,"bbox":[64,394,82,0]}
+{"kind":"shape","id":"sh/50vi5o7u","slide":28,"bbox":[64,426,242,42]}
+{"kind":"textbox","id":"sh/4z2hc369","slide":28,"text":"03 SELECTED SPONSORS / INDUSTRY","textPreview":"03 SELECTED SPONSORS / INDUSTRY","textChars":31,"textLines":1,"bbox":[76,431,218,32]}
+{"kind":"textbox","id":"sh/ytgz25s7","slide":28,"text":"Partnership with the ICF Vietnam Chapter","textPreview":"Partnership with the ICF Vietnam Chapter","textChars":40,"textLines":1,"bbox":[64,594,238,50]}
+{"kind":"shape","id":"sh/zup0va9c","slide":28,"bbox":[402,58,208,28]}
+{"kind":"textbox","id":"sh/kvy14fax","slide":28,"text":"2026 PARTNERSHIP PROGRAM","textPreview":"2026 PARTNERSHIP PROGRAM","textChars":24,"textLines":1,"bbox":[414,63,184,18]}
+{"kind":"textbox","id":"sh/lw7ixkri","slide":28,"text":"DEVELOPMENT PARTNER / GOLD","textPreview":"DEVELOPMENT PARTNER / GOLD","textChars":26,"textLines":1,"bbox":[402,105,680,52]}
+{"kind":"shape","id":"sh/mx0j65s3","slide":28,"bbox":[402,170,74,0]}
+{"kind":"shape","id":"sh/7y90za9o","slide":28,"bbox":[402,196,360,128]}
+{"kind":"shape","id":"sh/8zi18fa9","slide":28,"bbox":[422,208,88,22]}
+{"kind":"textbox","id":"sh/90ri1kru","slide":28,"text":"SPEECH & PRESENCE","textPreview":"SPEECH & PRESENCE","textChars":17,"textLines":1,"bbox":[434,213,64,12]}
+{"kind":"textbox","id":"sh/u10jap8z","slide":28,"text":"SPEECH & PRESENCE","textPreview":"SPEECH & PRESENCE","textChars":17,"textLines":1,"bbox":[422,238,320,24]}
+{"kind":"textbox","id":"sh/vm903u9k","slide":28,"text":"5-minute introduction at 02 webinars; recognition in the annual sponsor list.","textPreview":"5-minute introduction at 02 webinars; recognition in the annual sponsor list.","textChars":77,"textLines":1,"bbox":[422,266,320,48]}
+{"kind":"shape","id":"sh/rqt0rups","slide":28,"bbox":[786,196,360,128]}
+{"kind":"shape","id":"sh/6pkzipo7","slide":28,"bbox":[806,208,88,22]}
+{"kind":"textbox","id":"sh/tsbit47y","slide":28,"text":"EXCLUSIVE COMMUNICATION","textPreview":"EXCLUSIVE COMMUNICATION","textChars":23,"textLines":1,"bbox":[818,213,64,12]}
+{"kind":"textbox","id":"sh/sr2hkz6d","slide":28,"text":"EXCLUSIVE COMMUNICATION","textPreview":"EXCLUSIVE COMMUNICATION","textChars":23,"textLines":1,"bbox":[806,238,320,24]}
+{"kind":"textbox","id":"sh/j29gnapw","slide":28,"text":"03 dedicated social media posts.","textPreview":"03 dedicated social media posts.","textChars":32,"textLines":1,"bbox":[806,266,320,48]}
+{"kind":"shape","id":"sh/i10zepob","slide":28,"bbox":[402,338,360,128]}
+{"kind":"shape","id":"sh/5obipk7m","slide":28,"bbox":[422,350,88,22]}
+{"kind":"textbox","id":"sh/4nihgf61","slide":28,"text":"BRANDING PRIVILEGES","textPreview":"BRANDING PRIVILEGES","textChars":19,"textLines":1,"bbox":[434,355,64,12]}
+{"kind":"textbox","id":"sh/vy9gjapk","slide":28,"text":"BRANDING PRIVILEGES","textPreview":"BRANDING PRIVILEGES","textChars":19,"textLines":1,"bbox":[422,380,320,24]}
+{"kind":"textbox","id":"sh/ux0za5oz","slide":28,"text":"Mid-tier logo placement; demo or display booth at all events.","textPreview":"Mid-tier logo placement; demo or display booth at all events.","textChars":61,"textLines":1,"bbox":[422,408,320,48]}
+{"kind":"shape","id":"sh/k3exkbmx","slide":28,"bbox":[786,338,360,128]}
+{"kind":"shape","id":"sh/l4netgni","slide":28,"bbox":[806,350,88,22]}
+{"kind":"textbox","id":"sh/y1wfi14r","slide":28,"text":"EDUCATIONAL PRIVILEGES","textPreview":"EDUCATIONAL PRIVILEGES","textChars":22,"textLines":1,"bbox":[818,355,64,12]}
+{"kind":"textbox","id":"sh/z25wr65c","slide":28,"text":"EDUCATIONAL PRIVILEGES","textPreview":"EDUCATIONAL PRIVILEGES","textChars":22,"textLines":1,"bbox":[806,380,320,24]}
+{"kind":"textbox","id":"sh/87yxobmt","slide":28,"text":"01 private internal workshop.","textPreview":"01 private internal workshop.","textChars":29,"textLines":1,"bbox":[806,408,320,48]}
+{"kind":"shape","id":"sh/987exgne","slide":28,"bbox":[402,480,360,128]}
+{"kind":"shape","id":"sh/m5gfml43","slide":28,"bbox":[422,492,88,22]}
+{"kind":"textbox","id":"sh/76pwvq5o","slide":28,"text":"VIP ACCESS","textPreview":"VIP ACCESS","textChars":10,"textLines":1,"bbox":[434,497,64,12]}
+{"kind":"textbox","id":"sh/obudcrmp","slide":28,"text":"VIP ACCESS","textPreview":"VIP ACCESS","textChars":10,"textLines":1,"bbox":[422,522,320,24]}
+{"kind":"textbox","id":"sh/pc3elwna","slide":28,"text":"02 invitations per event and 01 VIP ticket for special ICW content.","textPreview":"02 invitations per event and 01 VIP ticket for special ICW content.","textChars":67,"textLines":1,"bbox":[422,550,320,48]}
+{"kind":"shape","id":"sh/hsf6lwne","slide":28,"bbox":[786,480,360,128]}
+{"kind":"shape","id":"sh/gr65srm9","slide":28,"bbox":[806,492,88,22]}
+{"kind":"textbox","id":"sh/vqxojm5o","slide":28,"text":"PRO-BONO & CSR","textPreview":"PRO-BONO & CSR","textChars":14,"textLines":1,"bbox":[818,497,64,12]}
+{"kind":"textbox","id":"sh/u5onqh43","slide":28,"text":"PRO-BONO & CSR","textPreview":"PRO-BONO & CSR","textChars":14,"textLines":1,"bbox":[806,522,320,24]}
+{"kind":"textbox","id":"sh/t4f6hcni","slide":28,"text":"Flexible collaboration scope as defined per project.","textPreview":"Flexible collaboration scope as defined per project.","textChars":52,"textLines":1,"bbox":[806,550,320,48]}
+{"kind":"textbox","id":"sh/8365o7mx","slide":28,"text":"28","textPreview":"28","textChars":2,"textLines":1,"bbox":[1174,675,42,18]}
+{"kind":"notes","id":"nt/eqi3mk","slide":28,"text":""}
+{"kind":"slide","id":"sl/r2nscq","slide":29,"title":"FOR SPONSORS","textShapes":27}
+{"kind":"shape","id":"sh/bq9g7yl0","slide":29,"bbox":[0,0,350,720]}
+{"kind":"shape","id":"sh/wrihgjml","slide":29,"bbox":[64,58,138,28]}
+{"kind":"textbox","id":"sh/xsby9o36","slide":29,"text":"FOR SPONSORS","textPreview":"FOR SPONSORS","textChars":12,"textLines":1,"bbox":[76,63,114,18]}
+{"kind":"textbox","id":"sh/itkzit4r","slide":29,"text":"SILVER","textPreview":"SILVER","textChars":6,"textLines":1,"bbox":[64,145,276,74]}
+{"kind":"textbox","id":"sh/jutgbylc","slide":29,"text":"COLLABORATIVE PARTNER","textPreview":"COLLABORATIVE PARTNER","textChars":21,"textLines":1,"bbox":[64,228,276,55]}
+{"kind":"textbox","id":"sh/kv2hk3mx","slide":29,"text":"26M VND / YEAR","textPreview":"26M VND / YEAR","textChars":14,"textLines":1,"bbox":[64,310,252,54]}
+{"kind":"shape","id":"sh/5wbid832","slide":29,"bbox":[64,394,82,0]}
+{"kind":"shape","id":"sh/exgz6947","slide":29,"bbox":[64,426,242,42]}
+{"kind":"textbox","id":"sh/zypgzu5s","slide":29,"text":"OPEN PARTNERSHIP","textPreview":"OPEN PARTNERSHIP","textChars":16,"textLines":1,"bbox":[76,431,218,32]}
+{"kind":"textbox","id":"sh/byxcnipo","slide":29,"text":"Partnership with the ICF Vietnam Chapter","textPreview":"Partnership with the ICF Vietnam Chapter","textChars":40,"textLines":1,"bbox":[64,594,238,50]}
+{"kind":"shape","id":"sh/qxovux83","slide":29,"bbox":[402,58,208,28]}
+{"kind":"textbox","id":"sh/d0fups7u","slide":29,"text":"2026 PARTNERSHIP PROGRAM","textPreview":"2026 PARTNERSHIP PROGRAM","textChars":24,"textLines":1,"bbox":[414,63,184,18]}
+{"kind":"textbox","id":"sh/cz6dwnq9","slide":29,"text":"COLLABORATIVE PARTNER / SILVER","textPreview":"COLLABORATIVE PARTNER / SILVER","textChars":30,"textLines":1,"bbox":[402,105,680,52]}
+{"kind":"shape","id":"sh/3udcjips","slide":29,"bbox":[402,170,74,0]}
+{"kind":"shape","id":"sh/294vqd87","slide":29,"bbox":[402,196,360,128]}
+{"kind":"shape","id":"sh/pwfuls7y","slide":29,"bbox":[422,208,88,22]}
+{"kind":"textbox","id":"sh/ov6dsnqd","slide":29,"text":"SPEECH & PRESENCE","textPreview":"SPEECH & PRESENCE","textChars":17,"textLines":1,"bbox":[434,213,64,12]}
+{"kind":"textbox","id":"sh/f6dcfy9g","slide":29,"text":"SPEECH & PRESENCE","textPreview":"SPEECH & PRESENCE","textChars":17,"textLines":1,"bbox":[422,238,320,24]}
+{"kind":"textbox","id":"sh/e54vmd8b","slide":29,"text":"Unlimited participation; recognition in the annual sponsor list.","textPreview":"Unlimited participation; recognition in the annual sponsor list.","textChars":64,"textLines":1,"bbox":[422,266,320,48]}
+{"kind":"shape","id":"sh/i1kvyts3","slide":29,"bbox":[786,196,360,128]}
+{"kind":"shape","id":"sh/j2twryto","slide":29,"bbox":[806,208,88,22]}
+{"kind":"textbox","id":"sh/432d03a9","slide":29,"text":"EXCLUSIVE COMMUNICATION","textPreview":"EXCLUSIVE COMMUNICATION","textChars":23,"textLines":1,"bbox":[818,213,64,12]}
+{"kind":"textbox","id":"sh/54vet8be","slide":29,"text":"EXCLUSIVE COMMUNICATION","textPreview":"EXCLUSIVE COMMUNICATION","textChars":23,"textLines":1,"bbox":[806,238,320,24]}
+{"kind":"textbox","id":"sh/654v2dsz","slide":29,"text":"01 dedicated social media post.","textPreview":"01 dedicated social media post.","textChars":31,"textLines":1,"bbox":[806,266,320,48]}
+{"kind":"shape","id":"sh/r6dwvitk","slide":29,"bbox":[402,338,360,128]}
+{"kind":"shape","id":"sh/s7md4na5","slide":29,"bbox":[422,350,88,22]}
+{"kind":"textbox","id":"sh/tsvexsbq","slide":29,"text":"BRANDING PRIVILEGES","textPreview":"BRANDING PRIVILEGES","textChars":19,"textLines":1,"bbox":[434,355,64,12]}
+{"kind":"textbox","id":"sh/et4v6dsb","slide":29,"text":"BRANDING PRIVILEGES","textPreview":"BRANDING PRIVILEGES","textChars":19,"textLines":1,"bbox":[422,380,320,24]}
+{"kind":"textbox","id":"sh/fudwzitw","slide":29,"text":"Footer logo placement; demo or display booth at all events.","textPreview":"Footer logo placement; demo or display booth at all events.","textChars":59,"textLines":1,"bbox":[422,408,320,48]}
+{"kind":"shape","id":"sh/p0jqlgza","slide":29,"bbox":[786,338,360,128]}
+{"kind":"shape","id":"sh/ozqpcbyp","slide":29,"bbox":[806,350,88,22]}
+{"kind":"textbox","id":"sh/nyh8j6h4","slide":29,"text":"EDUCATIONAL PRIVILEGES","textPreview":"EDUCATIONAL PRIVILEGES","textChars":22,"textLines":1,"bbox":[818,355,64,12]}
+{"kind":"textbox","id":"sh/2x87a1gj","slide":29,"text":"EDUCATIONAL PRIVILEGES","textPreview":"EDUCATIONAL PRIVILEGES","textChars":22,"textLines":1,"bbox":[806,380,320,24]}
+{"kind":"textbox","id":"sh/x4jqp0z6","slide":29,"text":"N/A","textPreview":"N/A","textChars":3,"textLines":1,"bbox":[806,408,320,48]}
+{"kind":"shape","id":"sh/c3apgvyl","slide":29,"bbox":[402,480,360,128]}
+{"kind":"shape","id":"sh/b218nqh0","slide":29,"bbox":[422,492,88,22]}
+{"kind":"textbox","id":"sh/a1s7elgf","slide":29,"text":"VIP ACCESS","textPreview":"VIP ACCESS","textChars":10,"textLines":1,"bbox":[434,497,64,12]}
+{"kind":"textbox","id":"sh/l83qt0z2","slide":29,"text":"VIP ACCESS","textPreview":"VIP ACCESS","textChars":10,"textLines":1,"bbox":[422,522,320,24]}
+{"kind":"textbox","id":"sh/k7apkvyx","slide":29,"text":"02 invitations per event.","textPreview":"02 invitations per event.","textChars":25,"textLines":1,"bbox":[422,550,320,48]}
+{"kind":"shape","id":"sh/gnetczi5","slide":29,"bbox":[786,480,360,128]}
+{"kind":"shape","id":"sh/honal4ja","slide":29,"bbox":[806,492,88,22]}
+{"kind":"textbox","id":"sh/u1wbap0z","slide":29,"text":"PRO-BONO & CSR","textPreview":"PRO-BONO & CSR","textChars":14,"textLines":1,"bbox":[818,497,64,12]}
+{"kind":"textbox","id":"sh/v25sju1k","slide":29,"text":"PRO-BONO & CSR","textPreview":"PRO-BONO & CSR","textChars":14,"textLines":1,"bbox":[806,522,320,24]}
+{"kind":"textbox","id":"sh/8zet8zit","slide":29,"text":"N/A","textPreview":"N/A","textChars":3,"textLines":1,"bbox":[806,550,320,48]}
+{"kind":"textbox","id":"sh/t0nahkje","slide":29,"text":"29","textPreview":"29","textChars":2,"textLines":1,"bbox":[1174,675,42,18]}
+{"kind":"notes","id":"nt/r2nscq","slide":29,"text":""}
+{"kind":"slide","id":"sl/mp66my","slide":30,"title":"FOR SPONSORS","textShapes":22}
+{"kind":"shape","id":"sh/7utkfqdk","slide":30,"bbox":[64,58,138,28]}
+{"kind":"textbox","id":"sh/8v2love5","slide":30,"text":"FOR SPONSORS","textPreview":"FOR SPONSORS","textChars":12,"textLines":1,"bbox":[76,63,114,18]}
+{"kind":"textbox","id":"sh/twb2h0vq","slide":30,"text":"In-kind Partnership","textPreview":"In-kind Partnership","textChars":19,"textLines":1,"bbox":[64,105,610,70]}
+{"kind":"shape","id":"sh/ypk3ilw3","slide":30,"bbox":[64,186,74,0]}
+{"kind":"textbox","id":"sh/jqtkbqdo","slide":30,"text":"Flexible ways to contribute beyond annual packages.","textPreview":"Flexible ways to contribute beyond annual packages.","textChars":51,"textLines":1,"bbox":[64,182,520,34]}
+{"kind":"shape","id":"sh/kr2lkvet","slide":30,"bbox":[64,244,350,138]}
+{"kind":"shape","id":"sh/lsb2d0ve","slide":30,"bbox":[84,262,102,25]}
+{"kind":"textbox","id":"sh/il43u5c7","slide":30,"text":"RECIPROCAL","textPreview":"RECIPROCAL","textChars":10,"textLines":1,"bbox":[96,267,78,15]}
+{"kind":"textbox","id":"sh/3md4nads","slide":30,"text":"RECIPROCAL","textPreview":"RECIPROCAL","textChars":10,"textLines":1,"bbox":[84,305,310,42]}
+{"kind":"textbox","id":"sh/valwf2tw","slide":30,"text":"Exchange value through agreed visibility, expertise, resources or access.","textPreview":"Exchange value through agreed visibility, expertise, resources or access.","textChars":73,"textLines":1,"bbox":[84,352,310,12]}
+{"kind":"shape","id":"sh/a9cfmhcr","slide":30,"bbox":[448,244,350,138]}
+{"kind":"shape","id":"sh/hc3ehcb2","slide":30,"bbox":[468,262,102,25]}
+{"kind":"textbox","id":"sh/wbuxo7uh","slide":30,"text":"A LA CARTE","textPreview":"A LA CARTE","textChars":10,"textLines":1,"bbox":[480,267,78,15]}
+{"kind":"textbox","id":"sh/jelwjmt8","slide":30,"text":"A LA CARTE","textPreview":"A LA CARTE","textChars":10,"textLines":1,"bbox":[468,305,310,42]}
+{"kind":"textbox","id":"sh/idcfqhcn","slide":30,"text":"Choose only the presence, branding or education elements that fit your goals.","textPreview":"Choose only the presence, branding or education elements that fit your goals.","textChars":77,"textLines":1,"bbox":[468,352,310,12]}
+{"kind":"shape","id":"sh/503elwbe","slide":30,"bbox":[832,244,350,138]}
+{"kind":"shape","id":"sh/4zuxsrut","slide":30,"bbox":[852,262,166,25]}
+{"kind":"textbox","id":"sh/r25wnmt4","slide":30,"text":"PRESENCE AT EVENTS","textPreview":"PRESENCE AT EVENTS","textChars":18,"textLines":1,"bbox":[864,267,142,15]}
+{"kind":"textbox","id":"sh/61wfu1cj","slide":30,"text":"PRESENCE AT EVENTS","textPreview":"PRESENCE AT EVENTS","textChars":18,"textLines":1,"bbox":[852,305,310,42]}
+{"kind":"textbox","id":"sh/290r2p03","slide":30,"text":"Participation, speaking opportunities, booths and special content.","textPreview":"Participation, speaking opportunities, booths and special content.","textChars":66,"textLines":1,"bbox":[852,352,310,12]}
+{"kind":"shape","id":"sh/na98buho","slide":30,"bbox":[64,410,350,138]}
+{"kind":"shape","id":"sh/obi94zi9","slide":30,"bbox":[84,428,86,25]}
+{"kind":"textbox","id":"sh/pcrqd4zu","slide":30,"text":"BRANDING","textPreview":"BRANDING","textChars":8,"textLines":1,"bbox":[96,433,62,15]}
+{"kind":"textbox","id":"sh/e5g7yp07","slide":30,"text":"BRANDING","textPreview":"BRANDING","textChars":8,"textLines":1,"bbox":[84,471,310,42]}
+{"kind":"textbox","id":"sh/f6987ahs","slide":30,"text":"Logo placement, co-branded assets and event visibility.","textPreview":"Logo placement, co-branded assets and event visibility.","textChars":55,"textLines":1,"bbox":[84,518,310,12]}
+{"kind":"shape","id":"sh/07ip0fid","slide":30,"bbox":[448,410,350,138]}
+{"kind":"shape","id":"sh/18rq9kzi","slide":30,"bbox":[468,428,94,25]}
+{"kind":"textbox","id":"sh/y1kra90b","slide":30,"text":"EDUCATION","textPreview":"EDUCATION","textChars":9,"textLines":1,"bbox":[480,433,70,15]}
+{"kind":"textbox","id":"sh/z2t8jehw","slide":30,"text":"EDUCATION","textPreview":"EDUCATION","textChars":9,"textLines":1,"bbox":[468,471,310,42]}
+{"kind":"textbox","id":"sh/9wfu98jy","slide":30,"text":"Workshops, coaching culture and leadership capability development.","textPreview":"Workshops, coaching culture and leadership capability development.","textChars":66,"textLines":1,"bbox":[468,518,310,12]}
+{"kind":"shape","id":"sh/8vmt032d","slide":30,"bbox":[832,410,350,138]}
+{"kind":"shape","id":"sh/7uds7y18","slide":30,"bbox":[852,428,110,25]}
+{"kind":"textbox","id":"sh/m94bytkn","slide":30,"text":"SOCIAL POST","textPreview":"SOCIAL POST","textChars":11,"textLines":1,"bbox":[864,433,86,15]}
+{"kind":"textbox","id":"sh/l8va58j2","slide":30,"text":"SOCIAL POST","textPreview":"SOCIAL POST","textChars":11,"textLines":1,"bbox":[852,471,310,42]}
+{"kind":"textbox","id":"sh/k7mtw32h","slide":30,"text":"Dedicated chapter communications and community reach.","textPreview":"Dedicated chapter communications and community reach.","textChars":53,"textLines":1,"bbox":[852,518,310,12]}
+{"kind":"textbox","id":"sh/z6ds3y1w","slide":30,"text":"30","textPreview":"30","textChars":2,"textLines":1,"bbox":[1174,675,42,18]}
+{"kind":"notes","id":"nt/mp66my","slide":30,"text":""}
+{"kind":"slide","id":"sl/eu8tnj","slide":31,"title":"SECTION 02","textShapes":4}
+{"kind":"shape","id":"sh/wru9g3el","slide":31,"bbox":[64,66,120,30]}
+{"kind":"textbox","id":"sh/bqls7yx0","slide":31,"text":"SECTION 02","textPreview":"SECTION 02","textChars":10,"textLines":1,"bbox":[76,71,96,20]}
+{"kind":"textbox","id":"sh/apcredwf","slide":31,"text":"For Educators","textPreview":"For Educators","textChars":13,"textLines":1,"bbox":[64,192,680,90]}
+{"kind":"textbox","id":"sh/9oja58fu","slide":31,"text":"Stay ahead of standards. Grow the next generation of coaches.","textPreview":"Stay ahead of standards. Grow the next generation of coaches.","textChars":61,"textLines":1,"bbox":[64,310,590,60]}
+{"kind":"shape","id":"sh/ona9c3e9","slide":31,"bbox":[64,430,94,0]}
+{"kind":"textbox","id":"sh/nm1s3yxo","slide":31,"text":"31","textPreview":"31","textChars":2,"textLines":1,"bbox":[1174,675,42,18]}
+{"kind":"notes","id":"nt/eu8tnj","slide":31,"text":""}
+{"kind":"slide","id":"sl/dcg15i","slide":32,"title":"FOR EDUCATORS","textShapes":11}
+{"kind":"shape","id":"sh/r6poz2hc","slide":32,"bbox":[64,58,138,28]}
+{"kind":"textbox","id":"sh/c7y5s7yx","slide":32,"text":"FOR EDUCATORS","textPreview":"FOR EDUCATORS","textChars":13,"textLines":1,"bbox":[76,63,114,18]}
+{"kind":"textbox","id":"sh/d8761cz2","slide":32,"text":"The Chapter serves as your vital bridge","textPreview":"The Chapter serves as your vital bridge","textChars":39,"textLines":1,"bbox":[64,105,720,70]}
+{"kind":"shape","id":"sh/21wnmx0f","slide":32,"bbox":[64,186,74,0]}
+{"kind":"shape","id":"sh/32pov2h0","slide":32,"bbox":[64,200,139.2,28]}
+{"kind":"textbox","id":"sh/43y5onyl","slide":32,"text":"EARLIEST UPDATES","textPreview":"EARLIEST UPDATES","textChars":16,"textLines":1,"bbox":[76,205,115.2,18]}
+{"kind":"textbox","id":"sh/p476xsz6","slide":32,"text":"Provide the earliest updates on Accreditation standard changes.","textPreview":"Provide the earliest updates on Accreditation standard changes.","textChars":63,"textLines":1,"bbox":[64,238,630,55]}
+{"kind":"shape","id":"sh/mx0nyhgz","slide":32,"bbox":[64,306,160.8,28]}
+{"kind":"textbox","id":"sh/ny9o7mhk","slide":32,"text":"PROACTIVE READINESS","textPreview":"PROACTIVE READINESS","textChars":19,"textLines":1,"bbox":[76,311,136.8,18]}
+{"kind":"textbox","id":"sh/bapgfmtk","slide":32,"text":"Enable your organization to proactively enhance faculty capacity and refine your training curricula.","textPreview":"Enable your organization to proactively enhance faculty capacity and refine your training curricula.","textChars":100,"textLines":1,"bbox":[64,344,630,55]}
+{"kind":"shape","id":"sh/a9gz61sz","slide":32,"bbox":[64,412,139.2,28]}
+{"kind":"textbox","id":"sh/xc7ihwbq","slide":32,"text":"LONG-TERM GROWTH","textPreview":"LONG-TERM GROWTH","textChars":16,"textLines":1,"bbox":[76,417,115.2,18]}
+{"kind":"textbox","id":"sh/cbyh8ra5","slide":32,"text":"This partnership supports the long-term growth of your Organization and the coaching industry in Vietnam.","textPreview":"This partnership supports the long-term growth of your Organization and the coaching industry in Vietnam.","textChars":105,"textLines":1,"bbox":[64,450,630,55]}
+{"kind":"shape","id":"sh/ze90j6tw","slide":32,"bbox":[790,160,426,414]}
+{"kind":"shape","id":"sh/yd0za1sb","slide":32,"bbox":[828,198,126,27]}
+{"kind":"textbox","id":"sh/l0rilgrm","slide":32,"text":"PARTNER VALUE","textPreview":"PARTNER VALUE","textChars":13,"textLines":1,"bbox":[840,203,102,17]}
+{"kind":"textbox","id":"sh/kzihcbah","slide":32,"text":"Navigating Global Standards","textPreview":"Navigating Global Standards","textChars":27,"textLines":1,"bbox":[828,252,320,96]}
+{"kind":"shape","id":"sh/7290n69s","slide":32,"bbox":[828,380,76,0]}
+{"kind":"textbox","id":"sh/i9ob29gr","slide":32,"text":"32","textPreview":"32","textChars":2,"textLines":1,"bbox":[1174,675,42,18]}
+{"kind":"image","id":"im/h8ni1k72","slide":32,"name":"","geometry":"roundRect","bbox":[880,412,244,126]}
+{"kind":"notes","id":"nt/dcg15i","slide":32,"text":""}
+{"kind":"slide","id":"sl/lc4w55","slide":33,"title":"FOR EDUCATORS","textShapes":11}
+{"kind":"shape","id":"sh/ora50f21","slide":33,"bbox":[64,58,138,28]}
+{"kind":"textbox","id":"sh/nq1ora1g","slide":33,"text":"FOR EDUCATORS","textPreview":"FOR EDUCATORS","textChars":13,"textLines":1,"bbox":[76,63,114,18]}
+{"kind":"textbox","id":"sh/mpsny5kv","slide":33,"text":"Credentialing Accelerator","textPreview":"Credentialing Accelerator","textChars":25,"textLines":1,"bbox":[64,105,720,70]}
+{"kind":"shape","id":"sh/1ojmp03a","slide":33,"bbox":[64,186,74,0]}
+{"kind":"shape","id":"sh/0na5wv2p","slide":33,"bbox":[64,200,175.2,28]}
+{"kind":"textbox","id":"sh/zm14nql4","slide":33,"text":"APPLICATION READINESS","textPreview":"APPLICATION READINESS","textChars":21,"textLines":1,"bbox":[76,205,151.2,18]}
+{"kind":"textbox","id":"sh/e1snulkz","slide":33,"text":"Stay informed on qualification updates and credentialing pathways.","textPreview":"Stay informed on qualification updates and credentialing pathways.","textChars":66,"textLines":1,"bbox":[64,238,630,55]}
+{"kind":"shape","id":"sh/d0zmlg3e","slide":33,"bbox":[64,306,146.4,28]}
+{"kind":"textbox","id":"sh/czq5sv2t","slide":33,"text":"CAPACITY BUILDING","textPreview":"CAPACITY BUILDING","textChars":17,"textLines":1,"bbox":[76,311,122.4,18]}
+{"kind":"textbox","id":"sh/uh4v6d8f","slide":33,"text":"Equip faculty and learners with a clear, practical route to credentialing excellence.","textPreview":"Equip faculty and learners with a clear, practical route to credentialing excellence.","textChars":85,"textLines":1,"bbox":[64,344,630,55]}
+{"kind":"shape","id":"sh/fidwzip0","slide":33,"bbox":[64,412,117.6,28]}
+{"kind":"textbox","id":"sh/gjmd8nql","slide":33,"text":"PARTNER VALUE","textPreview":"PARTNER VALUE","textChars":13,"textLines":1,"bbox":[76,417,93.6,18]}
+{"kind":"textbox","id":"sh/hkve1s76","slide":33,"text":"Turn global standards into confident, locally relevant education experiences.","textPreview":"Turn global standards into confident, locally relevant education experiences.","textChars":77,"textLines":1,"bbox":[64,450,630,55]}
+{"kind":"shape","id":"sh/6dkv2d8j","slide":33,"bbox":[790,160,426,414]}
+{"kind":"shape","id":"sh/7etcvyp4","slide":33,"bbox":[828,198,126,27]}
+{"kind":"textbox","id":"sh/sfmd43qp","slide":33,"text":"PARTNER VALUE","textPreview":"PARTNER VALUE","textChars":13,"textLines":1,"bbox":[840,203,102,17]}
+{"kind":"textbox","id":"sh/tgvux87u","slide":33,"text":"Credentialing Excellence","textPreview":"Credentialing Excellence","textChars":24,"textLines":1,"bbox":[828,252,320,96]}
+{"kind":"shape","id":"sh/ypkvyt87","slide":33,"bbox":[828,380,76,0]}
+{"kind":"textbox","id":"sh/nupszupk","slide":33,"text":"33","textPreview":"33","textChars":2,"textLines":1,"bbox":[1174,675,42,18]}
+{"kind":"image","id":"im/svmdcf2l","slide":33,"name":"","geometry":"roundRect","bbox":[880,412,244,126]}
+{"kind":"notes","id":"nt/lc4w55","slide":33,"text":""}
+{"kind":"slide","id":"sl/4ez017","slide":34,"title":"FOR EDUCATORS","textShapes":11}
+{"kind":"shape","id":"sh/9gjyhgfe","slide":34,"bbox":[64,58,138,28]}
+{"kind":"textbox","id":"sh/md8fm1gn","slide":34,"text":"FOR EDUCATORS","textPreview":"FOR EDUCATORS","textChars":13,"textLines":1,"bbox":[76,63,114,18]}
+{"kind":"textbox","id":"sh/ne1gf6x8","slide":34,"text":"Exclusive Privileges","textPreview":"Exclusive Privileges","textChars":20,"textLines":1,"bbox":[64,105,720,70]}
+{"kind":"shape","id":"sh/wjaxsvyp","slide":34,"bbox":[64,186,74,0]}
+{"kind":"shape","id":"sh/xkjyl0fa","slide":34,"bbox":[64,200,96,28]}
+{"kind":"textbox","id":"sh/ahsfqlgz","slide":34,"text":"MEMBERSHIP","textPreview":"MEMBERSHIP","textChars":10,"textLines":1,"bbox":[76,205,72,18]}
+{"kind":"textbox","id":"sh/vi1gjqxk","slide":34,"text":"10% membership discount for your organization.","textPreview":"10% membership discount for your organization.","textChars":46,"textLines":1,"bbox":[64,238,630,55]}
+{"kind":"shape","id":"sh/k7uxwvy1","slide":34,"bbox":[64,306,139.2,28]}
+{"kind":"textbox","id":"sh/583yp0fm","slide":34,"text":"LEARNING CREDITS","textPreview":"LEARNING CREDITS","textChars":16,"textLines":1,"bbox":[76,311,115.2,18]}
+{"kind":"textbox","id":"sh/54nuh8jm","slide":34,"text":"CCE accumulation opportunities through chapter activities.","textPreview":"CCE accumulation opportunities through chapter activities.","textChars":58,"textLines":1,"bbox":[64,344,630,55]}
+{"kind":"shape","id":"sh/43et8321","slide":34,"bbox":[64,412,117.6,28]}
+{"kind":"textbox","id":"sh/325cfilw","slide":34,"text":"PRACTICUM HUB","textPreview":"PRACTICUM HUB","textChars":13,"textLines":1,"bbox":[76,417,93.6,18]}
+{"kind":"textbox","id":"sh/i1wb6dkb","slide":34,"text":"Pro-bono practicum hub connecting learning with meaningful community impact.","textPreview":"Pro-bono practicum hub connecting learning with meaningful community impact.","textChars":76,"textLines":1,"bbox":[64,450,630,55]}
+{"kind":"shape","id":"sh/d87ulsjy","slide":34,"bbox":[790,160,426,414]}
+{"kind":"shape","id":"sh/s7etcn2d","slide":34,"bbox":[828,198,126,27]}
+{"kind":"textbox","id":"sh/r65cji1s","slide":34,"text":"PARTNER VALUE","textPreview":"PARTNER VALUE","textChars":13,"textLines":1,"bbox":[840,203,102,17]}
+{"kind":"textbox","id":"sh/q5wbadk7","slide":34,"text":"Synergizing Value & Continuous Development","textPreview":"Synergizing Value & Continuous Development","textChars":42,"textLines":1,"bbox":[828,252,320,96]}
+{"kind":"shape","id":"sh/tc3a9o3e","slide":34,"bbox":[828,380,76,0]}
+{"kind":"textbox","id":"sh/kfytg3ap","slide":34,"text":"34","textPreview":"34","textChars":2,"textLines":1,"bbox":[1174,675,42,18]}
+{"kind":"image","id":"im/ryts7ap4","slide":34,"name":"","geometry":"roundRect","bbox":[880,412,244,126]}
+{"kind":"notes","id":"nt/4ez017","slide":34,"text":""}
+{"kind":"slide","id":"sl/2ah0lj","slide":35,"title":"FOR EDUCATORS","textShapes":3}
+{"kind":"shape","id":"sh/nm9gba5s","slide":35,"bbox":[64,58,138,28]}
+{"kind":"textbox","id":"sh/onih4f6x","slide":35,"text":"FOR EDUCATORS","textPreview":"FOR EDUCATORS","textChars":13,"textLines":1,"bbox":[76,63,114,18]}
+{"kind":"textbox","id":"sh/9orydkni","slide":35,"text":"A clear path to\nwhat comes next","textPreview":"A clear path to | what comes next","textChars":31,"textLines":2,"bbox":[64,122,440,118]}
+{"kind":"shape","id":"sh/exgzy5ov","slide":35,"bbox":[540,46,620,616]}
+{"kind":"textbox","id":"sh/0zih0f61","slide":35,"text":"35","textPreview":"35","textChars":2,"textLines":1,"bbox":[1174,675,42,18]}
+{"kind":"image","id":"im/qhob2h8z","slide":35,"name":"","geometry":"roundRect","bbox":[550,56,600,596]}
+{"kind":"notes","id":"nt/2ah0lj","slide":35,"text":""}
+{"kind":"slide","id":"sl/ac8v7x","slide":36,"title":"SECTION 03","textShapes":5}
+{"kind":"shape","id":"sh/l0nad0ju","slide":36,"bbox":[64,66,138,30]}
+{"kind":"textbox","id":"sh/yxwr2l0j","slide":36,"text":"SECTION 03","textPreview":"SECTION 03","textChars":10,"textLines":1,"bbox":[76,71,114,20]}
+{"kind":"textbox","id":"sh/jy5sbq14","slide":36,"text":"03","textPreview":"03","textChars":2,"textLines":1,"bbox":[56,158,260,150]}
+{"kind":"textbox","id":"sh/83y98vil","slide":36,"text":"ICF recent updates","textPreview":"ICF recent updates","textChars":18,"textLines":1,"bbox":[64,306,920,118]}
+{"kind":"textbox","id":"sh/t47ah0j6","slide":36,"text":"Accreditation · qualifications · pathways","textPreview":"Accreditation · qualifications · pathways","textChars":41,"textLines":1,"bbox":[64,442,760,50]}
+{"kind":"shape","id":"sh/61wr6l0f","slide":36,"bbox":[64,530,106,0]}
+{"kind":"textbox","id":"sh/72psfq10","slide":36,"text":"36","textPreview":"36","textChars":2,"textLines":1,"bbox":[1174,675,42,18]}
+{"kind":"notes","id":"nt/ac8v7x","slide":36,"text":""}
+{"kind":"slide","id":"sl/zymb4b","slide":37,"title":"RECENT UPDATES","textShapes":21}
+{"kind":"shape","id":"sh/mxkvyt0r","slide":37,"bbox":[64,58,144,28]}
+{"kind":"textbox","id":"sh/90bet8ji","slide":37,"text":"RECENT UPDATES","textPreview":"RECENT UPDATES","textChars":14,"textLines":1,"bbox":[76,63,120,18]}
+{"kind":"textbox","id":"sh/8z2dk3ix","slide":37,"text":"New Accreditation Standards","textPreview":"New Accreditation Standards","textChars":27,"textLines":1,"bbox":[64,105,760,70]}
+{"kind":"shape","id":"sh/zutwny10","slide":37,"bbox":[64,186,74,0]}
+{"kind":"textbox","id":"sh/y9kvut0v","slide":37,"text":"Standards Review Summary","textPreview":"Standards Review Summary","textChars":24,"textLines":1,"bbox":[64,190,420,34]}
+{"kind":"shape","id":"sh/lwbepoj6","slide":37,"bbox":[64,240,530,34]}
+{"kind":"textbox","id":"sh/kv2dwjil","slide":37,"text":"STANDARD 1","textPreview":"STANDARD 1","textChars":10,"textLines":1,"bbox":[78,248,126,18]}
+{"kind":"textbox","id":"sh/jqdwzi1k","slide":37,"text":"No updates required","textPreview":"No updates required","textChars":19,"textLines":1,"bbox":[232,247,330,20]}
+{"kind":"shape","id":"sh/i54fqd0z","slide":37,"bbox":[64,284,530,34]}
+{"kind":"textbox","id":"sh/gbihgf2x","slide":37,"text":"STANDARD 2","textPreview":"STANDARD 2","textChars":10,"textLines":1,"bbox":[78,292,126,18]}
+{"kind":"textbox","id":"sh/1cbi9kji","slide":37,"text":"Updates required","textPreview":"Updates required","textChars":16,"textLines":1,"bbox":[232,291,330,20]}
+{"kind":"shape","id":"sh/e90zepkr","slide":37,"bbox":[64,328,530,34]}
+{"kind":"textbox","id":"sh/fa9g7u1c","slide":37,"text":"STANDARD 3","textPreview":"STANDARD 3","textChars":10,"textLines":1,"bbox":[78,336,126,18]}
+{"kind":"textbox","id":"sh/s7ihcf21","slide":37,"text":"Updates required","textPreview":"Updates required","textChars":16,"textLines":1,"bbox":[232,335,330,20]}
+{"kind":"shape","id":"sh/t8ry5kj6","slide":37,"bbox":[64,372,530,34]}
+{"kind":"textbox","id":"sh/650za5kv","slide":37,"text":"STANDARD 4","textPreview":"STANDARD 4","textChars":10,"textLines":1,"bbox":[78,380,126,18]}
+{"kind":"textbox","id":"sh/r69g3alg","slide":37,"text":"Updates required","textPreview":"Updates required","textChars":16,"textLines":1,"bbox":[232,379,330,20]}
+{"kind":"shape","id":"sh/4jyh8v2p","slide":37,"bbox":[64,416,530,34]}
+{"kind":"textbox","id":"sh/547y103a","slide":37,"text":"STANDARD 5","textPreview":"STANDARD 5","textChars":10,"textLines":1,"bbox":[78,424,126,18]}
+{"kind":"textbox","id":"sh/loz6psr2","slide":37,"text":"Updates required","textPreview":"Updates required","textChars":16,"textLines":1,"bbox":[232,423,330,20]}
+{"kind":"shape","id":"sh/0nq5g7qh","slide":37,"bbox":[64,460,530,34]}
+{"kind":"textbox","id":"sh/zmxon29w","slide":37,"text":"STANDARD 6","textPreview":"STANDARD 6","textChars":10,"textLines":1,"bbox":[78,468,126,18]}
+{"kind":"textbox","id":"sh/ylonex8b","slide":37,"text":"No updates required","textPreview":"No updates required","textChars":19,"textLines":1,"bbox":[232,467,330,20]}
+{"kind":"shape","id":"sh/d0f6lsrq","slide":37,"bbox":[64,504,530,34]}
+{"kind":"textbox","id":"sh/cz65cnq5","slide":37,"text":"STANDARD 7","textPreview":"STANDARD 7","textChars":10,"textLines":1,"bbox":[78,512,126,18]}
+{"kind":"textbox","id":"sh/byxoji9k","slide":37,"text":"No updates required","textPreview":"No updates required","textChars":19,"textLines":1,"bbox":[232,511,330,20]}
+{"kind":"shape","id":"sh/qxonad8z","slide":37,"bbox":[690,220,480,258]}
+{"kind":"shape","id":"sh/hwj6xcru","slide":37,"bbox":[728,252,174,28]}
+{"kind":"textbox","id":"sh/wvaporqp","slide":37,"text":"COMPLIANCE DEADLINE","textPreview":"COMPLIANCE DEADLINE","textChars":19,"textLines":1,"bbox":[740,257,150,18]}
+{"kind":"textbox","id":"sh/e1k3i9or","slide":37,"text":"April 1st,\n2027","textPreview":"April 1st, | 2027","textChars":15,"textLines":2,"bbox":[728,306,340,92]}
+{"kind":"textbox","id":"sh/f2tkbepc","slide":37,"text":"Prepare your programs early for the updated global standard.","textPreview":"Prepare your programs early for the updated global standard.","textChars":60,"textLines":1,"bbox":[728,420,350,48]}
+{"kind":"textbox","id":"sh/g32lkj6x","slide":37,"text":"37","textPreview":"37","textChars":2,"textLines":1,"bbox":[1174,675,42,18]}
+{"kind":"notes","id":"nt/zymb4b","slide":37,"text":""}
+{"kind":"slide","id":"sl/tvlt7b","slide":38,"title":"RECENT UPDATES","textShapes":3}
+{"kind":"shape","id":"sh/ni10fu5g","slide":38,"bbox":[64,58,144,28]}
+{"kind":"textbox","id":"sh/ojah8z6l","slide":38,"text":"RECENT UPDATES","textPreview":"RECENT UPDATES","textChars":14,"textLines":1,"bbox":[76,63,120,18]}
+{"kind":"textbox","id":"sh/p4jih4n6","slide":38,"text":"ICF Coach Educator Competency Learning Program","textPreview":"ICF Coach Educator Competency Learning Program","textChars":46,"textLines":1,"bbox":[64,105,900,70]}
+{"kind":"shape","id":"sh/ed8z25oj","slide":38,"bbox":[64,186,74,0]}
+{"kind":"shape","id":"sh/fe10ba54","slide":38,"bbox":[80,174,1120,438]}
+{"kind":"textbox","id":"sh/1gjidkna","slide":38,"text":"38","textPreview":"38","textChars":2,"textLines":1,"bbox":[1174,675,42,18]}
+{"kind":"image","id":"im/ds3utoby","slide":38,"name":"","geometry":"roundRect","bbox":[90,184,1100,418]}
+{"kind":"notes","id":"nt/tvlt7b","slide":38,"text":""}
+{"kind":"slide","id":"sl/7foddy","slide":39,"title":"RECENT UPDATES","textShapes":8}
+{"kind":"shape","id":"sh/lcbe98ji","slide":39,"bbox":[64,58,144,28]}
+{"kind":"textbox","id":"sh/y90vydk7","slide":39,"text":"RECENT UPDATES","textPreview":"RECENT UPDATES","textChars":14,"textLines":1,"bbox":[76,63,120,18]}
+{"kind":"textbox","id":"sh/za9w7i1s","slide":39,"text":"New Qualification for Coaches","textPreview":"New Qualification for Coaches","textChars":29,"textLines":1,"bbox":[64,105,760,70]}
+{"kind":"shape","id":"sh/cnidw321","slide":39,"bbox":[64,186,74,0]}
+{"kind":"textbox","id":"sh/xore58jm","slide":39,"text":"Mentor Coaching Specialization (MCS)","textPreview":"Mentor Coaching Specialization (MCS)","textChars":36,"textLines":1,"bbox":[64,190,520,34]}
+{"kind":"textbox","id":"sh/al0vutkv","slide":39,"text":"A new pathway supporting high-quality mentor coaching practice.","textPreview":"A new pathway supporting high-quality mentor coaching practice.","textChars":63,"textLines":1,"bbox":[64,236,520,48]}
+{"kind":"shape","id":"sh/bm9w3y1g","slide":39,"bbox":[650,170,152,152]}
+{"kind":"shape","id":"sh/pk7e1ojq","slide":39,"bbox":[836,170,152,152]}
+{"kind":"shape","id":"sh/8jidgv6p","slide":39,"bbox":[1022,170,152,152]}
+{"kind":"shape","id":"sh/mh0veloj","slide":39,"bbox":[64,330,510,166]}
+{"kind":"shape","id":"sh/lgrulg7y","slide":39,"bbox":[84,348,142,25]}
+{"kind":"textbox","id":"sh/kfidcb6t","slide":39,"text":"WHAT IT ENABLES","textPreview":"WHAT IT ENABLES","textChars":15,"textLines":1,"bbox":[96,353,118,15]}
+{"kind":"textbox","id":"sh/ze9cj6p8","slide":39,"text":"More confidence in the mentor-coaching role","textPreview":"More confidence in the mentor-coaching role","textChars":43,"textLines":1,"bbox":[84,391,470,42]}
+{"kind":"textbox","id":"sh/yd0valon","slide":39,"text":"Clearer recognition, stronger standards and continued professional development for coaches.","textPreview":"Clearer recognition, stronger standards and continued professional development for coaches.","textChars":91,"textLines":1,"bbox":[84,438,470,40]}
+{"kind":"textbox","id":"sh/xcruhg72","slide":39,"text":"39","textPreview":"39","textChars":2,"textLines":1,"bbox":[1174,675,42,18]}
+{"kind":"image","id":"im/p07q14nq","slide":39,"name":"","geometry":"roundRect","bbox":[660,180,132,132]}
+{"kind":"image","id":"im/i94rmtw7","slide":39,"name":"","geometry":"roundRect","bbox":[846,180,132,132]}
+{"kind":"image","id":"im/kb698jed","slide":39,"name":"","geometry":"roundRect","bbox":[1032,180,132,132]}
+{"kind":"notes","id":"nt/7foddy","slide":39,"text":""}
+{"kind":"slide","id":"sl/wrqybs","slide":40,"title":"RECENT UPDATES","textShapes":3}
+{"kind":"shape","id":"sh/md0bqp0n","slide":40,"bbox":[64,54,144,28]}
+{"kind":"textbox","id":"sh/90ra14ze","slide":40,"text":"RECENT UPDATES","textPreview":"RECENT UPDATES","textChars":14,"textLines":1,"bbox":[76,59,120,18]}
+{"kind":"textbox","id":"sh/ozitszit","slide":40,"text":"Mentor Coaching Specialization Applications","textPreview":"Mentor Coaching Specialization Applications","textChars":43,"textLines":1,"bbox":[64,104,690,54]}
+{"kind":"shape","id":"sh/za9svahw","slide":40,"bbox":[80,178,1120,438]}
+{"kind":"textbox","id":"sh/1craxkz2","slide":40,"text":"40","textPreview":"40","textChars":2,"textLines":1,"bbox":[1174,675,42,18]}
+{"kind":"image","id":"im/zm5ofmpc","slide":40,"name":"","geometry":"roundRect","bbox":[90,188,1100,418]}
+{"kind":"notes","id":"nt/wrqybs","slide":40,"text":""}
+{"kind":"slide","id":"sl/pnexot","slide":41,"title":"RECENT UPDATES","textShapes":3}
+{"kind":"shape","id":"sh/2h4z6tc3","slide":41,"bbox":[64,54,144,28]}
+{"kind":"textbox","id":"sh/pkvi18ve","slide":41,"text":"RECENT UPDATES","textPreview":"RECENT UPDATES","textChars":14,"textLines":1,"bbox":[76,59,120,18]}
+{"kind":"textbox","id":"sh/4jmh83u9","slide":41,"text":"Early access to applications for Coach Education Providers","textPreview":"Early access to applications for Coach Education Providers","textChars":58,"textLines":1,"bbox":[64,104,690,54]}
+{"kind":"shape","id":"sh/fed0vedc","slide":41,"bbox":[80,178,1120,438]}
+{"kind":"textbox","id":"sh/hgvixovi","slide":41,"text":"41","textPreview":"41","textChars":2,"textLines":1,"bbox":[1174,675,42,18]}
+{"kind":"image","id":"im/jihg365c","slide":41,"name":"","geometry":"roundRect","bbox":[90,188,1100,418]}
+{"kind":"notes","id":"nt/pnexot","slide":41,"text":""}
+{"kind":"slide","id":"sl/qsiujh","slide":42,"title":"RECENT UPDATES","textShapes":3}
+{"kind":"shape","id":"sh/ulg3m90v","slide":42,"bbox":[64,54,144,28]}
+{"kind":"textbox","id":"sh/ho7mx4jm","slide":42,"text":"RECENT UPDATES","textPreview":"RECENT UPDATES","textChars":14,"textLines":1,"bbox":[76,59,120,18]}
+{"kind":"textbox","id":"sh/gnylozi1","slide":42,"text":"Mentor Coaching Specialization: what changes","textPreview":"Mentor Coaching Specialization: what changes","textChars":44,"textLines":1,"bbox":[64,104,690,54]}
+{"kind":"shape","id":"sh/3ap4ze1c","slide":42,"bbox":[80,178,1120,438]}
+{"kind":"textbox","id":"sh/pcrm1oji","slide":42,"text":"42","textPreview":"42","textChars":2,"textLines":1,"bbox":[1174,675,42,18]}
+{"kind":"image","id":"im/7m14vypo","slide":42,"name":"","geometry":"roundRect","bbox":[90,188,1100,418]}
+{"kind":"notes","id":"nt/qsiujh","slide":42,"text":""}
+{"kind":"slide","id":"sl/rvvwtx","slide":43,"title":"RECENT UPDATES","textShapes":3}
+{"kind":"shape","id":"sh/nexgja5o","slide":43,"bbox":[64,54,144,28]}
+{"kind":"textbox","id":"sh/8f6hcvm9","slide":43,"text":"RECENT UPDATES","textPreview":"RECENT UPDATES","textChars":14,"textLines":1,"bbox":[76,59,120,18]}
+{"kind":"textbox","id":"sh/9gfyl0nu","slide":43,"text":"Building capability across the coaching ecosystem","textPreview":"Building capability across the coaching ecosystem","textChars":49,"textLines":1,"bbox":[64,104,690,54]}
+{"kind":"shape","id":"sh/yp4f6l47","slide":43,"bbox":[80,178,1120,438]}
+{"kind":"textbox","id":"sh/0rmh8vmd","slide":43,"text":"43","textPreview":"43","textChars":2,"textLines":1,"bbox":[1174,675,42,18]}
+{"kind":"image","id":"im/ulwfe1o3","slide":43,"name":"","geometry":"roundRect","bbox":[90,188,1100,418]}
+{"kind":"notes","id":"nt/rvvwtx","slide":43,"text":""}
+{"kind":"slide","id":"sl/albesj","slide":44,"title":"RECENT UPDATES","textShapes":10}
+{"kind":"shape","id":"sh/l0r6p436","slide":44,"bbox":[64,58,144,28]}
+{"kind":"textbox","id":"sh/yx07e94v","slide":44,"text":"RECENT UPDATES","textPreview":"RECENT UPDATES","textChars":14,"textLines":1,"bbox":[76,63,120,18]}
+{"kind":"textbox","id":"sh/zy9onu5g","slide":44,"text":"New Accreditation for Organizations","textPreview":"New Accreditation for Organizations","textChars":35,"textLines":1,"bbox":[64,105,850,70]}
+{"kind":"shape","id":"sh/cvypczmp","slide":44,"bbox":[64,186,74,0]}
+{"kind":"textbox","id":"sh/xwr6l4na","slide":44,"text":"Two advanced pathways for organizations building specialist capability.","textPreview":"Two advanced pathways for organizations building specialist capability.","textChars":71,"textLines":1,"bbox":[64,188,620,36]}
+{"kind":"shape","id":"sh/atg7ap4j","slide":44,"bbox":[64,278,510,230]}
+{"kind":"shape","id":"sh/bupoju54","slide":44,"bbox":[84,296,60,25]}
+{"kind":"textbox","id":"sh/wr2pojmt","slide":44,"text":"AAMC","textPreview":"AAMC","textChars":4,"textLines":1,"bbox":[96,301,36,15]}
+{"kind":"textbox","id":"sh/hsbqxo3e","slide":44,"text":"Advanced Accreditation in Mentor Coaching","textPreview":"Advanced Accreditation in Mentor Coaching","textChars":41,"textLines":1,"bbox":[84,339,470,42]}
+{"kind":"textbox","id":"sh/h83m98j2","slide":44,"text":"A focused pathway for organizations delivering mentor-coaching education and developing qualified mentor coaches.","textPreview":"A focused pathway for organizations delivering mentor-coaching education and developing qualified mentor coaches.","textChars":113,"textLines":1,"bbox":[84,386,470,104]}
+{"kind":"shape","id":"sh/w7u5g32h","slide":44,"bbox":[690,278,510,230]}
+{"kind":"shape","id":"sh/v6l47y1w","slide":44,"bbox":[710,296,60,25]}
+{"kind":"textbox","id":"sh/u5snetkb","slide":44,"text":"AASC","textPreview":"AASC","textChars":4,"textLines":1,"bbox":[722,301,36,15]}
+{"kind":"textbox","id":"sh/94jm5ojq","slide":44,"text":"Advanced Accreditation in Coaching Supervision","textPreview":"Advanced Accreditation in Coaching Supervision","textChars":46,"textLines":1,"bbox":[710,339,470,42]}
+{"kind":"textbox","id":"sh/83a5cj25","slide":44,"text":"A focused pathway for organizations building coaching-supervision capability and high-quality learning experiences.","textPreview":"A focused pathway for organizations building coaching-supervision capability and high-quality learning experiences.","textChars":115,"textLines":1,"bbox":[710,386,470,104]}
+{"kind":"textbox","id":"sh/72143e1k","slide":44,"text":"44","textPreview":"44","textChars":2,"textLines":1,"bbox":[1174,675,42,18]}
+{"kind":"notes","id":"nt/albesj","slide":44,"text":""}
+{"kind":"slide","id":"sl/17my1p","slide":45,"title":"RECENT UPDATES","textShapes":3}
+{"kind":"shape","id":"sh/jalgjqx4","slide":45,"bbox":[64,54,144,28]}
+{"kind":"textbox","id":"sh/kbuhcvep","slide":45,"text":"RECENT UPDATES","textPreview":"RECENT UPDATES","textChars":14,"textLines":1,"bbox":[76,59,120,18]}
+{"kind":"textbox","id":"sh/lcnyl0fa","slide":45,"text":"Advanced accreditation: mentor coaching","textPreview":"Advanced accreditation: mentor coaching","textChars":39,"textLines":1,"bbox":[64,106,620,54]}
+{"kind":"shape","id":"sh/6dwze5wv","slide":45,"bbox":[260,172,760,468]}
+{"kind":"textbox","id":"sh/8fehgfe1","slide":45,"text":"45","textPreview":"45","textChars":2,"textLines":1,"bbox":[1174,675,42,18]}
+{"kind":"image","id":"im/e5cf2hs3","slide":45,"name":"","geometry":"roundRect","bbox":[272,184,736,444]}
+{"kind":"notes","id":"nt/17my1p","slide":45,"text":""}
+{"kind":"slide","id":"sl/qa6yqp","slide":46,"title":"RECENT UPDATES","textShapes":3}
+{"kind":"shape","id":"sh/sbm58nap","slide":46,"bbox":[64,54,144,28]}
+{"kind":"textbox","id":"sh/7at4fit4","slide":46,"text":"RECENT UPDATES","textPreview":"RECENT UPDATES","textChars":14,"textLines":1,"bbox":[76,59,120,18]}
+{"kind":"textbox","id":"sh/69kn6dsz","slide":46,"text":"Advanced accreditation: coaching supervision","textPreview":"Advanced accreditation: coaching supervision","textChars":44,"textLines":1,"bbox":[64,106,620,54]}
+{"kind":"shape","id":"sh/58bmdsbe","slide":46,"bbox":[260,172,760,468]}
+{"kind":"textbox","id":"sh/j6t4bit8","slide":46,"text":"46","textPreview":"46","textChars":2,"textLines":1,"bbox":[1174,675,42,18]}
+{"kind":"image","id":"im/1k3ilcne","slide":46,"name":"","geometry":"roundRect","bbox":[272,184,736,444]}
+{"kind":"notes","id":"nt/qa6yqp","slide":46,"text":""}
+{"kind":"slide","id":"sl/1idlys","slide":47,"title":"RECENT UPDATES","textShapes":3}
+{"kind":"shape","id":"sh/wv6lkby9","slide":47,"bbox":[64,54,144,28]}
+{"kind":"textbox","id":"sh/vad4r6xo","slide":47,"text":"RECENT UPDATES","textPreview":"RECENT UPDATES","textChars":14,"textLines":1,"bbox":[76,59,120,18]}
+{"kind":"textbox","id":"sh/u943i1g3","slide":47,"text":"Pathways for individual coaches","textPreview":"Pathways for individual coaches","textChars":31,"textLines":1,"bbox":[64,106,620,54]}
+{"kind":"shape","id":"sh/98vmpwfi","slide":47,"bbox":[260,172,760,468]}
+{"kind":"textbox","id":"sh/76d4nmxc","slide":47,"text":"47","textPreview":"47","textChars":2,"textLines":1,"bbox":[1174,675,42,18]}
+{"kind":"image","id":"im/d8jq1oz6","slide":47,"name":"","geometry":"roundRect","bbox":[272,184,736,444]}
+{"kind":"notes","id":"nt/1idlys","slide":47,"text":""}
+{"kind":"slide","id":"sl/28kt24","slide":48,"title":"RECENT UPDATES","textShapes":3}
+{"kind":"shape","id":"sh/fidof6dg","slide":48,"bbox":[64,54,144,28]}
+{"kind":"textbox","id":"sh/0jmp8bu1","slide":48,"text":"RECENT UPDATES","textPreview":"RECENT UPDATES","textChars":14,"textLines":1,"bbox":[76,59,120,18]}
+{"kind":"textbox","id":"sh/1kvqhgvm","slide":48,"text":"Qualification pathway overview","textPreview":"Qualification pathway overview","textChars":30,"textLines":1,"bbox":[64,106,620,54]}
+{"kind":"shape","id":"sh/qtk7i1cz","slide":48,"bbox":[260,172,760,468]}
+{"kind":"textbox","id":"sh/sf2p4bu5","slide":48,"text":"48","textPreview":"48","textChars":2,"textLines":1,"bbox":[1174,675,42,18]}
+{"kind":"image","id":"im/e1cjydwb","slide":48,"name":"","geometry":"roundRect","bbox":[272,184,736,444]}
+{"kind":"notes","id":"nt/28kt24","slide":48,"text":""}
+{"kind":"slide","id":"sl/dch02m","slide":49,"title":"RECENT UPDATES","textShapes":3}
+{"kind":"shape","id":"sh/i9cz25g7","slide":49,"bbox":[64,54,144,28]}
+{"kind":"textbox","id":"sh/pc3ixkfy","slide":49,"text":"RECENT UPDATES","textPreview":"RECENT UPDATES","textChars":14,"textLines":1,"bbox":[76,59,120,18]}
+{"kind":"textbox","id":"sh/4buh4fyd","slide":49,"text":"Join the conversation","textPreview":"Join the conversation","textChars":21,"textLines":1,"bbox":[64,106,620,54]}
+{"kind":"shape","id":"sh/ry50zax4","slide":49,"bbox":[260,172,760,468]}
+{"kind":"textbox","id":"sh/d0ni1kfu","slide":49,"text":"49","textPreview":"49","textChars":2,"textLines":1,"bbox":[1174,675,42,18]}
+{"kind":"image","id":"im/nq9g76d0","slide":49,"name":"","geometry":"roundRect","bbox":[272,184,736,444]}
+{"kind":"notes","id":"nt/dch02m","slide":49,"text":""}
+{"kind":"slide","id":"sl/iydqy2","slide":50,"title":"THE VIETNAM CHAPTER OF ICF","textShapes":5}
+{"kind":"shape","id":"sh/s3axc7y9","slide":50,"bbox":[64,66,224,30]}
+{"kind":"textbox","id":"sh/r2hg32h4","slide":50,"text":"THE VIETNAM CHAPTER OF ICF","textPreview":"THE VIETNAM CHAPTER OF ICF","textChars":26,"textLines":1,"bbox":[76,71,200,20]}
+{"kind":"textbox","id":"sh/618faxgj","slide":50,"text":"Thank you!","textPreview":"Thank you!","textChars":10,"textLines":1,"bbox":[64,164,520,88]}
+{"kind":"textbox","id":"sh/50zy1szy","slide":50,"text":"Partner with the ICF Vietnam Chapter to build a sustainable coaching ecosystem together.","textPreview":"Partner with the ICF Vietnam Chapter to build a sustainable coaching ecosystem together.","textChars":88,"textLines":1,"bbox":[64,286,520,82]}
+{"kind":"textbox","id":"sh/4zqx8nyd","slide":50,"text":"Follow us on:","textPreview":"Follow us on:","textChars":13,"textLines":1,"bbox":[64,430,300,28]}
+{"kind":"shape","id":"sh/ovuhkryh","slide":50,"bbox":[64,590,92,0]}
+{"kind":"textbox","id":"sh/6xcnyhsv","slide":50,"text":"50","textPreview":"50","textChars":2,"textLines":1,"bbox":[1174,675,42,18]}
+{"kind":"image","id":"im/u14zu5kb","slide":50,"name":"","geometry":"roundRect","bbox":[64,482,46,46]}
+{"kind":"image","id":"im/f2dg3alw","slide":50,"name":"","geometry":"roundRect","bbox":[130,482,46,46]}
+{"kind":"image","id":"im/0zqh8z2l","slide":50,"name":"","geometry":"roundRect","bbox":[196,482,46,46]}
+{"kind":"notes","id":"nt/iydqy2","slide":50,"text":""}

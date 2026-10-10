@@ -139,7 +139,7 @@ Do not duplicate Home button/modal/surface recipes under Check-in-specific CSS i
 
 **Implementation requirements**
 
-- Max 2 secondary; không trùng Primary, không duplicate; same family được phép.
+- Max 3 secondary; không trùng Primary, không duplicate; same family được phép.
 - Selection region bounded; selected item không di chuyển.
 - Note luôn hiện và giữ nguyên.
 - Có Back / Bỏ qua / Lưu nhanh / Tiếp tục; Quick Save mở 3-way decision modal.
@@ -282,7 +282,7 @@ Visual riêng chưa khóa trong mockup pack, nhưng implementation dùng canonic
 - Intensity required cho completed Emotion.
 - Emotion Note optional.
 - Unknown Note required; Unknown không có Intensity.
-- Secondary max 2; không duplicate; không bằng Primary.
+- Secondary max 3; không duplicate; không bằng Primary.
 - Need max 3.
 - Context max 2.
 - Unknown completed tính count + streak nhưng không Orb.

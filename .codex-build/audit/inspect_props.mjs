@@ -1,0 +1,17 @@
+import { FileBlob, PresentationFile } from "@oai/artifact-tool";
+const p = await PresentationFile.importPptx(await FileBlob.load("/Users/katherinebui/Downloads/The Vietnam Chapter of ICF - Chapter Talk Aug 2026.pptx"));
+const x = await p.inspect({ kind: "textbox,shape", search: "The Vietnam Chapter of ICF", maxChars: 8000 });
+console.log(x.ndjson);
+const lines = x.ndjson.split("\n").filter(Boolean).map((line) => JSON.parse(line));
+const hit = lines.find((d) => d.kind === "textbox" && d.text?.includes("The Vietnam Chapter of ICF"));
+if (!hit) throw new Error("textbox not found");
+const sh = p.resolve(hit.id);
+console.log("resolved keys", Object.keys(sh));
+console.log("position", sh.position);
+console.log("frame", sh.frame);
+console.log("fill", sh.fill);
+console.log("line", sh.line);
+console.log("borderRadius", sh.borderRadius);
+console.log("text keys", Object.keys(sh.text));
+console.log("text style", sh.text.style);
+console.log("text", String(sh.text));

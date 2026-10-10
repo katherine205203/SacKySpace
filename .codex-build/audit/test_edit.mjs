@@ -1,0 +1,14 @@
+import fs from "node:fs/promises";
+import { FileBlob, PresentationFile } from "@oai/artifact-tool";
+const p = await PresentationFile.importPptx(await FileBlob.load("/Users/katherinebui/Downloads/The Vietnam Chapter of ICF - Chapter Talk Aug 2026.pptx"));
+const slide = p.slides.items[0];
+const title = slide.shapes.items[0];
+slide.background.fill = "#212251";
+title.text.style = { typeface: "Hoss Round", fontSize: 48, bold: true, color: "#efcb30", autoFit: "shrinkText" };
+title.text = "The Vietnam Chapter of ICF\nChapter Talk - Aug 2026";
+title.text.style = { typeface: "Hoss Round", fontSize: 48, bold: true, color: "#efcb30", autoFit: "shrinkText" };
+title.position = { left: 72, top: 180, width: 760, height: 150 };
+const preview = await slide.export({ format: "png", scale: 1 });
+await fs.writeFile("test-slide-1.png", new Uint8Array(await preview.arrayBuffer()));
+await (await PresentationFile.exportPptx(p)).save("test_edit.pptx");
+console.log((await p.inspect({ kind: "slide,textbox", target: { id: slide.id, beforeLines: 0, afterLines: 5 }, maxChars: 3000 })).ndjson);

@@ -88,9 +88,15 @@ Secondary emotions distribute that weight; they do not create additional weight.
 - Secondary A = 15%
 - Secondary B = 15%
 
+## Three secondaries
+- Primary = 70%
+- Secondary A = 10%
+- Secondary B = 10%
+- Secondary C = 10%
+
 Hard rules:
 - Primary cannot equal Secondary within the same Check-in.
-- Secondary A and Secondary B have equal weight.
+- Secondary emotions have equal weight after the primary 70% share is reserved.
 - The sum of contributions for one Check-in must remain equal to that Check-in's total presence weight.
 
 Example:
