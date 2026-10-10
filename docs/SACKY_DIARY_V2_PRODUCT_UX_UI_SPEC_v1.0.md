@@ -20,7 +20,7 @@ Mục tiêu của Diary là giúp user có một không gian viết theo ngày �
 - mở rộng bằng các narrative prompts tùy chọn;
 - gắn một cảm xúc chính của ngày;
 - liên kết các Check-in cùng ngày với mức độ đại diện riêng;
-- lưu tối đa 4 hình ảnh;
+- lưu tối đa 8 hình ảnh;
 - lưu Draft hoặc đánh dấu Done;
 - xem lại bằng History, Calendar, Streak và Dashboard;
 - viết bù những ngày chưa viết.
@@ -67,7 +67,7 @@ Một Diary entry có:
 - **Optional Prompt Responses** — tối đa 6 prompt được chọn từ pool khoảng 9 prompt;
 - **Daily Main Emotion** — optional;
 - **Attached Check-ins** — optional;
-- **Images** — optional, tối đa 4.
+- **Images** — optional, tối đa 8.
 
 ## 2.4 No Diary color picker
 Diary **không có user-selected color field**.
@@ -515,12 +515,12 @@ The two features can be used at the same time.
 ## SCREEN D08 — Image Manager
 
 Required:
-- 0–4 images
+- 0–8 images
 - reorder
 - caption optional
 - replace
 - delete
-- clear 4/4 limit state
+- clear 8/8 limit state
 
 Storage UI must not imply Supabase Storage specifically.
 

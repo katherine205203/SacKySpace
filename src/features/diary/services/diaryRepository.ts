@@ -2,7 +2,7 @@ import { supabase } from '../../../services/supabase/client'
 import { createDiaryId, getDiaryLocalDate, isDiaryBackfilledDate, shouldSystemCompleteDiary, systemCompleteDiary } from '../utils'
 import { DEFAULT_DIARY_PROMPTS } from '../prompts'
 import { resolveDiaryMediaUrl, syncDiaryMedia } from './diaryMedia'
-import type { DiaryCheckinLink, DiaryCompletionSource, DiaryDraft, DiaryEntry, DiaryImage, DiaryPrompt, DiaryStatus, JourneyDraft, JourneyEntry, JourneyStatus } from '../types'
+import { MAX_DIARY_IMAGES, type DiaryCheckinLink, type DiaryCompletionSource, type DiaryDraft, type DiaryEntry, type DiaryImage, type DiaryPrompt, type DiaryStatus, type JourneyDraft, type JourneyEntry, type JourneyStatus } from '../types'
 import { isRichTextEmpty } from '../../../components/richText'
 
 const LOCAL_STORAGE_PREFIX = 'sacky:diary:v2:'
@@ -351,7 +351,7 @@ const normalizeDraft = (draft: DiaryDraft, userId: string, existing: DiaryEntry 
     dailyEmotionSnapshot: draft.dailyEmotionSnapshot,
     promptResponses: draft.promptResponses.map((item, index) => ({ ...item, position: index + 1 })),
     checkinLinks: draft.checkinLinks.filter((item) => item.weightPercent > 0).map((item, index) => ({ ...item, position: index + 1 })),
-    images: draft.images.slice(0, 4).map((item, index) => ({ ...item, position: index + 1 })),
+    images: draft.images.slice(0, MAX_DIARY_IMAGES).map((item, index) => ({ ...item, position: index + 1 })),
     createdAt: existing?.createdAt ?? draft.createdAt ?? now,
     updatedAt: now,
     completedAt,
@@ -435,7 +435,7 @@ const saveRemoteEntry = async (entry: DiaryEntry, previousEntry: DiaryEntry | nu
 export const saveDiary = async (draft: DiaryDraft, options: SaveDiaryOptions = {}): Promise<DiaryEntry> => {
   if (!draft.localDate) throw new Error('Diary needs a local date.')
   if (draft.promptResponses.length > 6) throw new Error('Diary chỉ có thể chọn tối đa 6 prompt.')
-  if (draft.images.length > 4) throw new Error('Diary chỉ có thể thêm tối đa 4 ảnh.')
+  if (draft.images.length > MAX_DIARY_IMAGES) throw new Error(`Diary chỉ có thể thêm tối đa ${MAX_DIARY_IMAGES} ảnh.`)
   const userId = await currentUserId()
   const existing = (await listDiaryEntries()).find((entry) => entry.localDate === draft.localDate) ?? null
   const entry = normalizeDraft(draft, userId, existing, options)

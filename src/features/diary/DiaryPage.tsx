@@ -4,7 +4,7 @@ import { listCheckins } from '../checkin/services/checkinRepository'
 import { useReferenceData } from '../checkin/hooks/useReferenceData'
 import type { CheckinRecord, Emotion } from '../checkin/types'
 import { createEmptyDiaryDraft, deleteDiary, getDiaryEntry, listDiaryEntries, listDiaryPrompts, saveDiary } from './services/diaryRepository'
-import type { DiaryCheckinLink, DiaryDraft, DiaryEntry, DiaryImage, DiaryPrompt, DiaryPromptResponse } from './types'
+import { MAX_DIARY_IMAGES, type DiaryCheckinLink, type DiaryDraft, type DiaryEntry, type DiaryImage, type DiaryPrompt, type DiaryPromptResponse } from './types'
 import { addDiaryDays, clampDiaryWeight, DIARY_TIME_ZONE, formatDiaryDate, formatDiaryMonth, formatDiaryShortDate, getDiaryLocalDate, getDiaryMetrics, isDiaryDateToday, monthDateKey } from './utils'
 import { getDiaryDraftSignature, hasDiaryDraftContent, parseDiaryEditorCache } from './editorAutosave'
 import { PageHeading } from '../../components/PageHeading'
@@ -68,6 +68,10 @@ type PendingDiaryImage = {
   status: 'selected' | 'compressing' | 'uploading' | 'saving' | 'error'
   error?: string
 }
+
+type DiaryImageSlot =
+  | { kind: 'pending'; item: PendingDiaryImage }
+  | { kind: 'saved'; item: DiaryImage }
 
 const useDiaryEntries = () => {
   const [entries, setEntries] = useState<DiaryEntry[]>([])
@@ -164,7 +168,7 @@ const DiarySummary = ({ entry, checkins }: { entry: DiaryEntry; checkins: Checki
       <span><i>✦</i> Prompt <b>{entry.promptResponses.length}/6</b></span>
       <span><i>◉</i> Cảm xúc <b>{entry.dailyEmotionSnapshot ? '1/1' : '0/1'}</b></span>
       <span><i>↗</i> Check-in <b>{entry.checkinLinks.length}</b></span>
-      <span><i>▧</i> Ảnh <b>{entry.images.length}/4</b></span>
+      <span><i>▧</i> Ảnh <b>{entry.images.length}/{MAX_DIARY_IMAGES}</b></span>
     </div>
     {entry.checkinLinks.length > 0 && <div className="diary-summary__chips">{entry.checkinLinks.map((link) => { const record = byId.get(link.checkinId); return <span key={link.checkinId}>{record?.primaryEmotion?.emoji ?? record?.unknownPrompt?.emoji ?? '◌'} {link.weightPercent}%</span> })}</div>}
   </aside>
@@ -198,12 +202,12 @@ const DiaryReadView = ({ entry, onEdit, onDelete, emotionSize = 'default', showT
       <div><span>Check-in trong ngày</span><strong>{entry.checkinLinks.length ? `${entry.checkinLinks.length} gắn` : 'Chưa gắn'}</strong></div>
       <div><span>Trả lời gợi ý</span><strong>{completedPrompts}/{entry.promptResponses.length || 0} dòng</strong></div>
       <div><span>Thời gian cập nhật</span><strong>{updatedTime}</strong></div>
-      <div><span>Hình ảnh</span><strong>{entry.images.length}/4</strong></div>
+      <div><span>Hình ảnh</span><strong>{entry.images.length}/{MAX_DIARY_IMAGES}</strong></div>
     </div>
     <DayRecordContextCard localDate={entry.localDate} entry={entry} />
     {entry.promptResponses.length > 0 && <section className="diary-read-section"><div className="diary-read-section__heading"><span className="section-label">Những dòng tự sự thêm</span><span>{entry.promptResponses.length} prompt</span></div><div className="diary-prompt-read-list">{entry.promptResponses.map((response) => <div className="diary-prompt-read" key={response.promptSnapshot.id} style={{ '--prompt-color': response.promptSnapshot.hexColor } as React.CSSProperties}><span className="diary-prompt-read__emoji">{response.promptSnapshot.emoji}</span><div><strong>{response.promptSnapshot.textVn}</strong>{response.promptSnapshot.source === 'gift_for_tomorrow' && <small className="diary-prompt-read__provenance">Từ Quà cho ngày mai</small>}{!isRichTextEmpty(response.responseText) ? <RichTextRenderer value={response.responseText} /> : <small>Chưa thêm câu trả lời</small>}</div></div>)}</div></section>}
     {entry.checkinLinks.length > 0 && <section className="diary-read-section"><div className="diary-read-section__heading"><span className="section-label">Check-in trong ngày</span><span>{entry.checkinLinks.length} liên kết</span></div><div className="diary-checkin-read-list">{entry.checkinLinks.map((link) => { const item = linked.find((candidate) => candidate.link.checkinId === link.checkinId); const label = item ? getCheckinLabel(item.record) : null; return <div className="diary-checkin-read" key={link.checkinId}><span>{label?.emoji ?? '◌'}</span><div><strong>{label?.title ?? 'Check-in đã liên kết'}</strong><small>{item && label ? `${formatCheckinTime(item.record)} · ${label.description}` : 'Đang tải dữ liệu check-in'}</small></div><b>{link.weightPercent}%</b></div> })}</div>{!reference && <small>Đang tải dữ liệu tham chiếu…</small>}</section>}
-    {entry.images.length > 0 && <section className="diary-read-section"><div className="diary-read-section__heading"><span className="section-label">Hình ảnh trong ngày</span><span>{entry.images.length}/4</span></div><div className="diary-read-images">{entry.images.map((image) => <figure key={image.id}><img src={image.externalUrl} alt={image.caption || 'Ảnh trong nhật ký'} loading="lazy" /><figcaption>{image.caption || 'Ảnh trong ngày'}</figcaption></figure>)}</div></section>}
+    {entry.images.length > 0 && <section className="diary-read-section"><div className="diary-read-section__heading"><span className="section-label">Hình ảnh trong ngày</span><span>{entry.images.length}/{MAX_DIARY_IMAGES}</span></div><div className="diary-read-images">{entry.images.map((image) => <figure key={image.id}><img src={image.externalUrl} alt={image.caption || 'Ảnh trong nhật ký'} loading="lazy" /><figcaption>{image.caption || 'Ảnh trong ngày'}</figcaption></figure>)}</div></section>}
   </article>
 }
 
@@ -296,11 +300,29 @@ const ImageManager = ({ images, pending, onChange, onPendingChange }: { images: 
   const [targetSlot, setTargetSlot] = useState(1)
   const [url, setUrl] = useState('')
   const [localError, setLocalError] = useState('')
-  const slots = Array.from({ length: 4 }, (_, index) => {
+  const requiredSlotCount = Math.max(0, ...images.map((image) => image.position), ...pending.map((item) => item.slotOrder))
+  const [slotCount, setSlotCount] = useState(() => Math.min(MAX_DIARY_IMAGES, Math.max(4, requiredSlotCount)))
+  const visibleSlotCount = Math.max(slotCount, requiredSlotCount)
+  const slots = Array.from({ length: visibleSlotCount }, (_, index) => {
     const position = index + 1
     return { position, pending: pending.find((item) => item.slotOrder === position), image: images.find((item) => item.position === position) }
   })
-  const filledSlotCount = slots.filter((slot) => Boolean(slot.image || slot.pending)).length
+  const getFilledSlots = (source = slots): DiaryImageSlot[] => source.flatMap((slot): DiaryImageSlot[] => {
+    if (slot.pending) return [{ kind: 'pending', item: slot.pending }]
+    if (slot.image) return [{ kind: 'saved', item: slot.image }]
+    return []
+  })
+  const filledSlots = getFilledSlots()
+  const filledSlotCount = filledSlots.length
+  const handleSlotCountChange = (requestedCount: number) => {
+    const nextCount = Math.max(filledSlotCount, Math.min(MAX_DIARY_IMAGES, requestedCount))
+    if (nextCount < visibleSlotCount) {
+      const nextSlots = filledSlots.slice(0, nextCount)
+      onChange(nextSlots.flatMap((slot, index) => slot.kind === 'saved' ? [{ ...slot.item, position: index + 1 }] : []))
+      onPendingChange(nextSlots.flatMap((slot, index) => slot.kind === 'pending' ? [{ ...slot.item, slotOrder: index + 1 }] : []))
+    }
+    setSlotCount(nextCount)
+  }
   const openPicker = (position: number) => { setTargetSlot(position); setPickerMode('choose'); setUrl(''); setLocalError(''); setShowPicker(true) }
   const replaceAtSlot = (position: number, next: PendingDiaryImage) => {
     const existing = pending.find((item) => item.slotOrder === position)
@@ -310,8 +332,9 @@ const ImageManager = ({ images, pending, onChange, onPendingChange }: { images: 
   const removeAtSlot = (position: number) => {
     const pendingImage = pending.find((item) => item.slotOrder === position)
     if (pendingImage?.previewUrl.startsWith('blob:')) URL.revokeObjectURL(pendingImage.previewUrl)
-    onPendingChange(pending.filter((item) => item.slotOrder !== position))
-    onChange(images.filter((item) => item.position !== position).map((item, index) => ({ ...item, position: index + 1 })))
+    const nextSlots = getFilledSlots(slots.filter((slot) => slot.position !== position))
+    onChange(nextSlots.flatMap((slot, index) => slot.kind === 'saved' ? [{ ...slot.item, position: index + 1 }] : []))
+    onPendingChange(nextSlots.flatMap((slot, index) => slot.kind === 'pending' ? [{ ...slot.item, slotOrder: index + 1 }] : []))
   }
   const handleFile = (file: File | undefined) => {
     if (!file) return
@@ -343,23 +366,23 @@ const ImageManager = ({ images, pending, onChange, onPendingChange }: { images: 
   }
   const move = (position: number, direction: -1 | 1) => {
     const nextPosition = position + direction
-    if (nextPosition < 1 || nextPosition > 4) return
+    if (nextPosition < 1 || nextPosition > visibleSlotCount) return
     const nextSlots = slots.map((slot) => slot.pending ? { kind: 'pending' as const, item: slot.pending } : slot.image ? { kind: 'saved' as const, item: slot.image } : null)
     ;[nextSlots[position - 1], nextSlots[nextPosition - 1]] = [nextSlots[nextPosition - 1], nextSlots[position - 1]]
     onChange(nextSlots.flatMap((slot, index) => slot?.kind === 'saved' ? [{ ...slot.item, position: index + 1 }] : []))
     onPendingChange(nextSlots.flatMap((slot, index) => slot?.kind === 'pending' ? [{ ...slot.item, slotOrder: index + 1 }] : []))
   }
   return <div className="diary-image-manager">
-    <div className="diary-section-header"><div><span className="section-label">Hình ảnh trong ngày <em>tuỳ chọn</em></span><p>Thêm tối đa 4 ảnh để giữ lại những chi tiết bạn muốn nhớ.</p></div><div className="diary-section-actions"><span className="diary-count-badge">{filledSlotCount}/4</span><button className="button button--secondary button--small" type="button" disabled={filledSlotCount >= 4} onClick={() => openPicker((slots.find((slot) => !slot.image && !slot.pending)?.position) ?? 1)}>＋ Thêm ảnh</button></div></div>
+    <div className="diary-section-header"><div><span className="section-label">Hình ảnh trong ngày <em>tuỳ chọn</em></span><p>Chọn số ô upload bạn muốn dùng, tối đa {MAX_DIARY_IMAGES} ảnh cho mỗi ngày.</p></div><div className="diary-section-actions"><label className="diary-image-count-control"><span>Số ô upload</span><select value={visibleSlotCount} onChange={(event) => handleSlotCountChange(Number(event.target.value))} aria-label="Số ô upload ảnh">{Array.from({ length: MAX_DIARY_IMAGES + 1 }, (_, count) => <option key={count} value={count} disabled={count < filledSlotCount}>{count === 0 ? '0 · Không thêm ảnh' : `${count} ảnh`}</option>)}</select></label><span className="diary-count-badge">{filledSlotCount}/{MAX_DIARY_IMAGES}</span><button className="button button--secondary button--small" type="button" disabled={filledSlotCount >= MAX_DIARY_IMAGES} onClick={() => { const emptySlot = slots.find((slot) => !slot.image && !slot.pending); if (emptySlot) openPicker(emptySlot.position); else { const nextSlotCount = Math.min(MAX_DIARY_IMAGES, visibleSlotCount + 1); setSlotCount(nextSlotCount); openPicker(nextSlotCount) } }}>＋ Thêm ảnh</button></div></div>
     <input ref={fileInputRef} type="file" accept="image/jpeg,image/png,image/webp" hidden onChange={(event) => { handleFile(event.target.files?.[0]); event.currentTarget.value = '' }} />
     <div className="diary-image-grid">{slots.map(({ position, image, pending: pendingImage }) => {
       if (!image && !pendingImage) return <button className="diary-image-card diary-image-card--empty" key={`empty-${position}`} type="button" onClick={() => openPicker(position)}><span>＋</span><strong>Thêm ảnh</strong><small>Vị trí {position}</small></button>
       const previewUrl = pendingImage?.previewUrl ?? image?.externalUrl ?? ''
       const caption = pendingImage?.caption ?? image?.caption ?? ''
       const statusLabel = pendingImage?.status === 'compressing' ? 'Đang nén…' : pendingImage?.status === 'uploading' ? 'Đang tải…' : pendingImage?.status === 'saving' ? 'Đang hoàn tất…' : pendingImage?.status === 'error' ? pendingImage.error ?? 'Tải ảnh lỗi' : pendingImage ? 'Đã chọn · sẽ lưu khi bấm Lưu' : ''
-      return <figure className={`diary-image-card ${pendingImage ? 'is-pending' : ''}`} key={pendingImage?.id ?? image?.id}><div className="diary-image-card__media"><img src={previewUrl} alt={caption || `Ảnh ${position}`} loading="lazy" /><span>{position}</span>{pendingImage && <div className="diary-image-card__status" role="status">{statusLabel}</div>}<div className="diary-image-card__hover-actions"><button type="button" onClick={() => window.open(previewUrl, '_blank', 'noopener,noreferrer')} disabled={!previewUrl}>Xem</button><button type="button" onClick={() => openPicker(position)}>Thay ảnh</button><button type="button" onClick={() => removeAtSlot(position)} className="is-danger">Xóa</button></div></div><input value={caption} maxLength={120} onChange={(event) => updateCaption(position, event.target.value)} placeholder="Chú thích (tuỳ chọn)…" aria-label={`Chú thích ảnh ${position}`} /><figcaption><button type="button" onClick={() => move(position, -1)} disabled={position === 1} aria-label="Di chuyển ảnh sang trái">←</button><button type="button" onClick={() => move(position, 1)} disabled={position === 4} aria-label="Di chuyển ảnh sang phải">→</button></figcaption></figure>
+      return <figure className={`diary-image-card ${pendingImage ? 'is-pending' : ''}`} key={pendingImage?.id ?? image?.id}><div className="diary-image-card__media"><img src={previewUrl} alt={caption || `Ảnh ${position}`} loading="lazy" /><span>{position}</span>{pendingImage && <div className="diary-image-card__status" role="status">{statusLabel}</div>}<div className="diary-image-card__hover-actions"><button type="button" onClick={() => window.open(previewUrl, '_blank', 'noopener,noreferrer')} disabled={!previewUrl}>Xem</button><button type="button" onClick={() => openPicker(position)}>Thay ảnh</button><button type="button" onClick={() => removeAtSlot(position)} className="is-danger">Xóa</button></div></div><input value={caption} maxLength={120} onChange={(event) => updateCaption(position, event.target.value)} placeholder="Chú thích (tuỳ chọn)…" aria-label={`Chú thích ảnh ${position}`} /><figcaption><button type="button" onClick={() => move(position, -1)} disabled={position === 1} aria-label="Di chuyển ảnh sang trái">←</button><button type="button" onClick={() => move(position, 1)} disabled={position === visibleSlotCount} aria-label="Di chuyển ảnh sang phải">→</button></figcaption></figure>
     })}</div>
-    {filledSlotCount === 4 && <div className="diary-image-limit">✓ Đã đủ 4 vị trí ảnh cho ngày này</div>}
+    {filledSlotCount === MAX_DIARY_IMAGES && <div className="diary-image-limit">✓ Đã đủ {MAX_DIARY_IMAGES} vị trí ảnh cho ngày này</div>}
     <p className="diary-helper">Ảnh sẽ được tối ưu trước khi lưu và vẫn hiển thị trong Diary sau khi tải lại.</p>
     {showPicker && <div className="diary-modal-backdrop" role="presentation" onClick={() => setShowPicker(false)}><section className="diary-modal diary-modal--image" role="dialog" aria-modal="true" aria-labelledby="diary-image-picker-title" onClick={(event) => event.stopPropagation()}><button className="diary-modal__close" type="button" onClick={() => setShowPicker(false)} aria-label="Đóng">×</button><div className="diary-modal__header"><p className="eyebrow">Hình ảnh trong ngày</p><h2 id="diary-image-picker-title">Thêm hình ảnh</h2><p>Chọn ảnh từ máy hoặc thêm bằng một liên kết công khai.</p></div>{pickerMode === 'choose' ? <div className="diary-image-picker-options"><button className="diary-image-picker-option" type="button" onClick={() => fileInputRef.current?.click()}><strong>↑ Tải ảnh từ máy</strong><small>JPEG, PNG hoặc WebP · tối đa 15MB</small></button><span>hoặc</span><button className="diary-image-picker-option" type="button" onClick={() => { setPickerMode('url'); setLocalError('') }}><strong>🔗 Thêm bằng liên kết</strong><small>Ảnh sẽ được lưu thành bản sao trong Diary</small></button></div> : <div className="diary-image-url-picker"><label htmlFor="diary-image-url">Liên kết ảnh</label><input id="diary-image-url" value={url} onChange={(event) => { setUrl(event.target.value); setLocalError('') }} placeholder="https://…" autoFocus />{url.trim() && <img src={url.trim()} alt="Xem trước ảnh" onError={() => setLocalError('Không thể xem trước liên kết này.')} />}{localError && <p className="form-error" role="alert">{localError}</p>}<div className="diary-modal__footer"><button className="button button--secondary" type="button" onClick={() => setPickerMode('choose')}>Quay lại</button><button className="button button--primary" type="button" disabled={!url.trim()} onClick={addUrl}>Thêm</button></div></div>}{pickerMode === 'choose' && localError && <p className="form-error" role="alert">{localError}</p>}</section></div>}
   </div>

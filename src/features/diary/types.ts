@@ -1,5 +1,7 @@
 import type { CheckinRecord, Emotion } from '../checkin/types'
 
+export const MAX_DIARY_IMAGES = 8
+
 export type DiaryStatus = 'draft' | 'done'
 export type DiaryCompletionSource = 'user' | 'system'
 

@@ -4,6 +4,7 @@ import { createClient } from '@supabase/supabase-js'
 
 const MAX_SOURCE_BYTES = 15 * 1024 * 1024
 const MAX_LONG_EDGE = 2000
+const MAX_DIARY_IMAGES = 8
 const MAX_REDIRECTS = 3
 const SIGNED_URL_TTL_SECONDS = 60 * 60
 const GOOGLE_TOKEN_TIMEOUT_MS = 15_000
@@ -280,7 +281,7 @@ const handleUpload = async (request: Request): Promise<Response> => {
       if (body.action !== 'import_url' || !body.sourceUrl) throw new Error('Thiếu liên kết ảnh.')
       source = { buffer: await fetchRemoteImage(body.sourceUrl), sourceType: 'url_import', originalSourceUrl: body.sourceUrl, originalName: 'url-image' }
     }
-    if (!diaryId || !Number.isInteger(slotOrder) || slotOrder < 1 || slotOrder > 4) throw new Error('Vị trí ảnh không hợp lệ.')
+    if (!diaryId || !Number.isInteger(slotOrder) || slotOrder < 1 || slotOrder > MAX_DIARY_IMAGES) throw new Error('Vị trí ảnh không hợp lệ.')
     markStage('verify-diary')
     const diary = await findOwnedDiary(admin, diaryId, user.id)
     if (!diary) throw new Error('Không tìm thấy nhật ký hoặc bạn không có quyền truy cập.')
@@ -310,14 +311,14 @@ const handleUpload = async (request: Request): Promise<Response> => {
 const handleSync = async (request: Request): Promise<Response> => {
   const { admin, user } = await getUser(request)
   const body = await request.json() as { action?: string; diaryId?: string; images?: Array<{ id: string; position: number; caption?: string }> }
-  if (body.action !== 'sync' || !body.diaryId || !Array.isArray(body.images) || body.images.length > 4) throw new Error('Dữ liệu media không hợp lệ.')
+  if (body.action !== 'sync' || !body.diaryId || !Array.isArray(body.images) || body.images.length > MAX_DIARY_IMAGES) throw new Error('Dữ liệu media không hợp lệ.')
   if (!(await findOwnedDiary(admin, body.diaryId, user.id))) throw new Error('Không tìm thấy nhật ký hoặc bạn không có quyền truy cập.')
   const { data: current, error: currentError } = await admin.from('diary_media').select('*').eq('diary_id', body.diaryId).eq('user_id', user.id)
   if (currentError) throw currentError
   const keepIds = new Set(body.images.map((image) => image.id))
   const currentRows = (current ?? []) as SavedMedia[]
   const desiredRows = body.images.map((image) => {
-    if (!image.id || !Number.isInteger(image.position) || image.position < 1 || image.position > 4) throw new Error('Vị trí ảnh không hợp lệ.')
+    if (!image.id || !Number.isInteger(image.position) || image.position < 1 || image.position > MAX_DIARY_IMAGES) throw new Error('Vị trí ảnh không hợp lệ.')
     const row = currentRows.find((candidate) => candidate.id === image.id)
     if (!row) throw new Error('Ảnh không thuộc nhật ký này.')
     return { ...row, slot_order: image.position, caption: (image.caption ?? '').trim().slice(0, 120) || null }
