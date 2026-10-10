@@ -225,10 +225,10 @@ const deleteFromDrive = async (fileId: string): Promise<void> => {
   }
 }
 
-const findOwnedDiary = async (admin: ReturnType<typeof getSupabaseAdmin>, diaryId: string, userId: string): Promise<boolean> => {
-  const { data, error } = await admin.from('diary_entries').select('id').eq('id', diaryId).eq('user_id', userId).neq('status', 'deleted').maybeSingle()
+const findOwnedDiary = async (admin: ReturnType<typeof getSupabaseAdmin>, diaryId: string, userId: string): Promise<{ localDate: string } | null> => {
+  const { data, error } = await admin.from('diary_entries').select('id, local_date').eq('id', diaryId).eq('user_id', userId).neq('status', 'deleted').maybeSingle()
   if (error) throw error
-  return Boolean(data)
+  return data ? { localDate: data.local_date } : null
 }
 
 const toPublicMedia = (request: Request, row: SavedMedia, userId: string) => ({
@@ -282,12 +282,13 @@ const handleUpload = async (request: Request): Promise<Response> => {
     }
     if (!diaryId || !Number.isInteger(slotOrder) || slotOrder < 1 || slotOrder > 4) throw new Error('Vị trí ảnh không hợp lệ.')
     markStage('verify-diary')
-    if (!(await findOwnedDiary(admin, diaryId, user.id))) throw new Error('Không tìm thấy nhật ký hoặc bạn không có quyền truy cập.')
+    const diary = await findOwnedDiary(admin, diaryId, user.id)
+    if (!diary) throw new Error('Không tìm thấy nhật ký hoặc bạn không có quyền truy cập.')
     markStage('optimize-image')
     const optimized = await optimizeImage(source)
     const id = crypto.randomUUID()
     const mediaKey = `diary:${diaryId}:${id}`
-    const driveName = `sacky-${diaryId}-${slotOrder}-${id}.webp`
+    const driveName = `sacky-diary-${diary.localDate}-${String(slotOrder).padStart(2, '0')}.webp`
     markStage('upload-drive')
     const driveFileId = await uploadToDrive(optimized.buffer, driveName, optimized.mimeType, mediaKey)
     markStage('save-metadata')
